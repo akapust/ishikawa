@@ -1,17 +1,25 @@
+<!-- =========================
+     MINMAP TOOL (DE/EN)
+     jsMind + Zoom/Pan + Undo/Redo + Reset
+     Maßnahmen: Draft -> Speichern -> Maßnahmenliste (Status, Termin, Owner)
+     JSON Import/Export + Print
+     Intro Grid: Ziel, Schritte, Datenschutz
+     Links: Lexikon Mindmap + Seminare (KVP, QM, OPEX, FMEA)
+========================= -->
+
 <!doctype html>
 <html lang="de">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Mindmap Tool – Ideen, Struktur & Maßnahmen</title>
+  <title>Mindmap Tool – Ideen → Bewertung → Maßnahmen</title>
 
-  <!-- jsMind (Mindmap) -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsmind@0.8.6/style/jsmind.css">
-  <script src="https://cdn.jsdelivr.net/npm/jsmind@0.8.6/es6/jsmind.js"></script>
+  <!-- jsMind (CDN) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsmind@0.8.5/style/jsmind.css">
+  <script src="https://cdn.jsdelivr.net/npm/jsmind@0.8.5/es6/jsmind.js"></script>
 
   <style>
-    /* Scoped to avoid WP theme collisions */
-    #qm-mindmap-app{
+    :root{
       --blue:#1155b2;
       --dark:#09387a;
       --light-bg:#f8fafc;
@@ -19,50 +27,53 @@
       --text:#27304d;
       --muted:#64748b;
 
+      --note:#fff9c4;
+
       --green:#16a34a;
       --yellow:#f59e0b;
       --red:#e53e3e;
 
       --radius:4px;
-      --shadow:0 4px 12px rgba(0,0,0,.10);
-
-      max-width:1100px;
-      margin:20px auto;
-      padding:0 12px;
-      color:var(--text);
-      font-family:"Segoe UI", Roboto, system-ui, -apple-system, Arial, sans-serif;
-      line-height:1.55;
+      --shadow:0 4px 12px rgba(0,0,0,0.10);
     }
-    #qm-mindmap-app *{ box-sizing:border-box; }
-    #qm-mindmap-app :focus-visible{ outline:2px solid var(--blue); outline-offset:2px; }
 
-    .card{ background:#fff; border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; }
+    body{ margin:0; background:#fff; color:var(--text); font-family:'Segoe UI', Roboto, sans-serif; }
 
-    /* Intro */
+    .app{ max-width:1100px; margin:20px auto; padding:0 12px; }
+    .card{
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    /* Intro (wie eure Tools) */
     .tool-intro{ padding:22px 25px; border-bottom:3px solid var(--blue); background:var(--light-bg); }
-    .intro-top{ display:flex; align-items:flex-start; justify-content:space-between; gap:15px; flex-wrap:wrap; }
-    .tool-title{ margin:0; color:var(--dark); font-size:20px; text-transform:uppercase; font-weight:900; letter-spacing:.4px; }
+    .tool-intro-top{ display:flex; align-items:flex-start; justify-content:space-between; gap:15px; flex-wrap:wrap; }
+    .tool-title{ margin:0; color:var(--dark); font-size:20px; text-transform:uppercase; }
     .tool-sub{ margin:6px 0 0; font-size:13px; color:var(--muted); }
+
     .tool-grid{ margin-top:16px; display:grid; grid-template-columns:1fr 1fr; gap:12px; }
     .tool-box{ background:#fff; border:1px solid var(--border); border-radius:var(--radius); padding:12px 14px; }
-    .tool-box h3{ margin:0 0 6px 0; font-size:13px; color:var(--dark); text-transform:uppercase; font-weight:900; letter-spacing:.2px; }
+    .tool-box h3{ margin:0 0 6px; font-size:13px; color:var(--dark); text-transform:uppercase; }
     .tool-box p, .tool-box ol{ margin:0; font-size:13px; color:#334155; }
     .tool-box ol{ padding-left:18px; }
     .tool-privacy{ border-left:3px solid var(--blue); }
-    .tool-box a{ color:var(--blue); text-decoration:none; font-weight:800; }
+
+    .tool-box a{ color:var(--blue); text-decoration:none; }
     .tool-box a:hover{ text-decoration:underline; }
 
     /* Buttons */
     .btn{
       padding:10px 18px;
       font-size:13px;
-      font-weight:900;
+      font-weight:800;
       border-radius:var(--radius);
       cursor:pointer;
       border:1px solid var(--border);
       background:#fff;
       text-transform:uppercase;
-      letter-spacing:.2px;
       text-decoration:none;
       display:inline-flex;
       align-items:center;
@@ -70,121 +81,226 @@
       color:#334155;
       user-select:none;
     }
-    .btn.primary{ background:var(--blue); color:#fff; border-color:var(--blue); }
+    .btn.primary{ background:var(--blue); border-color:var(--blue); color:#fff; }
     .btn.primary:hover{ background:var(--dark); border-color:var(--dark); }
     .btn.danger{ color:var(--red); }
-    .btn.small{ padding:8px 12px; font-size:12px; }
     .btn:disabled{ opacity:.55; cursor:not-allowed; }
 
     .lang-switch{ display:flex; gap:8px; align-items:center; }
     .lang-switch .btn{ padding:8px 12px; font-size:12px; }
 
-    /* Body */
     .body{ padding:25px; }
 
-    /* Context */
-    .context-wrap{ border:1px solid #edf2f7; border-radius:var(--radius); padding:14px; background:#fff; }
-    .context-head{ display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap; }
-    .context-title{ margin:0; font-size:13px; font-weight:900; color:var(--dark); text-transform:uppercase; letter-spacing:.2px; }
-    .hint{ font-size:12px; color:var(--muted); }
-    .save-ind{ font-size:12px; color:var(--muted); display:flex; align-items:center; gap:8px; white-space:nowrap; }
-    .dot{ width:8px; height:8px; border-radius:50%; background:rgba(100,116,139,.35); display:inline-block; }
-    .dot.saved{ background:rgba(22,163,74,.75); }
-    .dot.saving{ background:rgba(245,158,11,.85); }
-
-    .form-grid{ margin-top:12px; display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-    .field{ display:flex; flex-direction:column; gap:6px; }
-    .label{ font-size:12px; color:#64748b; text-transform:uppercase; font-weight:900; letter-spacing:.2px; }
-    .input, .textarea{ border:1px solid var(--border); border-radius:var(--radius); padding:10px; font-size:13px; outline:none; font-family:inherit; background:#fff; }
-    .textarea{ min-height:64px; resize:vertical; }
-    .full{ grid-column:1 / -1; }
-    .input:focus, .textarea:focus{ border-color:rgba(17,85,178,.7); box-shadow:0 0 0 3px rgba(17,85,178,.10); }
-
-    /* Mindmap */
-    .mind-wrap{ margin-top:16px; border:1px solid #edf2f7; border-radius:var(--radius); overflow:hidden; }
-    .mind-toolbar{
-      padding:12px; background:var(--light-bg); border-bottom:1px solid #eef2f7;
-      display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between;
+    /* Meta */
+    .meta-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      margin-bottom:14px;
     }
-    .toolbar-left, .toolbar-right{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    .meta-full{ grid-column:1 / -1; }
+    .field{ display:flex; flex-direction:column; gap:6px; }
+    .label{ font-size:12px; color:var(--muted); font-weight:900; text-transform:uppercase; }
+    .input, .textarea{
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      padding:10px;
+      font-size:13px;
+      font-family:inherit;
+      outline:none;
+      background:#fff;
+    }
+    .textarea{ min-height:70px; resize:vertical; }
+
+    .savebar{
+      display:flex; flex-wrap:wrap; gap:10px; align-items:center;
+      padding:10px 12px;
+      border:1px solid #edf2f7;
+      background:#fff;
+      border-radius:var(--radius);
+      margin-bottom:16px;
+    }
+    .savebadge{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:6px 10px; border-radius:999px;
+      border:1px solid rgba(17,85,178,.25);
+      background:#fff;
+      font-size:12px;
+      font-weight:900;
+      color:var(--dark);
+    }
+    .dot{ width:8px; height:8px; border-radius:50%; background:var(--green); display:inline-block; }
+    .dot.saving{ background:var(--yellow); }
+    .dot.idle{ background:#94a3b8; }
+
+    /* Map area */
+    .map-wrap{
+      border:1px solid #edf2f7;
+      border-radius:var(--radius);
+      background:#fff;
+      overflow:hidden;
+    }
+    .map-head{
+      display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;
+      padding:12px;
+      background:var(--light-bg);
+      border-bottom:1px solid #eef2f7;
+    }
+    .map-title{ margin:0; font-size:13px; font-weight:900; color:var(--dark); text-transform:uppercase; }
+    .map-sub{ margin:4px 0 0; font-size:12px; color:var(--muted); }
+    .map-actions{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:flex-end; }
+
+    .btn.small{ padding:8px 10px; font-size:11px; }
+    .btn.ghost{ background:#fff; }
+
+    .jm-container{
+      position:relative;
+      height:480px;
+      background:radial-gradient(circle at center, rgba(17,85,178,.06) 0%, transparent 65%);
+    }
+
+    /* Overlay for pan/zoom instructions */
+    .hint{
+      margin-top:10px;
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    /* Selected node info */
+    .selbar{
+      display:flex; gap:10px; flex-wrap:wrap; align-items:center;
+      margin:12px 0 16px;
+    }
+    .chip{
+      display:inline-flex; align-items:center; gap:8px;
+      border:1px solid rgba(17,85,178,.25);
+      border-radius:999px;
+      padding:6px 10px;
+      background:#fff;
+      font-size:12px;
+      font-weight:900;
+      color:#0f172a;
+    }
+    .chip code{ font-weight:800; color:#475569; }
+
+    /* Bewertung (R/Y/G) */
+    .rating-row{
+      display:flex; gap:10px; flex-wrap:wrap; align-items:center;
+      margin-top:6px;
+    }
     .pill{
       display:inline-flex; align-items:center; gap:8px;
-      border:1px solid var(--border); border-radius:999px; padding:6px 10px;
-      font-size:12px; font-weight:900; background:#fff; color:#0f172a;
+      border-radius:999px;
+      padding:6px 10px;
+      border:1px solid rgba(100,116,139,.22);
+      background:#fff;
+      cursor:pointer;
+      user-select:none;
+      font-weight:900;
+      font-size:12px;
+    }
+    .pill .p-dot{ width:10px; height:10px; border-radius:50%; background:#cbd5e1; }
+    .pill.red .p-dot{ background:var(--red); }
+    .pill.yellow .p-dot{ background:var(--yellow); }
+    .pill.green .p-dot{ background:var(--green); }
+    .pill.selected{
+      box-shadow:0 6px 14px rgba(0,0,0,.08);
+      transform:translateY(-1px);
+      border-color:rgba(15,23,42,.28);
     }
 
-    .mind-viewport{ position:relative; height:520px; background:#fff; overflow:hidden; }
-    .mind-transform{ position:absolute; inset:0; transform-origin:0 0; }
-    #jsmind_container{ width:100%; height:100%; background:#fff; }
+    /* Maßnahmen */
+    .divider{ height:1px; background:#edf2f7; margin:16px 0; }
 
-    .recenter{
-      position:absolute; right:12px; bottom:12px;
-      display:flex; gap:8px; align-items:center; flex-wrap:wrap;
+    .section-title{ margin:0 0 6px; font-size:13px; color:var(--dark); text-transform:uppercase; font-weight:900; }
+    .section-sub{ margin:0 0 10px; font-size:13px; color:var(--muted); }
+
+    .draft{
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      padding:12px 14px;
+      background:#fff;
     }
-
-    /* Sections */
-    .section{ margin-top:18px; padding-top:16px; border-top:2px solid var(--blue); }
-    .section-title{ margin:0 0 6px 0; font-size:13px; color:var(--dark); text-transform:uppercase; font-weight:900; letter-spacing:.2px; }
-    .section-sub{ margin:0 0 10px 0; font-size:13px; color:var(--muted); }
-
-    /* Measures */
-    .derive-grid{ display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
-    .box{ background:#fff; border:1px solid var(--border); border-radius:var(--radius); padding:12px 14px; }
-    .box h4{ margin:0 0 6px 0; font-size:13px; color:var(--dark); text-transform:uppercase; font-weight:900; display:flex; justify-content:space-between; align-items:baseline; gap:10px; }
-    .mini{ font-size:12px; color:var(--muted); font-weight:800; }
-    .row{ margin-top:10px; display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
-
-    .measure-form{ margin-top:10px; display:grid; grid-template-columns: 1fr 200px; gap:10px; align-items:start; }
-    .measure-form .textarea{ min-height:72px; }
-    .measure-form .input{ height:42px; }
-
-    .measures-head{
-      display:flex; justify-content:space-between; align-items:flex-end; gap:12px; flex-wrap:wrap;
-      margin-bottom:10px;
+    .draft-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      margin-top:10px;
     }
-    .filters{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
-    .chip{
-      border:1px solid var(--border); background:#fff; border-radius:999px; padding:6px 10px;
-      font-size:12px; font-weight:900; cursor:pointer; user-select:none; color:#0f172a;
-    }
-    .chip.active{ border-color:var(--blue); box-shadow:0 0 0 3px rgba(17,85,178,.10); }
-    .count{ font-size:12px; color:var(--muted); font-weight:900; }
+    .draft-grid .meta-full{ grid-column:1 / -1; }
 
-    .measure-list{ display:flex; flex-direction:column; gap:10px; }
-    .m-item{
-      border:1px solid var(--border); border-radius:var(--radius); padding:12px 14px; background:#fff;
-      box-shadow:0 6px 18px rgba(27,51,92,.05);
+    .mini-actions{ display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
+
+    .actions-table{
+      width:100%;
+      border-collapse:collapse;
+      border:1px solid #e2e8f0;
+      border-radius:var(--radius);
+      overflow:hidden;
+      background:#fff;
     }
-    .m-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap; }
-    .m-title{ margin:0; font-weight:900; color:#0f172a; }
-    .m-meta{ font-size:12px; color:var(--muted); margin-top:4px; }
-    .m-source{ font-size:12px; color:#334155; margin-top:8px; }
-    .m-actions{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+    .actions-table th, .actions-table td{
+      border-bottom:1px solid #eef2f7;
+      padding:10px;
+      font-size:13px;
+      vertical-align:top;
+    }
+    .actions-table th{
+      background:var(--light-bg);
+      text-transform:uppercase;
+      font-size:12px;
+      color:var(--dark);
+      font-weight:900;
+    }
     .status{
-      border:1px solid var(--border); border-radius:999px; padding:6px 10px;
-      font-size:12px; font-weight:900; cursor:pointer; user-select:none; background:#fff;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      border-radius:999px;
+      padding:5px 9px;
+      border:1px solid rgba(100,116,139,.22);
+      font-weight:900;
+      font-size:12px;
+      background:#fff;
+      white-space:nowrap;
     }
-    .status.open{ border-color: rgba(245,158,11,.35); background: rgba(245,158,11,.10); }
-    .status.done{ border-color: rgba(22,163,74,.35); background: rgba(22,163,74,.10); }
-    .status.drop{ border-color: rgba(229,62,62,.35); background: rgba(229,62,62,.08); }
-    .m-del{ border:none; background:transparent; cursor:pointer; font-weight:900; color: #94a3b8; font-size:18px; line-height:1; padding:4px 6px; }
-    .m-del:hover{ color: var(--red); }
+    .status.open{ border-color:rgba(245,158,11,.35); }
+    .status.done{ border-color:rgba(22,163,74,.35); }
+    .status.drop{ border-color:rgba(229,62,62,.35); }
 
-    /* Bottom actions */
-    .bottom-actions{
+    .row-actions{ display:flex; gap:8px; flex-wrap:wrap; }
+    .icon-btn{
+      padding:7px 10px;
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      background:#fff;
+      cursor:pointer;
+      font-weight:900;
+      font-size:12px;
+      text-transform:uppercase;
+    }
+    .icon-btn:hover{ border-color:var(--blue); color:var(--blue); background:#f8fafc; }
+    .icon-btn.danger{ color:var(--red); }
+
+    /* Export area bottom */
+    .exports{
       margin-top:18px;
       padding-top:16px;
       border-top:2px solid var(--blue);
-      display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end;
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
     }
 
-    /* More info + Footer */
+    /* More info */
     .tool-more{ margin-top:22px; padding-top:18px; border-top:2px solid var(--blue); }
-    .more-title{ margin:0 0 6px 0; font-size:13px; color:var(--dark); text-transform:uppercase; font-weight:900; }
-    .more-sub{ margin:0 0 10px 0; font-size:13px; color:var(--muted); }
+    .more-title{ margin:0 0 6px; font-size:13px; color:var(--dark); text-transform:uppercase; }
+    .more-sub{ margin:0 0 10px; font-size:13px; color:var(--muted); }
     .more-list{ margin:8px 0 0; padding-left:18px; font-size:13px; color:#334155; }
     .more-list li{ margin:4px 0; }
 
+    /* Footer */
     .footer{
       padding:12px 25px;
       background:var(--light-bg);
@@ -195,58 +311,63 @@
       justify-content:space-between;
       gap:10px;
       flex-wrap:wrap;
-      align-items:center;
     }
-    .footer a{ color:var(--dark); font-weight:900; text-decoration:none; }
+    .footer a{ color:var(--dark); font-weight:800; text-decoration:none; }
     .footer a:hover{ text-decoration:underline; }
 
     /* Toast */
     .toast{
-      position:fixed; left:50%; bottom:18px; transform:translateX(-50%);
-      background:#0f172a; color:#fff; padding:12px 18px; border-radius:999px;
-      font-size:14px; z-index:9999; opacity:0; pointer-events:none; transition:opacity .25s;
+      position:fixed;
+      bottom:18px;
+      left:50%;
+      transform:translateX(-50%);
+      background:#0f172a;
+      color:#fff;
+      padding:12px 18px;
+      border-radius:999px;
+      font-size:14px;
+      z-index:9999;
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .25s;
       box-shadow:0 10px 22px rgba(0,0,0,.18);
     }
     .toast.show{ opacity:1; }
 
-    @media (max-width: 900px){
-      .tool-grid{ grid-template-columns:1fr; }
-      .form-grid{ grid-template-columns:1fr; }
-      .derive-grid{ grid-template-columns:1fr; }
-      .measure-form{ grid-template-columns:1fr; }
-      .body{ padding-left:16px; padding-right:16px; }
-      .tool-intro, .footer{ padding-left:16px; padding-right:16px; }
-      .mind-viewport{ height:520px; }
-    }
-
     /* Print */
     @media print{
-      #qm-mindmap-app{ margin:0; max-width:none; padding:0; }
-      .tool-intro, .mind-toolbar, .recenter, .bottom-actions, .tool-more, .lang-switch, .toast{ display:none !important; }
-      .card{ box-shadow:none; border:none; }
-      .mind-viewport{ height:650px; }
-      .footer{ border-top:1px solid #e2e8f0; }
-      a{ text-decoration:none; color:#0f172a; }
+      .lang-switch, .btn, .map-actions, .exports, .tool-more a{ display:none !important; }
+      .card{ box-shadow:none !important; border:none !important; }
+      .app{ margin:0 !important; }
+      .body{ padding:0 !important; }
+      .jm-container{ height:520px; }
+    }
+
+    @media(max-width:900px){
+      .tool-grid{ grid-template-columns:1fr; }
+      .meta-grid{ grid-template-columns:1fr; }
+      .draft-grid{ grid-template-columns:1fr; }
+      .tool-intro, .body, .footer{ padding-left:16px; padding-right:16px; }
     }
   </style>
 </head>
 
 <body>
-  <div id="qm-mindmap-app">
+  <div id="mm-app" class="app">
     <section class="card">
 
       <!-- Intro -->
       <section class="tool-intro">
-        <div class="intro-top">
+        <div class="tool-intro-top">
           <div>
-            <h2 class="tool-title" data-i18n="title">Mindmap Tool – Ideen, Struktur &amp; Maßnahmen</h2>
-            <p class="tool-sub" data-i18n="subtitle">Ideen sammeln, clustern und in umsetzbare Maßnahmen überführen – inklusive Liste, Status &amp; Termin.</p>
+            <h2 class="tool-title" data-i18n="title">Mindmap Tool – Ideen → Bewertung → Maßnahmen</h2>
+            <p class="tool-sub" data-i18n="subtitle">Mindmap erstellen, bewerten (Rot/Gelb/Grün) und daraus Maßnahmen ableiten.</p>
           </div>
 
           <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end;">
             <div class="lang-switch" aria-label="Language switch">
-              <button type="button" class="btn small" id="btnLangDE">DE</button>
-              <button type="button" class="btn small" id="btnLangEN">EN</button>
+              <button type="button" class="btn" id="btnLangDE">DE</button>
+              <button type="button" class="btn" id="btnLangEN">EN</button>
             </div>
             <a class="btn" href="https://tools.quality.de/" data-i18n="backHome">Zurück zur Startseite</a>
           </div>
@@ -255,171 +376,183 @@
         <div class="tool-grid">
           <div class="tool-box">
             <h3 data-i18n="boxToolNameTitle">Name Tool</h3>
-            <p data-i18n="boxToolNameText">Mindmap – Ideen &amp; Maßnahmen</p>
+            <p data-i18n="boxToolNameText">Mindmap – Ideenstruktur & Maßnahmenableitung</p>
           </div>
+
           <div class="tool-box">
             <h3 data-i18n="boxGoalTitle">Ziel</h3>
-            <p data-i18n="boxGoalText">Gedanken sichtbar machen, Themen strukturiert clustern und daraus konkrete Maßnahmen ableiten und nachverfolgen.</p>
+            <p data-i18n="boxGoalText">Ideen sammeln, clustern, bewerten und die relevanten Punkte in konkrete Maßnahmen mit Termin/Owner überführen.</p>
           </div>
+
           <div class="tool-box">
             <h3 data-i18n="boxHowTitle">So benutzt du das Tool</h3>
             <ol>
-              <li data-i18n="step1">Thema / Ziel / Scope eintragen (wird automatisch gespeichert).</li>
-              <li data-i18n="step2">Mindmap aufbauen: Unterknoten/Nachbarknoten anlegen, Struktur formen.</li>
-              <li data-i18n="step3">Knoten auswählen und in Maßnahmen überführen (inkl. Termin).</li>
-              <li data-i18n="step4">Maßnahmen in der Liste pflegen: offen / abgeschlossen / verworfen.</li>
-              <li data-i18n="step5">Am Ende: JSON speichern/laden oder drucken.</li>
+              <li data-i18n="step1">Thema/Ziel/Scope ausfüllen (Autosave).</li>
+              <li data-i18n="step2">Mindmap aufbauen: Unterknoten/Nachbarknoten hinzufügen, verschieben, löschen.</li>
+              <li data-i18n="step3">Knoten bewerten: Rot/Gelb/Grün.</li>
+              <li data-i18n="step4">Aus Rot/Gelb Maßnahmen ableiten → in Maßnahmenliste speichern.</li>
+              <li data-i18n="step5">Ganz unten: JSON speichern/laden & Drucken.</li>
             </ol>
           </div>
+
           <div class="tool-box tool-privacy">
             <h3 data-i18n="boxPrivacyTitle">Datenschutz</h3>
-            <p data-i18n="boxPrivacyText">Dieses Tool arbeitet vollständig im Browser. Es werden keine Daten auf einem Server gespeichert. Auto-Speicherung erfolgt lokal im Browser (LocalStorage). Zugriff hat nur die Person am Gerät.</p>
+            <p data-i18n="boxPrivacyText">Dieses Tool arbeitet vollständig im Browser. Es werden keine Daten auf einem Server gespeichert. Zugriff hat nur die Person, die lokal speichert oder lädt.</p>
           </div>
         </div>
       </section>
 
       <div class="body">
-
-        <!-- Context -->
-        <div class="context-wrap" aria-label="Context">
-          <div class="context-head">
-            <div>
-              <p class="context-title" data-i18n="ctxTitle">Thema / Ziel / Scope</p>
-              <p class="hint" style="margin:6px 0 0;" data-i18n="ctxHint">Diese Infos erscheinen in der Dokumentation und werden automatisch gespeichert.</p>
-            </div>
-            <div class="save-ind" title="Autosave">
-              <span class="dot" id="saveDot" aria-hidden="true"></span>
-              <span id="saveText" data-i18n="savedIdle">Gespeichert</span>
-            </div>
+        <!-- Meta -->
+        <div class="meta-grid">
+          <div class="field">
+            <label class="label" for="scopeTopic" data-i18n="lblTopic">Thema / Titel</label>
+            <input class="input" id="scopeTopic" type="text" placeholder="z.B. Prozess X verbessern / Brainstorming Workshop" data-i18n-placeholder="phTopic" />
           </div>
-
-          <div class="form-grid">
-            <div class="field">
-              <span class="label" data-i18n="topicLabel">Thema</span>
-              <input class="input" id="topicInput" type="text" placeholder="z.B. Prozess X – Qualitätsverbesserung" data-i18n-placeholder="topicPh">
-            </div>
-            <div class="field">
-              <span class="label" data-i18n="goalLabel">Ziel</span>
-              <input class="input" id="goalInput" type="text" placeholder="z.B. Fehlerquote halbieren, Durchlaufzeit senken" data-i18n-placeholder="goalPh">
-            </div>
-            <div class="field full">
-              <span class="label" data-i18n="scopeLabel">Scope / Notizen</span>
-              <textarea class="textarea" id="scopeInput" placeholder="Rahmen, Team, Annahmen, Abgrenzung, Links …" data-i18n-placeholder="scopePh"></textarea>
-            </div>
+          <div class="field">
+            <label class="label" for="scopeGoal" data-i18n="lblGoal">Ziel</label>
+            <input class="input" id="scopeGoal" type="text" placeholder="z.B. 10 umsetzbare Verbesserungen bis Ende Q2" data-i18n-placeholder="phGoal" />
           </div>
+          <div class="field meta-full">
+            <label class="label" for="scopeScope" data-i18n="lblScope">Scope / Abgrenzung</label>
+            <input class="input" id="scopeScope" type="text" placeholder="z.B. Linie A / Standort Berlin / nur Inbound" data-i18n-placeholder="phScope" />
+          </div>
+          <div class="field meta-full">
+            <label class="label" for="scopeNotes" data-i18n="lblNotes">Notizen</label>
+            <textarea class="textarea" id="scopeNotes" placeholder="Rahmen, Teilnehmer, Annahmen, Links..." data-i18n-placeholder="phNotes"></textarea>
+          </div>
+        </div>
+
+        <div class="savebar" aria-live="polite">
+          <span class="savebadge"><span id="saveDot" class="dot saving"></span><span id="saveText" data-i18n="saving">Speichern…</span></span>
+          <span style="font-size:12px;color:var(--muted);" id="saveWhen"></span>
         </div>
 
         <!-- Mindmap -->
-        <div class="mind-wrap" aria-label="Mindmap">
-          <div class="mind-toolbar">
-            <div class="toolbar-left">
-              <span class="pill" id="selPill" aria-label="Selected">
-                <span data-i18n="selected">Auswahl</span>: <span id="selText">—</span>
-              </span>
-              <span class="hint" data-i18n="panZoomHint">Scroll = Zoom · Drag auf Hintergrund = Pan · Recenter = Zentrieren</span>
+        <div class="map-wrap">
+          <div class="map-head">
+            <div>
+              <p class="map-title" data-i18n="mapTitle">Mindmap</p>
+              <p class="map-sub" data-i18n="mapSub">Scroll = Zoom · Drag = Pan · Recenter = Zentrieren · Unterknoten/Nachbarknoten hinzufügen</p>
             </div>
-
-            <div class="toolbar-right">
-              <button type="button" class="btn small" id="btnChild" data-i18n="btnChild">+ Unterknoten</button>
-              <button type="button" class="btn small" id="btnSibling" data-i18n="btnSibling">+ Nachbarknoten</button>
-              <button type="button" class="btn small" id="btnRename" data-i18n="btnRename">Umbenennen</button>
-              <button type="button" class="btn small danger" id="btnDelete" data-i18n="btnDelete">Löschen</button>
+            <div class="map-actions">
+              <button type="button" class="btn small" id="btnRecenter" data-i18n="btnRecenter">Zentrieren</button>
               <button type="button" class="btn small" id="btnUndo" data-i18n="btnUndo">Rückgängig</button>
               <button type="button" class="btn small" id="btnRedo" data-i18n="btnRedo">Wiederholen</button>
-              <button type="button" class="btn small danger" id="btnReset" data-i18n="btnReset">Reset</button>
+              <button type="button" class="btn small" id="btnDelete" data-i18n="btnDelete">Löschen</button>
+              <button type="button" class="btn small danger" id="btnResetMap" data-i18n="btnResetMap">Reset</button>
             </div>
           </div>
 
-          <div class="mind-viewport" id="viewport">
-            <div class="mind-transform" id="transformLayer">
-              <div id="jsmind_container"></div>
-            </div>
-
-            <div class="recenter">
-              <button type="button" class="btn small" id="btnRecenter" data-i18n="btnRecenter">Zentrieren</button>
-              <button type="button" class="btn small primary" id="btnToMeasure" data-i18n="btnToMeasure">Als Maßnahme</button>
-            </div>
+          <div class="jm-container" id="jmWrap">
+            <div id="jsmind_container" style="width:100%;height:100%;"></div>
           </div>
         </div>
 
-        <!-- Derive measures -->
-        <div class="section" aria-label="Measures derivation">
-          <h3 class="section-title" data-i18n="deriveTitle">Ableitung von Maßnahmen</h3>
-          <p class="section-sub" data-i18n="deriveSub">Wähle einen Knoten und überführe ihn als Maßnahme (mit Termin) in die Maßnahmenliste.</p>
-
-          <div class="derive-grid">
-            <div class="box">
-              <h4><span data-i18n="deriveFromNode">Aus Knoten</span> <span class="mini" id="deriveFrom">—</span></h4>
-              <p class="hint" data-i18n="deriveHint">Tipp: Nutze „Als Maßnahme“, um den Entwurf automatisch aus der Auswahl zu befüllen.</p>
-
-              <div class="measure-form">
-                <textarea class="textarea" id="measureText" placeholder="Maßnahme formulieren (Was? Wer? Wirkung?) …" data-i18n-placeholder="measurePh"></textarea>
-                <div class="field">
-                  <span class="label" data-i18n="dueLabel">Termin</span>
-                  <input class="input" id="measureDue" type="date">
-                  <div class="row" style="justify-content:flex-end;">
-                    <button type="button" class="btn small primary" id="btnAddMeasure" data-i18n="btnAddMeasure">In Liste speichern</button>
-                    <button type="button" class="btn small" id="btnClearDraft" data-i18n="btnClearDraft">Entwurf leeren</button>
-                  </div>
-                </div>
-              </div>
-
-              <div class="row" style="justify-content:space-between; margin-top:12px;">
-                <span class="hint" data-i18n="draftSavedHint">Entwurf wird automatisch gespeichert.</span>
-                <button type="button" class="btn small" id="btnSaveNow" data-i18n="btnSaveNow">Jetzt speichern</button>
-              </div>
-            </div>
-
-            <div class="box">
-              <h4><span data-i18n="rulesTitle">Regeln</span></h4>
-              <ul class="more-list" style="margin:8px 0 0;">
-                <li data-i18n="rule1">Jede Maßnahme behält den Bezug zum Mindmap-Knoten (Pfad).</li>
-                <li data-i18n="rule2">Status kann jederzeit geändert werden: offen / abgeschlossen / verworfen.</li>
-                <li data-i18n="rule3">Maßnahmen sind lokal gespeichert (Browser) und in JSON exportierbar.</li>
-              </ul>
-            </div>
-          </div>
+        <div class="selbar">
+          <span class="chip" id="selChip"><span data-i18n="selected">Ausgewählt</span>: <code id="selNode">root</code></span>
+          <span class="chip" id="pathChip"><span data-i18n="path">Pfad</span>: <code id="selPath">—</code></span>
         </div>
 
-        <!-- Measures list -->
-        <div class="section" aria-label="Measures list">
-          <div class="measures-head">
-            <div>
-              <h3 class="section-title" style="margin-bottom:0;" data-i18n="listTitle">Maßnahmenliste</h3>
-              <p class="section-sub" style="margin-top:6px;" data-i18n="listSub">Übersicht aller Maßnahmen inkl. Status, Termin und Bezug zur Mindmap.</p>
+        <div class="draft">
+          <h3 class="section-title" data-i18n="rateTitle">2) Bewerten</h3>
+          <p class="section-sub" data-i18n="rateSub">Bewerte den ausgewählten Knoten. Rot/Gelb können in Maßnahmen überführt werden (Bewertung ist jederzeit änderbar).</p>
+
+          <div class="rating-row" id="ratingRow" aria-label="Bewertung">
+            <div class="pill red" data-rate="red"><span class="p-dot"></span><span data-i18n="rateRed">Rot</span></div>
+            <div class="pill yellow" data-rate="yellow"><span class="p-dot"></span><span data-i18n="rateYellow">Gelb</span></div>
+            <div class="pill green" data-rate="green"><span class="p-dot"></span><span data-i18n="rateGreen">Grün</span></div>
+            <span style="color:var(--muted);font-size:12px;" id="rateInfo"></span>
+          </div>
+
+          <div class="divider"></div>
+
+          <h3 class="section-title" data-i18n="actionsDraftTitle">3) Ableitung von Maßnahmen</h3>
+          <p class="section-sub" data-i18n="actionsDraftSub">Erstelle aus dem ausgewählten (Rot/Gelb) Knoten eine Maßnahme. Speichern legt sie in der Maßnahmenliste ab und leert das Formular.</p>
+
+          <div class="draft-grid">
+            <div class="field meta-full">
+              <label class="label" data-i18n="lblFromNode">Bezug (Knoten)</label>
+              <input class="input" id="actFrom" type="text" readonly />
             </div>
 
-            <div class="filters" aria-label="Filters">
-              <span class="count" id="countText">0</span>
-              <span class="chip active" data-filter="all" data-i18n="filterAll">Alle</span>
-              <span class="chip" data-filter="open" data-i18n="filterOpen">Offen</span>
-              <span class="chip" data-filter="done" data-i18n="filterDone">Abgeschlossen</span>
-              <span class="chip" data-filter="drop" data-i18n="filterDrop">Verworfen</span>
+            <div class="field meta-full">
+              <label class="label" for="actText" data-i18n="lblAction">Maßnahme</label>
+              <textarea class="textarea" id="actText" placeholder="Was wird getan? (klar, überprüfbar)" data-i18n-placeholder="phAction"></textarea>
+            </div>
+
+            <div class="field">
+              <label class="label" for="actOwner" data-i18n="lblOwner">Owner</label>
+              <input class="input" id="actOwner" type="text" placeholder="z.B. Max Mustermann" data-i18n-placeholder="phOwner" />
+            </div>
+            <div class="field">
+              <label class="label" for="actDue" data-i18n="lblDue">Termin</label>
+              <input class="input" id="actDue" type="date" />
+            </div>
+
+            <div class="field">
+              <label class="label" for="actStatus" data-i18n="lblStatus">Status</label>
+              <select class="input" id="actStatus">
+                <option value="open" data-i18n="stOpen">Offen</option>
+                <option value="done" data-i18n="stDone">Abgeschlossen</option>
+                <option value="drop" data-i18n="stDrop">Verworfen</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label class="label" for="actNote" data-i18n="lblActionNote">Notiz (optional)</label>
+              <input class="input" id="actNote" type="text" placeholder="z.B. Nachweis / Link / Messkriterium" data-i18n-placeholder="phActionNote" />
             </div>
           </div>
 
-          <div class="measure-list" id="measureList"></div>
+          <div class="mini-actions">
+            <button type="button" class="btn primary" id="btnSaveAction" data-i18n="btnSaveAction">In Maßnahmenliste speichern</button>
+            <button type="button" class="btn" id="btnClearDraft" data-i18n="btnClearDraft">Entwurf leeren</button>
+          </div>
+
+          <div class="hint" id="draftHint"></div>
         </div>
 
-        <!-- Bottom actions (JSON/Print) -->
-        <div class="bottom-actions" aria-label="Bottom actions">
-          <button type="button" class="btn" id="btnJsonSave" data-i18n="btnJsonSave">JSON speichern</button>
-          <label class="btn" style="cursor:pointer;">
-            <span data-i18n="btnJsonLoad">JSON laden</span>
-            <input type="file" id="jsonFile" accept="application/json" hidden>
-          </label>
+        <div class="divider"></div>
+
+        <h3 class="section-title" data-i18n="actionsListTitle">Maßnahmenliste</h3>
+        <p class="section-sub" data-i18n="actionsListSub">Hier sind alle gespeicherten Maßnahmen. Status ändern, bearbeiten oder löschen.</p>
+
+        <div style="overflow:auto;">
+          <table class="actions-table" aria-label="Maßnahmenliste">
+            <thead>
+              <tr>
+                <th data-i18n="thAction">Maßnahme</th>
+                <th data-i18n="thFrom">Bezug</th>
+                <th data-i18n="thOwner">Owner</th>
+                <th data-i18n="thDue">Termin</th>
+                <th data-i18n="thStatus">Status</th>
+                <th data-i18n="thOps">Aktion</th>
+              </tr>
+            </thead>
+            <tbody id="actionsBody"></tbody>
+          </table>
+        </div>
+
+        <!-- Export/Print (muss vor "Weitere Infos" sein) -->
+        <div class="exports">
           <button type="button" class="btn primary" id="btnPrint" data-i18n="btnPrint">Drucken</button>
+          <button type="button" class="btn" id="btnExportJson" data-i18n="btnExportJson">JSON speichern</button>
+          <button type="button" class="btn" id="btnImportJson" data-i18n="btnImportJson">JSON laden</button>
+          <input type="file" id="jsonFile" accept="application/json" style="display:none;" />
+          <span style="flex:1 1 auto;"></span>
+          <a class="btn" href="https://tools.quality.de/" data-i18n="backHome">Zurück zur Startseite</a>
         </div>
 
         <!-- More info -->
         <section class="tool-more">
           <h3 class="more-title" data-i18n="moreTitle">Weiterführende Infos</h3>
-          <p class="more-sub" data-i18n="moreSub">Lexikonartikel &amp; passende Weiterbildungen (öffnet in neuem Tab).</p>
+          <p class="more-sub" data-i18n="moreSub">Lexikonartikel & passende Weiterbildungen (öffnet in neuem Tab).</p>
 
           <div class="tool-grid">
             <div class="tool-box">
               <h3 data-i18n="lexTitle">Lexikon</h3>
-              <p data-i18n="lexText">Definition, Nutzen &amp; Tipps zur Mindmap.</p>
+              <p data-i18n="lexText">Definition, Einsatzbereiche & Tipps zum Mindmapping.</p>
               <p style="margin-top:8px;">
                 <a href="https://www.quality.de/lexikon/mindmap/" target="_blank" rel="noopener" data-i18n="lexLink">Zum Lexikonartikel: Mindmap</a>
               </p>
@@ -431,17 +564,18 @@
               <ul class="more-list">
                 <li><a href="https://www.quality.de/weiterbildung/kvp/" target="_blank" rel="noopener" data-i18n="trainKvp">KVP Seminare</a></li>
                 <li><a href="https://www.quality.de/weiterbildung/qualitaetsmanagement/" target="_blank" rel="noopener" data-i18n="trainQm">Qualitätsmanagement</a></li>
-                <li><a href="https://www.quality.de/weiterbildung/opex-seminare-ausbildungen/opex/" target="_blank" rel="noopener" data-i18n="trainOpex">OPEX Seminare &amp; Ausbildungen</a></li>
+                <li><a href="https://www.quality.de/weiterbildung/opex-seminare-ausbildungen/" target="_blank" rel="noopener" data-i18n="trainOpex">OPEX Seminare &amp; Ausbildungen</a></li>
                 <li><a href="https://www.quality.de/weiterbildung/fmea-schulung/" target="_blank" rel="noopener" data-i18n="trainFmea">FMEA Schulungen</a></li>
               </ul>
             </div>
           </div>
         </section>
+
       </div>
 
       <footer class="footer">
         <div>© <span id="copyrightYear"></span></div>
-        <div><a href="https://www.quality.de/" target="_blank" rel="noopener">Quality Services &amp; Wissen GmbH</a></div>
+        <div><a href="https://www.quality.de/" target="_blank" rel="noopener"><span data-i18n="poweredBy">Quality Services &amp; Wissen GmbH</span></a></div>
       </footer>
 
     </section>
@@ -451,107 +585,97 @@
 
   <script>
   (function(){
-    const TOAST = document.getElementById("toast");
-    const STORAGE_KEY = "qm_mindmap_tool_state_v2";
-    const HISTORY_LIMIT = 40;
-
-    function toast(msg){
-      if(!TOAST) return;
-      TOAST.textContent = msg;
-      TOAST.classList.add("show");
-      clearTimeout(toast._t);
-      toast._t = setTimeout(()=>TOAST.classList.remove("show"), 2600);
-    }
-
-    /* ===== i18n ===== */
+    /* ================= i18n ================= */
     const I18N = {
-      de: {
-        title:"Mindmap Tool – Ideen, Struktur & Maßnahmen",
-        subtitle:"Ideen sammeln, clustern und in umsetzbare Maßnahmen überführen – inklusive Liste, Status & Termin.",
+      de:{
+        title:"Mindmap Tool – Ideen → Bewertung → Maßnahmen",
+        subtitle:"Mindmap erstellen, bewerten (Rot/Gelb/Grün) und daraus Maßnahmen ableiten.",
         backHome:"Zurück zur Startseite",
 
         boxToolNameTitle:"Name Tool",
-        boxToolNameText:"Mindmap – Ideen & Maßnahmen",
+        boxToolNameText:"Mindmap – Ideenstruktur & Maßnahmenableitung",
         boxGoalTitle:"Ziel",
-        boxGoalText:"Gedanken sichtbar machen, Themen strukturiert clustern und daraus konkrete Maßnahmen ableiten und nachverfolgen.",
+        boxGoalText:"Ideen sammeln, clustern, bewerten und die relevanten Punkte in konkrete Maßnahmen mit Termin/Owner überführen.",
         boxHowTitle:"So benutzt du das Tool",
-        step1:"Thema / Ziel / Scope eintragen (wird automatisch gespeichert).",
-        step2:"Mindmap aufbauen: Unterknoten/Nachbarknoten anlegen, Struktur formen.",
-        step3:"Knoten auswählen und in Maßnahmen überführen (inkl. Termin).",
-        step4:"Maßnahmen in der Liste pflegen: offen / abgeschlossen / verworfen.",
-        step5:"Am Ende: JSON speichern/laden oder drucken.",
+        step1:"Thema/Ziel/Scope ausfüllen (Autosave).",
+        step2:"Mindmap aufbauen: Unterknoten/Nachbarknoten hinzufügen, verschieben, löschen.",
+        step3:"Knoten bewerten: Rot/Gelb/Grün.",
+        step4:"Aus Rot/Gelb Maßnahmen ableiten → in Maßnahmenliste speichern.",
+        step5:"Ganz unten: JSON speichern/laden & Drucken.",
         boxPrivacyTitle:"Datenschutz",
-        boxPrivacyText:"Dieses Tool arbeitet vollständig im Browser. Es werden keine Daten auf einem Server gespeichert. Auto-Speicherung erfolgt lokal im Browser (LocalStorage). Zugriff hat nur die Person am Gerät.",
+        boxPrivacyText:"Dieses Tool arbeitet vollständig im Browser. Es werden keine Daten auf einem Server gespeichert. Zugriff hat nur die Person, die lokal speichert oder lädt.",
 
-        ctxTitle:"Thema / Ziel / Scope",
-        ctxHint:"Diese Infos erscheinen in der Dokumentation und werden automatisch gespeichert.",
-        savedIdle:"Gespeichert",
+        lblTopic:"Thema / Titel",
+        lblGoal:"Ziel",
+        lblScope:"Scope / Abgrenzung",
+        lblNotes:"Notizen",
+        phTopic:"z.B. Prozess X verbessern / Brainstorming Workshop",
+        phGoal:"z.B. 10 umsetzbare Verbesserungen bis Ende Q2",
+        phScope:"z.B. Linie A / Standort Berlin / nur Inbound",
+        phNotes:"Rahmen, Teilnehmer, Annahmen, Links...",
+
         saving:"Speichern…",
-        savedAt:"Gespeichert um",
+        saved:"Gespeichert",
+        lastSaved:"Zuletzt gespeichert:",
 
-        topicLabel:"Thema",
-        goalLabel:"Ziel",
-        scopeLabel:"Scope / Notizen",
-        topicPh:"z.B. Prozess X – Qualitätsverbesserung",
-        goalPh:"z.B. Fehlerquote halbieren, Durchlaufzeit senken",
-        scopePh:"Rahmen, Team, Annahmen, Abgrenzung, Links …",
-
-        selected:"Auswahl",
-        panZoomHint:"Scroll = Zoom · Drag auf Hintergrund = Pan · Recenter = Zentrieren",
-        btnChild:"+ Unterknoten",
-        btnSibling:"+ Nachbarknoten",
-        btnRename:"Umbenennen",
-        btnDelete:"Löschen",
+        mapTitle:"Mindmap",
+        mapSub:"Scroll = Zoom · Drag = Pan · Recenter = Zentrieren · Unterknoten/Nachbarknoten hinzufügen",
+        btnRecenter:"Zentrieren",
         btnUndo:"Rückgängig",
         btnRedo:"Wiederholen",
-        btnReset:"Reset",
-        btnRecenter:"Zentrieren",
-        btnToMeasure:"Als Maßnahme",
+        btnDelete:"Löschen",
+        btnResetMap:"Reset",
 
-        promptNodeText:"Text für neuen Knoten:",
-        promptRename:"Neuer Name:",
-        warnSelectNode:"Bitte zuerst einen Knoten auswählen.",
-        warnSiblingRoot:"Nachbarknoten ist beim Root nicht möglich. Bitte einen Unterknoten auswählen.",
-        warnDeleteRoot:"Root kann nicht gelöscht werden.",
-        confirmReset:"Alles löschen und neu starten?",
+        selected:"Ausgewählt",
+        path:"Pfad",
 
-        deriveTitle:"Ableitung von Maßnahmen",
-        deriveSub:"Wähle einen Knoten und überführe ihn als Maßnahme (mit Termin) in die Maßnahmenliste.",
-        deriveFromNode:"Aus Knoten",
-        deriveHint:"Tipp: Nutze „Als Maßnahme“, um den Entwurf automatisch aus der Auswahl zu befüllen.",
-        measurePh:"Maßnahme formulieren (Was? Wer? Wirkung?) …",
-        dueLabel:"Termin",
-        btnAddMeasure:"In Liste speichern",
+        rateTitle:"2) Bewerten",
+        rateSub:"Bewerte den ausgewählten Knoten. Rot/Gelb können in Maßnahmen überführt werden (Bewertung ist jederzeit änderbar).",
+        rateRed:"Rot",
+        rateYellow:"Gelb",
+        rateGreen:"Grün",
+        rateNone:"Keine Bewertung",
+        rateInfo:"Bewertung:",
+
+        actionsDraftTitle:"3) Ableitung von Maßnahmen",
+        actionsDraftSub:"Erstelle aus dem ausgewählten (Rot/Gelb) Knoten eine Maßnahme. Speichern legt sie in der Maßnahmenliste ab und leert das Formular.",
+        lblFromNode:"Bezug (Knoten)",
+        lblAction:"Maßnahme",
+        phAction:"Was wird getan? (klar, überprüfbar)",
+        lblOwner:"Owner",
+        phOwner:"z.B. Max Mustermann",
+        lblDue:"Termin",
+        lblStatus:"Status",
+        stOpen:"Offen",
+        stDone:"Abgeschlossen",
+        stDrop:"Verworfen",
+        lblActionNote:"Notiz (optional)",
+        phActionNote:"z.B. Nachweis / Link / Messkriterium",
+
+        btnSaveAction:"In Maßnahmenliste speichern",
         btnClearDraft:"Entwurf leeren",
-        draftSavedHint:"Entwurf wird automatisch gespeichert.",
-        btnSaveNow:"Jetzt speichern",
 
-        rulesTitle:"Regeln",
-        rule1:"Jede Maßnahme behält den Bezug zum Mindmap-Knoten (Pfad).",
-        rule2:"Status kann jederzeit geändert werden: offen / abgeschlossen / verworfen.",
-        rule3:"Maßnahmen sind lokal gespeichert (Browser) und in JSON exportierbar.",
+        actionsListTitle:"Maßnahmenliste",
+        actionsListSub:"Hier sind alle gespeicherten Maßnahmen. Status ändern, bearbeiten oder löschen.",
+        thAction:"Maßnahme",
+        thFrom:"Bezug",
+        thOwner:"Owner",
+        thDue:"Termin",
+        thStatus:"Status",
+        thOps:"Aktion",
+        btnEdit:"Bearbeiten",
+        btnUpdate:"Speichern",
+        btnCancel:"Abbrechen",
+        btnDel:"Löschen",
 
-        listTitle:"Maßnahmenliste",
-        listSub:"Übersicht aller Maßnahmen inkl. Status, Termin und Bezug zur Mindmap.",
-        filterAll:"Alle",
-        filterOpen:"Offen",
-        filterDone:"Abgeschlossen",
-        filterDrop:"Verworfen",
-
-        statusOpen:"Offen",
-        statusDone:"Abgeschlossen",
-        statusDrop:"Verworfen",
-        delete:"Löschen",
-        noMeasures:"Noch keine Maßnahmen. Wähle einen Knoten und speichere ihn als Maßnahme.",
-
-        btnJsonSave:"JSON speichern",
-        btnJsonLoad:"JSON laden",
         btnPrint:"Drucken",
+        btnExportJson:"JSON speichern",
+        btnImportJson:"JSON laden",
 
         moreTitle:"Weiterführende Infos",
         moreSub:"Lexikonartikel & passende Weiterbildungen (öffnet in neuem Tab).",
         lexTitle:"Lexikon",
-        lexText:"Definition, Nutzen & Tipps zur Mindmap.",
+        lexText:"Definition, Einsatzbereiche & Tipps zum Mindmapping.",
         lexLink:"Zum Lexikonartikel: Mindmap",
         trainTitle:"Ausbildungen & Seminare",
         trainText:"Vertiefe deine Methodenkompetenz im Qualitätsmanagement:",
@@ -560,117 +684,135 @@
         trainOpex:"OPEX Seminare & Ausbildungen",
         trainFmea:"FMEA Schulungen",
 
-        jsonFileName:"mindmap_export.json",
-        jsonLoadError:"Fehler beim Laden der Datei.",
-        jsMindMissing:"jsMind konnte nicht geladen werden. Prüfe, ob externe Skripte erlaubt sind."
+        poweredBy:"Quality Services & Wissen GmbH",
+
+        promptNodeText:"Text für den neuen Knoten:",
+        warnSelectNode:"Bitte zuerst einen Knoten auswählen.",
+        warnSiblingRoot:"Für den Root-Knoten ist kein Nachbarknoten möglich.",
+        warnAddFailed:"Knoten konnte nicht hinzugefügt werden.",
+        confirmDelete:"Ausgewählten Knoten löschen?",
+        confirmReset:"Mindmap zurücksetzen (inkl. Bewertungen)?",
+        confirmImport:"JSON laden? Aktuelle Daten werden überschrieben.",
+        loadError:"Fehler beim Laden der Datei.",
+        savedAction:"Maßnahme gespeichert.",
+        needRedYellow:"Nur Rot oder Gelb werden typischerweise in Maßnahmen überführt (du kannst trotzdem speichern)."
       },
-      en: {
-        title:"Mindmap Tool – Ideas, Structure & Actions",
-        subtitle:"Collect ideas, cluster them, and turn them into actionable measures – including list, status and due date.",
+      en:{
+        title:"Mindmap Tool – Ideas → Rating → Actions",
+        subtitle:"Create a mind map, rate nodes (Red/Yellow/Green) and derive actions.",
         backHome:"Back to home",
 
         boxToolNameTitle:"Tool name",
-        boxToolNameText:"Mindmap – Ideas & Actions",
+        boxToolNameText:"Mind map – idea structure & action derivation",
         boxGoalTitle:"Goal",
-        boxGoalText:"Make thoughts visible, cluster topics in a structured way, and derive actionable measures with tracking.",
+        boxGoalText:"Collect ideas, cluster them, rate nodes and turn relevant points into concrete actions incl. due date/owner.",
         boxHowTitle:"How to use this tool",
-        step1:"Enter topic / goal / scope (auto-saved).",
-        step2:"Build the mindmap: add child/sibling nodes and shape the structure.",
-        step3:"Select a node and convert it into an action (with due date).",
-        step4:"Maintain actions in the list: open / completed / discarded.",
-        step5:"At the end: save/load JSON or print.",
+        step1:"Fill topic/goal/scope (autosave).",
+        step2:"Build the mind map: add child/sibling nodes, move, delete.",
+        step3:"Rate nodes: red/yellow/green.",
+        step4:"Derive actions from red/yellow → save to action list.",
+        step5:"At the bottom: save/load JSON & print.",
         boxPrivacyTitle:"Privacy",
-        boxPrivacyText:"This tool runs entirely in your browser. No data is stored on any server. Auto-save is local (LocalStorage). Only the person on this device has access.",
+        boxPrivacyText:"This tool runs entirely in your browser. No data is stored on any server. Only the person saving/loading locally has access.",
 
-        ctxTitle:"Topic / Goal / Scope",
-        ctxHint:"These details appear in documentation and are saved automatically.",
-        savedIdle:"Saved",
+        lblTopic:"Topic / Title",
+        lblGoal:"Goal",
+        lblScope:"Scope / boundaries",
+        lblNotes:"Notes",
+        phTopic:"e.g. Improve process X / workshop mind map",
+        phGoal:"e.g. 10 implementable improvements by end of Q2",
+        phScope:"e.g. Line A / Berlin site / inbound only",
+        phNotes:"Context, participants, assumptions, links...",
+
         saving:"Saving…",
-        savedAt:"Saved at",
+        saved:"Saved",
+        lastSaved:"Last saved:",
 
-        topicLabel:"Topic",
-        goalLabel:"Goal",
-        scopeLabel:"Scope / Notes",
-        topicPh:"e.g. Process X – quality improvement",
-        goalPh:"e.g. halve defect rate, reduce lead time",
-        scopePh:"Context, team, assumptions, boundaries, links …",
-
-        selected:"Selection",
-        panZoomHint:"Scroll = Zoom · Drag on background = Pan · Recenter = Center",
-        btnChild:"+ Child node",
-        btnSibling:"+ Sibling node",
-        btnRename:"Rename",
-        btnDelete:"Delete",
+        mapTitle:"Mind map",
+        mapSub:"Scroll = zoom · Drag = pan · Recenter · Add child/sibling nodes",
+        btnRecenter:"Recenter",
         btnUndo:"Undo",
         btnRedo:"Redo",
-        btnReset:"Reset",
-        btnRecenter:"Recenter",
-        btnToMeasure:"To action",
+        btnDelete:"Delete",
+        btnResetMap:"Reset",
 
-        promptNodeText:"Text for the new node:",
-        promptRename:"New name:",
-        warnSelectNode:"Please select a node first.",
-        warnSiblingRoot:"Sibling nodes are not possible for the root. Select a child node.",
-        warnDeleteRoot:"Root cannot be deleted.",
-        confirmReset:"Delete everything and start over?",
+        selected:"Selected",
+        path:"Path",
 
-        deriveTitle:"Deriving actions",
-        deriveSub:"Select a node and convert it into an action (with due date) in the action list.",
-        deriveFromNode:"From node",
-        deriveHint:"Tip: Use “To action” to prefill the draft from the current selection.",
-        measurePh:"Write the action (What? Who? Impact?) …",
-        dueLabel:"Due date",
-        btnAddMeasure:"Save to list",
+        rateTitle:"2) Rating",
+        rateSub:"Rate the selected node. Red/Yellow can be turned into actions (rating can be changed anytime).",
+        rateRed:"Red",
+        rateYellow:"Yellow",
+        rateGreen:"Green",
+        rateNone:"No rating",
+        rateInfo:"Rating:",
+
+        actionsDraftTitle:"3) Derive actions",
+        actionsDraftSub:"Create an action from the selected (red/yellow) node. Saving moves it to the action list and clears the form.",
+        lblFromNode:"Reference (node)",
+        lblAction:"Action",
+        phAction:"What will be done? (clear, verifiable)",
+        lblOwner:"Owner",
+        phOwner:"e.g. Jane Doe",
+        lblDue:"Due date",
+        lblStatus:"Status",
+        stOpen:"Open",
+        stDone:"Done",
+        stDrop:"Discarded",
+        lblActionNote:"Note (optional)",
+        phActionNote:"e.g. evidence / link / acceptance criteria",
+
+        btnSaveAction:"Save to action list",
         btnClearDraft:"Clear draft",
-        draftSavedHint:"Draft is saved automatically.",
-        btnSaveNow:"Save now",
 
-        rulesTitle:"Rules",
-        rule1:"Each action keeps a reference to the mindmap node (path).",
-        rule2:"Status can be changed anytime: open / completed / discarded.",
-        rule3:"Actions are stored locally and can be exported to JSON.",
+        actionsListTitle:"Action list",
+        actionsListSub:"All saved actions appear here. Change status, edit or delete.",
+        thAction:"Action",
+        thFrom:"Reference",
+        thOwner:"Owner",
+        thDue:"Due",
+        thStatus:"Status",
+        thOps:"Ops",
+        btnEdit:"Edit",
+        btnUpdate:"Save",
+        btnCancel:"Cancel",
+        btnDel:"Delete",
 
-        listTitle:"Action list",
-        listSub:"Overview of all actions incl. status, due date and mindmap reference.",
-        filterAll:"All",
-        filterOpen:"Open",
-        filterDone:"Completed",
-        filterDrop:"Discarded",
-
-        statusOpen:"Open",
-        statusDone:"Completed",
-        statusDrop:"Discarded",
-        delete:"Delete",
-        noMeasures:"No actions yet. Select a node and save it as an action.",
-
-        btnJsonSave:"Save JSON",
-        btnJsonLoad:"Load JSON",
         btnPrint:"Print",
+        btnExportJson:"Save JSON",
+        btnImportJson:"Load JSON",
 
         moreTitle:"More information",
-        moreSub:"Glossary article & relevant training (opens in a new tab).",
+        moreSub:"Glossary & relevant training (opens in a new tab).",
         lexTitle:"Glossary",
-        lexText:"Definition, benefits & tips for mind mapping.",
-        lexLink:"Open glossary: Mindmap",
+        lexText:"Definition, use cases & tips for mind mapping.",
+        lexLink:"Open glossary article: Mind map",
         trainTitle:"Training & courses",
         trainText:"Deepen your method skills in quality management:",
-        trainKvp:"CIP (KVP) seminars",
+        trainKvp:"CIP / Kaizen (KVP) training",
         trainQm:"Quality management",
-        trainOpex:"OPEX seminars & training",
+        trainOpex:"OPEX courses",
         trainFmea:"FMEA training",
 
-        jsonFileName:"mindmap_export.json",
-        jsonLoadError:"Error loading the file.",
-        jsMindMissing:"jsMind could not be loaded. Check whether external scripts are allowed."
+        poweredBy:"Quality Services & Wissen GmbH",
+
+        promptNodeText:"Text for the new node:",
+        warnSelectNode:"Please select a node first.",
+        warnSiblingRoot:"No sibling node for the root node.",
+        warnAddFailed:"Node could not be added.",
+        confirmDelete:"Delete selected node?",
+        confirmReset:"Reset the mind map (incl. ratings)?",
+        confirmImport:"Load JSON? Current data will be overwritten.",
+        loadError:"Error loading file.",
+        savedAction:"Action saved.",
+        needRedYellow:"Typically only Red or Yellow are converted to actions (you can still save)."
       }
     };
 
-    let currentLang = localStorage.getItem("qmLang")
-      || ((navigator.language||"").toLowerCase().startsWith("de") ? "de" : "en");
+    let currentLang = (localStorage.getItem("qmLang")
+      || (navigator.language && navigator.language.toLowerCase().startsWith("de") ? "de" : "en"));
 
-    function t(key){
-      return (I18N[currentLang] && I18N[currentLang][key]) ? I18N[currentLang][key] : key;
-    }
+    function t(key){ return (I18N[currentLang] && I18N[currentLang][key]) ? I18N[currentLang][key] : key; }
 
     function applyI18n(){
       document.documentElement.lang = currentLang;
@@ -685,94 +827,576 @@
       const deBtn = document.getElementById("btnLangDE");
       const enBtn = document.getElementById("btnLangEN");
       if(deBtn && enBtn){
-        deBtn.classList.toggle("primary", currentLang === "de");
-        enBtn.classList.toggle("primary", currentLang === "en");
+        deBtn.classList.toggle("primary", currentLang==="de");
+        enBtn.classList.toggle("primary", currentLang==="en");
       }
-
-      renderMeasures();
-      updateSelectionPill();
-      updateDeriveFrom();
-      updateSaveLabel(true);
     }
 
     function setLanguage(lang){
-      currentLang = (lang==="de" || lang==="en") ? lang : "de";
+      currentLang = (lang==="de"||lang==="en") ? lang : "de";
       localStorage.setItem("qmLang", currentLang);
-      state.lang = currentLang;
       applyI18n();
-      scheduleSave();
+      renderActionsTable();
+      updateRatingUI();
+      updateDraftHint();
+      updateSaveLabel(true);
     }
 
-    document.getElementById("btnLangDE").addEventListener("click", ()=>setLanguage("de"));
-    document.getElementById("btnLangEN").addEventListener("click", ()=>setLanguage("en"));
+    /* ================= State ================= */
+    const STORAGE_KEY = "qm_mindmap_state_v1";
 
-    /* ===== State ===== */
-    let jm = null;
+    const $ = (id)=> document.getElementById(id);
 
-    const defaultMind = () => ({
-      meta: { name: "Mindmap", author: "Quality Services & Wissen", version: "1.0" },
-      format: "node_tree",
-      data: {
-        id: "root",
-        topic: "Mindmap",
-        direction: "right",
-        expanded: true,
-        children: []
-      }
-    });
+    function uid(){
+      try{ return crypto.randomUUID(); }catch{ return "id_" + Math.random().toString(16).slice(2); }
+    }
+    function deepClone(o){ return JSON.parse(JSON.stringify(o)); }
+
+    function toast(msg){
+      const el = document.getElementById("toast");
+      if(!el) return;
+      el.textContent = msg;
+      el.classList.add("show");
+      clearTimeout(toast._tmr);
+      toast._tmr = setTimeout(()=> el.classList.remove("show"), 2600);
+    }
 
     let state = {
       lang: currentLang,
-      context: { topic:"", goal:"", scope:"" },
-      mind: defaultMind(),
-      measures: [],
-      draft: { fromNodeId:null, fromPath:"", text:"", due:"" }
+      meta:{ topic:"", goal:"", scope:"", notes:"" },
+      mind:{
+        // jsMind format: node array
+        nodes:[
+          { id:"root", isroot:true, topic:"Mindmap" }
+        ],
+        // ratings per node id: 'red' | 'yellow' | 'green' | null
+        ratings:{}
+      },
+      actions:[], // list items: {id, fromId, fromPath, fromText, text, owner, due, status, note, ts}
+      ts: new Date().toISOString()
     };
 
-    // Undo/Redo history
-    let history = { past: [], future: [] };
-
-    function deepClone(obj){ return JSON.parse(JSON.stringify(obj)); }
-
-    function syncMindToState(){
-      if(jm && jm.get_data){
-        try{ state.mind = jm.get_data("node_tree"); }catch(e){}
-      }
-    }
+    /* History for undo/redo (map + ratings) */
+    const history = { past:[], future:[] };
+    const HISTORY_MAX = 40;
 
     function pushHistory(){
-      syncMindToState();
       history.past.push(deepClone(state));
-      if(history.past.length > HISTORY_LIMIT) history.past.shift();
+      if(history.past.length > HISTORY_MAX) history.past.shift();
       history.future = [];
-      updateUndoRedoButtons();
+      updateUndoRedoUI();
     }
-    function canUndo(){ return history.past.length > 0; }
-    function canRedo(){ return history.future.length > 0; }
+    function canUndo(){ return history.past.length>0; }
+    function canRedo(){ return history.future.length>0; }
 
-    function applyStateToUI(rebuildMind){
-      document.getElementById("topicInput").value = state.context.topic || "";
-      document.getElementById("goalInput").value = state.context.goal || "";
-      document.getElementById("scopeInput").value = state.context.scope || "";
+    function updateUndoRedoUI(){
+      $("btnUndo").disabled = !canUndo();
+      $("btnRedo").disabled = !canRedo();
+    }
 
-      document.getElementById("measureText").value = state.draft.text || "";
-      document.getElementById("measureDue").value = state.draft.due || "";
-      document.getElementById("deriveFrom").textContent = state.draft.fromPath || "—";
+    /* Save indicator */
+    let saveTimer = null;
+    let lastSavedAt = null;
+    function setSaveState(mode){
+      const dot = $("saveDot");
+      const txt = $("saveText");
+      if(mode==="saving"){
+        dot.classList.add("saving"); dot.classList.remove("idle");
+        txt.textContent = t("saving");
+      }else if(mode==="saved"){
+        dot.classList.remove("saving"); dot.classList.remove("idle");
+        txt.textContent = t("saved");
+      }else{
+        dot.classList.remove("saving"); dot.classList.add("idle");
+        txt.textContent = t("saved");
+      }
+    }
+    function updateSaveLabel(force){
+      if(!lastSavedAt && !force) return;
+      const when = $("saveWhen");
+      if(!when) return;
+      if(!lastSavedAt){ when.textContent = ""; return; }
+      const d = lastSavedAt;
+      const pad = (n)=> String(n).padStart(2,"0");
+      when.textContent = `${t("lastSaved")} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+    }
+    function scheduleSave(){
+      setSaveState("saving");
+      updateSaveLabel(false);
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(()=>{
+        persist();
+        lastSavedAt = new Date();
+        setSaveState("saved");
+        updateSaveLabel(true);
+      }, 450);
+    }
 
-      if(rebuildMind && jm){
-        try{ jm.show(state.mind); }catch(e){ jm.show(defaultMind()); }
+    function persist(){
+      state.lang = currentLang;
+      state.ts = new Date().toISOString();
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function restore(){
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw) return false;
+      try{
+        const parsed = JSON.parse(raw);
+        if(!parsed || typeof parsed !== "object") return false;
+        state = parsed;
+        if(state.lang==="de"||state.lang==="en") currentLang = state.lang;
+        return true;
+      }catch(e){
+        return false;
+      }
+    }
+
+    /* ================= jsMind init ================= */
+    let jm = null;
+    const jmOptions = {
+      container:"jsmind_container",
+      editable:true,
+      theme:null,
+      support_html:false,
+      view:{
+        engine:"svg" // crisp print
+      },
+      layout:{
+        hspace:30, vspace:10, pspace:13
+      },
+      shortcut:{
+        enable:false
+      }
+    };
+
+    function initMind(){
+      jm = new jsMind(jmOptions);
+      jm.show({ meta:{ name:"mindmap", author:"", version:"1.0" }, format:"node_array", data: state.mind.nodes });
+
+      // sync root topic with meta topic (if meta topic filled)
+      if(state.meta.topic){
+        try{ jm.update_node("root", state.meta.topic); }catch(e){}
       }
 
-      renderMeasures();
+      // hook selection
+      const cont = $("jsmind_container");
+      cont.addEventListener("click", ()=>{
+        updateSelectionPill();
+        updateRatingUI();
+        updateDraftFromSelection();
+      });
+
+      // basic zoom / pan
+      wireZoomPan();
+    }
+
+    /* ===== Zoom / Pan (Scroll zoom, drag pan, recenter) ===== */
+    function wireZoomPan(){
+      const wrap = $("jmWrap");
+      const cont = $("jsmind_container");
+
+      let scale = 1;
+      let pan = { x:0, y:0 };
+      let dragging = false;
+      let last = { x:0, y:0 };
+
+      function applyTransform(){
+        const el = cont.querySelector("svg") || cont.firstElementChild;
+        if(!el) return;
+        el.style.transformOrigin = "0 0";
+        el.style.transform = `translate(${pan.x}px, ${pan.y}px) scale(${scale})`;
+      }
+
+      function recenter(){
+        scale = 1;
+        pan = { x:0, y:0 };
+        applyTransform();
+      }
+
+      // wheel zoom
+      wrap.addEventListener("wheel", (e)=>{
+        e.preventDefault();
+        const delta = (e.deltaY > 0) ? -0.08 : 0.08;
+        scale = Math.min(2.2, Math.max(0.5, scale + delta));
+        applyTransform();
+      }, { passive:false });
+
+      // drag pan
+      wrap.addEventListener("mousedown", (e)=>{
+        // do not pan when interacting with input elements
+        const tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : "";
+        if(tag==="input"||tag==="textarea"||tag==="button"||tag==="select") return;
+        dragging = true;
+        last = { x:e.clientX, y:e.clientY };
+        wrap.style.cursor = "grabbing";
+      });
+      window.addEventListener("mousemove", (e)=>{
+        if(!dragging) return;
+        const dx = e.clientX - last.x;
+        const dy = e.clientY - last.y;
+        last = { x:e.clientX, y:e.clientY };
+        pan.x += dx;
+        pan.y += dy;
+        applyTransform();
+      });
+      window.addEventListener("mouseup", ()=>{
+        if(!dragging) return;
+        dragging = false;
+        wrap.style.cursor = "default";
+      });
+
+      $("btnRecenter").addEventListener("click", ()=> recenter());
+
+      // expose
+      wireZoomPan._recenter = recenter;
+    }
+
+    /* ===== Selected node helpers ===== */
+    function getSelected(){
+      if(!jm) return null;
+      const s = jm.get_selected_node && jm.get_selected_node();
+      return s || null;
+    }
+
+    function updateSelectionPill(){
+      const sel = getSelected();
+      const id = sel ? sel.id : "root";
+      $("selNode").textContent = id;
+      $("selPath").textContent = getNodePathText(sel) || "—";
+    }
+
+    function getNodePathText(node){
+      try{
+        const n = node || getSelected();
+        if(!n) return "";
+        const parts = [];
+        let cur = n;
+        while(cur){
+          parts.push(cur.topic || cur.id);
+          cur = cur.parent;
+          if(cur && cur.id==="root"){ parts.push(cur.topic || "root"); break; }
+        }
+        return parts.reverse().join(" / ");
+      }catch(e){
+        return "";
+      }
+    }
+
+    /* ===== Ratings ===== */
+    function getRating(nodeId){
+      return state.mind.ratings && state.mind.ratings[nodeId] ? state.mind.ratings[nodeId] : null;
+    }
+    function setRating(nodeId, rate){
+      if(!state.mind.ratings) state.mind.ratings = {};
+      if(rate===null) delete state.mind.ratings[nodeId];
+      else state.mind.ratings[nodeId] = rate;
+    }
+
+    function updateRatingUI(){
+      const sel = getSelected();
+      const id = sel ? sel.id : "root";
+      const r = getRating(id);
+
+      document.querySelectorAll("#ratingRow .pill").forEach(p=>{
+        p.classList.toggle("selected", p.dataset.rate === r);
+      });
+
+      const info = $("rateInfo");
+      if(!r) info.textContent = `${t("rateInfo")} ${t("rateNone")}`;
+      else info.textContent = `${t("rateInfo")} ${r==="red"?t("rateRed"):r==="yellow"?t("rateYellow"):t("rateGreen")}`;
+    }
+
+    document.querySelectorAll("#ratingRow .pill").forEach(p=>{
+      p.addEventListener("click", ()=>{
+        const sel = getSelected();
+        const id = sel ? sel.id : "root";
+        const rate = p.dataset.rate;
+        pushHistory();
+        setRating(id, rate);
+        updateRatingUI();
+        updateDraftFromSelection();
+        scheduleSave();
+      });
+    });
+
+    /* ===== Draft action ===== */
+    function updateDraftFromSelection(){
+      const sel = getSelected();
+      const id = sel ? sel.id : "root";
+      const path = getNodePathText(sel) || "—";
+      const topic = (sel && sel.topic) ? sel.topic : "root";
+      $("actFrom").value = `${path}  [${id}]`;
+      updateDraftHint();
+    }
+
+    function updateDraftHint(){
+      const sel = getSelected();
+      const id = sel ? sel.id : "root";
+      const r = getRating(id);
+      const hint = $("draftHint");
+      if(r==="green"){
+        hint.textContent = t("needRedYellow");
+      }else{
+        hint.textContent = "";
+      }
+    }
+
+    function clearDraft(){
+      $("actText").value = "";
+      $("actOwner").value = "";
+      $("actDue").value = "";
+      $("actStatus").value = "open";
+      $("actNote").value = "";
+    }
+
+    $("btnClearDraft").addEventListener("click", ()=>{
+      clearDraft();
+      scheduleSave();
+    });
+
+    $("btnSaveAction").addEventListener("click", ()=>{
+      const sel = getSelected();
+      const id = sel ? sel.id : "root";
+      const fromPath = getNodePathText(sel) || "—";
+      const fromText = (sel && sel.topic) ? sel.topic : "root";
+
+      const text = ($("actText").value || "").trim();
+      if(!text){
+        toast(currentLang==="de" ? "Bitte Maßnahme eingeben." : "Please enter an action.");
+        return;
+      }
+
+      pushHistory();
+      state.actions.push({
+        id: uid(),
+        fromId: id,
+        fromPath,
+        fromText,
+        text,
+        owner: ($("actOwner").value || "").trim(),
+        due: $("actDue").value || "",
+        status: $("actStatus").value || "open",
+        note: ($("actNote").value || "").trim(),
+        ts: new Date().toISOString()
+      });
+
+      renderActionsTable();
+      clearDraft();
+      toast(t("savedAction"));
+      scheduleSave();
+    });
+
+    /* ===== Actions table ===== */
+    function statusLabel(st){
+      if(st==="done") return t("stDone");
+      if(st==="drop") return t("stDrop");
+      return t("stOpen");
+    }
+    function statusClass(st){
+      if(st==="done") return "done";
+      if(st==="drop") return "drop";
+      return "open";
+    }
+
+    function renderActionsTable(){
+      const tbody = $("actionsBody");
+      tbody.innerHTML = "";
+
+      if(!Array.isArray(state.actions) || state.actions.length===0){
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td colspan="6" style="color:var(--muted);font-size:13px;">${currentLang==="de"?"Noch keine Maßnahmen.":"No actions yet."}</td>`;
+        tbody.appendChild(tr);
+        return;
+      }
+
+      state.actions.forEach((a)=>{
+        const tr = document.createElement("tr");
+        tr.dataset.id = a.id;
+
+        tr.innerHTML = `
+          <td>
+            <div style="font-weight:800;">${escapeHtml(a.text)}</div>
+            ${a.note ? `<div style="color:var(--muted);font-size:12px;margin-top:4px;">${escapeHtml(a.note)}</div>` : ``}
+          </td>
+          <td style="color:var(--muted);font-size:12px;">
+            <div><strong>${escapeHtml(a.fromText || "")}</strong></div>
+            <div>${escapeHtml(a.fromPath || "")} <span style="opacity:.6;">[${escapeHtml(a.fromId||"")}]</span></div>
+          </td>
+          <td>${escapeHtml(a.owner||"")}</td>
+          <td>${escapeHtml(a.due||"")}</td>
+          <td><span class="status ${statusClass(a.status)}">${statusLabel(a.status)}</span></td>
+          <td>
+            <div class="row-actions">
+              <button type="button" class="icon-btn" data-act="edit">${t("btnEdit")}</button>
+              <button type="button" class="icon-btn danger" data-act="del">${t("btnDel")}</button>
+            </div>
+          </td>
+        `;
+
+        tbody.appendChild(tr);
+
+        tr.querySelector('[data-act="del"]').addEventListener("click", ()=>{
+          pushHistory();
+          state.actions = state.actions.filter(x=>x.id !== a.id);
+          renderActionsTable();
+          scheduleSave();
+        });
+
+        tr.querySelector('[data-act="edit"]').addEventListener("click", ()=>{
+          enterEditRow(tr, a);
+        });
+      });
+    }
+
+    function enterEditRow(tr, a){
+      tr.innerHTML = `
+        <td>
+          <textarea class="textarea" style="min-height:60px;" data-edit="text">${escapeHtml(a.text)}</textarea>
+          <input class="input" style="margin-top:8px;" data-edit="note" value="${escapeHtml(a.note||"")}" placeholder="${t("phActionNote")}">
+        </td>
+        <td style="color:var(--muted);font-size:12px;">
+          <div><strong>${escapeHtml(a.fromText||"")}</strong></div>
+          <div>${escapeHtml(a.fromPath||"")} <span style="opacity:.6;">[${escapeHtml(a.fromId||"")}]</span></div>
+        </td>
+        <td><input class="input" data-edit="owner" value="${escapeHtml(a.owner||"")}" placeholder="${t("phOwner")}"></td>
+        <td><input class="input" type="date" data-edit="due" value="${escapeHtml(a.due||"")}"></td>
+        <td>
+          <select class="input" data-edit="status">
+            <option value="open"${a.status==="open"?" selected":""}>${t("stOpen")}</option>
+            <option value="done"${a.status==="done"?" selected":""}>${t("stDone")}</option>
+            <option value="drop"${a.status==="drop"?" selected":""}>${t("stDrop")}</option>
+          </select>
+        </td>
+        <td>
+          <div class="row-actions">
+            <button type="button" class="icon-btn" data-act="save">${t("btnUpdate")}</button>
+            <button type="button" class="icon-btn" data-act="cancel">${t("btnCancel")}</button>
+          </div>
+        </td>
+      `;
+
+      tr.querySelector('[data-act="cancel"]').addEventListener("click", ()=>{
+        renderActionsTable();
+      });
+
+      tr.querySelector('[data-act="save"]').addEventListener("click", ()=>{
+        pushHistory();
+        const upd = {
+          text: tr.querySelector('[data-edit="text"]').value.trim(),
+          note: tr.querySelector('[data-edit="note"]').value.trim(),
+          owner: tr.querySelector('[data-edit="owner"]').value.trim(),
+          due: tr.querySelector('[data-edit="due"]').value,
+          status: tr.querySelector('[data-edit="status"]').value
+        };
+        state.actions = state.actions.map(x=> x.id===a.id ? {...x, ...upd} : x);
+        renderActionsTable();
+        scheduleSave();
+      });
+    }
+
+    function escapeHtml(s){
+      return String(s??"")
+        .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+    }
+
+    /* ===== Mindmap commands (Child / Sibling / Delete) ===== */
+    function syncMindToState(){
+      if(!jm) return;
+      const data = jm.get_data && jm.get_data("node_array");
+      if(data && data.data) state.mind.nodes = data.data;
+    }
+
+    function addChild(){
+      if(!jm) return;
+      const sel = getSelected();
+      const rootId = (jm.get_root && jm.get_root()) ? jm.get_root().id : "root";
+      const parentId = sel ? sel.id : rootId;
+
+      const text = prompt(t("promptNodeText"), "");
+      if(text === null) return;
+      const topic = (text || "").trim() || (currentLang==="de" ? "Neuer Knoten" : "New node");
+
+      pushHistory();
+      const id = uid();
+      const ok = jm.add_node(parentId, id, topic);
+      if(ok){
+        try{ jm.expand_node(parentId); }catch(e){}
+        jm.select_node(id);
+        try{ jm.view && jm.view.scroll_node_to_center && jm.view.scroll_node_to_center(id); }catch(e){}
+        updateSelectionPill();
+        scheduleSave();
+      }else{
+        toast(t("warnAddFailed"));
+      }
+    }
+
+    function addSibling(){
+      if(!jm) return;
+      const sel = getSelected();
+      if(!sel){ toast(t("warnSelectNode")); return; }
+      if(sel.id === "root"){ toast(t("warnSiblingRoot")); return; }
+
+      const rootId = (jm.get_root && jm.get_root()) ? jm.get_root().id : "root";
+      const parentId = sel.parent ? sel.parent.id : rootId;
+
+      const text = prompt(t("promptNodeText"), "");
+      if(text === null) return;
+      const topic = (text || "").trim() || (currentLang==="de" ? "Neuer Knoten" : "New node");
+
+      pushHistory();
+      const id = uid();
+      const ok = jm.add_node(parentId, id, topic);
+      if(ok){
+        try{ jm.expand_node(parentId); }catch(e){}
+        jm.select_node(id);
+        try{ jm.view && jm.view.scroll_node_to_center && jm.view.scroll_node_to_center(id); }catch(e){}
+        updateSelectionPill();
+        scheduleSave();
+      }else{
+        toast(t("warnAddFailed"));
+      }
+    }
+
+    function deleteNode(){
+      if(!jm) return;
+      const sel = getSelected();
+      if(!sel){ toast(t("warnSelectNode")); return; }
+      if(sel.id === "root"){
+        toast(currentLang==="de" ? "Root kann nicht gelöscht werden." : "Root cannot be deleted.");
+        return;
+      }
+      if(!confirm(t("confirmDelete"))) return;
+
+      pushHistory();
+      // remove rating
+      if(state.mind.ratings) delete state.mind.ratings[sel.id];
+      jm.remove_node(sel.id);
+
       updateSelectionPill();
-      updateDeriveFrom();
-      updateUndoRedoButtons();
+      updateRatingUI();
+      updateDraftFromSelection();
+      scheduleSave();
+    }
 
-      lastSavedAt = new Date();
-      setSaveState("saved");
-      updateSaveLabel(true);
+    function resetMind(){
+      if(!confirm(t("confirmReset"))) return;
+      pushHistory();
+      state.mind.nodes = [{ id:"root", isroot:true, topic: state.meta.topic || "Mindmap" }];
+      state.mind.ratings = {};
+      state.actions = [];
+      history.future = [];
+      history.past = [];
+      updateUndoRedoUI();
 
-      applyI18n();
+      jm.show({ meta:{ name:"mindmap", author:"", version:"1.0" }, format:"node_array", data: state.mind.nodes });
+      try{ wireZoomPan._recenter && wireZoomPan._recenter(); }catch(e){}
+      renderActionsTable();
+      updateSelectionPill();
+      updateRatingUI();
+      updateDraftFromSelection();
+      scheduleSave();
     }
 
     function doUndo(){
@@ -791,587 +1415,32 @@
       applyStateToUI(true);
       scheduleSave();
     }
-    function updateUndoRedoButtons(){
-      document.getElementById("btnUndo").disabled = !canUndo();
-      document.getElementById("btnRedo").disabled = !canRedo();
-    }
 
-    /* ===== Persist (Autosave) ===== */
-    let saveTimer = null;
-    let lastSavedAt = null;
+    function applyStateToUI(rebuildMind){
+      // meta
+      $("scopeTopic").value = state.meta.topic || "";
+      $("scopeGoal").value = state.meta.goal || "";
+      $("scopeScope").value = state.meta.scope || "";
+      $("scopeNotes").value = state.meta.notes || "";
 
-    function setSaveState(kind){
-      const dot = document.getElementById("saveDot");
-      if(!dot) return;
-      dot.classList.remove("saved","saving");
-      if(kind==="saving") dot.classList.add("saving");
-      if(kind==="saved") dot.classList.add("saved");
-    }
-    function updateSaveLabel(forceTextOnly){
-      const el = document.getElementById("saveText");
-      if(!el) return;
-      if(!lastSavedAt){
-        el.textContent = t("savedIdle");
-        return;
+      if(rebuildMind && jm){
+        jm.show({ meta:{ name:"mindmap", author:"", version:"1.0" }, format:"node_array", data: state.mind.nodes });
+      }else if(jm){
+        // still update root topic if changed
+        try{ jm.update_node("root", state.meta.topic || (currentLang==="de"?"Mindmap":"Mind map")); }catch(e){}
       }
-      if(forceTextOnly){
-        const hh = String(lastSavedAt.getHours()).padStart(2,"0");
-        const mm = String(lastSavedAt.getMinutes()).padStart(2,"0");
-        el.textContent = `${t("savedAt")} ${hh}:${mm}`;
-      }
-    }
 
-    function scheduleSave(){
-      setSaveState("saving");
-      const st = document.getElementById("saveText");
-      if(st) st.textContent = t("saving");
-      clearTimeout(saveTimer);
-      saveTimer = setTimeout(()=>persist(), 450);
-    }
-
-    function persist(){
-      try{
-        syncMindToState();
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-        lastSavedAt = new Date();
-        setSaveState("saved");
-        updateSaveLabel(true);
-      }catch(e){}
-    }
-
-    function restore(){
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if(!raw) return false;
-      try{
-        const parsed = JSON.parse(raw);
-        if(!parsed || typeof parsed !== "object") return false;
-        state.lang = (parsed.lang==="de" || parsed.lang==="en") ? parsed.lang : currentLang;
-        currentLang = state.lang;
-
-        state.context = parsed.context || state.context;
-        state.mind = parsed.mind || state.mind;
-        state.measures = Array.isArray(parsed.measures) ? parsed.measures : [];
-        state.draft = parsed.draft || state.draft;
-        return true;
-      }catch(e){
-        return false;
-      }
-    }
-
-    /* ===== Helpers ===== */
-    function esc(s){
-      return String(s ?? "")
-        .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
-        .replace(/"/g,"&quot;").replace(/'/g,"&#039;");
-    }
-    function uid(){
-      return "id_" + Math.random().toString(16).slice(2) + "_" + Date.now().toString(16);
-    }
-    function fmtDate(d){
-      if(!d) return "—";
-      try{
-        const dt = new Date(d);
-        if(isNaN(dt.getTime())) return d;
-        const y = dt.getFullYear();
-        const m = String(dt.getMonth()+1).padStart(2,"0");
-        const da = String(dt.getDate()).padStart(2,"0");
-        return `${y}-${m}-${da}`;
-      }catch{ return d; }
-    }
-
-    /* ===== jsMind init ===== */
-    function initMind(){
-      if(typeof jsMind === "undefined"){
-        toast(t("jsMindMissing"));
-        return;
-      }
-      const options = {
-        container: "jsmind_container",
-        editable: false,
-        theme: "primary",
-        view: {
-          engine: "canvas",
-          hmargin: 120,
-          vmargin: 80,
-          line_width: 2,
-          line_color: "#1155b2"
-        },
-        layout: { hspace: 50, vspace: 20, pspace: 13 }
-      };
-      jm = new jsMind(options);
-      jm.show(state.mind);
-
-      const container = document.getElementById("jsmind_container");
-      if(container){
-        container.addEventListener("click", ()=>setTimeout(updateSelectionPill, 0), true);
-      }
-    }
-
-    function getSelected(){
-      if(!jm || !jm.get_selected_node) return null;
-      return jm.get_selected_node();
-    }
-
-    function nodePath(node){
-      if(!node) return "";
-      const parts = [];
-      let cur = node;
-      let guard = 0;
-      while(cur && guard++ < 50){
-        parts.push(cur.topic || cur.id);
-        cur = cur.parent;
-      }
-      return parts.reverse().join(" > ");
-    }
-
-    function updateSelectionPill(){
-      const n = getSelected();
-      const txt = document.getElementById("selText");
-      if(!txt) return;
-      if(!n){
-        txt.textContent = "—";
-        return;
-      }
-      txt.textContent = n.topic || n.id;
-      updateDeriveFrom();
-    }
-
-    function updateDeriveFrom(){
-      const el = document.getElementById("deriveFrom");
-      const n = getSelected();
-      if(!el) return;
-      if(!n){
-        if(!state.draft.fromPath) el.textContent = "—";
-        return;
-      }
-      if(!state.draft.fromNodeId){
-        el.textContent = nodePath(n);
-      }
-    }
-
-    /* ===== Mind actions ===== */
-    function addChild(){
-      if(!jm) return;
-      const sel = getSelected();
-      const parentId = sel ? sel.id : "root";
-
-      const text = prompt(t("promptNodeText"), "");
-      if(text === null) return;
-      const topic = (text || "").trim() || (currentLang==="de" ? "Neuer Knoten" : "New node");
-
-      pushHistory();
-      const id = uid();
-      const ok = jm.add_node(parentId, id, topic);
-      if(ok){
-        jm.select_node(id);
-        updateSelectionPill();
-        scheduleSave();
-      }
-    }
-
-    function addSibling(){
-      if(!jm) return;
-      const sel = getSelected();
-      if(!sel){
-        toast(t("warnSelectNode"));
-        return;
-      }
-      if(sel.id === "root"){
-        toast(t("warnSiblingRoot"));
-        return;
-      }
-      const parentId = sel.parent ? sel.parent.id : "root";
-
-      const text = prompt(t("promptNodeText"), "");
-      if(text === null) return;
-      const topic = (text || "").trim() || (currentLang==="de" ? "Neuer Knoten" : "New node");
-
-      pushHistory();
-      const id = uid();
-      const ok = jm.add_node(parentId, id, topic);
-      if(ok){
-        jm.select_node(id);
-        updateSelectionPill();
-        scheduleSave();
-      }
-    }
-
-    function renameNode(){
-      if(!jm) return;
-      const sel = getSelected();
-      if(!sel){
-        toast(t("warnSelectNode"));
-        return;
-      }
-      const text = prompt(t("promptRename"), sel.topic || "");
-      if(text === null) return;
-      const topic = (text || "").trim();
-      if(!topic) return;
-
-      pushHistory();
-      jm.update_node(sel.id, topic);
+      renderActionsTable();
       updateSelectionPill();
-      scheduleSave();
+      updateRatingUI();
+      updateDraftFromSelection();
+      updateUndoRedoUI();
     }
 
-    function deleteNode(){
-      if(!jm) return;
-      const sel = getSelected();
-      if(!sel){
-        toast(t("warnSelectNode"));
-        return;
-      }
-      if(sel.id === "root"){
-        toast(t("warnDeleteRoot"));
-        return;
-      }
-      pushHistory();
-      jm.remove_node(sel.id);
-      updateSelectionPill();
-      scheduleSave();
-    }
-
-    function resetAll(){
-      if(!confirm(t("confirmReset"))) return;
-
-      history = { past: [], future: [] };
-      state = {
-        lang: currentLang,
-        context: { topic:"", goal:"", scope:"" },
-        mind: defaultMind(),
-        measures: [],
-        draft: { fromNodeId:null, fromPath:"", text:"", due:"" }
-      };
-      localStorage.removeItem(STORAGE_KEY);
-
-      if(jm){
-        jm.show(state.mind);
-        try{ jm.select_node("root"); }catch(e){}
-      }
-      applyStateToUI(false);
-      scheduleSave();
-    }
-
-    document.getElementById("btnChild").addEventListener("click", addChild);
-    document.getElementById("btnSibling").addEventListener("click", addSibling);
-    document.getElementById("btnRename").addEventListener("click", renameNode);
-    document.getElementById("btnDelete").addEventListener("click", deleteNode);
-    document.getElementById("btnUndo").addEventListener("click", doUndo);
-    document.getElementById("btnRedo").addEventListener("click", doRedo);
-    document.getElementById("btnReset").addEventListener("click", resetAll);
-
-    /* ===== Pan / Zoom wrapper ===== */
-    const viewport = document.getElementById("viewport");
-    const layer = document.getElementById("transformLayer");
-    let pan = {x:0, y:0, scale:1};
-    let dragging = false;
-    let dragStart = {x:0,y:0, panX:0, panY:0};
-
-    function applyTransform(){
-      if(!layer) return;
-      layer.style.transform = `translate(${pan.x}px, ${pan.y}px) scale(${pan.scale})`;
-    }
-    function recenter(){
-      pan = {x:0, y:0, scale:1};
-      applyTransform();
-    }
-    function isOnNode(target){
-      return !!(target && target.closest && target.closest("jmnode, .jmnode"));
-    }
-
-    if(viewport){
-      viewport.addEventListener("pointerdown", (e)=>{
-        if(isOnNode(e.target)) return;
-        dragging = true;
-        viewport.setPointerCapture(e.pointerId);
-        dragStart = { x:e.clientX, y:e.clientY, panX:pan.x, panY:pan.y };
-      });
-      viewport.addEventListener("pointermove", (e)=>{
-        if(!dragging) return;
-        const dx = e.clientX - dragStart.x;
-        const dy = e.clientY - dragStart.y;
-        pan.x = dragStart.panX + dx;
-        pan.y = dragStart.panY + dy;
-        applyTransform();
-      });
-      function endDrag(e){
-        dragging = false;
-        try{ viewport.releasePointerCapture(e.pointerId); }catch{}
-      }
-      viewport.addEventListener("pointerup", endDrag);
-      viewport.addEventListener("pointercancel", endDrag);
-
-      viewport.addEventListener("wheel", (e)=>{
-        e.preventDefault();
-        const rect = viewport.getBoundingClientRect();
-        const mx = e.clientX - rect.left;
-        const my = e.clientY - rect.top;
-
-        const prev = pan.scale;
-        const delta = e.deltaY < 0 ? 1.1 : 0.9;
-        const next = Math.min(2.4, Math.max(0.45, prev * delta));
-
-        const ox = (mx - pan.x) / prev;
-        const oy = (my - pan.y) / prev;
-
-        pan.scale = next;
-        pan.x = mx - ox * next;
-        pan.y = my - oy * next;
-
-        applyTransform();
-      }, { passive:false });
-    }
-
-    document.getElementById("btnRecenter").addEventListener("click", recenter);
-
-    /* ===== Measures workflow ===== */
-    let filter = "all";
-
-    function toMeasureDraft(){
-      const sel = getSelected();
-      if(!sel){
-        toast(t("warnSelectNode"));
-        return;
-      }
-      const p = nodePath(sel);
-      state.draft.fromNodeId = sel.id;
-      state.draft.fromPath = p;
-      document.getElementById("deriveFrom").textContent = p;
-
-      const suggestionPrefix = (currentLang==="de" ? "Prüfen/Umsetzen: " : "Check/Implement: ");
-      if(!state.draft.text){
-        state.draft.text = suggestionPrefix + (sel.topic || "");
-        document.getElementById("measureText").value = state.draft.text;
-      }
-      scheduleSave();
-      toast(currentLang==="de" ? "Entwurf erstellt." : "Draft created.");
-    }
-
-    function addMeasure(){
-      const txt = (document.getElementById("measureText").value || "").trim();
-      const due = (document.getElementById("measureDue").value || "").trim();
-      if(!txt){
-        toast(currentLang==="de" ? "Bitte Maßnahme ausformulieren." : "Please write the action.");
-        return;
-      }
-
-      const sel = getSelected();
-      const srcNode = state.draft.fromNodeId || (sel ? sel.id : null);
-      const srcPath = state.draft.fromPath || (sel ? nodePath(sel) : "");
-
-      pushHistory();
-      state.measures.unshift({
-        id: uid(),
-        text: txt,
-        due: due,
-        status: "open",
-        createdAt: new Date().toISOString(),
-        sourceNodeId: srcNode,
-        sourcePath: srcPath
-      });
-
-      state.draft = { fromNodeId:null, fromPath:"", text:"", due:"" };
-      document.getElementById("measureText").value = "";
-      document.getElementById("measureDue").value = "";
-      document.getElementById("deriveFrom").textContent = "—";
-
-      renderMeasures();
-      scheduleSave();
-      toast(currentLang==="de" ? "In Maßnahmenliste gespeichert." : "Saved to action list.");
-    }
-
-    function clearDraft(){
-      state.draft = { fromNodeId:null, fromPath:"", text:"", due:"" };
-      document.getElementById("measureText").value = "";
-      document.getElementById("measureDue").value = "";
-      document.getElementById("deriveFrom").textContent = "—";
-      scheduleSave();
-      toast(currentLang==="de" ? "Entwurf geleert." : "Draft cleared.");
-    }
-
-    function setFilter(f){
-      filter = f;
-      document.querySelectorAll(".chip[data-filter]").forEach(ch=>{
-        ch.classList.toggle("active", ch.getAttribute("data-filter") === filter);
-      });
-      renderMeasures();
-    }
-
-    function cycleStatus(id){
-      const m = state.measures.find(x=>x.id===id);
-      if(!m) return;
-      pushHistory();
-      m.status = (m.status==="open") ? "done" : (m.status==="done") ? "drop" : "open";
-      renderMeasures();
-      scheduleSave();
-    }
-
-    function deleteMeasure(id){
-      pushHistory();
-      state.measures = state.measures.filter(x=>x.id!==id);
-      renderMeasures();
-      scheduleSave();
-    }
-
-    function renderMeasures(){
-      const host = document.getElementById("measureList");
-      if(!host) return;
-      host.innerHTML = "";
-
-      const list = state.measures.filter(m => filter==="all" ? true : m.status===filter);
-
-      const total = state.measures.length;
-      const openCount = state.measures.filter(m=>m.status==="open").length;
-      const doneCount = state.measures.filter(m=>m.status==="done").length;
-      const dropCount = state.measures.filter(m=>m.status==="drop").length;
-
-      document.getElementById("countText").textContent =
-        `${total} · ${t("statusOpen")}: ${openCount} · ${t("statusDone")}: ${doneCount} · ${t("statusDrop")}: ${dropCount}`;
-
-      if(list.length === 0){
-        const empty = document.createElement("div");
-        empty.className = "m-item";
-        empty.innerHTML = `<div class="m-title">${esc(t("noMeasures"))}</div>`;
-        host.appendChild(empty);
-        return;
-      }
-
-      list.forEach(m=>{
-        const statusLabel = (m.status==="open") ? t("statusOpen")
-                          : (m.status==="done") ? t("statusDone")
-                          : t("statusDrop");
-        const statusCls = (m.status==="open") ? "open"
-                        : (m.status==="done") ? "done"
-                        : "drop";
-
-        const item = document.createElement("div");
-        item.className = "m-item";
-        item.innerHTML = `
-          <div class="m-top">
-            <div>
-              <div class="m-title">${esc(m.text)}</div>
-              <div class="m-meta">${esc(t("dueLabel"))}: <strong>${esc(m.due ? fmtDate(m.due) : "—")}</strong></div>
-              <div class="m-source"><strong>Mindmap:</strong> ${esc(m.sourcePath || "—")}</div>
-            </div>
-            <div class="m-actions">
-              <span class="status ${statusCls}" role="button" tabindex="0" data-act="cycle" data-id="${esc(m.id)}">${esc(statusLabel)}</span>
-              <button type="button" class="m-del" title="${esc(t("delete"))}" aria-label="${esc(t("delete"))}" data-act="del" data-id="${esc(m.id)}">&times;</button>
-            </div>
-          </div>
-        `;
-        host.appendChild(item);
-      });
-
-      host.querySelectorAll('[data-act="cycle"]').forEach(el=>{
-        el.addEventListener("click", ()=>cycleStatus(el.getAttribute("data-id")));
-        el.addEventListener("keydown", (e)=>{
-          if(e.key==="Enter" || e.key===" "){
-            e.preventDefault();
-            cycleStatus(el.getAttribute("data-id"));
-          }
-        });
-      });
-      host.querySelectorAll('[data-act="del"]').forEach(el=>{
-        el.addEventListener("click", ()=>deleteMeasure(el.getAttribute("data-id")));
-      });
-    }
-
-    document.getElementById("btnToMeasure").addEventListener("click", toMeasureDraft);
-    document.getElementById("btnAddMeasure").addEventListener("click", addMeasure);
-    document.getElementById("btnClearDraft").addEventListener("click", clearDraft);
-    document.getElementById("btnSaveNow").addEventListener("click", ()=>{ persist(); toast(currentLang==="de" ? "Gespeichert." : "Saved."); });
-
-    document.querySelectorAll(".chip[data-filter]").forEach(ch=>{
-      ch.addEventListener("click", ()=>setFilter(ch.getAttribute("data-filter")));
-    });
-
-    /* ===== JSON + Print ===== */
-    function downloadJson(){
-      syncMindToState();
-      const blob = new Blob([JSON.stringify(state, null, 2)], {type:"application/json"});
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = t("jsonFileName");
-      a.click();
-      URL.revokeObjectURL(a.href);
-      toast(currentLang==="de" ? "JSON gespeichert." : "JSON saved.");
-    }
-    function loadJson(file){
-      file.text().then(txt=>{
-        const parsed = JSON.parse(txt);
-        if(!parsed || typeof parsed !== "object") throw new Error("bad");
-        pushHistory();
-
-        state.lang = (parsed.lang==="de" || parsed.lang==="en") ? parsed.lang : currentLang;
-        currentLang = state.lang;
-        state.context = parsed.context || {topic:"",goal:"",scope:""};
-        state.mind = parsed.mind || defaultMind();
-        state.measures = Array.isArray(parsed.measures) ? parsed.measures : [];
-        state.draft = parsed.draft || { fromNodeId:null, fromPath:"", text:"", due:"" };
-
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-        setLanguage(currentLang);
-        if(jm) jm.show(state.mind);
-        applyStateToUI(false);
-        toast(currentLang==="de" ? "JSON geladen." : "JSON loaded.");
-      }).catch(()=>{
-        alert(t("jsonLoadError"));
-      });
-    }
-
-    document.getElementById("btnJsonSave").addEventListener("click", downloadJson);
-    document.getElementById("jsonFile").addEventListener("change", (e)=>{
-      const f = e.target.files && e.target.files[0];
-      if(!f) return;
-      loadJson(f);
-      e.target.value = "";
-    });
-    document.getElementById("btnPrint").addEventListener("click", ()=>window.print());
-
-    /* ===== Context + Draft autosave ===== */
-    const topicEl = document.getElementById("topicInput");
-    const goalEl  = document.getElementById("goalInput");
-    const scopeEl = document.getElementById("scopeInput");
-    [topicEl, goalEl, scopeEl].forEach(el=>{
-      el.addEventListener("input", ()=>{
-        state.context.topic = topicEl.value;
-        state.context.goal = goalEl.value;
-        state.context.scope = scopeEl.value;
-        scheduleSave();
-      });
-    });
-    document.getElementById("measureText").addEventListener("input", (e)=>{
-      state.draft.text = e.target.value;
-      scheduleSave();
-    });
-    document.getElementById("measureDue").addEventListener("input", (e)=>{
-      state.draft.due = e.target.value;
-      scheduleSave();
-    });
-
-    /* ===== Init ===== */
-    restore();
-    localStorage.setItem("qmLang", currentLang);
-    applyI18n();
-
-    initMind();
-    recenter();
-
-    if(jm){
-      try{ jm.show(state.mind); }catch(e){ jm.show(defaultMind()); }
-      try{ jm.select_node("root"); }catch(e){}
-    }
-
-    document.getElementById("copyrightYear").textContent = String(new Date().getFullYear());
-
-    applyStateToUI(false);
-    setFilter("all");
-
-    lastSavedAt = new Date();
-    setSaveState("saved");
-    updateSaveLabel(true);
-
-  })();
+    /* UI button wire */
+    // Add child/sibling via keyboard-like buttons (German labels)
+    // we place them as context menu for selected node: using native jsMind commands:
+    // We'll add two extra buttons under the map for clarity.
   </script>
-</body>
-</html>
+
+  <!-- PART 1/3 ends here -->
