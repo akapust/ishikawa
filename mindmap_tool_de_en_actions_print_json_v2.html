@@ -1,0 +1,1377 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mindmap Tool – Ideen, Struktur & Maßnahmen</title>
+
+  <!-- jsMind (Mindmap) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsmind@0.8.6/style/jsmind.css">
+  <script src="https://cdn.jsdelivr.net/npm/jsmind@0.8.6/es6/jsmind.js"></script>
+
+  <style>
+    /* Scoped to avoid WP theme collisions */
+    #qm-mindmap-app{
+      --blue:#1155b2;
+      --dark:#09387a;
+      --light-bg:#f8fafc;
+      --border:#d1d9e6;
+      --text:#27304d;
+      --muted:#64748b;
+
+      --green:#16a34a;
+      --yellow:#f59e0b;
+      --red:#e53e3e;
+
+      --radius:4px;
+      --shadow:0 4px 12px rgba(0,0,0,.10);
+
+      max-width:1100px;
+      margin:20px auto;
+      padding:0 12px;
+      color:var(--text);
+      font-family:"Segoe UI", Roboto, system-ui, -apple-system, Arial, sans-serif;
+      line-height:1.55;
+    }
+    #qm-mindmap-app *{ box-sizing:border-box; }
+    #qm-mindmap-app :focus-visible{ outline:2px solid var(--blue); outline-offset:2px; }
+
+    .card{ background:#fff; border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; }
+
+    /* Intro */
+    .tool-intro{ padding:22px 25px; border-bottom:3px solid var(--blue); background:var(--light-bg); }
+    .intro-top{ display:flex; align-items:flex-start; justify-content:space-between; gap:15px; flex-wrap:wrap; }
+    .tool-title{ margin:0; color:var(--dark); font-size:20px; text-transform:uppercase; font-weight:900; letter-spacing:.4px; }
+    .tool-sub{ margin:6px 0 0; font-size:13px; color:var(--muted); }
+    .tool-grid{ margin-top:16px; display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .tool-box{ background:#fff; border:1px solid var(--border); border-radius:var(--radius); padding:12px 14px; }
+    .tool-box h3{ margin:0 0 6px 0; font-size:13px; color:var(--dark); text-transform:uppercase; font-weight:900; letter-spacing:.2px; }
+    .tool-box p, .tool-box ol{ margin:0; font-size:13px; color:#334155; }
+    .tool-box ol{ padding-left:18px; }
+    .tool-privacy{ border-left:3px solid var(--blue); }
+    .tool-box a{ color:var(--blue); text-decoration:none; font-weight:800; }
+    .tool-box a:hover{ text-decoration:underline; }
+
+    /* Buttons */
+    .btn{
+      padding:10px 18px;
+      font-size:13px;
+      font-weight:900;
+      border-radius:var(--radius);
+      cursor:pointer;
+      border:1px solid var(--border);
+      background:#fff;
+      text-transform:uppercase;
+      letter-spacing:.2px;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      color:#334155;
+      user-select:none;
+    }
+    .btn.primary{ background:var(--blue); color:#fff; border-color:var(--blue); }
+    .btn.primary:hover{ background:var(--dark); border-color:var(--dark); }
+    .btn.danger{ color:var(--red); }
+    .btn.small{ padding:8px 12px; font-size:12px; }
+    .btn:disabled{ opacity:.55; cursor:not-allowed; }
+
+    .lang-switch{ display:flex; gap:8px; align-items:center; }
+    .lang-switch .btn{ padding:8px 12px; font-size:12px; }
+
+    /* Body */
+    .body{ padding:25px; }
+
+    /* Context */
+    .context-wrap{ border:1px solid #edf2f7; border-radius:var(--radius); padding:14px; background:#fff; }
+    .context-head{ display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap; }
+    .context-title{ margin:0; font-size:13px; font-weight:900; color:var(--dark); text-transform:uppercase; letter-spacing:.2px; }
+    .hint{ font-size:12px; color:var(--muted); }
+    .save-ind{ font-size:12px; color:var(--muted); display:flex; align-items:center; gap:8px; white-space:nowrap; }
+    .dot{ width:8px; height:8px; border-radius:50%; background:rgba(100,116,139,.35); display:inline-block; }
+    .dot.saved{ background:rgba(22,163,74,.75); }
+    .dot.saving{ background:rgba(245,158,11,.85); }
+
+    .form-grid{ margin-top:12px; display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .field{ display:flex; flex-direction:column; gap:6px; }
+    .label{ font-size:12px; color:#64748b; text-transform:uppercase; font-weight:900; letter-spacing:.2px; }
+    .input, .textarea{ border:1px solid var(--border); border-radius:var(--radius); padding:10px; font-size:13px; outline:none; font-family:inherit; background:#fff; }
+    .textarea{ min-height:64px; resize:vertical; }
+    .full{ grid-column:1 / -1; }
+    .input:focus, .textarea:focus{ border-color:rgba(17,85,178,.7); box-shadow:0 0 0 3px rgba(17,85,178,.10); }
+
+    /* Mindmap */
+    .mind-wrap{ margin-top:16px; border:1px solid #edf2f7; border-radius:var(--radius); overflow:hidden; }
+    .mind-toolbar{
+      padding:12px; background:var(--light-bg); border-bottom:1px solid #eef2f7;
+      display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between;
+    }
+    .toolbar-left, .toolbar-right{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      border:1px solid var(--border); border-radius:999px; padding:6px 10px;
+      font-size:12px; font-weight:900; background:#fff; color:#0f172a;
+    }
+
+    .mind-viewport{ position:relative; height:520px; background:#fff; overflow:hidden; }
+    .mind-transform{ position:absolute; inset:0; transform-origin:0 0; }
+    #jsmind_container{ width:100%; height:100%; background:#fff; }
+
+    .recenter{
+      position:absolute; right:12px; bottom:12px;
+      display:flex; gap:8px; align-items:center; flex-wrap:wrap;
+    }
+
+    /* Sections */
+    .section{ margin-top:18px; padding-top:16px; border-top:2px solid var(--blue); }
+    .section-title{ margin:0 0 6px 0; font-size:13px; color:var(--dark); text-transform:uppercase; font-weight:900; letter-spacing:.2px; }
+    .section-sub{ margin:0 0 10px 0; font-size:13px; color:var(--muted); }
+
+    /* Measures */
+    .derive-grid{ display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
+    .box{ background:#fff; border:1px solid var(--border); border-radius:var(--radius); padding:12px 14px; }
+    .box h4{ margin:0 0 6px 0; font-size:13px; color:var(--dark); text-transform:uppercase; font-weight:900; display:flex; justify-content:space-between; align-items:baseline; gap:10px; }
+    .mini{ font-size:12px; color:var(--muted); font-weight:800; }
+    .row{ margin-top:10px; display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+
+    .measure-form{ margin-top:10px; display:grid; grid-template-columns: 1fr 200px; gap:10px; align-items:start; }
+    .measure-form .textarea{ min-height:72px; }
+    .measure-form .input{ height:42px; }
+
+    .measures-head{
+      display:flex; justify-content:space-between; align-items:flex-end; gap:12px; flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+    .filters{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+    .chip{
+      border:1px solid var(--border); background:#fff; border-radius:999px; padding:6px 10px;
+      font-size:12px; font-weight:900; cursor:pointer; user-select:none; color:#0f172a;
+    }
+    .chip.active{ border-color:var(--blue); box-shadow:0 0 0 3px rgba(17,85,178,.10); }
+    .count{ font-size:12px; color:var(--muted); font-weight:900; }
+
+    .measure-list{ display:flex; flex-direction:column; gap:10px; }
+    .m-item{
+      border:1px solid var(--border); border-radius:var(--radius); padding:12px 14px; background:#fff;
+      box-shadow:0 6px 18px rgba(27,51,92,.05);
+    }
+    .m-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap; }
+    .m-title{ margin:0; font-weight:900; color:#0f172a; }
+    .m-meta{ font-size:12px; color:var(--muted); margin-top:4px; }
+    .m-source{ font-size:12px; color:#334155; margin-top:8px; }
+    .m-actions{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+    .status{
+      border:1px solid var(--border); border-radius:999px; padding:6px 10px;
+      font-size:12px; font-weight:900; cursor:pointer; user-select:none; background:#fff;
+    }
+    .status.open{ border-color: rgba(245,158,11,.35); background: rgba(245,158,11,.10); }
+    .status.done{ border-color: rgba(22,163,74,.35); background: rgba(22,163,74,.10); }
+    .status.drop{ border-color: rgba(229,62,62,.35); background: rgba(229,62,62,.08); }
+    .m-del{ border:none; background:transparent; cursor:pointer; font-weight:900; color: #94a3b8; font-size:18px; line-height:1; padding:4px 6px; }
+    .m-del:hover{ color: var(--red); }
+
+    /* Bottom actions */
+    .bottom-actions{
+      margin-top:18px;
+      padding-top:16px;
+      border-top:2px solid var(--blue);
+      display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end;
+    }
+
+    /* More info + Footer */
+    .tool-more{ margin-top:22px; padding-top:18px; border-top:2px solid var(--blue); }
+    .more-title{ margin:0 0 6px 0; font-size:13px; color:var(--dark); text-transform:uppercase; font-weight:900; }
+    .more-sub{ margin:0 0 10px 0; font-size:13px; color:var(--muted); }
+    .more-list{ margin:8px 0 0; padding-left:18px; font-size:13px; color:#334155; }
+    .more-list li{ margin:4px 0; }
+
+    .footer{
+      padding:12px 25px;
+      background:var(--light-bg);
+      border-top:1px solid var(--border);
+      font-size:12px;
+      color:var(--muted);
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .footer a{ color:var(--dark); font-weight:900; text-decoration:none; }
+    .footer a:hover{ text-decoration:underline; }
+
+    /* Toast */
+    .toast{
+      position:fixed; left:50%; bottom:18px; transform:translateX(-50%);
+      background:#0f172a; color:#fff; padding:12px 18px; border-radius:999px;
+      font-size:14px; z-index:9999; opacity:0; pointer-events:none; transition:opacity .25s;
+      box-shadow:0 10px 22px rgba(0,0,0,.18);
+    }
+    .toast.show{ opacity:1; }
+
+    @media (max-width: 900px){
+      .tool-grid{ grid-template-columns:1fr; }
+      .form-grid{ grid-template-columns:1fr; }
+      .derive-grid{ grid-template-columns:1fr; }
+      .measure-form{ grid-template-columns:1fr; }
+      .body{ padding-left:16px; padding-right:16px; }
+      .tool-intro, .footer{ padding-left:16px; padding-right:16px; }
+      .mind-viewport{ height:520px; }
+    }
+
+    /* Print */
+    @media print{
+      #qm-mindmap-app{ margin:0; max-width:none; padding:0; }
+      .tool-intro, .mind-toolbar, .recenter, .bottom-actions, .tool-more, .lang-switch, .toast{ display:none !important; }
+      .card{ box-shadow:none; border:none; }
+      .mind-viewport{ height:650px; }
+      .footer{ border-top:1px solid #e2e8f0; }
+      a{ text-decoration:none; color:#0f172a; }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="qm-mindmap-app">
+    <section class="card">
+
+      <!-- Intro -->
+      <section class="tool-intro">
+        <div class="intro-top">
+          <div>
+            <h2 class="tool-title" data-i18n="title">Mindmap Tool – Ideen, Struktur &amp; Maßnahmen</h2>
+            <p class="tool-sub" data-i18n="subtitle">Ideen sammeln, clustern und in umsetzbare Maßnahmen überführen – inklusive Liste, Status &amp; Termin.</p>
+          </div>
+
+          <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end;">
+            <div class="lang-switch" aria-label="Language switch">
+              <button type="button" class="btn small" id="btnLangDE">DE</button>
+              <button type="button" class="btn small" id="btnLangEN">EN</button>
+            </div>
+            <a class="btn" href="https://tools.quality.de/" data-i18n="backHome">Zurück zur Startseite</a>
+          </div>
+        </div>
+
+        <div class="tool-grid">
+          <div class="tool-box">
+            <h3 data-i18n="boxToolNameTitle">Name Tool</h3>
+            <p data-i18n="boxToolNameText">Mindmap – Ideen &amp; Maßnahmen</p>
+          </div>
+          <div class="tool-box">
+            <h3 data-i18n="boxGoalTitle">Ziel</h3>
+            <p data-i18n="boxGoalText">Gedanken sichtbar machen, Themen strukturiert clustern und daraus konkrete Maßnahmen ableiten und nachverfolgen.</p>
+          </div>
+          <div class="tool-box">
+            <h3 data-i18n="boxHowTitle">So benutzt du das Tool</h3>
+            <ol>
+              <li data-i18n="step1">Thema / Ziel / Scope eintragen (wird automatisch gespeichert).</li>
+              <li data-i18n="step2">Mindmap aufbauen: Unterknoten/Nachbarknoten anlegen, Struktur formen.</li>
+              <li data-i18n="step3">Knoten auswählen und in Maßnahmen überführen (inkl. Termin).</li>
+              <li data-i18n="step4">Maßnahmen in der Liste pflegen: offen / abgeschlossen / verworfen.</li>
+              <li data-i18n="step5">Am Ende: JSON speichern/laden oder drucken.</li>
+            </ol>
+          </div>
+          <div class="tool-box tool-privacy">
+            <h3 data-i18n="boxPrivacyTitle">Datenschutz</h3>
+            <p data-i18n="boxPrivacyText">Dieses Tool arbeitet vollständig im Browser. Es werden keine Daten auf einem Server gespeichert. Auto-Speicherung erfolgt lokal im Browser (LocalStorage). Zugriff hat nur die Person am Gerät.</p>
+          </div>
+        </div>
+      </section>
+
+      <div class="body">
+
+        <!-- Context -->
+        <div class="context-wrap" aria-label="Context">
+          <div class="context-head">
+            <div>
+              <p class="context-title" data-i18n="ctxTitle">Thema / Ziel / Scope</p>
+              <p class="hint" style="margin:6px 0 0;" data-i18n="ctxHint">Diese Infos erscheinen in der Dokumentation und werden automatisch gespeichert.</p>
+            </div>
+            <div class="save-ind" title="Autosave">
+              <span class="dot" id="saveDot" aria-hidden="true"></span>
+              <span id="saveText" data-i18n="savedIdle">Gespeichert</span>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="field">
+              <span class="label" data-i18n="topicLabel">Thema</span>
+              <input class="input" id="topicInput" type="text" placeholder="z.B. Prozess X – Qualitätsverbesserung" data-i18n-placeholder="topicPh">
+            </div>
+            <div class="field">
+              <span class="label" data-i18n="goalLabel">Ziel</span>
+              <input class="input" id="goalInput" type="text" placeholder="z.B. Fehlerquote halbieren, Durchlaufzeit senken" data-i18n-placeholder="goalPh">
+            </div>
+            <div class="field full">
+              <span class="label" data-i18n="scopeLabel">Scope / Notizen</span>
+              <textarea class="textarea" id="scopeInput" placeholder="Rahmen, Team, Annahmen, Abgrenzung, Links …" data-i18n-placeholder="scopePh"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mindmap -->
+        <div class="mind-wrap" aria-label="Mindmap">
+          <div class="mind-toolbar">
+            <div class="toolbar-left">
+              <span class="pill" id="selPill" aria-label="Selected">
+                <span data-i18n="selected">Auswahl</span>: <span id="selText">—</span>
+              </span>
+              <span class="hint" data-i18n="panZoomHint">Scroll = Zoom · Drag auf Hintergrund = Pan · Recenter = Zentrieren</span>
+            </div>
+
+            <div class="toolbar-right">
+              <button type="button" class="btn small" id="btnChild" data-i18n="btnChild">+ Unterknoten</button>
+              <button type="button" class="btn small" id="btnSibling" data-i18n="btnSibling">+ Nachbarknoten</button>
+              <button type="button" class="btn small" id="btnRename" data-i18n="btnRename">Umbenennen</button>
+              <button type="button" class="btn small danger" id="btnDelete" data-i18n="btnDelete">Löschen</button>
+              <button type="button" class="btn small" id="btnUndo" data-i18n="btnUndo">Rückgängig</button>
+              <button type="button" class="btn small" id="btnRedo" data-i18n="btnRedo">Wiederholen</button>
+              <button type="button" class="btn small danger" id="btnReset" data-i18n="btnReset">Reset</button>
+            </div>
+          </div>
+
+          <div class="mind-viewport" id="viewport">
+            <div class="mind-transform" id="transformLayer">
+              <div id="jsmind_container"></div>
+            </div>
+
+            <div class="recenter">
+              <button type="button" class="btn small" id="btnRecenter" data-i18n="btnRecenter">Zentrieren</button>
+              <button type="button" class="btn small primary" id="btnToMeasure" data-i18n="btnToMeasure">Als Maßnahme</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Derive measures -->
+        <div class="section" aria-label="Measures derivation">
+          <h3 class="section-title" data-i18n="deriveTitle">Ableitung von Maßnahmen</h3>
+          <p class="section-sub" data-i18n="deriveSub">Wähle einen Knoten und überführe ihn als Maßnahme (mit Termin) in die Maßnahmenliste.</p>
+
+          <div class="derive-grid">
+            <div class="box">
+              <h4><span data-i18n="deriveFromNode">Aus Knoten</span> <span class="mini" id="deriveFrom">—</span></h4>
+              <p class="hint" data-i18n="deriveHint">Tipp: Nutze „Als Maßnahme“, um den Entwurf automatisch aus der Auswahl zu befüllen.</p>
+
+              <div class="measure-form">
+                <textarea class="textarea" id="measureText" placeholder="Maßnahme formulieren (Was? Wer? Wirkung?) …" data-i18n-placeholder="measurePh"></textarea>
+                <div class="field">
+                  <span class="label" data-i18n="dueLabel">Termin</span>
+                  <input class="input" id="measureDue" type="date">
+                  <div class="row" style="justify-content:flex-end;">
+                    <button type="button" class="btn small primary" id="btnAddMeasure" data-i18n="btnAddMeasure">In Liste speichern</button>
+                    <button type="button" class="btn small" id="btnClearDraft" data-i18n="btnClearDraft">Entwurf leeren</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row" style="justify-content:space-between; margin-top:12px;">
+                <span class="hint" data-i18n="draftSavedHint">Entwurf wird automatisch gespeichert.</span>
+                <button type="button" class="btn small" id="btnSaveNow" data-i18n="btnSaveNow">Jetzt speichern</button>
+              </div>
+            </div>
+
+            <div class="box">
+              <h4><span data-i18n="rulesTitle">Regeln</span></h4>
+              <ul class="more-list" style="margin:8px 0 0;">
+                <li data-i18n="rule1">Jede Maßnahme behält den Bezug zum Mindmap-Knoten (Pfad).</li>
+                <li data-i18n="rule2">Status kann jederzeit geändert werden: offen / abgeschlossen / verworfen.</li>
+                <li data-i18n="rule3">Maßnahmen sind lokal gespeichert (Browser) und in JSON exportierbar.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Measures list -->
+        <div class="section" aria-label="Measures list">
+          <div class="measures-head">
+            <div>
+              <h3 class="section-title" style="margin-bottom:0;" data-i18n="listTitle">Maßnahmenliste</h3>
+              <p class="section-sub" style="margin-top:6px;" data-i18n="listSub">Übersicht aller Maßnahmen inkl. Status, Termin und Bezug zur Mindmap.</p>
+            </div>
+
+            <div class="filters" aria-label="Filters">
+              <span class="count" id="countText">0</span>
+              <span class="chip active" data-filter="all" data-i18n="filterAll">Alle</span>
+              <span class="chip" data-filter="open" data-i18n="filterOpen">Offen</span>
+              <span class="chip" data-filter="done" data-i18n="filterDone">Abgeschlossen</span>
+              <span class="chip" data-filter="drop" data-i18n="filterDrop">Verworfen</span>
+            </div>
+          </div>
+
+          <div class="measure-list" id="measureList"></div>
+        </div>
+
+        <!-- Bottom actions (JSON/Print) -->
+        <div class="bottom-actions" aria-label="Bottom actions">
+          <button type="button" class="btn" id="btnJsonSave" data-i18n="btnJsonSave">JSON speichern</button>
+          <label class="btn" style="cursor:pointer;">
+            <span data-i18n="btnJsonLoad">JSON laden</span>
+            <input type="file" id="jsonFile" accept="application/json" hidden>
+          </label>
+          <button type="button" class="btn primary" id="btnPrint" data-i18n="btnPrint">Drucken</button>
+        </div>
+
+        <!-- More info -->
+        <section class="tool-more">
+          <h3 class="more-title" data-i18n="moreTitle">Weiterführende Infos</h3>
+          <p class="more-sub" data-i18n="moreSub">Lexikonartikel &amp; passende Weiterbildungen (öffnet in neuem Tab).</p>
+
+          <div class="tool-grid">
+            <div class="tool-box">
+              <h3 data-i18n="lexTitle">Lexikon</h3>
+              <p data-i18n="lexText">Definition, Nutzen &amp; Tipps zur Mindmap.</p>
+              <p style="margin-top:8px;">
+                <a href="https://www.quality.de/lexikon/mindmap/" target="_blank" rel="noopener" data-i18n="lexLink">Zum Lexikonartikel: Mindmap</a>
+              </p>
+            </div>
+
+            <div class="tool-box">
+              <h3 data-i18n="trainTitle">Ausbildungen &amp; Seminare</h3>
+              <p data-i18n="trainText">Vertiefe deine Methodenkompetenz im Qualitätsmanagement:</p>
+              <ul class="more-list">
+                <li><a href="https://www.quality.de/weiterbildung/kvp/" target="_blank" rel="noopener" data-i18n="trainKvp">KVP Seminare</a></li>
+                <li><a href="https://www.quality.de/weiterbildung/qualitaetsmanagement/" target="_blank" rel="noopener" data-i18n="trainQm">Qualitätsmanagement</a></li>
+                <li><a href="https://www.quality.de/weiterbildung/opex-seminare-ausbildungen/opex/" target="_blank" rel="noopener" data-i18n="trainOpex">OPEX Seminare &amp; Ausbildungen</a></li>
+                <li><a href="https://www.quality.de/weiterbildung/fmea-schulung/" target="_blank" rel="noopener" data-i18n="trainFmea">FMEA Schulungen</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <footer class="footer">
+        <div>© <span id="copyrightYear"></span></div>
+        <div><a href="https://www.quality.de/" target="_blank" rel="noopener">Quality Services &amp; Wissen GmbH</a></div>
+      </footer>
+
+    </section>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+  <script>
+  (function(){
+    const TOAST = document.getElementById("toast");
+    const STORAGE_KEY = "qm_mindmap_tool_state_v2";
+    const HISTORY_LIMIT = 40;
+
+    function toast(msg){
+      if(!TOAST) return;
+      TOAST.textContent = msg;
+      TOAST.classList.add("show");
+      clearTimeout(toast._t);
+      toast._t = setTimeout(()=>TOAST.classList.remove("show"), 2600);
+    }
+
+    /* ===== i18n ===== */
+    const I18N = {
+      de: {
+        title:"Mindmap Tool – Ideen, Struktur & Maßnahmen",
+        subtitle:"Ideen sammeln, clustern und in umsetzbare Maßnahmen überführen – inklusive Liste, Status & Termin.",
+        backHome:"Zurück zur Startseite",
+
+        boxToolNameTitle:"Name Tool",
+        boxToolNameText:"Mindmap – Ideen & Maßnahmen",
+        boxGoalTitle:"Ziel",
+        boxGoalText:"Gedanken sichtbar machen, Themen strukturiert clustern und daraus konkrete Maßnahmen ableiten und nachverfolgen.",
+        boxHowTitle:"So benutzt du das Tool",
+        step1:"Thema / Ziel / Scope eintragen (wird automatisch gespeichert).",
+        step2:"Mindmap aufbauen: Unterknoten/Nachbarknoten anlegen, Struktur formen.",
+        step3:"Knoten auswählen und in Maßnahmen überführen (inkl. Termin).",
+        step4:"Maßnahmen in der Liste pflegen: offen / abgeschlossen / verworfen.",
+        step5:"Am Ende: JSON speichern/laden oder drucken.",
+        boxPrivacyTitle:"Datenschutz",
+        boxPrivacyText:"Dieses Tool arbeitet vollständig im Browser. Es werden keine Daten auf einem Server gespeichert. Auto-Speicherung erfolgt lokal im Browser (LocalStorage). Zugriff hat nur die Person am Gerät.",
+
+        ctxTitle:"Thema / Ziel / Scope",
+        ctxHint:"Diese Infos erscheinen in der Dokumentation und werden automatisch gespeichert.",
+        savedIdle:"Gespeichert",
+        saving:"Speichern…",
+        savedAt:"Gespeichert um",
+
+        topicLabel:"Thema",
+        goalLabel:"Ziel",
+        scopeLabel:"Scope / Notizen",
+        topicPh:"z.B. Prozess X – Qualitätsverbesserung",
+        goalPh:"z.B. Fehlerquote halbieren, Durchlaufzeit senken",
+        scopePh:"Rahmen, Team, Annahmen, Abgrenzung, Links …",
+
+        selected:"Auswahl",
+        panZoomHint:"Scroll = Zoom · Drag auf Hintergrund = Pan · Recenter = Zentrieren",
+        btnChild:"+ Unterknoten",
+        btnSibling:"+ Nachbarknoten",
+        btnRename:"Umbenennen",
+        btnDelete:"Löschen",
+        btnUndo:"Rückgängig",
+        btnRedo:"Wiederholen",
+        btnReset:"Reset",
+        btnRecenter:"Zentrieren",
+        btnToMeasure:"Als Maßnahme",
+
+        promptNodeText:"Text für neuen Knoten:",
+        promptRename:"Neuer Name:",
+        warnSelectNode:"Bitte zuerst einen Knoten auswählen.",
+        warnSiblingRoot:"Nachbarknoten ist beim Root nicht möglich. Bitte einen Unterknoten auswählen.",
+        warnDeleteRoot:"Root kann nicht gelöscht werden.",
+        confirmReset:"Alles löschen und neu starten?",
+
+        deriveTitle:"Ableitung von Maßnahmen",
+        deriveSub:"Wähle einen Knoten und überführe ihn als Maßnahme (mit Termin) in die Maßnahmenliste.",
+        deriveFromNode:"Aus Knoten",
+        deriveHint:"Tipp: Nutze „Als Maßnahme“, um den Entwurf automatisch aus der Auswahl zu befüllen.",
+        measurePh:"Maßnahme formulieren (Was? Wer? Wirkung?) …",
+        dueLabel:"Termin",
+        btnAddMeasure:"In Liste speichern",
+        btnClearDraft:"Entwurf leeren",
+        draftSavedHint:"Entwurf wird automatisch gespeichert.",
+        btnSaveNow:"Jetzt speichern",
+
+        rulesTitle:"Regeln",
+        rule1:"Jede Maßnahme behält den Bezug zum Mindmap-Knoten (Pfad).",
+        rule2:"Status kann jederzeit geändert werden: offen / abgeschlossen / verworfen.",
+        rule3:"Maßnahmen sind lokal gespeichert (Browser) und in JSON exportierbar.",
+
+        listTitle:"Maßnahmenliste",
+        listSub:"Übersicht aller Maßnahmen inkl. Status, Termin und Bezug zur Mindmap.",
+        filterAll:"Alle",
+        filterOpen:"Offen",
+        filterDone:"Abgeschlossen",
+        filterDrop:"Verworfen",
+
+        statusOpen:"Offen",
+        statusDone:"Abgeschlossen",
+        statusDrop:"Verworfen",
+        delete:"Löschen",
+        noMeasures:"Noch keine Maßnahmen. Wähle einen Knoten und speichere ihn als Maßnahme.",
+
+        btnJsonSave:"JSON speichern",
+        btnJsonLoad:"JSON laden",
+        btnPrint:"Drucken",
+
+        moreTitle:"Weiterführende Infos",
+        moreSub:"Lexikonartikel & passende Weiterbildungen (öffnet in neuem Tab).",
+        lexTitle:"Lexikon",
+        lexText:"Definition, Nutzen & Tipps zur Mindmap.",
+        lexLink:"Zum Lexikonartikel: Mindmap",
+        trainTitle:"Ausbildungen & Seminare",
+        trainText:"Vertiefe deine Methodenkompetenz im Qualitätsmanagement:",
+        trainKvp:"KVP Seminare",
+        trainQm:"Qualitätsmanagement",
+        trainOpex:"OPEX Seminare & Ausbildungen",
+        trainFmea:"FMEA Schulungen",
+
+        jsonFileName:"mindmap_export.json",
+        jsonLoadError:"Fehler beim Laden der Datei.",
+        jsMindMissing:"jsMind konnte nicht geladen werden. Prüfe, ob externe Skripte erlaubt sind."
+      },
+      en: {
+        title:"Mindmap Tool – Ideas, Structure & Actions",
+        subtitle:"Collect ideas, cluster them, and turn them into actionable measures – including list, status and due date.",
+        backHome:"Back to home",
+
+        boxToolNameTitle:"Tool name",
+        boxToolNameText:"Mindmap – Ideas & Actions",
+        boxGoalTitle:"Goal",
+        boxGoalText:"Make thoughts visible, cluster topics in a structured way, and derive actionable measures with tracking.",
+        boxHowTitle:"How to use this tool",
+        step1:"Enter topic / goal / scope (auto-saved).",
+        step2:"Build the mindmap: add child/sibling nodes and shape the structure.",
+        step3:"Select a node and convert it into an action (with due date).",
+        step4:"Maintain actions in the list: open / completed / discarded.",
+        step5:"At the end: save/load JSON or print.",
+        boxPrivacyTitle:"Privacy",
+        boxPrivacyText:"This tool runs entirely in your browser. No data is stored on any server. Auto-save is local (LocalStorage). Only the person on this device has access.",
+
+        ctxTitle:"Topic / Goal / Scope",
+        ctxHint:"These details appear in documentation and are saved automatically.",
+        savedIdle:"Saved",
+        saving:"Saving…",
+        savedAt:"Saved at",
+
+        topicLabel:"Topic",
+        goalLabel:"Goal",
+        scopeLabel:"Scope / Notes",
+        topicPh:"e.g. Process X – quality improvement",
+        goalPh:"e.g. halve defect rate, reduce lead time",
+        scopePh:"Context, team, assumptions, boundaries, links …",
+
+        selected:"Selection",
+        panZoomHint:"Scroll = Zoom · Drag on background = Pan · Recenter = Center",
+        btnChild:"+ Child node",
+        btnSibling:"+ Sibling node",
+        btnRename:"Rename",
+        btnDelete:"Delete",
+        btnUndo:"Undo",
+        btnRedo:"Redo",
+        btnReset:"Reset",
+        btnRecenter:"Recenter",
+        btnToMeasure:"To action",
+
+        promptNodeText:"Text for the new node:",
+        promptRename:"New name:",
+        warnSelectNode:"Please select a node first.",
+        warnSiblingRoot:"Sibling nodes are not possible for the root. Select a child node.",
+        warnDeleteRoot:"Root cannot be deleted.",
+        confirmReset:"Delete everything and start over?",
+
+        deriveTitle:"Deriving actions",
+        deriveSub:"Select a node and convert it into an action (with due date) in the action list.",
+        deriveFromNode:"From node",
+        deriveHint:"Tip: Use “To action” to prefill the draft from the current selection.",
+        measurePh:"Write the action (What? Who? Impact?) …",
+        dueLabel:"Due date",
+        btnAddMeasure:"Save to list",
+        btnClearDraft:"Clear draft",
+        draftSavedHint:"Draft is saved automatically.",
+        btnSaveNow:"Save now",
+
+        rulesTitle:"Rules",
+        rule1:"Each action keeps a reference to the mindmap node (path).",
+        rule2:"Status can be changed anytime: open / completed / discarded.",
+        rule3:"Actions are stored locally and can be exported to JSON.",
+
+        listTitle:"Action list",
+        listSub:"Overview of all actions incl. status, due date and mindmap reference.",
+        filterAll:"All",
+        filterOpen:"Open",
+        filterDone:"Completed",
+        filterDrop:"Discarded",
+
+        statusOpen:"Open",
+        statusDone:"Completed",
+        statusDrop:"Discarded",
+        delete:"Delete",
+        noMeasures:"No actions yet. Select a node and save it as an action.",
+
+        btnJsonSave:"Save JSON",
+        btnJsonLoad:"Load JSON",
+        btnPrint:"Print",
+
+        moreTitle:"More information",
+        moreSub:"Glossary article & relevant training (opens in a new tab).",
+        lexTitle:"Glossary",
+        lexText:"Definition, benefits & tips for mind mapping.",
+        lexLink:"Open glossary: Mindmap",
+        trainTitle:"Training & courses",
+        trainText:"Deepen your method skills in quality management:",
+        trainKvp:"CIP (KVP) seminars",
+        trainQm:"Quality management",
+        trainOpex:"OPEX seminars & training",
+        trainFmea:"FMEA training",
+
+        jsonFileName:"mindmap_export.json",
+        jsonLoadError:"Error loading the file.",
+        jsMindMissing:"jsMind could not be loaded. Check whether external scripts are allowed."
+      }
+    };
+
+    let currentLang = localStorage.getItem("qmLang")
+      || ((navigator.language||"").toLowerCase().startsWith("de") ? "de" : "en");
+
+    function t(key){
+      return (I18N[currentLang] && I18N[currentLang][key]) ? I18N[currentLang][key] : key;
+    }
+
+    function applyI18n(){
+      document.documentElement.lang = currentLang;
+
+      document.querySelectorAll("[data-i18n]").forEach(el=>{
+        el.textContent = t(el.dataset.i18n);
+      });
+      document.querySelectorAll("[data-i18n-placeholder]").forEach(el=>{
+        el.placeholder = t(el.dataset.i18nPlaceholder);
+      });
+
+      const deBtn = document.getElementById("btnLangDE");
+      const enBtn = document.getElementById("btnLangEN");
+      if(deBtn && enBtn){
+        deBtn.classList.toggle("primary", currentLang === "de");
+        enBtn.classList.toggle("primary", currentLang === "en");
+      }
+
+      renderMeasures();
+      updateSelectionPill();
+      updateDeriveFrom();
+      updateSaveLabel(true);
+    }
+
+    function setLanguage(lang){
+      currentLang = (lang==="de" || lang==="en") ? lang : "de";
+      localStorage.setItem("qmLang", currentLang);
+      state.lang = currentLang;
+      applyI18n();
+      scheduleSave();
+    }
+
+    document.getElementById("btnLangDE").addEventListener("click", ()=>setLanguage("de"));
+    document.getElementById("btnLangEN").addEventListener("click", ()=>setLanguage("en"));
+
+    /* ===== State ===== */
+    let jm = null;
+
+    const defaultMind = () => ({
+      meta: { name: "Mindmap", author: "Quality Services & Wissen", version: "1.0" },
+      format: "node_tree",
+      data: {
+        id: "root",
+        topic: "Mindmap",
+        direction: "right",
+        expanded: true,
+        children: []
+      }
+    });
+
+    let state = {
+      lang: currentLang,
+      context: { topic:"", goal:"", scope:"" },
+      mind: defaultMind(),
+      measures: [],
+      draft: { fromNodeId:null, fromPath:"", text:"", due:"" }
+    };
+
+    // Undo/Redo history
+    let history = { past: [], future: [] };
+
+    function deepClone(obj){ return JSON.parse(JSON.stringify(obj)); }
+
+    function syncMindToState(){
+      if(jm && jm.get_data){
+        try{ state.mind = jm.get_data("node_tree"); }catch(e){}
+      }
+    }
+
+    function pushHistory(){
+      syncMindToState();
+      history.past.push(deepClone(state));
+      if(history.past.length > HISTORY_LIMIT) history.past.shift();
+      history.future = [];
+      updateUndoRedoButtons();
+    }
+    function canUndo(){ return history.past.length > 0; }
+    function canRedo(){ return history.future.length > 0; }
+
+    function applyStateToUI(rebuildMind){
+      document.getElementById("topicInput").value = state.context.topic || "";
+      document.getElementById("goalInput").value = state.context.goal || "";
+      document.getElementById("scopeInput").value = state.context.scope || "";
+
+      document.getElementById("measureText").value = state.draft.text || "";
+      document.getElementById("measureDue").value = state.draft.due || "";
+      document.getElementById("deriveFrom").textContent = state.draft.fromPath || "—";
+
+      if(rebuildMind && jm){
+        try{ jm.show(state.mind); }catch(e){ jm.show(defaultMind()); }
+      }
+
+      renderMeasures();
+      updateSelectionPill();
+      updateDeriveFrom();
+      updateUndoRedoButtons();
+
+      lastSavedAt = new Date();
+      setSaveState("saved");
+      updateSaveLabel(true);
+
+      applyI18n();
+    }
+
+    function doUndo(){
+      if(!canUndo()) return;
+      syncMindToState();
+      history.future.push(deepClone(state));
+      state = history.past.pop();
+      applyStateToUI(true);
+      scheduleSave();
+    }
+    function doRedo(){
+      if(!canRedo()) return;
+      syncMindToState();
+      history.past.push(deepClone(state));
+      state = history.future.pop();
+      applyStateToUI(true);
+      scheduleSave();
+    }
+    function updateUndoRedoButtons(){
+      document.getElementById("btnUndo").disabled = !canUndo();
+      document.getElementById("btnRedo").disabled = !canRedo();
+    }
+
+    /* ===== Persist (Autosave) ===== */
+    let saveTimer = null;
+    let lastSavedAt = null;
+
+    function setSaveState(kind){
+      const dot = document.getElementById("saveDot");
+      if(!dot) return;
+      dot.classList.remove("saved","saving");
+      if(kind==="saving") dot.classList.add("saving");
+      if(kind==="saved") dot.classList.add("saved");
+    }
+    function updateSaveLabel(forceTextOnly){
+      const el = document.getElementById("saveText");
+      if(!el) return;
+      if(!lastSavedAt){
+        el.textContent = t("savedIdle");
+        return;
+      }
+      if(forceTextOnly){
+        const hh = String(lastSavedAt.getHours()).padStart(2,"0");
+        const mm = String(lastSavedAt.getMinutes()).padStart(2,"0");
+        el.textContent = `${t("savedAt")} ${hh}:${mm}`;
+      }
+    }
+
+    function scheduleSave(){
+      setSaveState("saving");
+      const st = document.getElementById("saveText");
+      if(st) st.textContent = t("saving");
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(()=>persist(), 450);
+    }
+
+    function persist(){
+      try{
+        syncMindToState();
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        lastSavedAt = new Date();
+        setSaveState("saved");
+        updateSaveLabel(true);
+      }catch(e){}
+    }
+
+    function restore(){
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw) return false;
+      try{
+        const parsed = JSON.parse(raw);
+        if(!parsed || typeof parsed !== "object") return false;
+        state.lang = (parsed.lang==="de" || parsed.lang==="en") ? parsed.lang : currentLang;
+        currentLang = state.lang;
+
+        state.context = parsed.context || state.context;
+        state.mind = parsed.mind || state.mind;
+        state.measures = Array.isArray(parsed.measures) ? parsed.measures : [];
+        state.draft = parsed.draft || state.draft;
+        return true;
+      }catch(e){
+        return false;
+      }
+    }
+
+    /* ===== Helpers ===== */
+    function esc(s){
+      return String(s ?? "")
+        .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+    }
+    function uid(){
+      return "id_" + Math.random().toString(16).slice(2) + "_" + Date.now().toString(16);
+    }
+    function fmtDate(d){
+      if(!d) return "—";
+      try{
+        const dt = new Date(d);
+        if(isNaN(dt.getTime())) return d;
+        const y = dt.getFullYear();
+        const m = String(dt.getMonth()+1).padStart(2,"0");
+        const da = String(dt.getDate()).padStart(2,"0");
+        return `${y}-${m}-${da}`;
+      }catch{ return d; }
+    }
+
+    /* ===== jsMind init ===== */
+    function initMind(){
+      if(typeof jsMind === "undefined"){
+        toast(t("jsMindMissing"));
+        return;
+      }
+      const options = {
+        container: "jsmind_container",
+        editable: false,
+        theme: "primary",
+        view: {
+          engine: "canvas",
+          hmargin: 120,
+          vmargin: 80,
+          line_width: 2,
+          line_color: "#1155b2"
+        },
+        layout: { hspace: 50, vspace: 20, pspace: 13 }
+      };
+      jm = new jsMind(options);
+      jm.show(state.mind);
+
+      const container = document.getElementById("jsmind_container");
+      if(container){
+        container.addEventListener("click", ()=>setTimeout(updateSelectionPill, 0), true);
+      }
+    }
+
+    function getSelected(){
+      if(!jm || !jm.get_selected_node) return null;
+      return jm.get_selected_node();
+    }
+
+    function nodePath(node){
+      if(!node) return "";
+      const parts = [];
+      let cur = node;
+      let guard = 0;
+      while(cur && guard++ < 50){
+        parts.push(cur.topic || cur.id);
+        cur = cur.parent;
+      }
+      return parts.reverse().join(" > ");
+    }
+
+    function updateSelectionPill(){
+      const n = getSelected();
+      const txt = document.getElementById("selText");
+      if(!txt) return;
+      if(!n){
+        txt.textContent = "—";
+        return;
+      }
+      txt.textContent = n.topic || n.id;
+      updateDeriveFrom();
+    }
+
+    function updateDeriveFrom(){
+      const el = document.getElementById("deriveFrom");
+      const n = getSelected();
+      if(!el) return;
+      if(!n){
+        if(!state.draft.fromPath) el.textContent = "—";
+        return;
+      }
+      if(!state.draft.fromNodeId){
+        el.textContent = nodePath(n);
+      }
+    }
+
+    /* ===== Mind actions ===== */
+    function addChild(){
+      if(!jm) return;
+      const sel = getSelected();
+      const parentId = sel ? sel.id : "root";
+
+      const text = prompt(t("promptNodeText"), "");
+      if(text === null) return;
+      const topic = (text || "").trim() || (currentLang==="de" ? "Neuer Knoten" : "New node");
+
+      pushHistory();
+      const id = uid();
+      const ok = jm.add_node(parentId, id, topic);
+      if(ok){
+        jm.select_node(id);
+        updateSelectionPill();
+        scheduleSave();
+      }
+    }
+
+    function addSibling(){
+      if(!jm) return;
+      const sel = getSelected();
+      if(!sel){
+        toast(t("warnSelectNode"));
+        return;
+      }
+      if(sel.id === "root"){
+        toast(t("warnSiblingRoot"));
+        return;
+      }
+      const parentId = sel.parent ? sel.parent.id : "root";
+
+      const text = prompt(t("promptNodeText"), "");
+      if(text === null) return;
+      const topic = (text || "").trim() || (currentLang==="de" ? "Neuer Knoten" : "New node");
+
+      pushHistory();
+      const id = uid();
+      const ok = jm.add_node(parentId, id, topic);
+      if(ok){
+        jm.select_node(id);
+        updateSelectionPill();
+        scheduleSave();
+      }
+    }
+
+    function renameNode(){
+      if(!jm) return;
+      const sel = getSelected();
+      if(!sel){
+        toast(t("warnSelectNode"));
+        return;
+      }
+      const text = prompt(t("promptRename"), sel.topic || "");
+      if(text === null) return;
+      const topic = (text || "").trim();
+      if(!topic) return;
+
+      pushHistory();
+      jm.update_node(sel.id, topic);
+      updateSelectionPill();
+      scheduleSave();
+    }
+
+    function deleteNode(){
+      if(!jm) return;
+      const sel = getSelected();
+      if(!sel){
+        toast(t("warnSelectNode"));
+        return;
+      }
+      if(sel.id === "root"){
+        toast(t("warnDeleteRoot"));
+        return;
+      }
+      pushHistory();
+      jm.remove_node(sel.id);
+      updateSelectionPill();
+      scheduleSave();
+    }
+
+    function resetAll(){
+      if(!confirm(t("confirmReset"))) return;
+
+      history = { past: [], future: [] };
+      state = {
+        lang: currentLang,
+        context: { topic:"", goal:"", scope:"" },
+        mind: defaultMind(),
+        measures: [],
+        draft: { fromNodeId:null, fromPath:"", text:"", due:"" }
+      };
+      localStorage.removeItem(STORAGE_KEY);
+
+      if(jm){
+        jm.show(state.mind);
+        try{ jm.select_node("root"); }catch(e){}
+      }
+      applyStateToUI(false);
+      scheduleSave();
+    }
+
+    document.getElementById("btnChild").addEventListener("click", addChild);
+    document.getElementById("btnSibling").addEventListener("click", addSibling);
+    document.getElementById("btnRename").addEventListener("click", renameNode);
+    document.getElementById("btnDelete").addEventListener("click", deleteNode);
+    document.getElementById("btnUndo").addEventListener("click", doUndo);
+    document.getElementById("btnRedo").addEventListener("click", doRedo);
+    document.getElementById("btnReset").addEventListener("click", resetAll);
+
+    /* ===== Pan / Zoom wrapper ===== */
+    const viewport = document.getElementById("viewport");
+    const layer = document.getElementById("transformLayer");
+    let pan = {x:0, y:0, scale:1};
+    let dragging = false;
+    let dragStart = {x:0,y:0, panX:0, panY:0};
+
+    function applyTransform(){
+      if(!layer) return;
+      layer.style.transform = `translate(${pan.x}px, ${pan.y}px) scale(${pan.scale})`;
+    }
+    function recenter(){
+      pan = {x:0, y:0, scale:1};
+      applyTransform();
+    }
+    function isOnNode(target){
+      return !!(target && target.closest && target.closest("jmnode, .jmnode"));
+    }
+
+    if(viewport){
+      viewport.addEventListener("pointerdown", (e)=>{
+        if(isOnNode(e.target)) return;
+        dragging = true;
+        viewport.setPointerCapture(e.pointerId);
+        dragStart = { x:e.clientX, y:e.clientY, panX:pan.x, panY:pan.y };
+      });
+      viewport.addEventListener("pointermove", (e)=>{
+        if(!dragging) return;
+        const dx = e.clientX - dragStart.x;
+        const dy = e.clientY - dragStart.y;
+        pan.x = dragStart.panX + dx;
+        pan.y = dragStart.panY + dy;
+        applyTransform();
+      });
+      function endDrag(e){
+        dragging = false;
+        try{ viewport.releasePointerCapture(e.pointerId); }catch{}
+      }
+      viewport.addEventListener("pointerup", endDrag);
+      viewport.addEventListener("pointercancel", endDrag);
+
+      viewport.addEventListener("wheel", (e)=>{
+        e.preventDefault();
+        const rect = viewport.getBoundingClientRect();
+        const mx = e.clientX - rect.left;
+        const my = e.clientY - rect.top;
+
+        const prev = pan.scale;
+        const delta = e.deltaY < 0 ? 1.1 : 0.9;
+        const next = Math.min(2.4, Math.max(0.45, prev * delta));
+
+        const ox = (mx - pan.x) / prev;
+        const oy = (my - pan.y) / prev;
+
+        pan.scale = next;
+        pan.x = mx - ox * next;
+        pan.y = my - oy * next;
+
+        applyTransform();
+      }, { passive:false });
+    }
+
+    document.getElementById("btnRecenter").addEventListener("click", recenter);
+
+    /* ===== Measures workflow ===== */
+    let filter = "all";
+
+    function toMeasureDraft(){
+      const sel = getSelected();
+      if(!sel){
+        toast(t("warnSelectNode"));
+        return;
+      }
+      const p = nodePath(sel);
+      state.draft.fromNodeId = sel.id;
+      state.draft.fromPath = p;
+      document.getElementById("deriveFrom").textContent = p;
+
+      const suggestionPrefix = (currentLang==="de" ? "Prüfen/Umsetzen: " : "Check/Implement: ");
+      if(!state.draft.text){
+        state.draft.text = suggestionPrefix + (sel.topic || "");
+        document.getElementById("measureText").value = state.draft.text;
+      }
+      scheduleSave();
+      toast(currentLang==="de" ? "Entwurf erstellt." : "Draft created.");
+    }
+
+    function addMeasure(){
+      const txt = (document.getElementById("measureText").value || "").trim();
+      const due = (document.getElementById("measureDue").value || "").trim();
+      if(!txt){
+        toast(currentLang==="de" ? "Bitte Maßnahme ausformulieren." : "Please write the action.");
+        return;
+      }
+
+      const sel = getSelected();
+      const srcNode = state.draft.fromNodeId || (sel ? sel.id : null);
+      const srcPath = state.draft.fromPath || (sel ? nodePath(sel) : "");
+
+      pushHistory();
+      state.measures.unshift({
+        id: uid(),
+        text: txt,
+        due: due,
+        status: "open",
+        createdAt: new Date().toISOString(),
+        sourceNodeId: srcNode,
+        sourcePath: srcPath
+      });
+
+      state.draft = { fromNodeId:null, fromPath:"", text:"", due:"" };
+      document.getElementById("measureText").value = "";
+      document.getElementById("measureDue").value = "";
+      document.getElementById("deriveFrom").textContent = "—";
+
+      renderMeasures();
+      scheduleSave();
+      toast(currentLang==="de" ? "In Maßnahmenliste gespeichert." : "Saved to action list.");
+    }
+
+    function clearDraft(){
+      state.draft = { fromNodeId:null, fromPath:"", text:"", due:"" };
+      document.getElementById("measureText").value = "";
+      document.getElementById("measureDue").value = "";
+      document.getElementById("deriveFrom").textContent = "—";
+      scheduleSave();
+      toast(currentLang==="de" ? "Entwurf geleert." : "Draft cleared.");
+    }
+
+    function setFilter(f){
+      filter = f;
+      document.querySelectorAll(".chip[data-filter]").forEach(ch=>{
+        ch.classList.toggle("active", ch.getAttribute("data-filter") === filter);
+      });
+      renderMeasures();
+    }
+
+    function cycleStatus(id){
+      const m = state.measures.find(x=>x.id===id);
+      if(!m) return;
+      pushHistory();
+      m.status = (m.status==="open") ? "done" : (m.status==="done") ? "drop" : "open";
+      renderMeasures();
+      scheduleSave();
+    }
+
+    function deleteMeasure(id){
+      pushHistory();
+      state.measures = state.measures.filter(x=>x.id!==id);
+      renderMeasures();
+      scheduleSave();
+    }
+
+    function renderMeasures(){
+      const host = document.getElementById("measureList");
+      if(!host) return;
+      host.innerHTML = "";
+
+      const list = state.measures.filter(m => filter==="all" ? true : m.status===filter);
+
+      const total = state.measures.length;
+      const openCount = state.measures.filter(m=>m.status==="open").length;
+      const doneCount = state.measures.filter(m=>m.status==="done").length;
+      const dropCount = state.measures.filter(m=>m.status==="drop").length;
+
+      document.getElementById("countText").textContent =
+        `${total} · ${t("statusOpen")}: ${openCount} · ${t("statusDone")}: ${doneCount} · ${t("statusDrop")}: ${dropCount}`;
+
+      if(list.length === 0){
+        const empty = document.createElement("div");
+        empty.className = "m-item";
+        empty.innerHTML = `<div class="m-title">${esc(t("noMeasures"))}</div>`;
+        host.appendChild(empty);
+        return;
+      }
+
+      list.forEach(m=>{
+        const statusLabel = (m.status==="open") ? t("statusOpen")
+                          : (m.status==="done") ? t("statusDone")
+                          : t("statusDrop");
+        const statusCls = (m.status==="open") ? "open"
+                        : (m.status==="done") ? "done"
+                        : "drop";
+
+        const item = document.createElement("div");
+        item.className = "m-item";
+        item.innerHTML = `
+          <div class="m-top">
+            <div>
+              <div class="m-title">${esc(m.text)}</div>
+              <div class="m-meta">${esc(t("dueLabel"))}: <strong>${esc(m.due ? fmtDate(m.due) : "—")}</strong></div>
+              <div class="m-source"><strong>Mindmap:</strong> ${esc(m.sourcePath || "—")}</div>
+            </div>
+            <div class="m-actions">
+              <span class="status ${statusCls}" role="button" tabindex="0" data-act="cycle" data-id="${esc(m.id)}">${esc(statusLabel)}</span>
+              <button type="button" class="m-del" title="${esc(t("delete"))}" aria-label="${esc(t("delete"))}" data-act="del" data-id="${esc(m.id)}">&times;</button>
+            </div>
+          </div>
+        `;
+        host.appendChild(item);
+      });
+
+      host.querySelectorAll('[data-act="cycle"]').forEach(el=>{
+        el.addEventListener("click", ()=>cycleStatus(el.getAttribute("data-id")));
+        el.addEventListener("keydown", (e)=>{
+          if(e.key==="Enter" || e.key===" "){
+            e.preventDefault();
+            cycleStatus(el.getAttribute("data-id"));
+          }
+        });
+      });
+      host.querySelectorAll('[data-act="del"]').forEach(el=>{
+        el.addEventListener("click", ()=>deleteMeasure(el.getAttribute("data-id")));
+      });
+    }
+
+    document.getElementById("btnToMeasure").addEventListener("click", toMeasureDraft);
+    document.getElementById("btnAddMeasure").addEventListener("click", addMeasure);
+    document.getElementById("btnClearDraft").addEventListener("click", clearDraft);
+    document.getElementById("btnSaveNow").addEventListener("click", ()=>{ persist(); toast(currentLang==="de" ? "Gespeichert." : "Saved."); });
+
+    document.querySelectorAll(".chip[data-filter]").forEach(ch=>{
+      ch.addEventListener("click", ()=>setFilter(ch.getAttribute("data-filter")));
+    });
+
+    /* ===== JSON + Print ===== */
+    function downloadJson(){
+      syncMindToState();
+      const blob = new Blob([JSON.stringify(state, null, 2)], {type:"application/json"});
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = t("jsonFileName");
+      a.click();
+      URL.revokeObjectURL(a.href);
+      toast(currentLang==="de" ? "JSON gespeichert." : "JSON saved.");
+    }
+    function loadJson(file){
+      file.text().then(txt=>{
+        const parsed = JSON.parse(txt);
+        if(!parsed || typeof parsed !== "object") throw new Error("bad");
+        pushHistory();
+
+        state.lang = (parsed.lang==="de" || parsed.lang==="en") ? parsed.lang : currentLang;
+        currentLang = state.lang;
+        state.context = parsed.context || {topic:"",goal:"",scope:""};
+        state.mind = parsed.mind || defaultMind();
+        state.measures = Array.isArray(parsed.measures) ? parsed.measures : [];
+        state.draft = parsed.draft || { fromNodeId:null, fromPath:"", text:"", due:"" };
+
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        setLanguage(currentLang);
+        if(jm) jm.show(state.mind);
+        applyStateToUI(false);
+        toast(currentLang==="de" ? "JSON geladen." : "JSON loaded.");
+      }).catch(()=>{
+        alert(t("jsonLoadError"));
+      });
+    }
+
+    document.getElementById("btnJsonSave").addEventListener("click", downloadJson);
+    document.getElementById("jsonFile").addEventListener("change", (e)=>{
+      const f = e.target.files && e.target.files[0];
+      if(!f) return;
+      loadJson(f);
+      e.target.value = "";
+    });
+    document.getElementById("btnPrint").addEventListener("click", ()=>window.print());
+
+    /* ===== Context + Draft autosave ===== */
+    const topicEl = document.getElementById("topicInput");
+    const goalEl  = document.getElementById("goalInput");
+    const scopeEl = document.getElementById("scopeInput");
+    [topicEl, goalEl, scopeEl].forEach(el=>{
+      el.addEventListener("input", ()=>{
+        state.context.topic = topicEl.value;
+        state.context.goal = goalEl.value;
+        state.context.scope = scopeEl.value;
+        scheduleSave();
+      });
+    });
+    document.getElementById("measureText").addEventListener("input", (e)=>{
+      state.draft.text = e.target.value;
+      scheduleSave();
+    });
+    document.getElementById("measureDue").addEventListener("input", (e)=>{
+      state.draft.due = e.target.value;
+      scheduleSave();
+    });
+
+    /* ===== Init ===== */
+    restore();
+    localStorage.setItem("qmLang", currentLang);
+    applyI18n();
+
+    initMind();
+    recenter();
+
+    if(jm){
+      try{ jm.show(state.mind); }catch(e){ jm.show(defaultMind()); }
+      try{ jm.select_node("root"); }catch(e){}
+    }
+
+    document.getElementById("copyrightYear").textContent = String(new Date().getFullYear());
+
+    applyStateToUI(false);
+    setFilter("all");
+
+    lastSavedAt = new Date();
+    setSaveState("saved");
+    updateSaveLabel(true);
+
+  })();
+  </script>
+</body>
+</html>
