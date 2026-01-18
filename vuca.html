@@ -1,934 +1,723 @@
-<!-- VUCA Entscheidungsfinder (WP-Snippet) -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<div id="vuca-decider-v3" class="vuca-app" aria-label="VUCA Entscheidungsfinder">
-  <!-- SECTION 1 -->
-  <section class="vuca-card" aria-labelledby="vuca-sec1">
-    <div class="vuca-card-head">
-      <div class="vuca-headcol">
-        <h2 id="vuca-sec1">1. VUCA Entscheidungsfinder</h2>
-        <p class="vuca-sub">
-          Ein Tool, das einen Fall in <strong>VUCA-Druck</strong> (V/U/C/A) und <strong>VUCA Prime-Reifegrad</strong>
-          (Vision/Understanding/Clarity/Agility) übersetzt – inklusive <strong>Toolvorschlägen</strong> und <strong>Roadmap</strong>.
-        </p>
-      </div>
-      <span class="vuca-badge">Decision Tool</span>
-    </div>
-
-    <div class="vuca-content">
-      <div class="vuca-grid-2">
-        <div class="vuca-block">
-          <h3 class="vuca-h3">Ziel des Tools</h3>
-          <ul class="vuca-list">
-            <li><strong>Situation strukturieren</strong>: nicht “ein Gefühl”, sondern ein Profil.</li>
-            <li><strong>Entscheidungslogik ableiten</strong>: pro Welt PDCA vs. DCPA.</li>
-            <li><strong>Werkzeugkasten liefern</strong>: pro Dimension konkrete Methoden.</li>
-            <li><strong>Gaps sichtbar machen</strong>: Wo ist der Druck höher als der Reifegrad?</li>
-          </ul>
-        </div>
-
-        <div class="vuca-block soft">
-          <h3 class="vuca-h3">So nutzt du es (3 Schritte)</h3>
-          <ol class="vuca-list">
-            <li><strong>Fall ausfüllen</strong> (Titel, Kontext, Ziel).</li>
-            <li><strong>Bewerten</strong>:
-              <ul class="vuca-list">
-                <li>Bis zu 4 <strong>Welten</strong> anlegen (W1–W4) und V/U/C/A per Schieber setzen.</li>
-                <li><strong>VUCA Prime</strong>: 5 Fragen je Buchstabe (Grün/Gelb/Rot) beantworten.</li>
-              </ul>
-            </li>
-            <li><strong>Entscheidung lesen</strong>: Radar + Matrix + Gap → Toolvorschläge + Roadmap.</li>
-          </ol>
-        </div>
-      </div>
-
-      <div class="vuca-note">
-        <strong>Wichtig:</strong> Beispieltexte erscheinen nur in <em>Platzhaltern</em>. Wenn Felder leer sind, bleibt der Output neutral (—).
-      </div>
-    </div>
-  </section>
-
-  <!-- SECTION 2 -->
-  <section class="vuca-card" aria-labelledby="vuca-sec2">
-    <div class="vuca-card-head">
-      <div class="vuca-headcol">
-        <h2 id="vuca-sec2">2. Definition &amp; Logik</h2>
-        <p class="vuca-sub">
-          VUCA beschreibt die Umwelt (Druck). VUCA Prime beschreibt die Antwortfähigkeit (Reifegrad).
-        </p>
-      </div>
-      <span class="vuca-badge">Definition</span>
-    </div>
-
-    <div class="vuca-content">
-      <div class="vuca-grid-2">
-        <div class="vuca-block">
-          <h3 class="vuca-h3">VUCA-Druck (Input)</h3>
-          <p class="vuca-text">
-            Du bewertest V/U/C/A je Welt mit Schiebern (1–5). Daraus entstehen Radar &amp; Matrix.
-          </p>
-        </div>
-        <div class="vuca-block">
-          <h3 class="vuca-h3">VUCA Prime-Reifegrad (Reaktion)</h3>
-          <p class="vuca-text">
-            Pro Buchstabe 5 Fragen (Grün/Gelb/Rot). Daraus entsteht ein Reifegradprofil (1–5), das wir
-            gegen den VUCA-Druck spiegeln → <strong>VUCA Gap</strong>.
-          </p>
-        </div>
-      </div>
-
-      <div class="vuca-hint">
-        <strong>Erkenntnis-Logik:</strong> Hoher Druck + niedriger Reifegrad = prioritär handeln (Gap schließen).
-        Hoher Druck + hoher Reifegrad = skalieren/standardisieren.
-      </div>
-    </div>
-  </section>
-
-  <!-- SECTION 3 -->
-  <section class="vuca-card" aria-labelledby="vuca-sec3">
-    <div class="vuca-card-head">
-      <div class="vuca-headcol">
-        <h2 id="vuca-sec3">3. Fallbeschreibung</h2>
-        <p class="vuca-sub">Diese Felder steuern den Ergebnis-Header unten (live).</p>
-      </div>
-      <span class="vuca-badge">Fall</span>
-    </div>
-
-    <div class="vuca-content">
-      <div class="vuca-form-grid">
-        <div class="vuca-field">
-          <label class="vuca-label" for="caseTitle">Titel</label>
-          <input id="caseTitle" class="vuca-input" type="text" placeholder="z.B. Kein ESD-Verpackungsmaterial am Markt verfügbar" />
-        </div>
-        <div class="vuca-field">
-          <label class="vuca-label" for="caseContextTeam">Kontext / Team</label>
-          <input id="caseContextTeam" class="vuca-input" type="text" placeholder="z.B. Einkauf / Produktion / Qualität" />
-        </div>
-        <div class="vuca-field vuca-full">
-          <label class="vuca-label" for="caseDesc">Kurzbeschreibung (2–3 Sätze)</label>
-          <textarea id="caseDesc" class="vuca-textarea" placeholder="Was passiert, was ist unklar/instabil, wo drückt es?"></textarea>
-        </div>
-        <div class="vuca-field vuca-full">
-          <label class="vuca-label" for="caseGoal">Ziel / Outcome</label>
-          <input id="caseGoal" class="vuca-input" type="text" placeholder="z.B. Versorgung sichern, Lieferfähigkeit stabilisieren, Risiken minimieren" />
-        </div>
-      </div>
-
-      <div class="vuca-btn-row">
-        <button type="button" class="vuca-btn" id="btnResetCase">Felder leeren</button>
-        <button type="button" class="vuca-btn" id="btnBackup">Backup (Browser)</button>
-        <button type="button" class="vuca-btn" id="btnRestore">Backup laden</button>
-        <button type="button" class="vuca-btn danger" id="btnClearAll">Alles löschen</button>
-        <span class="vuca-spacer"></span>
-        <div class="vuca-sr" id="ariaStatus" aria-live="polite"></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- SECTION 4 -->
-  <section class="vuca-card" aria-labelledby="vuca-sec4">
-    <div class="vuca-card-head">
-      <div class="vuca-headcol">
-        <h2 id="vuca-sec4">4. Bewertung</h2>
-        <p class="vuca-sub">
-          Lege bis zu 4 Welten an (W1–W4). Jede Welt kann eine andere Entscheidungslogik brauchen.
-        </p>
-      </div>
-      <span class="vuca-badge">Bewertung</span>
-    </div>
-
-    <div class="vuca-content">
-      <div class="vuca-row-head">
-        <div class="vuca-row-title">
-          <h3 class="vuca-h3">A) VUCA je Welt (Schieber 1–5)</h3>
-          <p class="vuca-hint">Live-Update: Schieber bewegen → Radar/Matrix/Gap aktualisieren sofort.</p>
-        </div>
-        <div class="vuca-row-actions">
-          <button type="button" class="vuca-btn primary" id="btnAddWorld">Welt hinzufügen</button>
-        </div>
-      </div>
-
-      <div id="worldList" class="world-grid" aria-label="Welten Liste"></div>
-
-      <div class="vuca-divider"></div>
-
-      <div class="vuca-row-head">
-        <div class="vuca-row-title">
-          <h3 class="vuca-h3">B) VUCA Prime Reifegrad (Highlight)</h3>
-          <p class="vuca-hint">
-            5 Fragen je Dimension – Antworten als <span class="pill green">Grün</span> / <span class="pill yellow">Gelb</span> / <span class="pill red">Rot</span>.
-            <strong>Erst hier</strong> wird die Roadmap “intelligent”.
-          </p>
-        </div>
-      </div>
-
-      <div id="primeGrid" class="prime-grid" aria-label="VUCA Prime Fragen"></div>
-    </div>
-  </section>
-
-  <!-- SECTION 5 -->
-  <section class="vuca-card" aria-labelledby="vuca-sec5">
-    <div class="vuca-card-head">
-      <div class="vuca-headcol">
-        <h2 id="vuca-sec5">5. Darstellung (Dashboard)</h2>
-        <p class="vuca-sub">3 Ebenen: Radar (Highlight), Matrix, Gap. Jede Grafik exportierbar.</p>
-      </div>
-      <span class="vuca-badge">Visuals</span>
-    </div>
-
-    <div class="vuca-content">
-      <div class="viz-grid">
-        <!-- Radar -->
-        <div class="viz-card">
-          <div class="viz-head">
-            <div>
-              <div class="viz-title">VUCA Meter (Radar) – Multi-Overlay</div>
-              <div class="viz-sub">Polygone je Welt + optional Gesamt + Prime-Reifegrad</div>
-            </div>
-            <div class="viz-actions">
-              <button type="button" class="vuca-btn small primary" id="exportRadarPng">Radar PNG</button>
-            </div>
-          </div>
-
-          <div class="legend-wrap" id="radarLegend"></div>
-
-          <div class="chart-wrap" id="radarWrap">
-            <canvas id="radarChart" aria-label="Radar Chart" role="img"></canvas>
-          </div>
-
-          <div class="vuca-hint" id="radarHint">
-            Tipp: In der Legende kannst du Welten ein-/ausblenden. “Prime” zeigt deine Antwortfähigkeit (Vision/Understanding/Clarity/Agility) auf derselben Skala (1–5).
-          </div>
-        </div>
-
-        <!-- Matrix -->
-        <div class="viz-card">
-          <div class="viz-head">
-            <div>
-              <div class="viz-title">VUCA Matrix (2×2)</div>
-              <div class="viz-sub">x = U+A (Lernen) · y = V+C (Liefern/Steuern)</div>
-            </div>
-            <div class="viz-actions">
-              <button type="button" class="vuca-btn small primary" id="exportMatrixPng">Matrix PNG</button>
-            </div>
-          </div>
-
-          <div class="matrix-wrap" id="matrixWrap">
-            <svg id="vucaMatrix" viewBox="0 0 420 420" aria-label="VUCA Matrix" role="img"></svg>
-          </div>
-
-          <div class="vuca-hint">
-            Punkte W1–W4 zeigen: <strong>eine Fallbeschreibung</strong> kann mehrere “Welten” enthalten → daher mehrere Punkte.
-          </div>
-        </div>
-
-        <!-- Gap -->
-        <div class="viz-card">
-          <div class="viz-head">
-            <div>
-              <div class="viz-title">VUCA Gap (Druck ↔ Reifegrad)</div>
-              <div class="viz-sub">Wo ist der Druck höher als die Antwortfähigkeit?</div>
-            </div>
-            <div class="viz-actions">
-              <button type="button" class="vuca-btn small primary" id="exportGapPng">Gap PNG</button>
-            </div>
-          </div>
-
-          <div class="gap-wrap" id="gapWrap">
-            <div id="gapBars" class="gap-bars"></div>
-          </div>
-
-          <div class="insight" id="insightBox">
-            Noch keine Bewertungen. Lege mindestens eine Welt an und beantworte Prime-Fragen (Grün/Gelb/Rot).
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- SECTION 6 -->
-  <section class="vuca-card" aria-labelledby="vuca-sec6">
-    <div class="vuca-card-head">
-      <div class="vuca-headcol">
-        <h2 id="vuca-sec6">6. Methodenauswahl &amp; Tools (Entscheidungsausgabe)</h2>
-        <p class="vuca-sub">
-          Der Output endet mit konkreten Toolvorschlägen – pro Dimension und als Prioritätenliste.
-        </p>
-      </div>
-      <span class="vuca-badge">Tools</span>
-    </div>
-
-    <div class="vuca-content">
-      <div class="tool-grid" id="toolGrid"></div>
-
-      <div class="vuca-divider"></div>
-
-      <div class="vuca-block soft" id="autoRecommendations">
-        <h3 class="vuca-h3">Automatische Empfehlung (Top-Prioritäten)</h3>
-        <div class="vuca-text" id="autoRecText">Noch keine Daten. Bewerte Welten und Prime-Fragen.</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- SECTION 7 -->
-  <section class="vuca-card" aria-labelledby="vuca-sec7">
-    <div class="vuca-card-head">
-      <div class="vuca-headcol">
-        <h2 id="vuca-sec7">7. Maßnahmen (Roadmap)</h2>
-        <p class="vuca-sub">
-          Pro Welt: vorgeschlagene Schleife (PDCA/DCPA) + nächste Schritte (48h / 2 Wochen / 4–8 Wochen).
-        </p>
-      </div>
-      <span class="vuca-badge">Roadmap</span>
-    </div>
-
-    <div class="vuca-content">
-      <div id="roadmapBox" class="roadmap"></div>
-    </div>
-  </section>
-
-  <!-- SECTION 8 -->
-  <section class="vuca-card" aria-labelledby="vuca-sec8">
-    <div class="vuca-card-head">
-      <div class="vuca-headcol">
-        <h2 id="vuca-sec8">8. Export &amp; Daten</h2>
-        <p class="vuca-sub">Alle Grafiken exportieren + JSON Import/Export (am Ende, wie gewünscht).</p>
-      </div>
-      <span class="vuca-badge">Export</span>
-    </div>
-
-    <div class="vuca-content">
-      <div class="vuca-grid-2">
-        <div class="vuca-block">
-          <h3 class="vuca-h3">Grafik-Export (PNG)</h3>
-          <div class="vuca-btn-row">
-            <button type="button" class="vuca-btn primary" id="exportAllPng">Ganzes Dashboard PNG</button>
-            <button type="button" class="vuca-btn" id="exportRadarPng2">Radar PNG</button>
-            <button type="button" class="vuca-btn" id="exportMatrixPng2">Matrix PNG</button>
-            <button type="button" class="vuca-btn" id="exportGapPng2">Gap PNG</button>
-          </div>
-          <p class="vuca-hint">Exports verwenden den aktuellen Stand (live). Ideal für Doku/Slides.</p>
-        </div>
-
-        <div class="vuca-block">
-          <h3 class="vuca-h3">JSON Import/Export</h3>
-          <div class="vuca-btn-row">
-            <button type="button" class="vuca-btn primary" id="btnExportJson">JSON speichern</button>
-            <button type="button" class="vuca-btn" id="btnImportJson">JSON laden</button>
-            <input type="file" id="jsonFile" accept="application/json" style="display:none;" />
-          </div>
-          <p class="vuca-hint">JSON enthält Fall + Welten + Prime-Antworten. Keine Live-Preview (wie gewünscht).</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- FOOTER (Links + Copyright) -->
-  <div class="vuca-footer">
-    <div class="vuca-footer-links">
-      <strong>Weiterführend:</strong>
-      <a href="https://www.quality.de/lexikon/vuca/" target="_blank" rel="noopener">VUCA Lexikon</a>
-      <span class="sep">·</span>
-      <a href="https://www.quality.de/weiterbildung/vuca-seminar-schulung-training/" target="_blank" rel="noopener">VUCA Seminar</a>
-      <span class="sep">·</span>
-      <a href="https://www.quality.de/weiterbildung/opex-seminare-ausbildungen/opex/" target="_blank" rel="noopener">OPEX Ausbildung</a>
-    </div>
-    <div class="vuca-footer-copy">
-      &copy; <span id="copyrightYear"></span> Quality Services &amp; Wissen GmbH
-    </div>
-  </div>
-
-  <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
-</div>
-
-<style>
-  /* Scoped Styles (WordPress-sicher) */
-  #vuca-decider-v3.vuca-app{
-    /* CHANGED: Blau statt Türkis */
-    --blue:#1155b2;
-    --dark:#09387a;
-
-    --bg:#f8fafc;
-    --border:rgba(17,85,178,.15);
-    --text:#27304d;
-    --muted:#64748b;
-
-    --green:#16a34a;
-    --yellow:#f59e0b;
-    --red:#e53e3e;
-
-    --radius:4px;
-    --shadow: 0 4px 12px rgba(27,51,92,.08);
-
-    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-    color: var(--text);
-    line-height: 1.6;
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 20px 0;
-  }
-  #vuca-decider-v3 *{ box-sizing:border-box; }
-  #vuca-decider-v3 :focus-visible{ outline: 2px solid var(--blue); outline-offset: 2px; }
-
-  .vuca-card{
-    background:#fff;
-    border:1px solid var(--border);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    overflow:hidden;
-    margin-bottom: 22px;
-  }
-  .vuca-card-head{
-    background: var(--bg);
-    padding: 16px 20px;
-    border-bottom: 2px solid var(--blue);
-    display:flex;
-    justify-content: space-between;
-    align-items:center;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-  .vuca-headcol{ display:flex; flex-direction:column; gap:2px; min-width: 260px; }
-  .vuca-card-head h2{
-    margin:0;
-    font-size: 18px;
-    color: var(--dark);
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: .5px;
-  }
-  .vuca-sub{ margin:0; color: var(--muted); font-size: 13px; }
-  .vuca-badge{
-    background:#fff;
-    color: var(--dark);
-    border:1px solid rgba(17,85,178,.35); /* CHANGED */
-    padding: 4px 10px;
-    font-size: 11px;
-    font-weight: 900;
-    border-radius: 999px;
-    text-transform: uppercase;
-    white-space: nowrap;
-  }
-  .vuca-content{ padding: 18px 20px; }
-
-  .vuca-grid-2{
-    display:grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-  }
-  @media(max-width: 860px){ .vuca-grid-2{ grid-template-columns: 1fr; } }
-
-  .vuca-form-grid{
-    display:grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-  }
-  .vuca-full{ grid-column: 1 / -1; }
-  @media(max-width: 860px){ .vuca-form-grid{ grid-template-columns: 1fr; } }
-
-  .vuca-block{
-    border:1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 14px;
-    background:#fff;
-  }
-  .vuca-block.soft{
-    background: var(--bg);
-    border-left: 4px solid var(--blue);
-  }
-  .vuca-h3{
-    margin:0 0 6px;
-    font-size: 13px;
-    font-weight: 900;
-    color: var(--dark);
-    text-transform: uppercase;
-    letter-spacing: .3px;
-  }
-  .vuca-text{ margin:0; font-size: 14px; color: var(--text); }
-  .vuca-list{ margin:8px 0 0 18px; color: var(--text); font-size: 14px; }
-  .vuca-note{
-    margin-top: 14px;
-    background: rgba(245,158,11,.12);
-    border: 1px solid rgba(245,158,11,.35);
-    padding: 12px;
-    border-radius: var(--radius);
-    color: #3f3f46;
-    font-size: 13px;
-  }
-  .vuca-hint{
-    margin: 10px 0 0;
-    font-size: 12px;
-    color: var(--muted);
-  }
-
-  .vuca-field{ display:flex; flex-direction:column; gap:6px; }
-  .vuca-label{
-    font-size: 13px;
-    font-weight: 900;
-    color: #334155;
-    text-transform: uppercase;
-    letter-spacing: .2px;
-  }
-  .vuca-input, .vuca-textarea{
-    width:100%;
-    padding: 12px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    font-size: 14px;
-    outline: none;
-  }
-  .vuca-textarea{ min-height: 92px; resize: vertical; }
-  .vuca-input:focus, .vuca-textarea:focus{
-    border-color: rgba(17,85,178,.7); /* CHANGED */
-    box-shadow: 0 0 0 3px rgba(17,85,178,.12); /* CHANGED */
-  }
-
-  .vuca-divider{ height:1px; background:#edf2f7; margin: 16px 0; }
-
-  .vuca-btn-row{
-    display:flex;
-    flex-wrap:wrap;
-    gap:10px;
-    margin-top: 12px;
-    padding-top: 12px;
-    border-top: 1px solid var(--border);
-    align-items:center;
-  }
-  .vuca-spacer{ flex: 1 1 auto; }
-  .vuca-btn{
-    background:#fff;
-    border: 1px solid var(--border);
-    color: var(--dark);
-    padding: 10px 14px;
-    border-radius: var(--radius);
-    font-weight: 900;
-    cursor:pointer;
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: .3px;
-    user-select:none;
-  }
-  .vuca-btn:hover{ background: #f0f4f8; transform: translateY(-1px); }
-  .vuca-btn:active{ transform: translateY(1px); }
-  .vuca-btn.primary{
-    background: var(--blue);
-    color:#fff;
-    border-color: var(--blue);
-  }
-  .vuca-btn.primary:hover{ background: var(--dark); border-color: var(--dark); }
-  .vuca-btn.danger{ color: var(--red); border-color: rgba(229,62,62,.35); }
-  .vuca-btn.small{ padding: 8px 10px; font-size: 11px; }
-
-  /* Worlds */
-  .vuca-row-head{
-    display:flex;
-    justify-content: space-between;
-    align-items:flex-end;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-  .vuca-row-title h3{ margin:0; }
-  .world-grid{
-    display:grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-top: 12px;
-  }
-  @media(max-width: 860px){ .world-grid{ grid-template-columns: 1fr; } }
-  .world-card{
-    border:1px solid var(--border);
-    border-radius: var(--radius);
-    background:#fff;
-    box-shadow: 0 6px 18px rgba(27,51,92,.05);
-    padding: 12px;
-  }
-  .world-head{
-    display:flex;
-    justify-content: space-between;
-    align-items:center;
-    gap: 10px;
-    margin-bottom: 10px;
-  }
-  .world-name{
-    font-weight: 900;
-    color: #0f172a;
-    text-transform: uppercase;
-    letter-spacing: .25px;
-    font-size: 13px;
-    margin:0;
-  }
-  .world-mini{
-    font-size: 12px;
-    color: var(--muted);
-    margin: 4px 0 0;
-  }
-  .world-actions{ display:flex; gap:8px; align-items:center; }
-  .chip{
-    display:inline-flex;
-    align-items:center;
-    gap: 8px;
-    border:1px solid var(--border);
-    border-radius: 999px;
-    padding: 6px 10px;
-    font-size: 12px;
-    font-weight: 900;
-    background:#fff;
-    color:#0f172a;
-  }
-  .pill{ padding: 2px 8px; border-radius: 999px; font-weight: 900; font-size: 11px; }
-  .pill.green{ background: rgba(22,163,74,.12); border:1px solid rgba(22,163,74,.35); }
-  .pill.yellow{ background: rgba(245,158,11,.14); border:1px solid rgba(245,158,11,.35); }
-  .pill.red{ background: rgba(229,62,62,.12); border:1px solid rgba(229,62,62,.35); }
-
-  .slider-grid{
-    display:grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px 14px;
-  }
-  @media(max-width: 480px){ .slider-grid{ grid-template-columns: 1fr; } }
-  .slider{
-    padding: 10px;
-    border: 1px dashed #e2e8f0;
-    border-radius: var(--radius);
-    background:#fff;
-  }
-  .slider-top{
-    display:flex;
-    justify-content: space-between;
-    align-items:baseline;
-    gap:10px;
-    margin-bottom: 8px;
-  }
-  .slider-label{ font-weight: 900; font-size: 12px; color:#334155; }
-  .slider-val{ font-size: 12px; color: var(--muted); white-space:nowrap; }
-  input[type="range"]{ width:100%; }
-
-  /* Prime Questions */
-  .prime-grid{
-    display:grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-top: 12px;
-  }
-  @media(max-width: 860px){ .prime-grid{ grid-template-columns: 1fr; } }
-  .prime-card{
-    border:1px solid var(--border);
-    border-radius: var(--radius);
-    background: linear-gradient(180deg, #fff 0%, #fbfdff 100%);
-    padding: 12px;
-    box-shadow: 0 6px 18px rgba(27,51,92,.05);
-  }
-  .prime-title{
-    display:flex;
-    justify-content: space-between;
-    gap:10px;
-    align-items:baseline;
-    margin-bottom: 8px;
-  }
-  .prime-title h4{
-    margin:0;
-    font-weight: 900;
-    text-transform: uppercase;
-    color: var(--dark);
-    letter-spacing: .25px;
-    font-size: 13px;
-  }
-  .prime-title .prime-meta{ color: var(--muted); font-size: 12px; }
-  .qrow{
-    border:1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 10px;
-    margin-bottom: 10px;
-    background:#fff;
-  }
-  .qrow:last-child{ margin-bottom:0; }
-  .qtext{ font-size: 13px; font-weight: 800; color:#0f172a; margin:0 0 8px; }
-  .traffic{
-    display:flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    align-items:center;
-  }
-  .tl{
-    display:inline-flex;
-    align-items:center;
-    gap: 8px;
-    border:1px solid var(--border);
-    border-radius: 999px;
-    padding: 6px 10px;
-    cursor:pointer;
-    user-select:none;
-    font-weight: 900;
-    font-size: 12px;
-    background:#fff;
-  }
-  .dot{
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    display:inline-block;
-  }
-  .tl.red .dot{ background: var(--red); }
-  .tl.yellow .dot{ background: var(--yellow); }
-  .tl.green .dot{ background: var(--green); }
-  .tl input{ position:absolute; opacity:0; width:1px; height:1px; }
-  .tl.selected{
-    box-shadow: 0 6px 14px rgba(0,0,0,.08);
-    transform: translateY(-1px);
-  }
-  .tl.red.selected{ border-color: rgba(229,62,62,.55); background: rgba(229,62,62,.08); }
-  .tl.yellow.selected{ border-color: rgba(245,158,11,.55); background: rgba(245,158,11,.10); }
-  .tl.green.selected{ border-color: rgba(22,163,74,.55); background: rgba(22,163,74,.08); }
-
-  /* Visuals */
-  .viz-grid{
-    display:grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 12px;
-  }
-  @media(max-width: 980px){ .viz-grid{ grid-template-columns: 1fr; } }
-  .viz-card{
-    border:1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 12px;
-    background:#fff;
-    box-shadow: 0 6px 18px rgba(27,51,92,.05);
-  }
-  .viz-head{
-    display:flex;
-    justify-content: space-between;
-    align-items:flex-start;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin-bottom: 10px;
-  }
-  .viz-title{
-    font-weight: 900;
-    font-size: 12px;
-    color: var(--dark);
-    text-transform: uppercase;
-    letter-spacing: .25px;
-  }
-  .viz-sub{ font-size: 12px; color: var(--muted); margin-top: 2px; }
-  .viz-actions{ display:flex; gap: 10px; }
-
-  .chart-wrap{
-    height: 360px;
-    width: 100%;
-    position: relative;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 10px;
-    /* CHANGED: blaues Glow statt türkis */
-    background: radial-gradient(circle at center, rgba(17,85,178,.06) 0%, transparent 70%);
-  }
-
-  .legend-wrap{
-    display:flex;
-    flex-wrap:wrap;
-    gap: 8px;
-    margin-bottom: 10px;
-  }
-  .leg-item{
-    display:flex;
-    align-items:center;
-    gap: 8px;
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    padding: 6px 10px;
-    font-size: 12px;
-    font-weight: 900;
-    cursor:pointer;
-    user-select:none;
-    background:#fff;
-  }
-  .swatch{ width: 10px; height: 10px; border-radius: 2px; }
-  .leg-item.off{ opacity: .45; }
-
-  .matrix-wrap{
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    background: #fff;
-    padding: 10px;
-  }
-  #vucaMatrix{ width:100%; height:auto; display:block; }
-
-  /* Gap */
-  .gap-wrap{
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 10px;
-    /* CHANGED */
-    background: linear-gradient(to right, rgba(17,85,178,.05), transparent);
-  }
-  .gap-bars{ display:flex; flex-direction:column; gap: 10px; }
-  .gap-row{
-    display:grid;
-    grid-template-columns: 54px 1fr 46px;
-    gap: 10px;
-    align-items:center;
-  }
-  .gap-k{ font-weight: 900; color:#0f172a; font-size: 12px; text-transform: uppercase; }
-  .bar{
-    position: relative;
-    height: 12px;
-    border-radius: 999px;
-    background: rgba(100,116,139,.14);
-    overflow:hidden;
-  }
-  .bar::after{
-    content:"";
-    position:absolute;
-    left:50%;
-    top:0;
-    height:100%;
-    width:2px;
-    background: rgba(15,23,42,.35);
-  }
-  .fill{
-    position:absolute;
-    top:0;
-    height:100%;
-    border-radius: 999px;
-  }
-  .gap-v{ text-align:right; font-weight: 900; font-size: 12px; color: var(--muted); }
-  .insight{
-    margin-top: 12px;
-    border-left: 4px solid var(--blue);
-    background: rgba(17,85,178,.06); /* CHANGED */
-    padding: 12px;
-    border-radius: var(--radius);
-    color: var(--text);
-    font-size: 13px;
-  }
-
-  /* Tool output */
-  .tool-grid{
-    display:grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-  }
-  @media(max-width: 860px){ .tool-grid{ grid-template-columns: 1fr; } }
-  .tool-card{
-    border:1px solid var(--border);
-    border-radius: var(--radius);
-    background:#fff;
-    padding: 12px;
-    box-shadow: 0 6px 18px rgba(27,51,92,.05);
-  }
-  .tool-card h4{
-    margin:0 0 6px;
-    font-size: 13px;
-    font-weight: 900;
-    text-transform: uppercase;
-    color: var(--dark);
-  }
-  .tool-card p{ margin:0 0 8px; font-size: 13px; color: var(--muted); }
-  .tool-card ul{ margin:0 0 0 18px; font-size: 13px; }
-  .roadmap{
-    display:flex;
-    flex-direction:column;
-    gap: 12px;
-  }
-  .roadmap-item{
-    border:1px solid var(--border);
-    border-radius: var(--radius);
-    background:#fff;
-    padding: 12px;
-    box-shadow: 0 6px 18px rgba(27,51,92,.05);
-  }
-  .roadmap-top{
-    display:flex;
-    justify-content: space-between;
-    align-items:baseline;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-  .roadmap-title{
-    font-weight: 900;
-    text-transform: uppercase;
-    color:#0f172a;
-    font-size: 13px;
-  }
-  .roadmap-loop{
-    font-weight: 900;
-    font-size: 12px;
-    padding: 4px 10px;
-    border-radius: 999px;
-    border:1px solid var(--border);
-    background:#fff;
-  }
-  .roadmap-loop.pdca{ border-color: rgba(22,163,74,.35); background: rgba(22,163,74,.08); }
-  .roadmap-loop.dcpa{ border-color: rgba(245,158,11,.35); background: rgba(245,158,11,.10); }
-  .roadmap-loop.crisis{ border-color: rgba(229,62,62,.35); background: rgba(229,62,62,.08); }
-  .roadmap-item ul{ margin: 8px 0 0 18px; font-size: 13px; }
-  .toast{
-    position: fixed;
-    bottom: 18px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #0f172a;
-    color:#fff;
-    padding: 12px 18px;
-    border-radius: 999px;
-    font-size: 14px;
-    z-index: 9999;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity .25s;
-    box-shadow: 0 10px 22px rgba(0,0,0,.18);
-  }
-  .toast.show{ opacity: 1; }
-  .vuca-sr{
-    position:absolute !important;
-    width:1px; height:1px;
-    padding:0; margin:-1px;
-    overflow:hidden; clip:rect(0,0,0,0);
-    white-space:nowrap; border:0;
-  }
-
-  /* Footer */
-  .vuca-footer{
-    margin-top: 10px;
-    border-top: 1px solid var(--border);
-    padding: 14px 6px 0;
-    color: var(--muted);
-    font-size: 12px;
-    display:flex;
-    flex-wrap:wrap;
-    gap: 10px 14px;
-    justify-content: space-between;
-    align-items:center;
-  }
-  .vuca-footer a{
-    color: var(--dark);
-    font-weight: 800;
-    text-decoration: none;
-  }
-  .vuca-footer a:hover{ text-decoration: underline; }
-  .vuca-footer .sep{ opacity: .6; padding: 0 6px; }
-</style>
-
 <script>
 (function(){
   const ROOT = document.getElementById("vuca-decider-v3");
   if(!ROOT) return;
 
   const STORAGE_KEY = "vuca_decider_v3_state";
+  const LANG_KEY = "qmLang";
 
   const $ = (sel) => ROOT.querySelector(sel);
   const $$ = (sel) => Array.from(ROOT.querySelectorAll(sel));
 
+  // ----------------------------
+  // i18n
+  // ----------------------------
+  const I18N = {
+    de: {
+      // General
+      langLabel: "Sprache",
+      badgeDecision: "Decision Tool",
+      badgeDefinition: "Definition",
+      badgeCase: "Fall",
+      badgeAssessment: "Bewertung",
+      badgeVisuals: "Visuals",
+      badgeTools: "Tools",
+      badgeRoadmap: "Roadmap",
+      badgeExport: "Export",
+
+      // Section titles/subs
+      sec1Title: "1. VUCA Entscheidungsfinder",
+      sec1SubHtml:
+        'Ein Tool, das einen Fall in <strong>VUCA-Druck</strong> (V/U/C/A) und <strong>VUCA Prime-Reifegrad</strong> (Vision/Understanding/Clarity/Agility) übersetzt – inklusive <strong>Toolvorschlägen</strong> und <strong>Roadmap</strong>.',
+      goalTitle: "Ziel des Tools",
+      goalListHtml: [
+        "<strong>Situation strukturieren</strong>: nicht “ein Gefühl”, sondern ein Profil.",
+        "<strong>Entscheidungslogik ableiten</strong>: pro Welt PDCA vs. DCPA.",
+        "<strong>Werkzeugkasten liefern</strong>: pro Dimension konkrete Methoden.",
+        "<strong>Gaps sichtbar machen</strong>: Wo ist der Druck höher als der Reifegrad?"
+      ].map(li=>`<li>${li}</li>`).join(""),
+      howTitle: "So nutzt du es (3 Schritte)",
+      howListHtml: `
+        <li><strong>Fall ausfüllen</strong> (Titel, Kontext, Ziel).</li>
+        <li><strong>Bewerten</strong>:
+          <ul class="vuca-list">
+            <li>Bis zu 4 <strong>Welten</strong> anlegen (W1–W4) und V/U/C/A per Schieber setzen.</li>
+            <li><strong>VUCA Prime</strong>: 5 Fragen je Buchstabe (Grün/Gelb/Rot) beantworten.</li>
+          </ul>
+        </li>
+        <li><strong>Entscheidung lesen</strong>: Radar + Matrix + Gap → Toolvorschläge + Roadmap.</li>
+      `,
+      sec1NoteHtml:
+        '<strong>Wichtig:</strong> Beispieltexte erscheinen nur in <em>Platzhaltern</em>. Wenn Felder leer sind, bleibt der Output neutral (—).',
+
+      sec2Title: "2. Definition & Logik",
+      sec2Sub: "VUCA beschreibt die Umwelt (Druck). VUCA Prime beschreibt die Antwortfähigkeit (Reifegrad).",
+      sec2LeftTitle: "VUCA-Druck (Input)",
+      sec2LeftText: "Du bewertest V/U/C/A je Welt mit Schiebern (1–5). Daraus entstehen Radar & Matrix.",
+      sec2RightTitle: "VUCA Prime-Reifegrad (Reaktion)",
+      sec2RightText:
+        "Pro Buchstabe 5 Fragen (Grün/Gelb/Rot). Daraus entsteht ein Reifegradprofil (1–5), das wir gegen den VUCA-Druck spiegeln → VUCA Gap.",
+      sec2Hint:
+        "<strong>Erkenntnis-Logik:</strong> Hoher Druck + niedriger Reifegrad = prioritär handeln (Gap schließen). Hoher Druck + hoher Reifegrad = skalieren/standardisieren.",
+
+      sec3Title: "3. Fallbeschreibung",
+      sec3Sub: "Diese Felder steuern den Ergebnis-Header unten (live).",
+      labelCaseTitle: "Titel",
+      phCaseTitle: "z.B. Kein ESD-Verpackungsmaterial am Markt verfügbar",
+      labelCaseTeam: "Kontext / Team",
+      phCaseTeam: "z.B. Einkauf / Produktion / Qualität",
+      labelCaseDesc: "Kurzbeschreibung (2–3 Sätze)",
+      phCaseDesc: "Was passiert, was ist unklar/instabil, wo drückt es?",
+      labelCaseGoal: "Ziel / Outcome",
+      phCaseGoal: "z.B. Versorgung sichern, Lieferfähigkeit stabilisieren, Risiken minimieren",
+      btnResetCase: "Felder leeren",
+      btnBackup: "Backup (Browser)",
+      btnRestore: "Backup laden",
+      btnClearAll: "Alles löschen",
+
+      sec4Title: "4. Bewertung",
+      sec4Sub: "Lege bis zu 4 Welten an (W1–W4). Jede Welt kann eine andere Entscheidungslogik brauchen.",
+      aTitle: "A) VUCA je Welt (Schieber 1–5)",
+      aHint: "Live-Update: Schieber bewegen → Radar/Matrix/Gap aktualisieren sofort.",
+      btnAddWorld: "Welt hinzufügen",
+      worldListAria: "Welten Liste",
+      chipWorld: "Welt",
+      removeWorld: "Entfernen",
+      worldMini: "Optional: kurze Notiz (bleibt leer, wenn du nichts einträgst).",
+      worldNameLabel: "Name",
+      worldNamePh: "z.B. Versorgung sichern / Alternativen testen",
+      worldNoteLabel: "Notiz (optional)",
+      worldNotePh: "z.B. Fokus / Hypothese / Messpunkt (optional)",
+      valueLabel: "Wert",
+      dims: {
+        V: "Volatilität",
+        U: "Unsicherheit",
+        C: "Komplexität",
+        A: "Ambiguität"
+      },
+
+      bTitle: "B) VUCA Prime Reifegrad (Highlight)",
+      bHintHtml:
+        '5 Fragen je Dimension – Antworten als <span class="pill green">Grün</span> / <span class="pill yellow">Gelb</span> / <span class="pill red">Rot</span>. <strong>Erst hier</strong> wird die Roadmap “intelligent”.',
+      primeMeta: "5 Fragen · Grün/Gelb/Rot",
+      tl: [
+        {k:"red", label:"Rot", v:1},
+        {k:"yellow", label:"Gelb", v:2},
+        {k:"green", label:"Grün", v:3},
+      ],
+      prime: [
+        {
+          key:"V",
+          name:"Vision (Antwort auf Volatilität)",
+          hint:"Orientierung geben, kurz takten, trotzdem stabil entscheiden.",
+          qs:[
+            "Wir haben einen klaren Nordstern (Vision), der Entscheidungen leitet.",
+            "Prioritäten sind für die nächsten 2–4 Wochen verbindlich sichtbar.",
+            "Es gibt klare Entscheidungsregeln (was wird sofort entschieden, was eskaliert?).",
+            "Wir planen rollierend (Rhythmus) statt starr (Jahresplan).",
+            "Puffer/Reserven sind bewusst eingeplant (Zeit, Kapazität, Budget)."
+          ]
+        },
+        {
+          key:"U",
+          name:"Understanding (Antwort auf Unsicherheit)",
+          hint:"Hypothesen statt Behauptungen – Lernen schneller als Raten.",
+          qs:[
+            "Annahmen sind sichtbar (Hypothesen-Backlog/Decision Log).",
+            "Wir nutzen Pre-Mortem oder Risiko-Checks vor wichtigen Schritten.",
+            "Wir arbeiten mit Szenarien (best/base/worst) statt “einem Plan”.",
+            "Wir reduzieren Unklarheit aktiv durch Daten/Feedback (kurze Zyklen).",
+            "Wir testen klein (MVP/Experiment) bevor wir groß investieren."
+          ]
+        },
+        {
+          key:"C",
+          name:"Clarity (Antwort auf Komplexität)",
+          hint:"System verstehen, Fokus schaffen, Hebel erkennen.",
+          qs:[
+            "Wir verstehen zentrale Wechselwirkungen (System-Map / Ursache-Wirkung).",
+            "Stakeholder/Rollen sind klar (Einfluss, Betroffenheit, Owner).",
+            "Wir visualisieren Arbeit (Kanban) und begrenzen WIP (Fokus).",
+            "Wir vereinfachen bewusst (Hebel/80-20) statt alles gleichzeitig zu lösen.",
+            "Wir denken in Zeithorizonten (heute–morgen–übermorgen)."
+          ]
+        },
+        {
+          key:"A",
+          name:"Agility (Antwort auf Ambiguität)",
+          hint:"Gemeinsame Definitionen + schnelle Anpassung im Tun.",
+          qs:[
+            "Begriffe/Erfolg sind definiert (DoD/DoR, Erfolgskriterien).",
+            "Alignment ist explizit (Ziel/Nicht-Ziel, Grenzen, Trade-offs).",
+            "Entscheidungen sind rollenbasiert (RACI/DACI) und nachvollziehbar.",
+            "Wir nutzen Beispiele/Story-Mapping statt nur Abstraktionen.",
+            "Wir iterieren aktiv (Retro/Learnings) und passen Kurs schnell an."
+          ]
+        }
+      ],
+
+      sec5Title: "5. Darstellung (Dashboard)",
+      sec5Sub: "3 Ebenen: Radar (Highlight), Matrix, Gap. Jede Grafik exportierbar.",
+      vizRadarTitle: "VUCA Meter (Radar) – Multi-Overlay",
+      vizRadarSub: "Polygone je Welt + optional Gesamt + Prime-Reifegrad",
+      radarBtn: "Radar PNG",
+      radarHint:
+        "Tipp: In der Legende kannst du Welten ein-/ausblenden. “Prime” zeigt deine Antwortfähigkeit (Vision/Understanding/Clarity/Agility) auf derselben Skala (1–5).",
+      vizMatrixTitle: "VUCA Matrix (2×2)",
+      vizMatrixSub: "x = U+A (Lernen) · y = V+C (Liefern/Steuern)",
+      matrixBtn: "Matrix PNG",
+      matrixHint:
+        "Punkte W1–W4 zeigen: eine Fallbeschreibung kann mehrere “Welten” enthalten → daher mehrere Punkte.",
+      vizGapTitle: "VUCA Gap (Druck ↔ Reifegrad)",
+      vizGapSub: "Wo ist der Druck höher als die Antwortfähigkeit?",
+      gapBtn: "Gap PNG",
+      gapNoData:
+        "Noch keine Bewertungen. Lege mindestens eine Welt an und beantworte Prime-Fragen (Grün/Gelb/Rot).",
+
+      sec6Title: "6. Methodenauswahl & Tools (Entscheidungsausgabe)",
+      sec6Sub: "Der Output endet mit konkreten Toolvorschlägen – pro Dimension und als Prioritätenliste.",
+      autoRecTitle: "Automatische Empfehlung (Top-Prioritäten)",
+      autoRecEmpty: "Noch keine Daten. Bewerte Welten und Prime-Fragen.",
+
+      sec7Title: "7. Maßnahmen (Roadmap)",
+      sec7Sub: "Pro Welt: vorgeschlagene Schleife (PDCA/DCPA) + nächste Schritte (48h / 2 Wochen / 4–8 Wochen).",
+
+      sec8Title: "8. Export & Daten",
+      sec8Sub: "Alle Grafiken exportieren + JSON Import/Export (am Ende, wie gewünscht).",
+      exportGraphicsTitle: "Grafik-Export (PNG)",
+      exportAllPng: "Ganzes Dashboard PNG",
+      exportRadarPng2: "Radar PNG",
+      exportMatrixPng2: "Matrix PNG",
+      exportGapPng2: "Gap PNG",
+      exportHint: "Exports verwenden den aktuellen Stand (live). Ideal für Doku/Slides.",
+      jsonTitle: "JSON Import/Export",
+      btnExportJson: "JSON speichern",
+      btnImportJson: "JSON laden",
+      jsonHint: "JSON enthält Fall + Welten + Prime-Antworten. Keine Live-Preview (wie gewünscht).",
+
+      footerLead: "Weiterführend:",
+      footerLex: "VUCA Lexikon",
+      footerSem: "VUCA Seminar",
+      footerOpex: "OPEX Ausbildung",
+
+      // Dynamic / logic strings
+      tooltipV: "V – Volatilität / Vision",
+      tooltipU: "U – Unsicherheit / Understanding",
+      tooltipC: "C – Komplexität / Clarity",
+      tooltipA: "A – Ambiguität / Agility",
+
+      dsOverall: "Gesamt (Mittel)",
+      dsPrime: "Prime (Reifegrad)",
+
+      axisX: "U + A  →  Lernen / Klärung",
+      axisY: "↑  V + C  (Steuern / Liefern)",
+      q1Main: "Fokus: Flow",
+      q1Sub: "C/V hoch · U/A niedrig",
+      q2Main: "Fokus: Lernen",
+      q2Sub: "C/V hoch · U/A hoch",
+      q3Main: "Fokus: Stabilisieren",
+      q3Sub: "C/V niedrig · U/A niedrig",
+      q4Main: "Fokus: Experiment",
+      q4Sub: "C/V niedrig · U/A hoch",
+
+      overallLabel: "Gesamt",
+
+      tools: {
+        V: {
+          title: "Volatilität → Vision",
+          desc: "Wenn sich Rahmenbedingungen schnell ändern: kurz takten, Orientierung halten.",
+          tools: [
+            "OODA-Loop (Observe–Orient–Decide–Act)",
+            "Rolling Planning / Re-Planungsrhythmus (2–4 Wochen)",
+            "MoSCoW / Eisenhower zur Priorisierung",
+            "Kanban + WIP-Limits (Fokus statt Parallelität)",
+            "Pufferplanung / 15%-Regel (Volatilität einkalkulieren)",
+            "OKR (light) für Fokus & Messbarkeit"
+          ]
+        },
+        U: {
+          title: "Unsicherheit → Understanding",
+          desc: "Wenn Infos fehlen: Hypothesen sichtbar machen, lernen statt raten.",
+          tools: [
+            "Hypothesen-Backlog / Assumption Log",
+            "Pre-Mortem (was könnte schiefgehen?)",
+            "Szenariotechnik (best/base/worst)",
+            "Cone of Uncertainty (bewusst nachschärfen)",
+            "Experimentdesign / MVP-Denken (klein testen)",
+            "Entscheidungslog (Decision Log) + Trigger für Re-Bewertung"
+          ]
+        },
+        C: {
+          title: "Komplexität → Clarity",
+          desc: "Wenn Ursache–Wirkung nicht linear ist: System verstehen, sichere Schritte gehen.",
+          tools: [
+            "System-Mapping / Causal-Loop Thinking",
+            "Stakeholder-Map (Einfluss/Betroffenheit)",
+            "Wertstrom-Sicht / Wardley Mapping (light)",
+            "Safe-to-fail Experimente (mehrere kleine Versuche)",
+            "3 Horizons / Horizon Thinking",
+            "A3-Problem Solving (Lean, strukturiert)"
+          ]
+        },
+        A: {
+          title: "Ambiguität → Agility",
+          desc: "Wenn Begriffe/Ziele unterschiedlich interpretiert werden: gemeinsame Sprache + schnelle Anpassung.",
+          tools: [
+            "Definition of Done / Definition of Ready",
+            "Alignment Canvas (Ziel/Nicht-Ziel, Erfolgskriterien, Grenzen)",
+            "RACI / DACI (Rollen & Entscheidungen klären)",
+            "Kontext-Check: “Was bedeutet das konkret im Alltag?”",
+            "Story Mapping / Beispiele statt Abstraktionen",
+            "Retrospektive (Start/Stop/Continue) – Lernen systematisieren"
+          ]
+        }
+      },
+
+      loopNotes: {
+        both: "Beidhändig: Delivery + Experiment. Nutze DCPA für Lernen, PDCA für stabile Teilaufgaben.",
+        learn: "Hohe Unsicherheit/Ambiguität: zuerst kleine Experimente, dann planen.",
+        deliver: "Hohe Volatilität/Komplexität, aber strukturierbar: iterativ planen/umsetzen/prüfen.",
+        normal: "Moderate Lage: klein planen, transparent arbeiten, regelmäßig nachschärfen."
+      },
+
+      steps48: {
+        dcpa: [
+          "Do: 1–2 safe-to-fail Experimente definieren (klein, reversibel, Messpunkt).",
+          "Check: nach 24–48h Signale sammeln (Daten/Feedback, Abbruchkriterium).",
+          "Plan: nächste Hypothese festlegen, Experiment anpassen."
+        ],
+        pdca: [
+          "Plan: Ziel + Scope + Board aufsetzen (Kanban, WIP-Limit).",
+          "Do: klein starten (1–2 Lieferpakete), Verantwortlichkeiten klären.",
+          "Check: nach 48h Status & Blocker, Anpassungen für den nächsten Zyklus."
+        ]
+      },
+      steps2w: {
+        dcpa: [
+          "2–3 Experimente parallel (max. 2 Wochen), klare Metriken.",
+          "Gewinner skalieren, Verlierer stoppen, Learnings dokumentieren.",
+          "Entscheidungslog pflegen: was wurde warum entschieden?"
+        ],
+        pdca: [
+          "Rolling Planning (2 Wochen): Prioritäten fixieren, Rest flexibel.",
+          "Risiko-/Pre-Mortem für kritische Pfade.",
+          "Review: messbare Ergebnisse + nächste Iteration planen."
+        ]
+      },
+      steps8w: [
+        "Stabilisieren & standardisieren: was funktioniert, wird SOP/Checkliste.",
+        "Gap schließen: die schwächste Prime-Dimension gezielt verbessern (Training/Prozess).",
+        "Messsystem: KPIs + Trigger für Re-Planung definieren."
+      ],
+
+      recNoPrime: "Beantworte Prime-Fragen (Grün/Gelb/Rot), damit das Tool die Gap-Prioritäten setzen kann.",
+      recTemplate: (topP, topG, avg, r, b) => `
+        <div class="vuca-text">
+          <strong>Stärkster VUCA-Druck:</strong> ${topP.k} (${topP.v}/5).<br/>
+          <strong>Größter Gap:</strong> ${topG.k} (Druck ${avg[topG.k]}/5 vs. Reifegrad ${r}/5 → Gap ${topG.g > 0 ? "+"+topG.g : topG.g}).<br/><br/>
+          <strong>Empfohlener Fokus:</strong> <em>${esc(b.title)}</em><br/>
+          Starte mit diesen 3 Tools:
+          <ul style="margin:8px 0 0 18px;">
+            <li>${esc(b.tools[0])}</li>
+            <li>${esc(b.tools[1])}</li>
+            <li>${esc(b.tools[2])}</li>
+          </ul>
+        </div>
+      `,
+
+      insightNeedPrime: (title, team, goal) => `
+        <strong>Fall:</strong> ${title}<br/>
+        <span style="color:#64748b">Kontext/Team:</span> <strong>${team}</strong> · <span style="color:#64748b">Ziel:</span> <strong>${goal}</strong><br/><br/>
+        <strong>Nächster Schritt:</strong> Prime-Fragen beantworten (Grün/Gelb/Rot), damit das Tool Gap + Roadmap sauber priorisiert.
+      `,
+      insightTemplate: (title, team, goal, top, worstTxt) => `
+        <strong>Fall:</strong> ${title}<br/>
+        <span style="color:#64748b">Kontext/Team:</span> <strong>${team}</strong> · <span style="color:#64748b">Ziel:</span> <strong>${goal}</strong><br/><br/>
+        <strong>Erkenntnis aus den Fragen:</strong><br/>
+        1) Höchster VUCA-Druck ist <strong>${top.k}</strong> (${top.v}/5).<br/>
+        2) Größter Gap ist <strong>${esc(worstTxt)}</strong>.<br/>
+        3) Empfehlung: Tools zuerst dort einsetzen, wo <strong>Gap</strong> am größten ist (Reifegrad aufbauen), danach stabilisieren/standardisieren.
+      `,
+
+      // Toast/confirm
+      tFieldsCleared: "Felder geleert.",
+      tBackupSaved: "Backup gespeichert.",
+      tNoBackup: "Kein Backup gefunden.",
+      tBackupLoaded: "Backup geladen.",
+      tWorldAdded: "Welt hinzugefügt.",
+      tJsonLoaded: "JSON geladen.",
+      tJsonInvalid: "JSON ungültig.",
+      tJsonLoadFail: "JSON konnte nicht geladen werden.",
+      tExportFail: "Export fehlgeschlagen. Prüfe Browserrechte.",
+      confirmClearAll: "Alles löschen (Fall, Welten, Prime)?",
+
+      // Section headings inside visuals/export etc that are hardcoded in HTML (we patch)
+      sec5RadarLegendAria: "Radar Legende"
+    },
+
+    en: {
+      langLabel: "Language",
+      badgeDecision: "Decision Tool",
+      badgeDefinition: "Definition",
+      badgeCase: "Case",
+      badgeAssessment: "Assessment",
+      badgeVisuals: "Visuals",
+      badgeTools: "Tools",
+      badgeRoadmap: "Roadmap",
+      badgeExport: "Export",
+
+      sec1Title: "1. VUCA Decision Finder",
+      sec1SubHtml:
+        'A tool that translates a case into <strong>VUCA pressure</strong> (V/U/C/A) and <strong>VUCA Prime readiness</strong> (Vision/Understanding/Clarity/Agility) – including <strong>tool suggestions</strong> and a <strong>roadmap</strong>.',
+      goalTitle: "Tool goal",
+      goalListHtml: [
+        "<strong>Structure the situation</strong>: not a gut feel, but a profile.",
+        "<strong>Derive decision logic</strong>: PDCA vs. DCPA per world.",
+        "<strong>Provide a toolbox</strong>: concrete methods per dimension.",
+        "<strong>Make gaps visible</strong>: where is pressure higher than readiness?"
+      ].map(li=>`<li>${li}</li>`).join(""),
+      howTitle: "How to use it (3 steps)",
+      howListHtml: `
+        <li><strong>Fill in the case</strong> (title, context, goal).</li>
+        <li><strong>Assess</strong>:
+          <ul class="vuca-list">
+            <li>Create up to 4 <strong>worlds</strong> (W1–W4) and set V/U/C/A with sliders.</li>
+            <li><strong>VUCA Prime</strong>: answer 5 questions per letter (Green/Amber/Red).</li>
+          </ul>
+        </li>
+        <li><strong>Read the decision</strong>: radar + matrix + gap → tool suggestions + roadmap.</li>
+      `,
+      sec1NoteHtml:
+        '<strong>Note:</strong> example texts appear only in <em>placeholders</em>. If fields are empty, the output stays neutral (—).',
+
+      sec2Title: "2. Definition & Logic",
+      sec2Sub: "VUCA describes the environment (pressure). VUCA Prime describes response capability (readiness).",
+      sec2LeftTitle: "VUCA pressure (input)",
+      sec2LeftText: "Rate V/U/C/A per world with sliders (1–5). This drives radar & matrix.",
+      sec2RightTitle: "VUCA Prime readiness (response)",
+      sec2RightText:
+        "For each letter: 5 questions (Green/Amber/Red). This forms a readiness profile (1–5), mirrored against pressure → the VUCA gap.",
+      sec2Hint:
+        "<strong>Insight logic:</strong> High pressure + low readiness = act first (close the gap). High pressure + high readiness = scale/standardize.",
+
+      sec3Title: "3. Case description",
+      sec3Sub: "These fields control the result header below (live).",
+      labelCaseTitle: "Title",
+      phCaseTitle: "e.g., No ESD packaging material available on the market",
+      labelCaseTeam: "Context / team",
+      phCaseTeam: "e.g., Purchasing / Production / Quality",
+      labelCaseDesc: "Short description (2–3 sentences)",
+      phCaseDesc: "What is happening, what is unclear/unstable, where is the pressure?",
+      labelCaseGoal: "Goal / outcome",
+      phCaseGoal: "e.g., secure supply, stabilize delivery performance, minimize risks",
+      btnResetCase: "Clear fields",
+      btnBackup: "Backup (browser)",
+      btnRestore: "Load backup",
+      btnClearAll: "Delete everything",
+
+      sec4Title: "4. Assessment",
+      sec4Sub: "Create up to 4 worlds (W1–W4). Each world may need a different decision loop.",
+      aTitle: "A) VUCA per world (sliders 1–5)",
+      aHint: "Live update: move sliders → radar/matrix/gap update instantly.",
+      btnAddWorld: "Add world",
+      worldListAria: "World list",
+      chipWorld: "World",
+      removeWorld: "Remove",
+      worldMini: "Optional: short note (stays empty if you don’t enter anything).",
+      worldNameLabel: "Name",
+      worldNamePh: "e.g., secure supply / test alternatives",
+      worldNoteLabel: "Note (optional)",
+      worldNotePh: "e.g., focus / hypothesis / metric (optional)",
+      valueLabel: "Value",
+      dims: {
+        V: "Volatility",
+        U: "Uncertainty",
+        C: "Complexity",
+        A: "Ambiguity"
+      },
+
+      bTitle: "B) VUCA Prime readiness (highlight)",
+      bHintHtml:
+        '5 questions per dimension – answer as <span class="pill green">Green</span> / <span class="pill yellow">Amber</span> / <span class="pill red">Red</span>. <strong>Only then</strong> does the roadmap become “smart”.',
+      primeMeta: "5 questions · Green/Amber/Red",
+      tl: [
+        {k:"red", label:"Red", v:1},
+        {k:"yellow", label:"Amber", v:2},
+        {k:"green", label:"Green", v:3},
+      ],
+      prime: [
+        {
+          key:"V",
+          name:"Vision (response to volatility)",
+          hint:"Provide direction, shorten cadence, still decide steadily.",
+          qs:[
+            "We have a clear north star (vision) that guides decisions.",
+            "Priorities for the next 2–4 weeks are visible and binding.",
+            "We have clear decision rules (what is decided immediately vs. escalated).",
+            "We plan rolling (cadence) instead of rigid (annual plan).",
+            "Buffers/reserves are intentionally planned (time, capacity, budget)."
+          ]
+        },
+        {
+          key:"U",
+          name:"Understanding (response to uncertainty)",
+          hint:"Hypotheses instead of claims – learn faster than guessing.",
+          qs:[
+            "Assumptions are visible (hypothesis backlog / decision log).",
+            "We use pre-mortems or risk checks before important steps.",
+            "We work with scenarios (best/base/worst) instead of “one plan”.",
+            "We actively reduce uncertainty through data/feedback (short cycles).",
+            "We test small (MVP/experiments) before investing big."
+          ]
+        },
+        {
+          key:"C",
+          name:"Clarity (response to complexity)",
+          hint:"Understand the system, create focus, identify leverage.",
+          qs:[
+            "We understand key interactions (system map / cause–effect).",
+            "Stakeholders/roles are clear (influence, impact, owner).",
+            "We visualize work (Kanban) and limit WIP (focus).",
+            "We simplify intentionally (leverage/80–20) instead of tackling everything at once.",
+            "We think in time horizons (today–tomorrow–next)."
+          ]
+        },
+        {
+          key:"A",
+          name:"Agility (response to ambiguity)",
+          hint:"Shared definitions + fast adaptation while doing.",
+          qs:[
+            "Terms/success are defined (DoD/DoR, success criteria).",
+            "Alignment is explicit (goal/non-goal, constraints, trade-offs).",
+            "Decisions are role-based (RACI/DACI) and traceable.",
+            "We use examples/story mapping instead of abstractions only.",
+            "We iterate actively (retro/learnings) and adjust course quickly."
+          ]
+        }
+      ],
+
+      sec5Title: "5. Visualization (Dashboard)",
+      sec5Sub: "3 layers: radar (highlight), matrix, gap. Each graphic is exportable.",
+      vizRadarTitle: "VUCA Meter (Radar) – multi overlay",
+      vizRadarSub: "Polygons per world + optional overall + Prime readiness",
+      radarBtn: "Radar PNG",
+      radarHint:
+        "Tip: use the legend to toggle worlds on/off. “Prime” shows response capability (Vision/Understanding/Clarity/Agility) on the same 1–5 scale.",
+      vizMatrixTitle: "VUCA Matrix (2×2)",
+      vizMatrixSub: "x = U+A (learning) · y = V+C (deliver/steer)",
+      matrixBtn: "Matrix PNG",
+      matrixHint:
+        "Points W1–W4 show: one case can contain multiple “worlds” → therefore multiple points.",
+      vizGapTitle: "VUCA gap (pressure ↔ readiness)",
+      vizGapSub: "Where is pressure higher than response capability?",
+      gapBtn: "Gap PNG",
+      gapNoData:
+        "No ratings yet. Create at least one world and answer Prime questions (Green/Amber/Red).",
+
+      sec6Title: "6. Method selection & tools (decision output)",
+      sec6Sub: "The output ends with concrete tool suggestions – per dimension and as a priority list.",
+      autoRecTitle: "Automatic recommendation (top priorities)",
+      autoRecEmpty: "No data yet. Rate worlds and Prime questions.",
+
+      sec7Title: "7. Actions (Roadmap)",
+      sec7Sub: "Per world: suggested loop (PDCA/DCPA) + next steps (48h / 2 weeks / 4–8 weeks).",
+
+      sec8Title: "8. Export & data",
+      sec8Sub: "Export all graphics + JSON import/export (at the end, as requested).",
+      exportGraphicsTitle: "Graphic export (PNG)",
+      exportAllPng: "Whole dashboard PNG",
+      exportRadarPng2: "Radar PNG",
+      exportMatrixPng2: "Matrix PNG",
+      exportGapPng2: "Gap PNG",
+      exportHint: "Exports use the current live state. Ideal for documentation/slides.",
+      jsonTitle: "JSON import/export",
+      btnExportJson: "Save JSON",
+      btnImportJson: "Load JSON",
+      jsonHint: "JSON contains case + worlds + Prime answers. No live preview (as requested).",
+
+      footerLead: "Further reading:",
+      footerLex: "VUCA glossary",
+      footerSem: "VUCA seminar",
+      footerOpex: "OPEX training",
+
+      tooltipV: "V – Volatility / Vision",
+      tooltipU: "U – Uncertainty / Understanding",
+      tooltipC: "C – Complexity / Clarity",
+      tooltipA: "A – Ambiguity / Agility",
+
+      dsOverall: "Overall (avg)",
+      dsPrime: "Prime (readiness)",
+
+      axisX: "U + A  →  Learning / clarification",
+      axisY: "↑  V + C  (Steer / deliver)",
+      q1Main: "Focus: Flow",
+      q1Sub: "C/V high · U/A low",
+      q2Main: "Focus: Learn",
+      q2Sub: "C/V high · U/A high",
+      q3Main: "Focus: Stabilize",
+      q3Sub: "C/V low · U/A low",
+      q4Main: "Focus: Experiment",
+      q4Sub: "C/V low · U/A high",
+
+      overallLabel: "Overall",
+
+      tools: {
+        V: {
+          title: "Volatility → Vision",
+          desc: "When conditions change fast: shorten cadence, keep direction.",
+          tools: [
+            "OODA loop (Observe–Orient–Decide–Act)",
+            "Rolling planning / re-plan cadence (2–4 weeks)",
+            "MoSCoW / Eisenhower prioritization",
+            "Kanban + WIP limits (focus over parallelism)",
+            "Buffer planning / 15% rule (plan for volatility)",
+            "Light OKRs for focus & measurability"
+          ]
+        },
+        U: {
+          title: "Uncertainty → Understanding",
+          desc: "When information is missing: make hypotheses visible, learn instead of guessing.",
+          tools: [
+            "Hypothesis backlog / assumption log",
+            "Pre-mortem (what could go wrong?)",
+            "Scenario planning (best/base/worst)",
+            "Cone of uncertainty (deliberate narrowing)",
+            "Experiment design / MVP thinking (test small)",
+            "Decision log + re-evaluation triggers"
+          ]
+        },
+        C: {
+          title: "Complexity → Clarity",
+          desc: "When cause–effect isn’t linear: understand the system, take safe steps.",
+          tools: [
+            "System mapping / causal loop thinking",
+            "Stakeholder map (influence/impact)",
+            "Value stream view / light Wardley mapping",
+            "Safe-to-fail experiments (multiple small bets)",
+            "Three horizons thinking",
+            "A3 problem solving (Lean, structured)"
+          ]
+        },
+        A: {
+          title: "Ambiguity → Agility",
+          desc: "When terms/goals differ: create shared language + adapt quickly while doing.",
+          tools: [
+            "Definition of Done / Definition of Ready",
+            "Alignment canvas (goal/non-goal, criteria, constraints)",
+            "RACI / DACI (clarify roles & decisions)",
+            "Context check: “what does this mean in daily work?”",
+            "Story mapping / examples over abstractions",
+            "Retrospectives (Start/Stop/Continue) – systematize learning"
+          ]
+        }
+      },
+
+      loopNotes: {
+        both: "Two-handed: delivery + experiments. Use DCPA for learning and PDCA for stable sub-tasks.",
+        learn: "High uncertainty/ambiguity: run small experiments first, then plan.",
+        deliver: "High volatility/complexity but structurable: iterate plan/do/check/adjust.",
+        normal: "Moderate situation: plan small, work transparently, sharpen regularly."
+      },
+
+      steps48: {
+        dcpa: [
+          "Do: define 1–2 safe-to-fail experiments (small, reversible, measurable).",
+          "Check: after 24–48h gather signals (data/feedback, stop criteria).",
+          "Plan: set the next hypothesis, adjust the experiment."
+        ],
+        pdca: [
+          "Plan: set goal + scope + board (Kanban, WIP limit).",
+          "Do: start small (1–2 deliverables), clarify ownership.",
+          "Check: after 48h status & blockers, adjust for the next cycle."
+        ]
+      },
+      steps2w: {
+        dcpa: [
+          "Run 2–3 experiments in parallel (max 2 weeks), with clear metrics.",
+          "Scale winners, stop losers, document learnings.",
+          "Maintain a decision log: what was decided and why?"
+        ],
+        pdca: [
+          "Rolling planning (2 weeks): lock priorities, keep the rest flexible.",
+          "Risk / pre-mortem for critical paths.",
+          "Review: measurable results + plan next iteration."
+        ]
+      },
+      steps8w: [
+        "Stabilize & standardize: what works becomes SOP/checklist.",
+        "Close gaps: improve the weakest Prime dimension deliberately (training/process).",
+        "Measurement system: define KPIs + triggers for re-planning."
+      ],
+
+      recNoPrime: "Answer Prime questions (Green/Amber/Red) so the tool can prioritize gaps.",
+      recTemplate: (topP, topG, avg, r, b) => `
+        <div class="vuca-text">
+          <strong>Highest VUCA pressure:</strong> ${topP.k} (${topP.v}/5).<br/>
+          <strong>Largest gap:</strong> ${topG.k} (pressure ${avg[topG.k]}/5 vs. readiness ${r}/5 → gap ${topG.g > 0 ? "+"+topG.g : topG.g}).<br/><br/>
+          <strong>Recommended focus:</strong> <em>${esc(b.title)}</em><br/>
+          Start with these 3 tools:
+          <ul style="margin:8px 0 0 18px;">
+            <li>${esc(b.tools[0])}</li>
+            <li>${esc(b.tools[1])}</li>
+            <li>${esc(b.tools[2])}</li>
+          </ul>
+        </div>
+      `,
+
+      insightNeedPrime: (title, team, goal) => `
+        <strong>Case:</strong> ${title}<br/>
+        <span style="color:#64748b">Context/team:</span> <strong>${team}</strong> · <span style="color:#64748b">Goal:</span> <strong>${goal}</strong><br/><br/>
+        <strong>Next step:</strong> answer Prime questions (Green/Amber/Red) so the tool can prioritize gap + roadmap.
+      `,
+      insightTemplate: (title, team, goal, top, worstTxt) => `
+        <strong>Case:</strong> ${title}<br/>
+        <span style="color:#64748b">Context/team:</span> <strong>${team}</strong> · <span style="color:#64748b">Goal:</span> <strong>${goal}</strong><br/><br/>
+        <strong>Insights:</strong><br/>
+        1) Highest VUCA pressure is <strong>${top.k}</strong> (${top.v}/5).<br/>
+        2) Largest gap is <strong>${esc(worstTxt)}</strong>.<br/>
+        3) Recommendation: use tools first where the <strong>gap</strong> is largest (build readiness), then stabilize/standardize.
+      `,
+
+      tFieldsCleared: "Fields cleared.",
+      tBackupSaved: "Backup saved.",
+      tNoBackup: "No backup found.",
+      tBackupLoaded: "Backup loaded.",
+      tWorldAdded: "World added.",
+      tJsonLoaded: "JSON loaded.",
+      tJsonInvalid: "Invalid JSON.",
+      tJsonLoadFail: "Could not load JSON.",
+      tExportFail: "Export failed. Check browser permissions.",
+      confirmClearAll: "Delete everything (case, worlds, prime)?",
+      sec5RadarLegendAria: "Radar legend"
+    }
+  };
+
+  let currentLang = (localStorage.getItem(LANG_KEY)
+    || (navigator.language && navigator.language.toLowerCase().startsWith("de") ? "de" : "en"));
+  if(currentLang !== "de" && currentLang !== "en") currentLang = "de";
+
+  function t(key){
+    const pack = I18N[currentLang] || I18N.de;
+    return (pack && pack[key] != null) ? pack[key] : key;
+  }
+  function pack(){
+    return I18N[currentLang] || I18N.de;
+  }
+
+  // ----------------------------
+  // Helpers (existing)
+  // ----------------------------
   function toast(msg){
-    const t = $("#toast");
-    t.textContent = msg;
-    t.classList.add("show");
+    const el = $("#toast");
+    if(!el) return;
+    el.textContent = msg;
+    el.classList.add("show");
     window.clearTimeout(toast._tmr);
-    toast._tmr = window.setTimeout(() => t.classList.remove("show"), 2600);
+    toast._tmr = window.setTimeout(() => el.classList.remove("show"), 2600);
   }
   function announce(msg){
     const a = $("#ariaStatus");
-    a.textContent = msg;
+    if(a) a.textContent = msg;
   }
   function clamp(n, a, b){ return Math.max(a, Math.min(b, n)); }
   function esc(s){
@@ -938,67 +727,339 @@
   }
 
   // ----------------------------
-  // Prime questions (5 per dimension)
+  // Language switch UI (injected, no HTML changes needed)
   // ----------------------------
-  const PRIME = [
-    {
-      key:"V", name:"Vision (Antwort auf Volatilität)",
-      hint:"Orientierung geben, kurz takten, trotzdem stabil entscheiden.",
-      qs:[
-        "Wir haben einen klaren Nordstern (Vision), der Entscheidungen leitet.",
-        "Prioritäten sind für die nächsten 2–4 Wochen verbindlich sichtbar.",
-        "Es gibt klare Entscheidungsregeln (was wird sofort entschieden, was eskaliert?).",
-        "Wir planen rollierend (Rhythmus) statt starr (Jahresplan).",
-        "Puffer/Reserven sind bewusst eingeplant (Zeit, Kapazität, Budget)."
-      ]
-    },
-    {
-      key:"U", name:"Understanding (Antwort auf Unsicherheit)",
-      hint:"Hypothesen statt Behauptungen – Lernen schneller als Raten.",
-      qs:[
-        "Annahmen sind sichtbar (Hypothesen-Backlog/Decision Log).",
-        "Wir nutzen Pre-Mortem oder Risiko-Checks vor wichtigen Schritten.",
-        "Wir arbeiten mit Szenarien (best/base/worst) statt “einem Plan”.",
-        "Wir reduzieren Unklarheit aktiv durch Daten/Feedback (kurze Zyklen).",
-        "Wir testen klein (MVP/Experiment) bevor wir groß investieren."
-      ]
-    },
-    {
-      key:"C", name:"Clarity (Antwort auf Komplexität)",
-      hint:"System verstehen, Fokus schaffen, Hebel erkennen.",
-      qs:[
-        "Wir verstehen zentrale Wechselwirkungen (System-Map / Ursache-Wirkung).",
-        "Stakeholder/Rollen sind klar (Einfluss, Betroffenheit, Owner).",
-        "Wir visualisieren Arbeit (Kanban) und begrenzen WIP (Fokus).",
-        "Wir vereinfachen bewusst (Hebel/80-20) statt alles gleichzeitig zu lösen.",
-        "Wir denken in Zeithorizonten (heute–morgen–übermorgen)."
-      ]
-    },
-    {
-      key:"A", name:"Agility (Antwort auf Ambiguität)",
-      hint:"Gemeinsame Definitionen + schnelle Anpassung im Tun.",
-      qs:[
-        "Begriffe/Erfolg sind definiert (DoD/DoR, Erfolgskriterien).",
-        "Alignment ist explizit (Ziel/Nicht-Ziel, Grenzen, Trade-offs).",
-        "Entscheidungen sind rollenbasiert (RACI/DACI) und nachvollziehbar.",
-        "Wir nutzen Beispiele/Story-Mapping statt nur Abstraktionen.",
-        "Wir iterieren aktiv (Retro/Learnings) und passen Kurs schnell an."
-      ]
+  function ensureLangSwitch(){
+    const sec1 = ROOT.querySelector('section[aria-labelledby="vuca-sec1"]');
+    if(!sec1) return;
+
+    const head = sec1.querySelector(".vuca-card-head");
+    if(!head) return;
+
+    if(head.querySelector("#btnLangDE")) return; // already there
+
+    // wrap existing badge
+    const badge = head.querySelector(".vuca-badge");
+    const actions = document.createElement("div");
+    actions.style.display = "flex";
+    actions.style.gap = "10px";
+    actions.style.alignItems = "center";
+    actions.style.flexWrap = "wrap";
+    actions.style.justifyContent = "flex-end";
+
+    const switchWrap = document.createElement("div");
+    switchWrap.style.display = "flex";
+    switchWrap.style.gap = "8px";
+    switchWrap.style.alignItems = "center";
+
+    const bDE = document.createElement("button");
+    bDE.type = "button";
+    bDE.className = "vuca-btn small";
+    bDE.id = "btnLangDE";
+    bDE.textContent = "DE";
+
+    const bEN = document.createElement("button");
+    bEN.type = "button";
+    bEN.className = "vuca-btn small";
+    bEN.id = "btnLangEN";
+    bEN.textContent = "EN";
+
+    switchWrap.appendChild(bDE);
+    switchWrap.appendChild(bEN);
+    actions.appendChild(switchWrap);
+
+    if(badge){
+      actions.appendChild(badge);
+      head.appendChild(actions);
+    }else{
+      head.appendChild(actions);
     }
-  ];
 
-  // Traffic light values: red=1, yellow=2, green=3 (map to 1..5 later)
-  const TL = [
-    {k:"red", label:"Rot", v:1},
-    {k:"yellow", label:"Gelb", v:2},
-    {k:"green", label:"Grün", v:3},
-  ];
+    bDE.addEventListener("click", ()=> setLanguage("de"));
+    bEN.addEventListener("click", ()=> setLanguage("en"));
+
+    updateLangButtonState();
+  }
+
+  function updateLangButtonState(){
+    const bDE = $("#btnLangDE");
+    const bEN = $("#btnLangEN");
+    if(bDE) bDE.classList.toggle("primary", currentLang === "de");
+    if(bEN) bEN.classList.toggle("primary", currentLang === "en");
+  }
+
+  function setLanguage(lang){
+    if(lang !== "de" && lang !== "en") lang = "de";
+    currentLang = lang;
+    localStorage.setItem(LANG_KEY, currentLang);
+    state.lang = currentLang;
+
+    applyStaticI18n();
+    buildWorldList();
+    buildPrimeGrid();
+    scheduleUpdate();
+    updateLangButtonState();
+    toast(currentLang === "de" ? "Sprache: Deutsch" : "Language: English");
+  }
 
   // ----------------------------
-  // Worlds (1..4)
+  // Apply static texts (patch existing DOM)
+  // ----------------------------
+  function applyStaticI18n(){
+    // SECTION 1
+    const sec1 = ROOT.querySelector('section[aria-labelledby="vuca-sec1"]');
+    if(sec1){
+      const h2 = sec1.querySelector("#vuca-sec1");
+      if(h2) h2.textContent = t("sec1Title");
+      const sub = sec1.querySelector(".vuca-card-head .vuca-sub");
+      if(sub) sub.innerHTML = t("sec1SubHtml");
+      const badge = sec1.querySelector(".vuca-badge");
+      if(badge) badge.textContent = t("badgeDecision");
+
+      const blocks = sec1.querySelectorAll(".vuca-content .vuca-grid-2 .vuca-block");
+      if(blocks[0]){
+        const h3 = blocks[0].querySelector("h3");
+        const ul = blocks[0].querySelector("ul");
+        if(h3) h3.textContent = t("goalTitle");
+        if(ul) ul.innerHTML = t("goalListHtml");
+      }
+      if(blocks[1]){
+        const h3 = blocks[1].querySelector("h3");
+        const ol = blocks[1].querySelector("ol");
+        if(h3) h3.textContent = t("howTitle");
+        if(ol) ol.innerHTML = t("howListHtml");
+      }
+      const note = sec1.querySelector(".vuca-note");
+      if(note) note.innerHTML = t("sec1NoteHtml");
+    }
+
+    // SECTION 2
+    const sec2 = ROOT.querySelector('section[aria-labelledby="vuca-sec2"]');
+    if(sec2){
+      const h2 = sec2.querySelector("#vuca-sec2");
+      if(h2) h2.textContent = t("sec2Title");
+      const sub = sec2.querySelector(".vuca-card-head .vuca-sub");
+      if(sub) sub.textContent = t("sec2Sub");
+      const badge = sec2.querySelector(".vuca-badge");
+      if(badge) badge.textContent = t("badgeDefinition");
+
+      const blocks = sec2.querySelectorAll(".vuca-content .vuca-grid-2 .vuca-block");
+      if(blocks[0]){
+        const h3 = blocks[0].querySelector("h3");
+        const p = blocks[0].querySelector("p");
+        if(h3) h3.textContent = t("sec2LeftTitle");
+        if(p) p.textContent = t("sec2LeftText");
+      }
+      if(blocks[1]){
+        const h3 = blocks[1].querySelector("h3");
+        const p = blocks[1].querySelector("p");
+        if(h3) h3.textContent = t("sec2RightTitle");
+        if(p) p.textContent = t("sec2RightText");
+      }
+      const hint = sec2.querySelector(".vuca-hint");
+      if(hint) hint.innerHTML = t("sec2Hint");
+    }
+
+    // SECTION 3
+    const sec3 = ROOT.querySelector('section[aria-labelledby="vuca-sec3"]');
+    if(sec3){
+      const h2 = sec3.querySelector("#vuca-sec3");
+      if(h2) h2.textContent = t("sec3Title");
+      const sub = sec3.querySelector(".vuca-card-head .vuca-sub");
+      if(sub) sub.textContent = t("sec3Sub");
+      const badge = sec3.querySelector(".vuca-badge");
+      if(badge) badge.textContent = t("badgeCase");
+
+      const l1 = sec3.querySelector('label[for="caseTitle"]');
+      const l2 = sec3.querySelector('label[for="caseContextTeam"]');
+      const l3 = sec3.querySelector('label[for="caseDesc"]');
+      const l4 = sec3.querySelector('label[for="caseGoal"]');
+      if(l1) l1.textContent = t("labelCaseTitle");
+      if(l2) l2.textContent = t("labelCaseTeam");
+      if(l3) l3.textContent = t("labelCaseDesc");
+      if(l4) l4.textContent = t("labelCaseGoal");
+
+      const i1 = $("#caseTitle");
+      const i2 = $("#caseContextTeam");
+      const i3 = $("#caseDesc");
+      const i4 = $("#caseGoal");
+      if(i1) i1.placeholder = t("phCaseTitle");
+      if(i2) i2.placeholder = t("phCaseTeam");
+      if(i3) i3.placeholder = t("phCaseDesc");
+      if(i4) i4.placeholder = t("phCaseGoal");
+
+      const b1 = $("#btnResetCase");
+      const b2 = $("#btnBackup");
+      const b3 = $("#btnRestore");
+      const b4 = $("#btnClearAll");
+      if(b1) b1.textContent = t("btnResetCase");
+      if(b2) b2.textContent = t("btnBackup");
+      if(b3) b3.textContent = t("btnRestore");
+      if(b4) b4.textContent = t("btnClearAll");
+    }
+
+    // SECTION 4
+    const sec4 = ROOT.querySelector('section[aria-labelledby="vuca-sec4"]');
+    if(sec4){
+      const h2 = sec4.querySelector("#vuca-sec4");
+      if(h2) h2.textContent = t("sec4Title");
+      const sub = sec4.querySelector(".vuca-card-head .vuca-sub");
+      if(sub) sub.textContent = t("sec4Sub");
+      const badge = sec4.querySelector(".vuca-badge");
+      if(badge) badge.textContent = t("badgeAssessment");
+
+      const aH3 = sec4.querySelector(".vuca-row-head .vuca-row-title .vuca-h3");
+      const aHint = sec4.querySelector(".vuca-row-head .vuca-row-title .vuca-hint");
+      if(aH3) aH3.textContent = t("aTitle");
+      if(aHint) aHint.textContent = t("aHint");
+      const add = $("#btnAddWorld");
+      if(add) add.textContent = t("btnAddWorld");
+      const wl = $("#worldList");
+      if(wl) wl.setAttribute("aria-label", t("worldListAria"));
+
+      // B heading + hint
+      const bHead = sec4.querySelectorAll(".vuca-row-head")[1];
+      if(bHead){
+        const bH3 = bHead.querySelector(".vuca-h3");
+        const bHint = bHead.querySelector(".vuca-hint");
+        if(bH3) bH3.textContent = t("bTitle");
+        if(bHint) bHint.innerHTML = t("bHintHtml");
+      }
+    }
+
+    // SECTION 5
+    const sec5 = ROOT.querySelector('section[aria-labelledby="vuca-sec5"]');
+    if(sec5){
+      const h2 = sec5.querySelector("#vuca-sec5");
+      if(h2) h2.textContent = t("sec5Title");
+      const sub = sec5.querySelector(".vuca-card-head .vuca-sub");
+      if(sub) sub.textContent = t("sec5Sub");
+      const badge = sec5.querySelector(".vuca-badge");
+      if(badge) badge.textContent = t("badgeVisuals");
+
+      // Radar texts
+      const radarTitle = sec5.querySelector(".viz-card:nth-child(1) .viz-title");
+      const radarSub = sec5.querySelector(".viz-card:nth-child(1) .viz-sub");
+      if(radarTitle) radarTitle.textContent = t("vizRadarTitle");
+      if(radarSub) radarSub.textContent = t("vizRadarSub");
+      const rBtn = $("#exportRadarPng");
+      if(rBtn) rBtn.textContent = t("radarBtn");
+      const radarHint = $("#radarHint");
+      if(radarHint) radarHint.textContent = t("radarHint");
+
+      // Matrix texts
+      const matrixTitle = sec5.querySelector(".viz-card:nth-child(2) .viz-title");
+      const matrixSub = sec5.querySelector(".viz-card:nth-child(2) .viz-sub");
+      if(matrixTitle) matrixTitle.textContent = t("vizMatrixTitle");
+      if(matrixSub) matrixSub.textContent = t("vizMatrixSub");
+      const mBtn = $("#exportMatrixPng");
+      if(mBtn) mBtn.textContent = t("matrixBtn");
+      const matrixHint = sec5.querySelector(".viz-card:nth-child(2) .vuca-hint");
+      if(matrixHint) matrixHint.textContent = t("matrixHint");
+
+      // Gap texts
+      const gapTitle = sec5.querySelector(".viz-card:nth-child(3) .viz-title");
+      const gapSub = sec5.querySelector(".viz-card:nth-child(3) .viz-sub");
+      if(gapTitle) gapTitle.textContent = t("vizGapTitle");
+      if(gapSub) gapSub.textContent = t("vizGapSub");
+      const gBtn = $("#exportGapPng");
+      if(gBtn) gBtn.textContent = t("gapBtn");
+
+      // Default insight if empty
+      const insight = $("#insightBox");
+      if(insight && insight.textContent && insight.textContent.trim().length){
+        // If tool already wrote something, leave it. Otherwise set default later in updateInsights.
+      }
+    }
+
+    // SECTION 6
+    const sec6 = ROOT.querySelector('section[aria-labelledby="vuca-sec6"]');
+    if(sec6){
+      const h2 = sec6.querySelector("#vuca-sec6");
+      if(h2) h2.textContent = t("sec6Title");
+      const sub = sec6.querySelector(".vuca-card-head .vuca-sub");
+      if(sub) sub.textContent = t("sec6Sub");
+      const badge = sec6.querySelector(".vuca-badge");
+      if(badge) badge.textContent = t("badgeTools");
+      const h3 = sec6.querySelector("#autoRecommendations .vuca-h3");
+      if(h3) h3.textContent = t("autoRecTitle");
+      const txt = $("#autoRecText");
+      if(txt && (!txt.textContent || txt.textContent.trim().length===0)) txt.textContent = t("autoRecEmpty");
+    }
+
+    // SECTION 7
+    const sec7 = ROOT.querySelector('section[aria-labelledby="vuca-sec7"]');
+    if(sec7){
+      const h2 = sec7.querySelector("#vuca-sec7");
+      if(h2) h2.textContent = t("sec7Title");
+      const sub = sec7.querySelector(".vuca-card-head .vuca-sub");
+      if(sub) sub.textContent = t("sec7Sub");
+      const badge = sec7.querySelector(".vuca-badge");
+      if(badge) badge.textContent = t("badgeRoadmap");
+    }
+
+    // SECTION 8
+    const sec8 = ROOT.querySelector('section[aria-labelledby="vuca-sec8"]');
+    if(sec8){
+      const h2 = sec8.querySelector("#vuca-sec8");
+      if(h2) h2.textContent = t("sec8Title");
+      const sub = sec8.querySelector(".vuca-card-head .vuca-sub");
+      if(sub) sub.textContent = t("sec8Sub");
+      const badge = sec8.querySelector(".vuca-badge");
+      if(badge) badge.textContent = t("badgeExport");
+
+      const leftH3 = sec8.querySelector(".vuca-grid-2 .vuca-block:nth-child(1) .vuca-h3");
+      if(leftH3) leftH3.textContent = t("exportGraphicsTitle");
+      const allBtn = $("#exportAllPng");
+      const r2 = $("#exportRadarPng2");
+      const m2 = $("#exportMatrixPng2");
+      const g2 = $("#exportGapPng2");
+      if(allBtn) allBtn.textContent = t("exportAllPng");
+      if(r2) r2.textContent = t("exportRadarPng2");
+      if(m2) m2.textContent = t("exportMatrixPng2");
+      if(g2) g2.textContent = t("exportGapPng2");
+      const leftHint = sec8.querySelector(".vuca-grid-2 .vuca-block:nth-child(1) .vuca-hint");
+      if(leftHint) leftHint.textContent = t("exportHint");
+
+      const rightH3 = sec8.querySelector(".vuca-grid-2 .vuca-block:nth-child(2) .vuca-h3");
+      if(rightH3) rightH3.textContent = t("jsonTitle");
+      const j1 = $("#btnExportJson");
+      const j2 = $("#btnImportJson");
+      if(j1) j1.textContent = t("btnExportJson");
+      if(j2) j2.textContent = t("btnImportJson");
+      const rightHint = sec8.querySelector(".vuca-grid-2 .vuca-block:nth-child(2) .vuca-hint");
+      if(rightHint) rightHint.textContent = t("jsonHint");
+    }
+
+    // Footer
+    const f = ROOT.querySelector(".vuca-footer-links");
+    if(f){
+      const strong = f.querySelector("strong");
+      const links = f.querySelectorAll("a");
+      if(strong) strong.textContent = t("footerLead");
+      if(links[0]) links[0].textContent = t("footerLex");
+      if(links[1]) links[1].textContent = t("footerSem");
+      if(links[2]) links[2].textContent = t("footerOpex");
+    }
+
+    // update badge texts in other section headers (they reuse .vuca-badge)
+    const sec2 = ROOT.querySelector('section[aria-labelledby="vuca-sec2"] .vuca-badge'); if(sec2) sec2.textContent = t("badgeDefinition");
+    const sec3 = ROOT.querySelector('section[aria-labelledby="vuca-sec3"] .vuca-badge'); if(sec3) sec3.textContent = t("badgeCase");
+    const sec4 = ROOT.querySelector('section[aria-labelledby="vuca-sec4"] .vuca-badge'); if(sec4) sec4.textContent = t("badgeAssessment");
+    const sec5 = ROOT.querySelector('section[aria-labelledby="vuca-sec5"] .vuca-badge'); if(sec5) sec5.textContent = t("badgeVisuals");
+    const sec6 = ROOT.querySelector('section[aria-labelledby="vuca-sec6"] .vuca-badge'); if(sec6) sec6.textContent = t("badgeTools");
+    const sec7 = ROOT.querySelector('section[aria-labelledby="vuca-sec7"] .vuca-badge'); if(sec7) sec7.textContent = t("badgeRoadmap");
+    const sec8 = ROOT.querySelector('section[aria-labelledby="vuca-sec8"] .vuca-badge'); if(sec8) sec8.textContent = t("badgeExport");
+  }
+
+  // ----------------------------
+  // Worlds (1..4) + state
   // ----------------------------
   const WORLD_MAX = 4;
 
+  function cryptoId(){
+    try{ return crypto.randomUUID(); }catch{ return "id_" + Math.random().toString(16).slice(2); }
+  }
   function defaultWorld(i){
     return {
       id: cryptoId(),
@@ -1008,24 +1069,14 @@
     };
   }
 
-  function cryptoId(){
-    try{ return crypto.randomUUID(); }catch{ return "id_" + Math.random().toString(16).slice(2); }
-  }
-
-  // State
   let state = {
+    lang: currentLang,
     caseTitle:"",
     caseContextTeam:"",
     caseDesc:"",
     caseGoal:"",
     worlds: [ defaultWorld(1) ],
-    prime: {
-      // prime[key] = [null|1|2|3] length 5
-      V: [null,null,null,null,null],
-      U: [null,null,null,null,null],
-      C: [null,null,null,null,null],
-      A: [null,null,null,null,null],
-    },
+    prime: { V:[null,null,null,null,null], U:[null,null,null,null,null], C:[null,null,null,null,null], A:[null,null,null,null,null] },
     ts: new Date().toISOString()
   };
 
@@ -1033,6 +1084,7 @@
   // Persist
   // ----------------------------
   function persist(){
+    state.lang = currentLang;
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }
   function restore(){
@@ -1042,6 +1094,14 @@
       const p = JSON.parse(raw);
       if(!p || typeof p !== "object") return false;
 
+      // language from saved state (optional)
+      const savedLang = String(p.lang ?? "");
+      if(savedLang === "de" || savedLang === "en"){
+        currentLang = savedLang;
+        localStorage.setItem(LANG_KEY, currentLang);
+      }
+
+      state.lang = currentLang;
       state.caseTitle = String(p.caseTitle ?? "");
       state.caseContextTeam = String(p.caseContextTeam ?? "");
       state.caseDesc = String(p.caseDesc ?? "");
@@ -1085,6 +1145,24 @@
     $("#caseGoal").value = state.caseGoal;
   }
 
+  function cssId(s){
+    return String(s).replace(/[^a-zA-Z0-9_-]/g,"_");
+  }
+
+  function sliderHtml(w, key, label){
+    const val = w[key];
+    const id = cssId(w.id);
+    return `
+      <div class="slider">
+        <div class="slider-top">
+          <div class="slider-label">${key}) ${esc(label)}</div>
+          <div class="slider-val">${esc(t("valueLabel"))}: <span id="world_${id}_${key}_v">${val}</span></div>
+        </div>
+        <input id="world_${id}_${key}" type="range" min="1" max="5" value="${val}" />
+      </div>
+    `;
+  }
+
   function buildWorldList(){
     const host = $("#worldList");
     host.innerHTML = "";
@@ -1092,33 +1170,39 @@
     state.worlds.forEach((w, idx)=>{
       const card = document.createElement("div");
       card.className = "world-card";
+
+      const chip = `${esc(t("chipWorld"))} ${idx+1} / ${state.worlds.length}`;
+      const rmBtn = (state.worlds.length > 1)
+        ? `<button type="button" class="vuca-btn small danger" data-act="rmWorld" data-id="${esc(w.id)}">${esc(t("removeWorld"))}</button>`
+        : "";
+
       card.innerHTML = `
         <div class="world-head">
           <div>
             <p class="world-name">${esc(w.name || `W${idx+1}`)}</p>
-            <p class="world-mini">Optional: kurze Notiz (bleibt leer, wenn du nichts einträgst).</p>
+            <p class="world-mini">${esc(t("worldMini"))}</p>
           </div>
           <div class="world-actions">
-            <span class="chip">Welt ${idx+1} / ${state.worlds.length}</span>
-            ${state.worlds.length > 1 ? `<button type="button" class="vuca-btn small danger" data-act="rmWorld" data-id="${esc(w.id)}">Entfernen</button>` : ""}
+            <span class="chip">${chip}</span>
+            ${rmBtn}
           </div>
         </div>
 
         <div class="vuca-field" style="margin-bottom:10px;">
-          <label class="vuca-label" for="worldName_${esc(w.id)}">Name</label>
-          <input class="vuca-input" id="worldName_${esc(w.id)}" type="text" value="${esc(w.name)}" placeholder="z.B. Versorgung sichern / Alternativen testen" />
+          <label class="vuca-label" for="worldName_${esc(w.id)}">${esc(t("worldNameLabel"))}</label>
+          <input class="vuca-input" id="worldName_${esc(w.id)}" type="text" value="${esc(w.name)}" placeholder="${esc(t("worldNamePh"))}" />
         </div>
 
         <div class="vuca-field" style="margin-bottom:12px;">
-          <label class="vuca-label" for="worldNote_${esc(w.id)}">Notiz (optional)</label>
-          <input class="vuca-input" id="worldNote_${esc(w.id)}" type="text" value="${esc(w.note)}" placeholder="z.B. Fokus / Hypothese / Messpunkt (optional)" />
+          <label class="vuca-label" for="worldNote_${esc(w.id)}">${esc(t("worldNoteLabel"))}</label>
+          <input class="vuca-input" id="worldNote_${esc(w.id)}" type="text" value="${esc(w.note)}" placeholder="${esc(t("worldNotePh"))}" />
         </div>
 
         <div class="slider-grid">
-          ${sliderHtml(w, "V", "Volatilität")}
-          ${sliderHtml(w, "U", "Unsicherheit")}
-          ${sliderHtml(w, "C", "Komplexität")}
-          ${sliderHtml(w, "A", "Ambiguität")}
+          ${sliderHtml(w, "V", pack().dims.V)}
+          ${sliderHtml(w, "U", pack().dims.U)}
+          ${sliderHtml(w, "C", pack().dims.C)}
+          ${sliderHtml(w, "A", pack().dims.A)}
         </div>
       `;
       host.appendChild(card);
@@ -1159,7 +1243,6 @@
       btn.addEventListener("click", ()=>{
         const id = btn.getAttribute("data-id");
         state.worlds = state.worlds.filter(w=>w.id !== id);
-        // re-label default names if empty
         state.worlds.forEach((w, i)=>{ if(!w.name) w.name = `W${i+1}`; });
         buildWorldList();
         scheduleUpdate();
@@ -1170,20 +1253,24 @@
     $("#btnAddWorld").disabled = state.worlds.length >= WORLD_MAX;
   }
 
-  function cssId(s){
-    return String(s).replace(/[^a-zA-Z0-9_-]/g,"_");
-  }
+  function primeDef(){ return pack().prime; }
+  function tlDef(){ return pack().tl; }
 
-  function sliderHtml(w, key, label){
-    const val = w[key];
-    const id = cssId(w.id);
+  function primeQHtml(dimKey, idx, text){
+    const group = `prime_${dimKey}_${idx}`;
+    const aria = `${dimKey} Q${idx+1}`;
     return `
-      <div class="slider">
-        <div class="slider-top">
-          <div class="slider-label">${key}) ${label}</div>
-          <div class="slider-val">Wert: <span id="world_${id}_${key}_v">${val}</span></div>
+      <div class="qrow" data-prime-row="${group}">
+        <p class="qtext">${esc(text)}</p>
+        <div class="traffic" role="group" aria-label="${esc(aria)}">
+          ${tlDef().map(o=>`
+            <label class="tl ${o.k}" data-val="${o.v}" title="${esc(o.label)}">
+              <span class="dot" aria-hidden="true"></span>
+              ${esc(o.label)}
+              <input type="radio" name="${group}" value="${o.v}">
+            </label>
+          `).join("")}
         </div>
-        <input id="world_${id}_${key}" type="range" min="1" max="5" value="${val}" />
       </div>
     `;
   }
@@ -1192,13 +1279,13 @@
     const host = $("#primeGrid");
     host.innerHTML = "";
 
-    PRIME.forEach(dim=>{
+    primeDef().forEach(dim=>{
       const card = document.createElement("div");
       card.className = "prime-card";
       card.innerHTML = `
         <div class="prime-title">
           <h4>${esc(dim.key)} · ${esc(dim.name)}</h4>
-          <div class="prime-meta">5 Fragen · Grün/Gelb/Rot</div>
+          <div class="prime-meta">${esc(t("primeMeta"))}</div>
         </div>
         <div class="vuca-hint" style="margin:0 0 10px;">${esc(dim.hint)}</div>
         ${dim.qs.map((qt, i)=> primeQHtml(dim.key, i, qt)).join("")}
@@ -1207,7 +1294,7 @@
     });
 
     // Wire up selections
-    PRIME.forEach(dim=>{
+    primeDef().forEach(dim=>{
       dim.qs.forEach((_, i)=>{
         const groupName = `prime_${dim.key}_${i}`;
         const row = host.querySelector(`[data-prime-row="${groupName}"]`);
@@ -1218,7 +1305,6 @@
             const v = Number(lab.getAttribute("data-val"));
             state.prime[dim.key][i] = (v===1||v===2||v===3) ? v : null;
 
-            // visual selection
             row.querySelectorAll("label.tl").forEach(x=>x.classList.remove("selected"));
             lab.classList.add("selected");
 
@@ -1236,30 +1322,11 @@
     });
   }
 
-  function primeQHtml(dimKey, idx, text){
-    const group = `prime_${dimKey}_${idx}`;
-    return `
-      <div class="qrow" data-prime-row="${group}">
-        <p class="qtext">${esc(text)}</p>
-        <div class="traffic" role="group" aria-label="Antwort ${dimKey} Frage ${idx+1}">
-          ${TL.map(o=>`
-            <label class="tl ${o.k}" data-val="${o.v}" title="${o.label}">
-              <span class="dot" aria-hidden="true"></span>
-              ${o.label}
-              <input type="radio" name="${group}" value="${o.v}">
-            </label>
-          `).join("")}
-        </div>
-      </div>
-    `;
-  }
-
   // ----------------------------
   // Visuals: Radar (Chart.js), Matrix (SVG), Gap Bars
   // ----------------------------
   let radarChart = null;
 
-  /* CHANGED: Palette (Türkis -> Blau) */
   const palette = [
     {border:"rgba(17,85,178,.85)", fill:"rgba(17,85,178,.14)"},
     {border:"rgba(245,158,11,.90)", fill:"rgba(245,158,11,.14)"},
@@ -1288,10 +1355,7 @@
 
     radarChart = new Chart(ctx, {
       type: "radar",
-      data: {
-        labels: ["V","U","C","A"],
-        datasets: []
-      },
+      data: { labels: ["V","U","C","A"], datasets: [] },
       options: {
         responsive: true,
         maintainAspectRatio: false,
@@ -1302,14 +1366,12 @@
             callbacks: {
               title(items){
                 const l = items[0].label;
-                return (l==="V") ? "V – Volatilität / Vision"
-                  : (l==="U") ? "U – Unsicherheit / Understanding"
-                  : (l==="C") ? "C – Komplexität / Clarity"
-                  : "A – Ambiguität / Agility";
+                return (l==="V") ? t("tooltipV")
+                  : (l==="U") ? t("tooltipU")
+                  : (l==="C") ? t("tooltipC")
+                  : t("tooltipA");
               },
-              label(ctx){
-                return `${ctx.dataset.label}: ${ctx.raw}`;
-              }
+              label(ctx){ return `${ctx.dataset.label}: ${ctx.raw}`; }
             }
           }
         },
@@ -1320,13 +1382,10 @@
             ticks: { stepSize: 1, backdropColor: "transparent" },
             grid: { color: "rgba(0,0,0,0.05)" },
             angleLines: { color: "rgba(0,0,0,0.05)" },
-            pointLabels: { color: "#09387a", font: { size: 12, weight: "700" } } /* CHANGED */
+            pointLabels: { color: "#09387a", font: { size: 12, weight: "700" } }
           }
         },
-        elements: {
-          line: { borderWidth: 2 },
-          point: { radius: 3 }
-        }
+        elements: { line: { borderWidth: 2 }, point: { radius: 3 } }
       },
       plugins: [glow]
     });
@@ -1384,7 +1443,7 @@
 
     const avg = worldPressureAvg();
     datasets.push({
-      label: "Gesamt (Mittel)",
+      label: t("dsOverall"),
       data: [avg.V, avg.U, avg.C, avg.A],
       borderColor: "rgba(15,23,42,.65)",
       backgroundColor: "rgba(15,23,42,.05)",
@@ -1397,11 +1456,11 @@
     const hasAny = prData.some(v=>typeof v === "number");
     if(hasAny){
       datasets.push({
-        label: "Prime (Reifegrad)",
+        label: t("dsPrime"),
         data: prData.map(v => v ?? 1),
-        borderColor: "rgba(9,56,122,.85)",         /* CHANGED */
-        backgroundColor: "rgba(9,56,122,.10)",     /* CHANGED */
-        pointBackgroundColor: "rgba(9,56,122,.90)",/* CHANGED */
+        borderColor: "rgba(9,56,122,.85)",
+        backgroundColor: "rgba(9,56,122,.10)",
+        pointBackgroundColor: "rgba(9,56,122,.90)",
         borderWidth: 3,
         borderDash: [2,2]
       });
@@ -1415,6 +1474,7 @@
 
   function buildRadarLegend(datasets){
     const host = $("#radarLegend");
+    if(host) host.setAttribute("aria-label", t("sec5RadarLegendAria"));
     host.innerHTML = "";
 
     datasets.forEach((ds, i)=>{
@@ -1436,6 +1496,31 @@
     });
   }
 
+  function addSvg(svg, tag, attrs){
+    const el = document.createElementNS("http://www.w3.org/2000/svg", tag);
+    Object.entries(attrs).forEach(([k,v])=>el.setAttribute(k, String(v)));
+    svg.appendChild(el);
+    return el;
+  }
+  function addText(svg, x, y, text, anchor, cls, rotate=false, rx=0, ry=0){
+    const tEl = addSvg(svg, "text", {
+      x, y, "text-anchor": anchor,
+      "font-family":"ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial",
+      "font-weight": "800",
+      "font-size": cls==="axis" ? "11" : (cls==="tick" ? "10" : "12"),
+      "fill": cls==="axis" ? "#334155" : (cls==="tick" ? "#64748b" : "#0f172a")
+    });
+    if(rotate){
+      tEl.setAttribute("transform", `rotate(-90 ${rx} ${ry})`);
+    }
+    tEl.textContent = text;
+    return tEl;
+  }
+  function qLabel(svg, x, y, main, sub){
+    addText(svg, x, y, main, "middle", "main");
+    addText(svg, x, y+12, sub, "middle", "tick");
+  }
+
   function renderMatrix(){
     const svg = $("#vucaMatrix");
     while(svg.firstChild) svg.removeChild(svg.firstChild);
@@ -1447,19 +1532,19 @@
 
     addSvg(svg,"rect",{x:pad,y:top,width:innerW/2,height:innerH/2,fill:"rgba(22,163,74,.08)"});
     addSvg(svg,"rect",{x:pad+innerW/2,y:top,width:innerW/2,height:innerH/2,fill:"rgba(245,158,11,.10)"});
-    addSvg(svg,"rect",{x:pad,y:top+innerH/2,width:innerW/2,height:innerH/2,fill:"rgba(17,85,178,.08)"}); /* CHANGED */
+    addSvg(svg,"rect",{x:pad,y:top+innerH/2,width:innerW/2,height:innerH/2,fill:"rgba(17,85,178,.08)"});
     addSvg(svg,"rect",{x:pad+innerW/2,y:top+innerH/2,width:innerW/2,height:innerH/2,fill:"rgba(229,62,62,.07)"});
 
     addSvg(svg,"line",{x1:pad+innerW/2,y1:top,x2:pad+innerW/2,y2:top+innerH,stroke:"rgba(15,23,42,.25)","stroke-width":"1"});
     addSvg(svg,"line",{x1:pad,y1:top+innerH/2,x2:pad+innerW,y2:top+innerH/2,stroke:"rgba(15,23,42,.25)","stroke-width":"1"});
 
-    addText(svg, pad+innerW/2, H-10, "U + A  →  Lernen / Klärung", "middle", "axis");
-    addText(svg, 14, top+innerH/2, "↑  V + C  (Steuern / Liefern)", "middle", "axis", true, 14, top+innerH/2);
+    addText(svg, pad+innerW/2, H-10, t("axisX"), "middle", "axis");
+    addText(svg, 14, top+innerH/2, t("axisY"), "middle", "axis", true, 14, top+innerH/2);
 
-    qLabel(svg, pad+innerW*0.25, top+innerH*0.22, "Fokus: Flow", "C/V hoch · U/A niedrig");
-    qLabel(svg, pad+innerW*0.75, top+innerH*0.22, "Fokus: Lernen", "C/V hoch · U/A hoch");
-    qLabel(svg, pad+innerW*0.25, top+innerH*0.72, "Fokus: Stabilisieren", "C/V niedrig · U/A niedrig");
-    qLabel(svg, pad+innerW*0.75, top+innerH*0.72, "Fokus: Experiment", "C/V niedrig · U/A hoch");
+    qLabel(svg, pad+innerW*0.25, top+innerH*0.22, t("q1Main"), t("q1Sub"));
+    qLabel(svg, pad+innerW*0.75, top+innerH*0.22, t("q2Main"), t("q2Sub"));
+    qLabel(svg, pad+innerW*0.25, top+innerH*0.72, t("q3Main"), t("q3Sub"));
+    qLabel(svg, pad+innerW*0.75, top+innerH*0.72, t("q4Main"), t("q4Sub"));
 
     state.worlds.forEach((w, i)=>{
       const x01 = clamp((w.U + w.A)/10, 0, 1);
@@ -1480,32 +1565,7 @@
     const oy = top + innerH*(1 - y01);
 
     addSvg(svg, "circle", {cx:ox, cy:oy, r:6, fill:"rgba(15,23,42,.65)", stroke:"#0f172a","stroke-width":"1"});
-    addText(svg, ox, oy+20, "Gesamt", "middle", "tick");
-  }
-
-  function addSvg(svg, tag, attrs){
-    const el = document.createElementNS("http://www.w3.org/2000/svg", tag);
-    Object.entries(attrs).forEach(([k,v])=>el.setAttribute(k, String(v)));
-    svg.appendChild(el);
-    return el;
-  }
-  function addText(svg, x, y, text, anchor, cls, rotate=false, rx=0, ry=0){
-    const t = addSvg(svg, "text", {
-      x, y, "text-anchor": anchor,
-      "font-family":"ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial",
-      "font-weight": "800",
-      "font-size": cls==="axis" ? "11" : (cls==="tick" ? "10" : "12"),
-      "fill": cls==="axis" ? "#334155" : (cls==="tick" ? "#64748b" : "#0f172a")
-    });
-    if(rotate){
-      t.setAttribute("transform", `rotate(-90 ${rx} ${ry})`);
-    }
-    t.textContent = text;
-    return t;
-  }
-  function qLabel(svg, x, y, main, sub){
-    addText(svg, x, y, main, "middle", "main");
-    addText(svg, x, y+12, sub, "middle", "tick");
+    addText(svg, ox, oy+20, t("overallLabel"), "middle", "tick");
   }
 
   function updateGapBars(){
@@ -1515,12 +1575,7 @@
     const avg = worldPressureAvg();
     const readiness = primeReadiness5();
 
-    const dims = [
-      {k:"V", name:"V"},
-      {k:"U", name:"U"},
-      {k:"C", name:"C"},
-      {k:"A", name:"A"},
-    ];
+    const dims = [{k:"V"},{k:"U"},{k:"C"},{k:"A"}];
 
     dims.forEach(d=>{
       const pressure = avg[d.k];
@@ -1543,7 +1598,7 @@
       const row = document.createElement("div");
       row.className = "gap-row";
       row.innerHTML = `
-        <div class="gap-k">${d.name}</div>
+        <div class="gap-k">${d.k}</div>
         <div class="bar">
           <div class="fill" style="left:${left}%; width:${width}%; background:${color};"></div>
         </div>
@@ -1554,71 +1609,22 @@
   }
 
   // ----------------------------
-  // Tools + Roadmap (unverändert)
+  // Tools + Roadmap (now language-aware)
   // ----------------------------
-  const TOOLBOX = {
-    V: {
-      title: "Volatilität → Vision",
-      desc: "Wenn sich Rahmenbedingungen schnell ändern: kurz takten, Orientierung halten.",
-      tools: [
-        "OODA-Loop (Observe–Orient–Decide–Act)",
-        "Rolling Planning / Re-Planungsrhythmus (2–4 Wochen)",
-        "MoSCoW / Eisenhower zur Priorisierung",
-        "Kanban + WIP-Limits (Fokus statt Parallelität)",
-        "Pufferplanung / 15%-Regel (Volatilität einkalkulieren)",
-        "OKR (light) für Fokus & Messbarkeit"
-      ]
-    },
-    U: {
-      title: "Unsicherheit → Understanding",
-      desc: "Wenn Infos fehlen: Hypothesen sichtbar machen, lernen statt raten.",
-      tools: [
-        "Hypothesen-Backlog / Assumption Log",
-        "Pre-Mortem (was könnte schiefgehen?)",
-        "Szenariotechnik (best/base/worst)",
-        "Cone of Uncertainty (bewusst nachschärfen)",
-        "Experimentdesign / MVP-Denken (klein testen)",
-        "Entscheidungslog (Decision Log) + Trigger für Re-Bewertung"
-      ]
-    },
-    C: {
-      title: "Komplexität → Clarity",
-      desc: "Wenn Ursache–Wirkung nicht linear ist: System verstehen, sichere Schritte gehen.",
-      tools: [
-        "System-Mapping / Causal-Loop Thinking",
-        "Stakeholder-Map (Einfluss/Betroffenheit)",
-        "Wertstrom-Sicht / Wardley Mapping (light)",
-        "Safe-to-fail Experimente (mehrere kleine Versuche)",
-        "3 Horizons / Horizon Thinking",
-        "A3-Problem Solving (Lean, strukturiert)"
-      ]
-    },
-    A: {
-      title: "Ambiguität → Agility",
-      desc: "Wenn Begriffe/Ziele unterschiedlich interpretiert werden: gemeinsame Sprache + schnelle Anpassung.",
-      tools: [
-        "Definition of Done / Definition of Ready",
-        "Alignment Canvas (Ziel/Nicht-Ziel, Erfolgskriterien, Grenzen)",
-        "RACI / DACI (Rollen & Entscheidungen klären)",
-        "Kontext-Check: “Was bedeutet das konkret im Alltag?”",
-        "Story Mapping / Beispiele statt Abstraktionen",
-        "Retrospektive (Start/Stop/Continue) – Lernen systematisieren"
-      ]
-    }
-  };
+  function toolbox(){ return pack().tools; }
 
   function buildToolGrid(){
     const host = $("#toolGrid");
     host.innerHTML = "";
 
     ["V","U","C","A"].forEach(k=>{
-      const b = TOOLBOX[k];
+      const b = toolbox()[k];
       const card = document.createElement("div");
       card.className = "tool-card";
       card.innerHTML = `
         <h4>${esc(k)} · ${esc(b.title)}</h4>
         <p>${esc(b.desc)}</p>
-        <ul>${b.tools.map(t=>`<li>${esc(t)}</li>`).join("")}</ul>
+        <ul>${b.tools.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>
       `;
       host.appendChild(card);
     });
@@ -1627,10 +1633,11 @@
   function chooseLoopForWorld(w){
     const learn = w.U + w.A;
     const deliver = w.V + w.C;
-    if(learn >= 8 && deliver >= 8) return {loop:"DCPA", cls:"dcpa", note:"Beidhändig: Delivery + Experiment. Nutze DCPA für Lernen, PDCA für stabile Teilaufgaben."};
-    if(learn >= 8) return {loop:"DCPA", cls:"dcpa", note:"Hohe Unsicherheit/Ambiguität: zuerst kleine Experimente, dann planen."};
-    if(deliver >= 8) return {loop:"PDCA", cls:"pdca", note:"Hohe Volatilität/Komplexität, aber strukturierbar: iterativ planen/umsetzen/prüfen."};
-    return {loop:"PDCA", cls:"pdca", note:"Moderate Lage: klein planen, transparent arbeiten, regelmäßig nachschärfen."};
+
+    if(learn >= 8 && deliver >= 8) return {loop:"DCPA", cls:"dcpa", note: pack().loopNotes.both};
+    if(learn >= 8) return {loop:"DCPA", cls:"dcpa", note: pack().loopNotes.learn};
+    if(deliver >= 8) return {loop:"PDCA", cls:"pdca", note: pack().loopNotes.deliver};
+    return {loop:"PDCA", cls:"pdca", note: pack().loopNotes.normal};
   }
 
   function buildRoadmap(){
@@ -1641,35 +1648,9 @@
       const label = (w.name && w.name.trim()) ? w.name.trim() : `W${i+1}`;
       const l = chooseLoopForWorld(w);
 
-      const steps48 = (l.loop === "DCPA")
-        ? [
-            "Do: 1–2 safe-to-fail Experimente definieren (klein, reversibel, Messpunkt).",
-            "Check: nach 24–48h Signale sammeln (Daten/Feedback, Abbruchkriterium).",
-            "Plan: nächste Hypothese festlegen, Experiment anpassen."
-          ]
-        : [
-            "Plan: Ziel + Scope + Board aufsetzen (Kanban, WIP-Limit).",
-            "Do: klein starten (1–2 Lieferpakete), Verantwortlichkeiten klären.",
-            "Check: nach 48h Status & Blocker, Anpassungen für den nächsten Zyklus."
-          ];
-
-      const steps2w = (l.loop === "DCPA")
-        ? [
-            "2–3 Experimente parallel (max. 2 Wochen), klare Metriken.",
-            "Gewinner skalieren, Verlierer stoppen, Learnings dokumentieren.",
-            "Entscheidungslog pflegen: was wurde warum entschieden?"
-          ]
-        : [
-            "Rolling Planning (2 Wochen): Prioritäten fixieren, Rest flexibel.",
-            "Risiko-/Pre-Mortem für kritische Pfade.",
-            "Review: messbare Ergebnisse + nächste Iteration planen."
-          ];
-
-      const steps8w = [
-        "Stabilisieren & standardisieren: was funktioniert, wird SOP/Checkliste.",
-        "Gap schließen: die schwächste Prime-Dimension gezielt verbessern (Training/Prozess).",
-        "Messsystem: KPIs + Trigger für Re-Planung definieren."
-      ];
+      const steps48 = (l.loop === "DCPA") ? pack().steps48.dcpa : pack().steps48.pdca;
+      const steps2w = (l.loop === "DCPA") ? pack().steps2w.dcpa : pack().steps2w.pdca;
+      const steps8w = pack().steps8w;
 
       const item = document.createElement("div");
       item.className = "roadmap-item";
@@ -1685,14 +1666,23 @@
         <div class="vuca-h3" style="margin:0 0 6px;">48h</div>
         <ul>${steps48.map(s=>`<li>${esc(s)}</li>`).join("")}</ul>
 
-        <div class="vuca-h3" style="margin:10px 0 6px;">2 Wochen</div>
+        <div class="vuca-h3" style="margin:10px 0 6px;">2 weeks</div>
         <ul>${steps2w.map(s=>`<li>${esc(s)}</li>`).join("")}</ul>
 
-        <div class="vuca-h3" style="margin:10px 0 6px;">4–8 Wochen</div>
+        <div class="vuca-h3" style="margin:10px 0 6px;">4–8 weeks</div>
         <ul>${steps8w.map(s=>`<li>${esc(s)}</li>`).join("")}</ul>
       `;
       host.appendChild(item);
     });
+
+    // Fix the headers "2 weeks / 4–8 weeks" for DE:
+    if(currentLang === "de"){
+      host.querySelectorAll(".roadmap-item").forEach(item=>{
+        const h3s = item.querySelectorAll(".vuca-h3");
+        if(h3s[1]) h3s[1].textContent = "2 Wochen";
+        if(h3s[2]) h3s[2].textContent = "4–8 Wochen";
+      });
+    }
   }
 
   function buildAutoRecommendations(){
@@ -1712,24 +1702,11 @@
 
     let msg = "";
     if(!topG){
-      msg = "Beantworte Prime-Fragen (Grün/Gelb/Rot), damit das Tool die Gap-Prioritäten setzen kann.";
+      msg = pack().recNoPrime;
     }else{
-      const b = TOOLBOX[topG.k];
-      msg = `
-        <div class="vuca-text">
-          <strong>Stärkster VUCA-Druck:</strong> ${topP.k} (${topP.v}/5).<br/>
-          <strong>Größter Gap:</strong> ${topG.k} (Druck ${avg[topG.k]}/5 vs. Reifegrad ${topG.r}/5 → Gap ${topG.g > 0 ? "+"+topG.g : topG.g}).<br/><br/>
-          <strong>Empfohlener Fokus:</strong> <em>${esc(b.title)}</em><br/>
-          Starte mit diesen 3 Tools:
-          <ul style="margin:8px 0 0 18px;">
-            <li>${esc(b.tools[0])}</li>
-            <li>${esc(b.tools[1])}</li>
-            <li>${esc(b.tools[2])}</li>
-          </ul>
-        </div>
-      `;
+      const b = toolbox()[topG.k];
+      msg = pack().recTemplate(topP, topG, avg, topG.r, b);
     }
-
     $("#autoRecText").innerHTML = msg;
   }
 
@@ -1756,26 +1733,15 @@
 
     const insight = $("#insightBox");
     if(!answeredAny){
-      insight.innerHTML = `
-        <strong>Fall:</strong> ${title}<br/>
-        <span style="color:#64748b">Kontext/Team:</span> <strong>${team}</strong> · <span style="color:#64748b">Ziel:</span> <strong>${goal}</strong><br/><br/>
-        <strong>Nächster Schritt:</strong> Prime-Fragen beantworten (Grün/Gelb/Rot), damit das Tool Gap + Roadmap sauber priorisiert.
-      `;
+      insight.innerHTML = pack().insightNeedPrime(title, team, goal);
       return;
     }
 
     const worstTxt = worst
-      ? `${worst.k}: Gap ${worst.gap>0?"+":""}${worst.gap} (Druck ${avg[worst.k]}/5 vs. Reifegrad ${worst.r}/5)`
+      ? `${worst.k}: ${worst.gap>0?"+":""}${worst.gap} (${avg[worst.k]}/5 vs ${worst.r}/5)`
       : "—";
 
-    insight.innerHTML = `
-      <strong>Fall:</strong> ${title}<br/>
-      <span style="color:#64748b">Kontext/Team:</span> <strong>${team}</strong> · <span style="color:#64748b">Ziel:</span> <strong>${goal}</strong><br/><br/>
-      <strong>Erkenntnis aus den Fragen:</strong><br/>
-      1) Höchster VUCA-Druck ist <strong>${top.k}</strong> (${top.v}/5).<br/>
-      2) Größter Gap ist <strong>${esc(worstTxt)}</strong>.<br/>
-      3) Empfehlung: Tools zuerst dort einsetzen, wo <strong>Gap</strong> am größten ist (Reifegrad aufbauen), danach stabilisieren/standardisieren.
-    `;
+    insight.innerHTML = pack().insightTemplate(title, team, goal, top, worstTxt);
   }
 
   // ----------------------------
@@ -1789,7 +1755,7 @@
       a.href = canvas.toDataURL("image/png");
       a.click();
     }catch(e){
-      toast("Export fehlgeschlagen. Prüfe Browserrechte.");
+      toast(t("tExportFail"));
     }
   }
 
@@ -1797,6 +1763,7 @@
   // JSON import/export
   // ----------------------------
   function downloadJson(){
+    state.lang = currentLang;
     state.ts = new Date().toISOString();
     const blob = new Blob([JSON.stringify(state, null, 2)], {type:"application/json"});
     const url = URL.createObjectURL(blob);
@@ -1811,16 +1778,18 @@
       const parsed = JSON.parse(txt);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
       if(!restore()){
-        toast("JSON ungültig.");
+        toast(t("tJsonInvalid"));
         return;
       }
+      applyStaticI18n();
+      updateLangButtonState();
       syncCaseInputs();
       buildWorldList();
       buildPrimeGrid();
       scheduleUpdate();
-      toast("JSON geladen.");
+      toast(t("tJsonLoaded"));
     }).catch(()=>{
-      toast("JSON konnte nicht geladen werden.");
+      toast(t("tJsonLoadFail"));
     });
   }
 
@@ -1862,30 +1831,33 @@
     state.caseGoal="";
     syncCaseInputs();
     scheduleUpdate();
-    toast("Felder geleert.");
+    toast(t("tFieldsCleared"));
   });
 
   $("#btnBackup").addEventListener("click", ()=>{
     persist();
-    toast("Backup gespeichert.");
+    toast(t("tBackupSaved"));
   });
   $("#btnRestore").addEventListener("click", ()=>{
     const ok = restore();
     if(!ok){
-      toast("Kein Backup gefunden.");
+      toast(t("tNoBackup"));
       return;
     }
+    applyStaticI18n();
+    updateLangButtonState();
     syncCaseInputs();
     buildWorldList();
     buildPrimeGrid();
     scheduleUpdate();
-    toast("Backup geladen.");
+    toast(t("tBackupLoaded"));
   });
 
   $("#btnClearAll").addEventListener("click", ()=>{
-    if(!confirm("Alles löschen (Fall, Welten, Prime)?")) return;
+    if(!confirm(t("confirmClearAll"))) return;
     localStorage.removeItem(STORAGE_KEY);
     state = {
+      lang: currentLang,
       caseTitle:"",
       caseContextTeam:"",
       caseDesc:"",
@@ -1898,7 +1870,7 @@
     buildWorldList();
     buildPrimeGrid();
     scheduleUpdate();
-    toast("Alles gelöscht.");
+    toast(t("btnClearAll"));
   });
 
   $("#btnAddWorld").addEventListener("click", ()=>{
@@ -1906,7 +1878,7 @@
     state.worlds.push(defaultWorld(state.worlds.length+1));
     buildWorldList();
     scheduleUpdate();
-    toast("Welt hinzugefügt.");
+    toast(t("tWorldAdded"));
   });
 
   // Exports
@@ -1933,6 +1905,10 @@
   // ----------------------------
   restore();
 
+  ensureLangSwitch();
+  applyStaticI18n();
+  updateLangButtonState();
+
   syncCaseInputs();
   buildWorldList();
   buildPrimeGrid();
@@ -1943,6 +1919,12 @@
   const y = new Date().getFullYear();
   const yEl = $("#copyrightYear");
   if(yEl) yEl.textContent = String(y);
+
+  // set initial no-data text (gap)
+  const insight = $("#insightBox");
+  if(insight && (!insight.textContent || insight.textContent.trim().length===0)){
+    insight.textContent = t("gapNoData");
+  }
 
   scheduleUpdate();
 
