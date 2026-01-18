@@ -5,1101 +5,1487 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Turtle Diagramm – Prozessanalyse</title>
 
-  <!-- html2canvas (für PNG-Export) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
   <style>
     :root{
       --blue:#1155b2;
       --dark:#09387a;
+      --bg:#ffffff;
       --light-bg:#f8fafc;
       --border:#d1d9e6;
       --muted:#64748b;
       --text:#27304d;
-      --note:#fff9c4;
-      --shadow: 0 4px 12px rgba(0,0,0,.10);
-      --radius:4px;
 
-      /* box accents */
-      --in-bg:#eff6ff;   --in-b:#3b82f6;   /* Inputs */
-      --out-bg:#ecfdf5;  --out-b:#22c55e;  /* Outputs */
-      --people-bg:#fff7ed; --people-b:#f97316; /* People */
-      --res-bg:#f5f3ff;  --res-b:#8b5cf6;  /* Resources */
-      --meth-bg:#fefce8; --meth-b:#eab308; /* Methods */
-      --kpi-bg:#fff1f2;  --kpi-b:#ef4444;  /* KPIs */
-      --risk-bg:#f1f5f9; --risk-b:#0f172a; /* Risks */
-      --doc-bg:#f0fdf4;  --doc-b:#16a34a;  /* Docs */
+      /* Turtle colors (close to screenshot) */
+      --c-people:#f97316;        --bg-people:#fff7ed;
+      --c-how:#eab308;           --bg-how:#fefce8;
+      --c-with:#7c3aed;          --bg-with:#f5f3ff;
+
+      --c-input:#2563eb;         --bg-input:#eff6ff;
+      --c-output:#16a34a;        --bg-output:#ecfdf5;
+
+      --c-risk:#0f172a;          --bg-risk:#f1f5f9;
+      --c-kpi:#ef4444;           --bg-kpi:#fff1f2;
+      --c-doc:#16a34a;           --bg-doc:#f0fdf4;
+
+      --radius:6px;
+      --shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
 
-    body{ margin:0; background:#fff; }
+    body{ margin:0; background: var(--bg); }
 
-    .turtle-app{
-      max-width:1100px;
-      margin:20px auto;
-      padding:0 12px;
-      font-family:'Segoe UI', Roboto, sans-serif;
-      color:var(--text);
+    /* App shell */
+    #qm-turtle-app{
+      max-width: 1180px;
+      margin: 18px auto;
+      padding: 0 12px;
+      font-family: "Segoe UI", Roboto, system-ui, -apple-system, Arial, sans-serif;
+      color: var(--text);
+      line-height: 1.5;
     }
-    .turtle-card{
+    #qm-turtle-app *{ box-sizing: border-box; }
+    #qm-turtle-app :focus-visible{ outline: 2px solid var(--blue); outline-offset: 2px; }
+
+    .card{
       background:#fff;
       border:1px solid var(--border);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
       overflow:hidden;
     }
 
-    /* Intro */
-    .tool-intro{ padding:22px 25px; border-bottom:3px solid var(--blue); background:var(--light-bg); }
-    .tool-intro-top{ display:flex; align-items:flex-start; justify-content:space-between; gap:15px; flex-wrap:wrap; }
-    .tool-title{ margin:0; color:var(--dark); font-size:20px; text-transform:uppercase; }
-    .tool-sub{ margin:6px 0 0; font-size:13px; color:var(--muted); }
+    /* Header / Intro */
+    .tool-intro{
+      padding: 18px 20px;
+      border-bottom: 3px solid var(--blue);
+      background: var(--light-bg);
+    }
+    .intro-top{
+      display:flex;
+      align-items:flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .tool-title{
+      margin:0;
+      color: var(--dark);
+      font-size: 20px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+    }
+    .tool-sub{ margin: 6px 0 0; font-size: 13px; color: var(--muted); max-width: 70ch; }
 
-    .tool-grid{ margin-top:16px; display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-    .tool-box{ background:#fff; border:1px solid var(--border); border-radius:var(--radius); padding:12px 14px; }
-    .tool-box h3{ margin:0 0 6px 0; font-size:13px; color:var(--dark); text-transform:uppercase; }
-    .tool-box p, .tool-box ol{ margin:0; font-size:13px; color:#334155; }
-    .tool-box ol{ padding-left:18px; }
-    .tool-privacy{ border-left:3px solid var(--blue); }
+    .top-actions{
+      display:flex; gap: 10px; align-items:center; flex-wrap: wrap; justify-content:flex-end;
+    }
 
-    .tool-box a{ color:var(--blue); text-decoration:none; font-weight:800; }
-    .tool-box a:hover{ text-decoration:underline; }
-
-    /* Buttons */
-    .i-btn{
-      padding:10px 18px;
-      font-size:13px;
-      font-weight:bold;
-      border-radius:var(--radius);
-      cursor:pointer;
-      border:1px solid var(--border);
+    .btn{
+      padding: 10px 14px;
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: .3px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
       background:#fff;
-      text-transform:uppercase;
+      color: var(--dark);
+      cursor:pointer;
       text-decoration:none;
       display:inline-flex;
       align-items:center;
+      gap: 8px;
       user-select:none;
-      gap:8px;
     }
-    .i-btn.primary{ background:var(--blue); color:#fff; border-color:var(--blue); }
-    .i-btn.danger{ color:#e53e3e; border-color: rgba(229,62,62,.35); }
-    .i-btn:hover{ border-color: rgba(17,85,178,.45); }
-    .i-btn.primary:hover{ background:var(--dark); border-color:var(--dark); }
-    .i-btn.danger:hover{ border-color: rgba(229,62,62,.55); background: rgba(229,62,62,.06); }
+    .btn:hover{ background:#f1f5f9; border-color: rgba(17,85,178,.35); }
+    .btn.primary{ background: var(--blue); color:#fff; border-color: var(--blue); }
+    .btn.primary:hover{ background: var(--dark); border-color: var(--dark); }
+    .btn.danger{ color:#e53e3e; border-color: rgba(229,62,62,.35); }
+    .btn.small{ padding: 8px 10px; font-size: 11px; }
 
-    .lang-switch{ display:flex; gap:8px; align-items:center; }
-    .lang-switch .i-btn{ padding:8px 12px; font-size:12px; }
+    .lang-switch{ display:flex; gap: 8px; align-items:center; }
+    .lang-switch .btn{ padding: 8px 10px; }
 
-    /* Body */
-    .turtle-body{ padding:25px; }
-    .turtle-drawing-area{ padding:22px; background:#fff; border:1px solid #edf2f7; position:relative; }
-
-    /* Header/meta inside capture */
-    .turtle-headerbar{
+    .tool-grid{
+      margin-top: 14px;
       display:grid;
-      grid-template-columns: 1.2fr .8fr .6fr .5fr;
-      gap:12px;
-      padding-bottom:14px;
-      margin-bottom:14px;
-      border-bottom:1px solid #eef2f7;
-      align-items:start;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
     }
-    .turtle-field{ display:flex; flex-direction:column; gap:6px; }
-    .turtle-field label{
-      font-size:12px;
-      color:var(--muted);
-      text-transform:uppercase;
-      font-weight:800;
-      letter-spacing:.2px;
-    }
-    .turtle-input, .turtle-textarea{
-      width:100%;
-      border:1px solid var(--border);
-      border-radius:var(--radius);
-      padding:10px;
-      font-family:inherit;
-      font-size:13px;
-      outline:none;
+    @media(max-width: 900px){ .tool-grid{ grid-template-columns: 1fr; } }
+
+    .tool-box{
       background:#fff;
+      border:1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 14px;
     }
-    .turtle-textarea{ min-height:62px; resize:vertical; grid-column: 1 / span 2; }
-    .turtle-input:focus, .turtle-textarea:focus{
-      border-color: rgba(17,85,178,.7);
-      box-shadow: 0 0 0 3px rgba(17,85,178,.12);
+    .tool-box h3{
+      margin:0 0 6px;
+      font-size: 13px;
+      color: var(--dark);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing:.25px;
     }
+    .tool-box p, .tool-box ol{ margin:0; font-size: 13px; color:#334155; }
+    .tool-box ol{ padding-left: 18px; }
+    .tool-privacy{ border-left: 3px solid var(--blue); }
 
-    .turtle-axis{
-      display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;
-      gap:10px; margin: 6px 0 12px;
-      font-size:12px; color:var(--muted);
-    }
-    .turtle-axis strong{ color:var(--dark); }
+    .tool-box a{ color: var(--blue); text-decoration:none; font-weight: 800; }
+    .tool-box a:hover{ text-decoration: underline; }
 
-    /* Diagram grid (3x3) */
+    /* Turtle header line (like screenshot) */
+    .turtle-strip{
+      display:flex;
+      justify-content: space-between;
+      align-items:center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 18px 0 10px;
+      padding: 0 4px;
+      color:#334155;
+      font-size: 14px;
+      font-weight: 800;
+    }
+    .turtle-strip strong{ color: var(--dark); font-weight: 900; }
+
+    /* Diagram grid */
+    .body{ padding: 18px 20px; }
+    .diagram-wrap{
+      border:1px solid #edf2f7;
+      border-radius: var(--radius);
+      background:#fff;
+      padding: 14px;
+    }
     .turtle-grid{
       display:grid;
       grid-template-columns: 1fr 1.15fr 1fr;
-      grid-template-rows: auto auto auto;
-      gap:12px;
-      align-items:stretch;
+      gap: 12px;
     }
+    @media(max-width: 980px){ .turtle-grid{ grid-template-columns: 1fr; } }
 
     .tbox{
       border:1px solid var(--border);
-      border-radius:var(--radius);
-      padding:12px 14px;
+      border-radius: var(--radius);
       background:#fff;
+      overflow:hidden;
       display:flex;
-      flex-direction:column;
-      min-height:170px;
+      flex-direction: column;
+      min-height: 210px;
     }
-    .tbox.center{
-      min-height:240px;
-      border:2px solid rgba(17,85,178,.35);
-      background: radial-gradient(circle at center, rgba(17,85,178,.06) 0%, transparent 70%);
-    }
+    .tbox.headline-only{ min-height: 240px; }
 
-    .tbox-title{
-      display:flex; justify-content:space-between; align-items:baseline; gap:10px;
-      margin:0 0 10px 0;
-      font-size:13px;
-      font-weight:900;
-      text-transform:uppercase;
-      color:var(--dark);
-      padding-bottom:8px;
-      border-bottom:1px solid rgba(0,0,0,.06);
-    }
-    .tbox-title small{ font-weight:800; color:var(--muted); text-transform:none; }
+    .tbox[data-color="people"]{ border-color: rgba(249,115,22,.25); background: var(--bg-people); }
+    .tbox[data-color="how"]{ border-color: rgba(234,179,8,.28); background: var(--bg-how); }
+    .tbox[data-color="with"]{ border-color: rgba(124,58,237,.22); background: var(--bg-with); }
+    .tbox[data-color="input"]{ border-color: rgba(37,99,235,.22); background: var(--bg-input); }
+    .tbox[data-color="output"]{ border-color: rgba(22,163,74,.22); background: var(--bg-output); }
+    .tbox[data-color="risk"]{ border-color: rgba(15,23,42,.18); background: var(--bg-risk); }
+    .tbox[data-color="kpi"]{ border-color: rgba(239,68,68,.20); background: var(--bg-kpi); }
+    .tbox[data-color="doc"]{ border-color: rgba(22,163,74,.18); background: var(--bg-doc); }
+    .tbox[data-color="process"]{ border-color: rgba(2,6,23,.12); background: #fff; }
 
-    .accent-in{ background:var(--in-bg); border-left:4px solid var(--in-b); }
-    .accent-out{ background:var(--out-bg); border-left:4px solid var(--out-b); }
-    .accent-people{ background:var(--people-bg); border-left:4px solid var(--people-b); }
-    .accent-res{ background:var(--res-bg); border-left:4px solid var(--res-b); }
-    .accent-meth{ background:var(--meth-bg); border-left:4px solid var(--meth-b); }
-    .accent-kpi{ background:var(--kpi-bg); border-left:4px solid var(--kpi-b); }
-    .accent-risk{ background:var(--risk-bg); border-left:4px solid var(--risk-b); }
-    .accent-doc{ background:var(--doc-bg); border-left:4px solid var(--doc-b); }
+    .tbox[data-color="people"]{ box-shadow: inset 4px 0 0 var(--c-people); }
+    .tbox[data-color="how"]{ box-shadow: inset 4px 0 0 var(--c-how); }
+    .tbox[data-color="with"]{ box-shadow: inset 4px 0 0 var(--c-with); }
+    .tbox[data-color="input"]{ box-shadow: inset 4px 0 0 var(--c-input); }
+    .tbox[data-color="output"]{ box-shadow: inset 4px 0 0 var(--c-output); }
+    .tbox[data-color="risk"]{ box-shadow: inset 4px 0 0 var(--c-risk); }
+    .tbox[data-color="kpi"]{ box-shadow: inset 4px 0 0 var(--c-kpi); }
+    .tbox[data-color="doc"]{ box-shadow: inset 4px 0 0 var(--c-doc); }
+    .tbox[data-color="process"]{ box-shadow: inset 4px 0 0 rgba(2,6,23,.35); }
 
-    .notes{ display:flex; flex-direction:column; gap:6px; flex-grow:1; }
-    .note-item{
-      background:var(--note);
-      padding:6px;
-      font-size:12px;
-      border-left:3px solid #fbc02d;
-      box-shadow:2px 2px 4px rgba(0,0,0,0.05);
-      position:relative;
-      padding-right:30px;
-      border-radius:3px;
-    }
-    .note-item textarea{
-      width:100%;
-      border:none;
-      background:transparent;
-      resize:none;
-      font-family:inherit;
-      outline:none;
-      font-size:12px;
-    }
-    .note-delete{
-      position:absolute;
-      top:4px; right:6px;
-      border:none;
-      background:transparent;
-      cursor:pointer;
-      font-size:18px;
-      line-height:1;
-      color:#94a3b8;
-    }
-    .note-delete:hover{ color:#e53e3e; }
-
-    .btn-add{
-      background:none;
-      border:1px dashed #cbd5e1;
-      color:#94a3b8;
-      cursor:pointer;
-      font-size:11px;
-      margin-top:10px;
-      padding:6px;
-      border-radius:var(--radius);
-      text-transform:uppercase;
-      font-weight:900;
-    }
-    .btn-add:hover{ background: rgba(255,255,255,0.7); color:var(--blue); border-color:var(--blue); }
-
-    /* Center process */
-    .center-grid{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:10px;
-      margin-top: 6px;
-    }
-    .center-grid .turtle-field label{ font-size:11px; }
-    .center-grid .turtle-input{ padding:9px; font-size:13px; }
-    .center-grid .full{ grid-column: 1 / -1; }
-    .center-desc{ min-height:96px; }
-
-    /* Measures (Action plan) */
-    .measures-section{
-      margin-top: 16px;
-      border-top: 2px solid var(--blue);
-      padding-top: 14px;
-    }
-    .measures-head{
+    .tbox-head{
+      padding: 12px 14px 10px;
       display:flex;
       justify-content: space-between;
-      align-items:flex-start;
       gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 10px;
+      align-items:baseline;
+      border-bottom: 1px solid rgba(15,23,42,.06);
+      background: rgba(255,255,255,.35);
     }
-    .measures-title{
-      margin:0;
-      font-size:13px;
-      font-weight:900;
-      color: var(--dark);
+    .tbox-head .hL{
+      font-weight: 900;
+      letter-spacing:.25px;
       text-transform: uppercase;
-      letter-spacing: .2px;
+      color:#0f172a;
+      font-size: 16px;
+      margin:0;
     }
-    .measures-sub{
-      margin:4px 0 0;
-      font-size:13px;
-      color: var(--muted);
+    .tbox-head .hR{
+      font-size: 14px;
+      font-weight: 800;
+      color: #64748b;
+      margin:0;
+      text-align:right;
     }
-    .measures-actions{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
 
-    .measure-list{ display:flex; flex-direction:column; gap:8px; }
-    .measure-item{
-      background:#fff;
-      border:1px solid #e2e8f0;
-      border-radius: var(--radius);
-      padding:10px;
-      position:relative;
-      display:grid;
-      grid-template-columns: 1.2fr .4fr .5fr;
-      gap:10px;
-      align-items:start;
+    .tbox-body{
+      padding: 12px 14px;
+      display:flex;
+      flex-direction: column;
+      gap: 10px;
+      flex: 1 1 auto;
+    }
+
+    /* Notes */
+    .notes{
+      display:flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 1 1 auto;
+      min-height: 90px;
+    }
+    .note{
+      background: rgba(255,255,255,.92);
+      border: 1px solid rgba(15,23,42,.10);
+      border-radius: 6px;
+      padding: 8px 10px;
+      position: relative;
       padding-right: 34px;
     }
-    .measure-item textarea{
-      width:100%;
+    .note textarea{
+      width: 100%;
       border:none;
-      resize:vertical;
-      min-height:46px;
-      font-family: inherit;
-      font-size:13px;
       outline:none;
-      background:transparent;
-    }
-    .measure-item input{
-      width:100%;
-      border:1px solid var(--border);
-      border-radius: var(--radius);
-      padding:8px;
+      background: transparent;
+      resize: vertical;
       font-family: inherit;
-      font-size:13px;
-      outline:none;
-      background:#fff;
+      font-size: 13px;
+      min-height: 44px;
+      color:#0f172a;
     }
-    .measure-item input:focus{
-      border-color: rgba(17,85,178,.7);
-      box-shadow: 0 0 0 3px rgba(17,85,178,.12);
-    }
-    .measure-delete{
+    .note-del{
       position:absolute;
-      top:8px; right:10px;
+      top:6px;
+      right:8px;
       border:none;
-      background:transparent;
+      background: transparent;
       cursor:pointer;
-      font-size:18px;
-      line-height:1;
+      font-size: 18px;
+      line-height: 1;
       color:#94a3b8;
     }
-    .measure-delete:hover{ color:#e53e3e; }
+    .note-del:hover{ color:#e53e3e; }
 
-    @media (max-width: 980px){
-      .measure-item{ grid-template-columns: 1fr; }
+    .note-to-measure{
+      position:absolute;
+      right: 34px;
+      top: 7px;
+      border: 1px solid rgba(15,23,42,.14);
+      background:#fff;
+      color:#0f172a;
+      border-radius: 999px;
+      padding: 3px 8px;
+      font-size: 11px;
+      font-weight: 900;
+      cursor:pointer;
+    }
+    .note-to-measure:hover{ border-color: rgba(17,85,178,.45); color: var(--blue); }
+
+    .add-entry{
+      border: 1px dashed rgba(100,116,139,.45);
+      background: rgba(255,255,255,.55);
+      color:#94a3b8;
+      border-radius: 6px;
+      padding: 10px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing:.25px;
+      cursor:pointer;
+    }
+    .add-entry:hover{ color: var(--blue); border-color: rgba(17,85,178,.55); background:#fff; }
+
+    /* Process center fields */
+    .process-grid{
+      display:flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .field label{
+      display:block;
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      color:#334155;
+      letter-spacing:.2px;
+      margin-bottom: 6px;
+    }
+    .field input, .field textarea{
+      width: 100%;
+      padding: 10px 12px;
+      border:1px solid rgba(15,23,42,.14);
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      background:#fff;
+    }
+    .field textarea{ min-height: 92px; resize: vertical; }
+
+    .two-cols{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    @media(max-width: 480px){ .two-cols{ grid-template-columns: 1fr; } }
+
+    /* Risks extra field */
+    .risk-extra{
+      border-top: 1px dashed rgba(15,23,42,.14);
+      padding-top: 10px;
     }
 
-    /* Actions */
-    .turtle-actions{
-      margin-top:18px;
-      padding-top:16px;
-      border-top:2px solid var(--blue);
+    /* Measures */
+    .measures-section{
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 2px solid var(--blue);
+    }
+    .section-title{
+      margin:0 0 6px;
+      font-size: 13px;
+      font-weight: 900;
+      color: var(--dark);
+      text-transform: uppercase;
+      letter-spacing:.25px;
+    }
+    .section-sub{
+      margin:0 0 10px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .measure-draft{
+      border:1px solid var(--border);
+      border-radius: var(--radius);
+      background:#fff;
+      padding: 12px 14px;
+    }
+    .draft-grid{
+      display:grid;
+      grid-template-columns: 1.3fr .7fr .7fr;
+      gap: 10px;
+      align-items:end;
+    }
+    @media(max-width: 980px){ .draft-grid{ grid-template-columns: 1fr; } }
+
+    .draft-actions{
+      margin-top: 10px;
       display:flex;
-      gap:10px;
-      flex-wrap:wrap;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content:flex-end;
+      border-top: 1px solid rgba(15,23,42,.08);
+      padding-top: 10px;
+    }
+    .hint-mini{ font-size: 12px; color: var(--muted); margin-top: 6px; }
+
+    .measures-list{
+      margin-top: 12px;
+      border:1px solid var(--border);
+      border-radius: var(--radius);
+      background:#fff;
+      overflow:hidden;
+    }
+    .measures-head{
+      padding: 10px 14px;
+      background: var(--light-bg);
+      border-bottom: 1px solid rgba(15,23,42,.08);
+      display:flex;
+      justify-content: space-between;
+      align-items:center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .measures-filters{
+      display:flex;
+      gap: 8px;
+      flex-wrap: wrap;
       align-items:center;
     }
+    .chip{
+      border: 1px solid rgba(15,23,42,.12);
+      background:#fff;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 900;
+      cursor:pointer;
+      user-select:none;
+    }
+    .chip.active{ border-color: rgba(17,85,178,.45); color: var(--blue); background: rgba(17,85,178,.06); }
 
-    /* Footer */
-    .turtle-footer{
-      padding:12px 25px;
-      background:var(--light-bg);
-      border-top:1px solid var(--border);
-      font-size:12px;
-      color:var(--muted);
+    .measures-table{
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .measures-table th, .measures-table td{
+      padding: 10px 14px;
+      border-bottom: 1px solid rgba(15,23,42,.06);
+      vertical-align: top;
+      font-size: 13px;
+    }
+    .measures-table th{
+      text-align:left;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing:.2px;
+      color:#334155;
+      background: rgba(248,250,252,.8);
+    }
+    .m-title{
+      font-weight: 900;
+      color:#0f172a;
+      margin:0;
+    }
+    .m-meta{
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .status-pill{
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      border-radius: 999px;
+      padding: 5px 10px;
+      border: 1px solid rgba(15,23,42,.12);
+      font-size: 12px;
+      font-weight: 900;
+      white-space: nowrap;
+      background:#fff;
+    }
+    .status-open{ border-color: rgba(37,99,235,.30); background: rgba(37,99,235,.06); color: #1d4ed8; }
+    .status-done{ border-color: rgba(22,163,74,.30); background: rgba(22,163,74,.08); color: #15803d; }
+    .status-drop{ border-color: rgba(239,68,68,.28); background: rgba(239,68,68,.08); color: #b91c1c; }
+
+    .row-actions{
       display:flex;
-      justify-content:space-between;
-      gap:10px;
-      flex-wrap:wrap;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content:flex-end;
     }
-
-    /* More section */
-    .tool-more{ margin-top:22px; padding-top:18px; border-top:2px solid var(--blue); }
-    .more-title{ margin:0 0 6px 0; font-size:13px; color:var(--dark); text-transform:uppercase; }
-    .more-sub{ margin:0 0 10px 0; font-size:13px; color:var(--muted); }
-    .more-list{ margin:8px 0 0; padding-left:18px; font-size:13px; color:#334155; }
-    .more-list li{ margin:4px 0; }
-
-    @media (max-width: 980px){
-      .turtle-headerbar{ grid-template-columns: 1fr 1fr; }
-      .turtle-textarea{ grid-column: 1 / -1; }
-      .turtle-grid{ grid-template-columns: 1fr; }
-      .tbox.center{ order: 1; }
-      .tool-grid{ grid-template-columns: 1fr; }
-      .tool-intro, .turtle-body, .turtle-footer{ padding-left:16px; padding-right:16px; }
+    .icon-btn{
+      border: 1px solid rgba(15,23,42,.12);
+      background:#fff;
+      border-radius: 6px;
+      padding: 8px 10px;
+      font-size: 11px;
+      font-weight: 900;
+      cursor:pointer;
+      text-transform: uppercase;
+      letter-spacing:.2px;
     }
+    .icon-btn:hover{ border-color: rgba(17,85,178,.45); color: var(--blue); background: rgba(17,85,178,.06); }
+    .icon-btn.danger{ border-color: rgba(239,68,68,.30); color: #b91c1c; }
+    .icon-btn.danger:hover{ background: rgba(239,68,68,.07); border-color: rgba(239,68,68,.45); color:#b91c1c; }
+
+    /* Bottom actions */
+    .actions{
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 2px solid var(--blue);
+      display:flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items:center;
+    }
+    .actions-left, .actions-right{ display:flex; gap:10px; flex-wrap: wrap; align-items:center; }
+
+    /* Footer / More */
+    .tool-more{
+      margin-top: 18px;
+      padding-top: 14px;
+      border-top: 2px solid var(--blue);
+    }
+    .more-title{ margin:0 0 6px; font-size: 13px; font-weight: 900; color: var(--dark); text-transform: uppercase; }
+    .more-sub{ margin:0 0 10px; font-size: 13px; color: var(--muted); }
+
+    .more-list{ margin: 8px 0 0; padding-left: 18px; font-size: 13px; color:#334155; }
+    .more-list li{ margin: 4px 0; }
+
+    .footer{
+      padding: 12px 20px;
+      background: var(--light-bg);
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--muted);
+      display:flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .footer a{ color: var(--dark); font-weight: 900; text-decoration:none; }
+    .footer a:hover{ text-decoration: underline; }
 
     /* Print */
     @media print{
-      .turtle-actions, .lang-switch, .tool-more a{ display:none !important; }
-      .turtle-card{ box-shadow:none !important; border:none !important; }
-      .turtle-app{ margin:0 !important; padding:0 !important; }
-      .turtle-body{ padding:0 !important; }
-      .turtle-drawing-area{ border:none !important; }
+      body{ background:#fff; }
+      #qm-turtle-app{ margin:0; padding:0; }
+      .tool-intro, .actions, .tool-more, .lang-switch, .top-actions .btn,
+      .note-del, .note-to-measure, .add-entry, .row-actions, .chip { display:none !important; }
+      .card{ box-shadow:none; border:none; }
+      .diagram-wrap{ border:none; padding:0; }
+      .measures-head{ background:#fff; }
+      .measures-table th{ background:#fff; }
+      .footer{ border-top: 1px solid #ddd; background:#fff; }
     }
   </style>
 </head>
 
 <body>
-  <div id="qm-turtle-app" class="turtle-app">
-    <section class="turtle-card">
+  <div id="qm-turtle-app">
+    <section class="card">
 
-      <!-- Intro -->
       <section class="tool-intro">
-        <div class="tool-intro-top">
+        <div class="intro-top">
           <div>
             <h2 class="tool-title" data-i18n="title">Turtle Diagramm – Prozessanalyse</h2>
-            <p class="tool-sub" data-i18n="subtitle">Prozesse strukturiert beschreiben: Inputs/Outputs, Rollen, Ressourcen, Methoden und Kennzahlen.</p>
+            <p class="tool-sub" data-i18n="subtitle">
+              Prozesse strukturiert beschreiben (Input → Prozess → Output) und Rahmenbedingungen (Wer/Wie/Womit/KPIs/Dokumente/Risiken) sichtbar machen – inkl. Ableitung & Maßnahmenliste.
+            </p>
           </div>
 
-          <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end;">
+          <div class="top-actions">
             <div class="lang-switch" aria-label="Language switch">
-              <button type="button" class="i-btn" id="btnLangDE">DE</button>
-              <button type="button" class="i-btn" id="btnLangEN">EN</button>
+              <button type="button" class="btn" id="btnLangDE">DE</button>
+              <button type="button" class="btn" id="btnLangEN">EN</button>
             </div>
-            <a class="i-btn" href="https://tools.quality.de/" data-i18n="backHome">Zurück zur Startseite</a>
+            <a class="btn" href="https://tools.quality.de/" data-i18n="backHome">Zurück zur Startseite</a>
           </div>
         </div>
 
         <div class="tool-grid">
           <div class="tool-box">
             <h3 data-i18n="boxToolNameTitle">Name Tool</h3>
-            <p data-i18n="boxToolNameText">Turtle Diagramm – Prozessübersicht (Inputs/Outputs + 6 Fragen)</p>
+            <p data-i18n="boxToolNameText">Turtle Diagramm – Prozessanalyse (Input/Prozess/Output + Rahmenbedingungen)</p>
           </div>
 
           <div class="tool-box">
             <h3 data-i18n="boxGoalTitle">Ziel</h3>
-            <p data-i18n="boxGoalText">Eine kompakte Prozessbeschreibung erstellen – ideal für QM-Dokumentation, Audits und Verbesserungsarbeit.</p>
+            <p data-i18n="boxGoalText">Prozess sauber abgrenzen, Schnittstellen klären und Schwachstellen/Risiken identifizieren – als Grundlage für Maßnahmen.</p>
           </div>
 
           <div class="tool-box">
             <h3 data-i18n="boxHowTitle">So benutzt du das Tool</h3>
             <ol>
-              <li data-i18n="step1">Prozessdaten eintragen (Name, Scope, Owner, Datum).</li>
-              <li data-i18n="step2">Rund um den Prozess Stichpunkte ergänzen (Inputs/Outputs, Rollen, Ressourcen, Methoden, KPIs).</li>
-              <li data-i18n="step3">Maßnahmen ableiten (mit Termin) und Export als PNG, Print oder JSON speichern.</li>
+              <li data-i18n="step1">Prozess im Zentrum ausfüllen (Zweck/Start/Ende).</li>
+              <li data-i18n="step2">In den Boxen rundherum Einträge sammeln (+ Eintrag).</li>
+              <li data-i18n="step3">Optional: Eintrag → Maßnahme übernehmen (→ Maßnahme).</li>
+              <li data-i18n="step4">Maßnahme mit Termin speichern → erscheint in der Maßnahmenliste.</li>
+              <li data-i18n="step5">Drucken oder JSON speichern/laden.</li>
             </ol>
           </div>
 
           <div class="tool-box tool-privacy">
             <h3 data-i18n="boxPrivacyTitle">Datenschutz</h3>
-            <p data-i18n="boxPrivacyText">Dieses Tool arbeitet vollständig im Browser. Es werden keine Daten auf einem Server gespeichert. Zugriff hat nur die Person, die die Datei lokal speichert bzw. lädt.</p>
+            <p data-i18n="boxPrivacyText">Dieses Tool läuft vollständig im Browser. Es werden keine Daten auf einem Server gespeichert. Optional wird der aktuelle Stand lokal im Browser gespeichert (Autosave).</p>
           </div>
         </div>
       </section>
 
-      <div class="turtle-body">
-        <div id="capture-area" class="turtle-drawing-area">
+      <div class="body">
+        <div class="turtle-strip">
+          <div><strong data-i18n="stripLeftStrong">Kern</strong><span data-i18n="stripLeftText">: Prozess im Zentrum</span></div>
+          <div><strong data-i18n="stripRightStrong">Rundherum</strong><span data-i18n="stripRightText">: Inputs/Outputs + Rollen/Methoden/Ressourcen/KPIs</span></div>
+        </div>
 
-          <!-- Header/meta -->
-          <div class="turtle-headerbar">
-            <div class="turtle-field">
-              <label for="procName" data-i18n="procNameLabel">Prozess</label>
-              <input id="procName" class="turtle-input" type="text" data-i18n-placeholder="procNamePh" placeholder="z.B. Wareneingang prüfen" />
-            </div>
-
-            <div class="turtle-field">
-              <label for="procOwner" data-i18n="ownerLabel">Owner / Verantwortlich</label>
-              <input id="procOwner" class="turtle-input" type="text" data-i18n-placeholder="ownerPh" placeholder="z.B. QM / Einkauf" />
-            </div>
-
-            <div class="turtle-field">
-              <label for="procDate" data-i18n="dateLabel">Datum</label>
-              <input id="procDate" class="turtle-input" type="date" />
-            </div>
-
-            <div class="turtle-field">
-              <label for="procVersion" data-i18n="versionLabel">Version</label>
-              <input id="procVersion" class="turtle-input" type="text" data-i18n-placeholder="versionPh" placeholder="z.B. 1.0" />
-            </div>
-
-            <div class="turtle-field" style="grid-column:1 / -1;">
-              <label for="procScope" data-i18n="scopeLabel">Thema / Ziel / Scope</label>
-              <textarea id="procScope" class="turtle-textarea" data-i18n-placeholder="scopePh" placeholder="Kurz: Worum geht es, Grenzen, Ziel, Rahmenbedingungen ..."></textarea>
-            </div>
-          </div>
-
-          <div class="turtle-axis">
-            <div><strong data-i18n="axisCoreStrong">Kern</strong><span data-i18n="axisCoreText">: Prozess im Zentrum</span></div>
-            <div><strong data-i18n="axisAroundStrong">Rundherum</strong><span data-i18n="axisAroundText">: Inputs/Outputs + Rollen/Methoden/Ressourcen/KPIs</span></div>
-          </div>
-
-          <!-- Turtle grid -->
+        <div id="capture-area" class="diagram-wrap" aria-label="Turtle Diagramm">
           <div class="turtle-grid">
-            <!-- row 1 -->
-            <div class="tbox accent-people" data-area="PEOPLE">
-              <div class="tbox-title"><span data-i18n="peopleTitle">Mit wem?</span> <small data-i18n="peopleSub">Rollen & Kompetenzen</small></div>
-              <div class="notes" id="notes-PEOPLE"></div>
-              <button class="btn-add" type="button" onclick="addItem('PEOPLE')" data-i18n="addItem">+ Eintrag</button>
-            </div>
+            <!-- Row 1 -->
+            <section class="tbox" data-color="people" aria-label="Mit wem">
+              <div class="tbox-head">
+                <p class="hL" data-i18n="t_people_left">MIT WEM?</p>
+                <p class="hR" data-i18n="t_people_right">Rollen & Kompetenzen</p>
+              </div>
+              <div class="tbox-body">
+                <div class="notes" id="notes-people"></div>
+                <button class="add-entry" type="button" data-box="people" data-i18n="addEntry">+ EINTRAG</button>
+              </div>
+            </section>
 
-            <div class="tbox accent-meth" data-area="METHODS">
-              <div class="tbox-title"><span data-i18n="methodsTitle">Wie?</span> <small data-i18n="methodsSub">Ablauf & Methoden</small></div>
-              <div class="notes" id="notes-METHODS"></div>
-              <button class="btn-add" type="button" onclick="addItem('METHODS')" data-i18n="addItem">+ Eintrag</button>
-            </div>
+            <section class="tbox" data-color="how" aria-label="Wie">
+              <div class="tbox-head">
+                <p class="hL" data-i18n="t_how_left">WIE?</p>
+                <p class="hR" data-i18n="t_how_right">Ablauf & Methoden</p>
+              </div>
+              <div class="tbox-body">
+                <div class="notes" id="notes-how"></div>
+                <button class="add-entry" type="button" data-box="how" data-i18n="addEntry">+ EINTRAG</button>
+              </div>
+            </section>
 
-            <div class="tbox accent-res" data-area="RESOURCES">
-              <div class="tbox-title"><span data-i18n="resourcesTitle">Womit?</span> <small data-i18n="resourcesSub">Ressourcen & Infrastruktur</small></div>
-              <div class="notes" id="notes-RESOURCES"></div>
-              <button class="btn-add" type="button" onclick="addItem('RESOURCES')" data-i18n="addItem">+ Eintrag</button>
-            </div>
+            <section class="tbox" data-color="with" aria-label="Womit">
+              <div class="tbox-head">
+                <p class="hL" data-i18n="t_with_left">WOMIT?</p>
+                <p class="hR" data-i18n="t_with_right">Ressourcen & Infrastruktur</p>
+              </div>
+              <div class="tbox-body">
+                <div class="notes" id="notes-with"></div>
+                <button class="add-entry" type="button" data-box="with" data-i18n="addEntry">+ EINTRAG</button>
+              </div>
+            </section>
 
-            <!-- row 2 -->
-            <div class="tbox accent-in" data-area="INPUTS">
-              <div class="tbox-title"><span data-i18n="inputsTitle">Inputs</span> <small data-i18n="inputsSub">Was kommt rein?</small></div>
-              <div class="notes" id="notes-INPUTS"></div>
-              <button class="btn-add" type="button" onclick="addItem('INPUTS')" data-i18n="addItem">+ Eintrag</button>
-            </div>
+            <!-- Row 2 -->
+            <section class="tbox" data-color="input" aria-label="Inputs">
+              <div class="tbox-head">
+                <p class="hL" data-i18n="t_input_left">INPUTS</p>
+                <p class="hR" data-i18n="t_input_right">Was kommt rein?</p>
+              </div>
+              <div class="tbox-body">
+                <div class="notes" id="notes-input"></div>
+                <button class="add-entry" type="button" data-box="input" data-i18n="addEntry">+ EINTRAG</button>
+              </div>
+            </section>
 
-            <div class="tbox center" data-area="PROCESS">
-              <div class="tbox-title"><span data-i18n="processTitle">Prozess im Zentrum</span> <small data-i18n="processSub">Zweck & Schnittstellen</small></div>
-
-              <div class="center-grid">
-                <div class="turtle-field full">
-                  <label for="procPurpose" data-i18n="purposeLabel">Zweck / Ergebnis</label>
-                  <textarea id="procPurpose" class="turtle-textarea center-desc" data-i18n-placeholder="purposePh" placeholder="Was ist der Zweck des Prozesses? Was ist das gewünschte Ergebnis?"></textarea>
-                </div>
-
-                <div class="turtle-field">
-                  <label for="procStart" data-i18n="startLabel">Start (Trigger)</label>
-                  <input id="procStart" class="turtle-input" type="text" data-i18n-placeholder="startPh" placeholder="z.B. Bestellung/Wareneingang" />
-                </div>
-                <div class="turtle-field">
-                  <label for="procEnd" data-i18n="endLabel">Ende (Output erreicht)</label>
-                  <input id="procEnd" class="turtle-input" type="text" data-i18n-placeholder="endPh" placeholder="z.B. Freigabe / Dokumentation" />
+            <section class="tbox headline-only" data-color="process" aria-label="Prozess im Zentrum">
+              <div class="tbox-head">
+                <p class="hL" data-i18n="t_process_left">PROZESS IM ZENTRUM</p>
+                <p class="hR" data-i18n="t_process_right">Zweck & Schnittstellen</p>
+              </div>
+              <div class="tbox-body">
+                <div class="process-grid">
+                  <div class="field">
+                    <label for="processPurpose" data-i18n="purposeLabel">Zweck / Ergebnis</label>
+                    <textarea id="processPurpose" data-i18n-placeholder="purposePh" placeholder="Was ist der Zweck des Prozesses? Was ist das gewünschte Ergebnis?"></textarea>
+                  </div>
+                  <div class="two-cols">
+                    <div class="field">
+                      <label for="processStart" data-i18n="startLabel">Start (Trigger)</label>
+                      <input id="processStart" type="text" data-i18n-placeholder="startPh" placeholder="z.B. Bestellung / Wareneingang / Ticket ..." />
+                    </div>
+                    <div class="field">
+                      <label for="processEnd" data-i18n="endLabel">Ende (Output erreicht)</label>
+                      <input id="processEnd" type="text" data-i18n-placeholder="endPh" placeholder="z.B. Freigabe / Lieferung / Dokumentation ..." />
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
+            </section>
 
-            <div class="tbox accent-out" data-area="OUTPUTS">
-              <div class="tbox-title"><span data-i18n="outputsTitle">Outputs</span> <small data-i18n="outputsSub">Was kommt raus?</small></div>
-              <div class="notes" id="notes-OUTPUTS"></div>
-              <button class="btn-add" type="button" onclick="addItem('OUTPUTS')" data-i18n="addItem">+ Eintrag</button>
-            </div>
+            <section class="tbox" data-color="output" aria-label="Outputs">
+              <div class="tbox-head">
+                <p class="hL" data-i18n="t_output_left">OUTPUTS</p>
+                <p class="hR" data-i18n="t_output_right">Was kommt raus?</p>
+              </div>
+              <div class="tbox-body">
+                <div class="notes" id="notes-output"></div>
+                <button class="add-entry" type="button" data-box="output" data-i18n="addEntry">+ EINTRAG</button>
+              </div>
+            </section>
 
-            <!-- row 3 -->
-            <div class="tbox accent-risk" data-area="RISKS">
-              <div class="tbox-title"><span data-i18n="risksTitle">Risiken</span> <small data-i18n="risksSub">Fehlerquellen / Barrieren</small></div>
-              <div class="notes" id="notes-RISKS"></div>
-              <button class="btn-add" type="button" onclick="addItem('RISKS')" data-i18n="addItem">+ Eintrag</button>
-            </div>
+            <!-- Row 3 -->
+            <section class="tbox" data-color="risk" aria-label="Risiken">
+              <div class="tbox-head">
+                <p class="hL" data-i18n="t_risk_left">RISIKEN</p>
+                <p class="hR" data-i18n="t_risk_right">Fehlerquellen / Barrieren</p>
+              </div>
+              <div class="tbox-body">
+                <div class="notes" id="notes-risk"></div>
+                <button class="add-entry" type="button" data-box="risk" data-i18n="addEntry">+ EINTRAG</button>
 
-            <div class="tbox accent-kpi" data-area="KPIS">
-              <div class="tbox-title"><span data-i18n="kpiTitle">Wie gemessen?</span> <small data-i18n="kpiSub">KPIs & Nachweise</small></div>
-              <div class="notes" id="notes-KPIS"></div>
-              <button class="btn-add" type="button" onclick="addItem('KPIS')" data-i18n="addItem">+ Eintrag</button>
-            </div>
+                <div class="risk-extra">
+                  <div class="field" style="margin-top:10px;">
+                    <label for="riskExtra" data-i18n="riskExtraLabel">Zusatzfeld: Barrieren / Kontrollen</label>
+                    <textarea id="riskExtra" data-i18n-placeholder="riskExtraPh" placeholder="Welche Barrieren/Controls reduzieren das Risiko? (optional)"></textarea>
+                  </div>
+                </div>
+              </div>
+            </section>
 
-            <div class="tbox accent-doc" data-area="DOCS">
-              <div class="tbox-title"><span data-i18n="docsTitle">Dokumente</span> <small data-i18n="docsSub">SOPs / Records</small></div>
-              <div class="notes" id="notes-DOCS"></div>
-              <button class="btn-add" type="button" onclick="addItem('DOCS')" data-i18n="addItem">+ Eintrag</button>
-            </div>
+            <section class="tbox" data-color="kpi" aria-label="Wie gemessen">
+              <div class="tbox-head">
+                <p class="hL" data-i18n="t_kpi_left">WIE GEMESSEN?</p>
+                <p class="hR" data-i18n="t_kpi_right">KPIs & Nachweise</p>
+              </div>
+              <div class="tbox-body">
+                <div class="notes" id="notes-kpi"></div>
+                <button class="add-entry" type="button" data-box="kpi" data-i18n="addEntry">+ EINTRAG</button>
+              </div>
+            </section>
+
+            <section class="tbox" data-color="doc" aria-label="Dokumente">
+              <div class="tbox-head">
+                <p class="hL" data-i18n="t_doc_left">DOKUMENTE</p>
+                <p class="hR" data-i18n="t_doc_right">SOPs / Records</p>
+              </div>
+              <div class="tbox-body">
+                <div class="notes" id="notes-doc"></div>
+                <button class="add-entry" type="button" data-box="doc" data-i18n="addEntry">+ EINTRAG</button>
+              </div>
+            </section>
           </div>
 
           <!-- Measures -->
-          <section class="measures-section" aria-label="Maßnahmen">
-            <div class="measures-head">
-              <div>
-                <h3 class="measures-title" data-i18n="measuresTitle">Ableitung von Maßnahmen</h3>
-                <p class="measures-sub" data-i18n="measuresSub">Formuliere Maßnahmen (Was? Wer? Bis wann?) und setze einen Termin.</p>
+          <section class="measures-section" aria-label="Ableitung von Maßnahmen">
+            <h3 class="section-title" data-i18n="measuresTitle">Ableitung von Maßnahmen</h3>
+            <p class="section-sub" data-i18n="measuresSub">Formuliere Maßnahmen (Was?) mit Verantwortlichem (optional) und Termin – und speichere sie in die Maßnahmenliste.</p>
+
+            <div class="measure-draft">
+              <div class="draft-grid">
+                <div class="field">
+                  <label for="draftMeasure" data-i18n="draftMeasureLabel">Maßnahme</label>
+                  <textarea id="draftMeasure" data-i18n-placeholder="draftMeasurePh" placeholder="z.B. Lieferantenfreigabe beschleunigen: 2 Alternativen qualifizieren (inkl. Kriterien) ..."></textarea>
+                </div>
+
+                <div class="field">
+                  <label for="draftOwner" data-i18n="draftOwnerLabel">Owner</label>
+                  <input id="draftOwner" type="text" data-i18n-placeholder="draftOwnerPh" placeholder="z.B. Einkauf" />
+                </div>
+
+                <div class="field">
+                  <label for="draftDue" data-i18n="draftDueLabel">Termin</label>
+                  <input id="draftDue" type="date" />
+                </div>
               </div>
-              <div class="measures-actions">
-                <button type="button" class="i-btn" id="btnFromRisks" data-i18n="btnFromRisks">Aus Risiken übernehmen</button>
-                <button type="button" class="i-btn primary" id="btnAddMeasure" data-i18n="btnAddMeasure">+ Maßnahme</button>
+
+              <div class="draft-actions">
+                <button type="button" class="btn primary" id="btnSaveDraft" data-i18n="btnSaveDraft">In Maßnahmenliste speichern</button>
+                <button type="button" class="btn" id="btnClearDraft" data-i18n="btnClearDraft">Eingabe leeren</button>
+              </div>
+              <div class="hint-mini" data-i18n="draftHint">
+                Tipp: Nutze bei einem Eintrag oben den Button „→ Maßnahme“, um den Text in die Maßnahmen-Eingabe zu übernehmen.
               </div>
             </div>
 
-            <div class="measure-list" id="measuresList"></div>
-          </section>
+            <div class="measures-list" aria-label="Maßnahmenliste">
+              <div class="measures-head">
+                <div>
+                  <div class="section-title" style="margin:0;" data-i18n="listTitle">Maßnahmenliste</div>
+                  <div class="section-sub" style="margin:4px 0 0;" id="listSubText">—</div>
+                </div>
+                <div class="measures-filters" aria-label="Filter">
+                  <span class="chip active" data-filter="all" data-i18n="filterAll">Alle</span>
+                  <span class="chip" data-filter="open" data-i18n="filterOpen">Offen</span>
+                  <span class="chip" data-filter="done" data-i18n="filterDone">Abgeschlossen</span>
+                  <span class="chip" data-filter="drop" data-i18n="filterDrop">Verworfen</span>
+                </div>
+              </div>
 
+              <table class="measures-table" aria-label="Maßnahmen Tabelle">
+                <thead>
+                  <tr>
+                    <th data-i18n="thMeasure">Maßnahme</th>
+                    <th style="width:120px;" data-i18n="thDue">Termin</th>
+                    <th style="width:160px;" data-i18n="thStatus">Status</th>
+                    <th style="width:260px; text-align:right;" data-i18n="thActions">Aktionen</th>
+                  </tr>
+                </thead>
+                <tbody id="measuresTbody"></tbody>
+              </table>
+            </div>
+          </section>
         </div>
 
-        <!-- Actions -->
-        <div class="turtle-actions">
-          <a class="i-btn" href="https://tools.quality.de/" data-i18n="backHome">Zurück zur Startseite</a>
-          <button type="button" class="i-btn primary" id="btnExport" data-i18n="btnExport">Bild exportieren (PNG)</button>
-          <button type="button" class="i-btn" id="btnPrint" data-i18n="btnPrint">Drucken</button>
-          <button type="button" class="i-btn" id="btnSave" data-i18n="btnSave">JSON Speichern</button>
-          <label class="i-btn" style="cursor:pointer">
-            <span data-i18n="btnUpload">Upload</span>
-            <input type="file" id="btnLoad" hidden>
-          </label>
-          <button type="button" class="i-btn danger" id="btnReset" data-i18n="btnReset">Reset</button>
+        <!-- Bottom actions -->
+        <div class="actions">
+          <div class="actions-left">
+            <button type="button" class="btn primary" id="btnPrint" data-i18n="btnPrint">Drucken</button>
+            <a class="btn" href="https://tools.quality.de/" data-i18n="backHome">Zurück zur Startseite</a>
+          </div>
+
+          <div class="actions-right">
+            <button type="button" class="btn" id="btnSaveJson" data-i18n="btnSaveJson">JSON speichern</button>
+            <button type="button" class="btn" id="btnLoadJson" data-i18n="btnLoadJson">JSON laden</button>
+            <input type="file" id="jsonFile" accept="application/json" style="display:none" />
+            <button type="button" class="btn danger" id="btnResetAll" data-i18n="btnResetAll">Reset</button>
+          </div>
         </div>
 
         <!-- More -->
         <section class="tool-more">
           <h3 class="more-title" data-i18n="moreTitle">Weiterführende Infos</h3>
-          <p class="more-sub" data-i18n="moreSub">Grundlagen & passende Weiterbildungen (öffnet in neuem Tab).</p>
+          <p class="more-sub" data-i18n="moreSub">Lexikonartikel & passende Weiterbildungen (öffnet in neuem Tab).</p>
 
           <div class="tool-grid">
             <div class="tool-box">
               <h3 data-i18n="lexTitle">Lexikon</h3>
-              <p data-i18n="lexText">Hintergrund, Nutzen & Anwendung von Prozess-Tools im QM.</p>
+              <p data-i18n="lexText">Definition, Nutzen & Anwendung des Turtle Diagramms.</p>
               <p style="margin-top:8px;">
-                <a href="https://www.quality.de/lexikon/" target="_blank" rel="noopener" data-i18n="lexLink">Zum Lexikon</a>
+                <a href="https://www.quality.de/lexikon/turtle-diagramm/" target="_blank" rel="noopener" data-i18n="lexLink">Zum Lexikonartikel: Turtle Diagramm</a>
               </p>
             </div>
 
             <div class="tool-box">
-              <h3 data-i18n="trainTitle">Ausbildungen &amp; Seminare</h3>
+              <h3 data-i18n="trainTitle">Ausbildungen & Seminare</h3>
               <p data-i18n="trainText">Vertiefe deine Methodenkompetenz im Qualitätsmanagement:</p>
               <ul class="more-list">
-                <li><a href="https://www.quality.de/weiterbildung/qualitaetsmanagement/" target="_blank" rel="noopener" data-i18n="trainQm">Qualitätsmanagement</a></li>
-                <li><a href="https://www.quality.de/weiterbildung/opex-seminare-ausbildungen/" target="_blank" rel="noopener" data-i18n="trainOpex">OPEX Seminare &amp; Ausbildungen</a></li>
                 <li><a href="https://www.quality.de/weiterbildung/kvp/" target="_blank" rel="noopener" data-i18n="trainKvp">KVP Seminare</a></li>
+                <li><a href="https://www.quality.de/weiterbildung/8d-seminare-8d-schulungen/" target="_blank" rel="noopener" data-i18n="train8d">8D Schulungen</a></li>
+                <li><a href="https://www.quality.de/weiterbildung/qualitaetsmanagement/" target="_blank" rel="noopener" data-i18n="trainQm">Qualitätsmanagement</a></li>
               </ul>
             </div>
           </div>
         </section>
-
       </div>
 
-      <!-- Footer -->
-      <footer class="turtle-footer">
+      <footer class="footer">
         <div>© <span id="copyrightYear"></span></div>
-        <div><span data-i18n="poweredBy">Powered by</span> Quality Services &amp; Wissen GmbH</div>
+        <div><a href="https://www.quality.de/" target="_blank" rel="noopener">Quality Services &amp; Wissen GmbH</a></div>
       </footer>
-
     </section>
   </div>
 
   <script>
-    /* ========= i18n (DE/EN) ========= */
+  (function(){
+    const ROOT = document.getElementById("qm-turtle-app");
+    if(!ROOT) return;
+
+    const STORAGE_KEY = "qm_turtle_state_v2";
+    const LANG_KEY = "qmLang";
+
+    const $ = (sel) => ROOT.querySelector(sel);
+    const $$ = (sel) => Array.from(ROOT.querySelectorAll(sel));
+
+    // ---------- i18n ----------
     const I18N = {
       de: {
         title: "Turtle Diagramm – Prozessanalyse",
-        subtitle: "Prozesse strukturiert beschreiben: Inputs/Outputs, Rollen, Ressourcen, Methoden und Kennzahlen.",
+        subtitle: "Prozesse strukturiert beschreiben (Input → Prozess → Output) und Rahmenbedingungen (Wer/Wie/Womit/KPIs/Dokumente/Risiken) sichtbar machen – inkl. Ableitung & Maßnahmenliste.",
         backHome: "Zurück zur Startseite",
 
         boxToolNameTitle: "Name Tool",
-        boxToolNameText: "Turtle Diagramm – Prozessübersicht (Inputs/Outputs + 6 Fragen)",
+        boxToolNameText: "Turtle Diagramm – Prozessanalyse (Input/Prozess/Output + Rahmenbedingungen)",
         boxGoalTitle: "Ziel",
-        boxGoalText: "Eine kompakte Prozessbeschreibung erstellen – ideal für QM-Dokumentation, Audits und Verbesserungsarbeit.",
+        boxGoalText: "Prozess sauber abgrenzen, Schnittstellen klären und Schwachstellen/Risiken identifizieren – als Grundlage für Maßnahmen.",
         boxHowTitle: "So benutzt du das Tool",
-        step1: "Prozessdaten eintragen (Name, Scope, Owner, Datum).",
-        step2: "Rund um den Prozess Stichpunkte ergänzen (Inputs/Outputs, Rollen, Ressourcen, Methoden, KPIs).",
-        step3: "Maßnahmen ableiten (mit Termin) und Export als PNG, Print oder JSON speichern.",
+        step1: "Prozess im Zentrum ausfüllen (Zweck/Start/Ende).",
+        step2: "In den Boxen rundherum Einträge sammeln (+ Eintrag).",
+        step3: "Optional: Eintrag → Maßnahme übernehmen (→ Maßnahme).",
+        step4: "Maßnahme mit Termin speichern → erscheint in der Maßnahmenliste.",
+        step5: "Drucken oder JSON speichern/laden.",
         boxPrivacyTitle: "Datenschutz",
-        boxPrivacyText: "Dieses Tool arbeitet vollständig im Browser. Es werden keine Daten auf einem Server gespeichert. Zugriff hat nur die Person, die die Datei lokal speichert bzw. lädt.",
+        boxPrivacyText: "Dieses Tool läuft vollständig im Browser. Es werden keine Daten auf einem Server gespeichert. Optional wird der aktuelle Stand lokal im Browser gespeichert (Autosave).",
 
-        procNameLabel: "Prozess",
-        procNamePh: "z.B. Wareneingang prüfen",
-        ownerLabel: "Owner / Verantwortlich",
-        ownerPh: "z.B. QM / Einkauf",
-        dateLabel: "Datum",
-        versionLabel: "Version",
-        versionPh: "z.B. 1.0",
-        scopeLabel: "Thema / Ziel / Scope",
-        scopePh: "Kurz: Worum geht es, Grenzen, Ziel, Rahmenbedingungen ...",
+        stripLeftStrong: "Kern",
+        stripLeftText: ": Prozess im Zentrum",
+        stripRightStrong: "Rundherum",
+        stripRightText: ": Inputs/Outputs + Rollen/Methoden/Ressourcen/KPIs",
 
-        axisCoreStrong: "Kern",
-        axisCoreText: ": Prozess im Zentrum",
-        axisAroundStrong: "Rundherum",
-        axisAroundText: ": Inputs/Outputs + Rollen/Methoden/Ressourcen/KPIs",
+        addEntry: "+ EINTRAG",
+        toMeasure: "→ Maßnahme",
+        deleteEntry: "Eintrag löschen",
+        entryPlaceholder: "Eintrag notieren...",
 
-        peopleTitle: "Mit wem?",
-        peopleSub: "Rollen & Kompetenzen",
-        resourcesTitle: "Womit?",
-        resourcesSub: "Ressourcen & Infrastruktur",
-        methodsTitle: "Wie?",
-        methodsSub: "Ablauf & Methoden",
-        kpiTitle: "Wie gemessen?",
-        kpiSub: "KPIs & Nachweise",
-        inputsTitle: "Inputs",
-        inputsSub: "Was kommt rein?",
-        outputsTitle: "Outputs",
-        outputsSub: "Was kommt raus?",
-        risksTitle: "Risiken",
-        risksSub: "Fehlerquellen / Barrieren",
-        docsTitle: "Dokumente",
-        docsSub: "SOPs / Records",
+        t_people_left: "MIT WEM?",
+        t_people_right: "Rollen & Kompetenzen",
+        t_how_left: "WIE?",
+        t_how_right: "Ablauf & Methoden",
+        t_with_left: "WOMIT?",
+        t_with_right: "Ressourcen & Infrastruktur",
+        t_input_left: "INPUTS",
+        t_input_right: "Was kommt rein?",
+        t_process_left: "PROZESS IM ZENTRUM",
+        t_process_right: "Zweck & Schnittstellen",
+        t_output_left: "OUTPUTS",
+        t_output_right: "Was kommt raus?",
+        t_risk_left: "RISIKEN",
+        t_risk_right: "Fehlerquellen / Barrieren",
+        t_kpi_left: "WIE GEMESSEN?",
+        t_kpi_right: "KPIs & Nachweise",
+        t_doc_left: "DOKUMENTE",
+        t_doc_right: "SOPs / Records",
 
-        processTitle: "Prozess im Zentrum",
-        processSub: "Zweck & Schnittstellen",
         purposeLabel: "Zweck / Ergebnis",
         purposePh: "Was ist der Zweck des Prozesses? Was ist das gewünschte Ergebnis?",
         startLabel: "Start (Trigger)",
-        startPh: "z.B. Bestellung/Wareneingang",
+        startPh: "z.B. Bestellung / Wareneingang / Ticket ...",
         endLabel: "Ende (Output erreicht)",
-        endPh: "z.B. Freigabe / Dokumentation",
+        endPh: "z.B. Freigabe / Lieferung / Dokumentation ...",
 
-        addItem: "+ Eintrag",
-        itemPlaceholder: "Stichpunkt eingeben...",
-        deleteEntry: "Eintrag löschen",
+        riskExtraLabel: "Zusatzfeld: Barrieren / Kontrollen",
+        riskExtraPh: "Welche Barrieren/Controls reduzieren das Risiko? (optional)",
 
         measuresTitle: "Ableitung von Maßnahmen",
-        measuresSub: "Formuliere Maßnahmen (Was? Wer? Bis wann?) und setze einen Termin.",
-        btnAddMeasure: "+ Maßnahme",
-        btnFromRisks: "Aus Risiken übernehmen",
-        measurePlaceholder: "Maßnahme formulieren (Was? Wirkung? …)",
-        dueLabel: "Termin",
-        ownerShort: "Owner",
-        deleteMeasure: "Maßnahme löschen",
+        measuresSub: "Formuliere Maßnahmen (Was?) mit Verantwortlichem (optional) und Termin – und speichere sie in die Maßnahmenliste.",
+        draftMeasureLabel: "Maßnahme",
+        draftMeasurePh: "z.B. Lieferantenfreigabe beschleunigen: 2 Alternativen qualifizieren (inkl. Kriterien) ...",
+        draftOwnerLabel: "Owner",
+        draftOwnerPh: "z.B. Einkauf",
+        draftDueLabel: "Termin",
+        btnSaveDraft: "In Maßnahmenliste speichern",
+        btnClearDraft: "Eingabe leeren",
+        draftHint: "Tipp: Nutze bei einem Eintrag oben den Button „→ Maßnahme“, um den Text in die Maßnahmen-Eingabe zu übernehmen.",
 
-        btnExport: "Bild exportieren (PNG)",
+        listTitle: "Maßnahmenliste",
+        filterAll: "Alle",
+        filterOpen: "Offen",
+        filterDone: "Abgeschlossen",
+        filterDrop: "Verworfen",
+        thMeasure: "Maßnahme",
+        thDue: "Termin",
+        thStatus: "Status",
+        thActions: "Aktionen",
+        statusOpen: "Offen",
+        statusDone: "Abgeschlossen",
+        statusDrop: "Verworfen",
+        btnOpen: "Offen",
+        btnDone: "Abschließen",
+        btnDrop: "Verwerfen",
+        btnEdit: "Bearbeiten",
+        btnSaveRow: "Speichern",
+        btnDelete: "Löschen",
+
         btnPrint: "Drucken",
-        btnSave: "JSON Speichern",
-        btnUpload: "Upload",
-        btnReset: "Reset",
-        confirmReset: "Alles löschen?",
+        btnSaveJson: "JSON speichern",
+        btnLoadJson: "JSON laden",
+        btnResetAll: "Reset",
+        confirmReset: "Alles löschen (inkl. Autosave)?",
+        jsonName: "Turtle_Export.json",
+        loadError: "Fehler beim Laden der Datei.",
 
         moreTitle: "Weiterführende Infos",
-        moreSub: "Grundlagen & passende Weiterbildungen (öffnet in neuem Tab).",
+        moreSub: "Lexikonartikel & passende Weiterbildungen (öffnet in neuem Tab).",
         lexTitle: "Lexikon",
-        lexText: "Hintergrund, Nutzen & Anwendung von Prozess-Tools im QM.",
-        lexLink: "Zum Lexikon",
+        lexText: "Definition, Nutzen & Anwendung des Turtle Diagramms.",
+        lexLink: "Zum Lexikonartikel: Turtle Diagramm",
         trainTitle: "Ausbildungen & Seminare",
         trainText: "Vertiefe deine Methodenkompetenz im Qualitätsmanagement:",
-        trainQm: "Qualitätsmanagement",
-        trainOpex: "OPEX Seminare & Ausbildungen",
         trainKvp: "KVP Seminare",
-
-        poweredBy: "Powered by",
-
-        pngName: "Quality_Turtle.png",
-        jsonName: "Turtle_Export.json",
-        loadError: "Fehler beim Laden der Datei."
+        train8d: "8D Schulungen",
+        trainQm: "Qualitätsmanagement"
       },
-
       en: {
         title: "Turtle Diagram – Process Analysis",
-        subtitle: "Describe processes in a structured way: inputs/outputs, roles, resources, methods and KPIs.",
+        subtitle: "Describe processes in a structured way (Input → Process → Output) and make enablers visible (Who/How/With what/KPIs/Documents/Risks) – including action derivation & an action list.",
         backHome: "Back to home",
 
         boxToolNameTitle: "Tool name",
-        boxToolNameText: "Turtle Diagram – Process overview (Inputs/Outputs + 6 questions)",
+        boxToolNameText: "Turtle Diagram – Process Analysis (Input/Process/Output + enablers)",
         boxGoalTitle: "Goal",
-        boxGoalText: "Create a compact process description – ideal for QM documentation, audits and continuous improvement.",
+        boxGoalText: "Define the process scope, clarify interfaces, and identify weaknesses/risks – as a basis for actions.",
         boxHowTitle: "How to use this tool",
-        step1: "Enter process data (name, scope, owner, date).",
-        step2: "Add bullet points around the process (inputs/outputs, people, resources, methods, KPIs).",
-        step3: "Derive actions (with due date) and export as PNG, print, or save/load JSON.",
+        step1: "Fill out the center process (purpose/start/end).",
+        step2: "Collect entries in the surrounding boxes (+ entry).",
+        step3: "Optional: send an entry to the action draft (→ action).",
+        step4: "Save the action with due date → it appears in the action list.",
+        step5: "Print or save/load JSON.",
         boxPrivacyTitle: "Privacy",
-        boxPrivacyText: "This tool runs entirely in your browser. No data is stored on any server. Only the person who saves/loads files locally has access.",
+        boxPrivacyText: "This tool runs entirely in your browser. No data is stored on any server. Optionally, the current state is saved locally in your browser (autosave).",
 
-        procNameLabel: "Process",
-        procNamePh: "e.g. Incoming goods inspection",
-        ownerLabel: "Owner / Responsible",
-        ownerPh: "e.g. QA / Purchasing",
-        dateLabel: "Date",
-        versionLabel: "Version",
-        versionPh: "e.g. 1.0",
-        scopeLabel: "Topic / Goal / Scope",
-        scopePh: "Short: what it's about, boundaries, goal, constraints ...",
+        stripLeftStrong: "Core",
+        stripLeftText: ": process in the center",
+        stripRightStrong: "Around it",
+        stripRightText: ": inputs/outputs + roles/methods/resources/KPIs",
 
-        axisCoreStrong: "Core",
-        axisCoreText: ": the process in the center",
-        axisAroundStrong: "Around it",
-        axisAroundText: ": inputs/outputs + people/methods/resources/KPIs",
-
-        peopleTitle: "With whom?",
-        peopleSub: "Roles & competence",
-        resourcesTitle: "With what?",
-        resourcesSub: "Resources & infrastructure",
-        methodsTitle: "How?",
-        methodsSub: "Flow & methods",
-        kpiTitle: "How measured?",
-        kpiSub: "KPIs & evidence",
-        inputsTitle: "Inputs",
-        inputsSub: "What comes in?",
-        outputsTitle: "Outputs",
-        outputsSub: "What comes out?",
-        risksTitle: "Risks",
-        risksSub: "Failure modes / barriers",
-        docsTitle: "Documents",
-        docsSub: "SOPs / records",
-
-        processTitle: "Process in the center",
-        processSub: "Purpose & interfaces",
-        purposeLabel: "Purpose / Result",
-        purposePh: "What is the purpose of the process? What result is expected?",
-        startLabel: "Start (trigger)",
-        startPh: "e.g. order / goods receipt",
-        endLabel: "End (output achieved)",
-        endPh: "e.g. release / documentation",
-
-        addItem: "+ Item",
-        itemPlaceholder: "Enter bullet point...",
+        addEntry: "+ ENTRY",
+        toMeasure: "→ Action",
         deleteEntry: "Delete entry",
+        entryPlaceholder: "Write an entry...",
 
-        measuresTitle: "Deriving actions",
-        measuresSub: "Write actions (What? Who? By when?) and set a due date.",
-        btnAddMeasure: "+ Action",
-        btnFromRisks: "Create from risks",
-        measurePlaceholder: "Describe action (what? expected effect? …)",
-        dueLabel: "Due date",
-        ownerShort: "Owner",
-        deleteMeasure: "Delete action",
+        t_people_left: "WHO?",
+        t_people_right: "Roles & skills",
+        t_how_left: "HOW?",
+        t_how_right: "Flow & methods",
+        t_with_left: "WITH WHAT?",
+        t_with_right: "Resources & infrastructure",
+        t_input_left: "INPUTS",
+        t_input_right: "What goes in?",
+        t_process_left: "PROCESS IN THE CENTER",
+        t_process_right: "Purpose & interfaces",
+        t_output_left: "OUTPUTS",
+        t_output_right: "What comes out?",
+        t_risk_left: "RISKS",
+        t_risk_right: "Failure sources / barriers",
+        t_kpi_left: "HOW MEASURED?",
+        t_kpi_right: "KPIs & evidence",
+        t_doc_left: "DOCUMENTS",
+        t_doc_right: "SOPs / records",
 
-        btnExport: "Export image (PNG)",
+        purposeLabel: "Purpose / outcome",
+        purposePh: "What is the purpose of the process? What is the desired outcome?",
+        startLabel: "Start (trigger)",
+        startPh: "e.g., order / goods receipt / ticket ...",
+        endLabel: "End (output reached)",
+        endPh: "e.g., approval / delivery / documentation ...",
+
+        riskExtraLabel: "Extra field: barriers / controls",
+        riskExtraPh: "Which barriers/controls reduce the risk? (optional)",
+
+        measuresTitle: "Action derivation",
+        measuresSub: "Formulate actions (What?) with an owner (optional) and a due date – then save them into the action list.",
+        draftMeasureLabel: "Action",
+        draftMeasurePh: "e.g., accelerate supplier release: qualify 2 alternatives (incl. criteria) ...",
+        draftOwnerLabel: "Owner",
+        draftOwnerPh: "e.g., Purchasing",
+        draftDueLabel: "Due date",
+        btnSaveDraft: "Save to action list",
+        btnClearDraft: "Clear draft",
+        draftHint: "Tip: Use the “→ Action” button on an entry above to copy its text into the action draft.",
+
+        listTitle: "Action list",
+        filterAll: "All",
+        filterOpen: "Open",
+        filterDone: "Done",
+        filterDrop: "Discarded",
+        thMeasure: "Action",
+        thDue: "Due",
+        thStatus: "Status",
+        thActions: "Actions",
+        statusOpen: "Open",
+        statusDone: "Done",
+        statusDrop: "Discarded",
+        btnOpen: "Open",
+        btnDone: "Mark done",
+        btnDrop: "Discard",
+        btnEdit: "Edit",
+        btnSaveRow: "Save",
+        btnDelete: "Delete",
+
         btnPrint: "Print",
-        btnSave: "Save JSON",
-        btnUpload: "Upload",
-        btnReset: "Reset",
-        confirmReset: "Delete everything?",
+        btnSaveJson: "Save JSON",
+        btnLoadJson: "Load JSON",
+        btnResetAll: "Reset",
+        confirmReset: "Delete everything (including autosave)?",
+        jsonName: "Turtle_Export.json",
+        loadError: "Error loading the file.",
 
         moreTitle: "More information",
-        moreSub: "Basics & relevant training (opens in a new tab).",
+        moreSub: "Glossary article & relevant training (opens in a new tab).",
         lexTitle: "Glossary",
-        lexText: "Background, benefits & use of process tools in QM.",
-        lexLink: "Open glossary",
+        lexText: "Definition, benefits & how to use the Turtle diagram.",
+        lexLink: "Open glossary article: Turtle diagram",
         trainTitle: "Training & courses",
         trainText: "Deepen your method skills in quality management:",
-        trainQm: "Quality management",
-        trainOpex: "OPEX courses & programs",
-        trainKvp: "CIP (KVP) seminars",
-
-        poweredBy: "Powered by",
-
-        pngName: "Quality_Turtle.png",
-        jsonName: "Turtle_Export.json",
-        loadError: "Error loading the file."
+        trainKvp: "CIP / KVP training",
+        train8d: "8D training",
+        trainQm: "Quality management"
       }
     };
 
-    const STORAGE_KEY = "qm_turtle_state_v2";
-    let currentLang = (localStorage.getItem("qmLang") || (navigator.language && navigator.language.toLowerCase().startsWith("de") ? "de" : "en"));
+    let currentLang = (localStorage.getItem(LANG_KEY)
+      || ((navigator.language||"").toLowerCase().startsWith("de") ? "de" : "en"));
 
-    function t(key){ return (I18N[currentLang] && I18N[currentLang][key]) ? I18N[currentLang][key] : key; }
+    function t(key){
+      const d = I18N[currentLang] || I18N.de;
+      return (key in d) ? d[key] : key;
+    }
 
     function applyI18n(){
       document.documentElement.lang = currentLang;
+      $$("[data-i18n]").forEach(el => el.textContent = t(el.dataset.i18n));
+      $$("[data-i18n-placeholder]").forEach(el => el.placeholder = t(el.dataset.i18nPlaceholder));
 
-      document.querySelectorAll("[data-i18n]").forEach(el=>{
-        const key = el.dataset.i18n;
-        el.textContent = t(key);
-      });
+      // lang buttons
+      $("#btnLangDE").classList.toggle("primary", currentLang==="de");
+      $("#btnLangEN").classList.toggle("primary", currentLang==="en");
 
-      document.querySelectorAll("[data-i18n-placeholder]").forEach(el=>{
-        const key = el.dataset.i18nPlaceholder;
-        el.placeholder = t(key);
+      // update note UI labels
+      $$(".note textarea").forEach(ta=>{
+        if(ta.dataset.i18nPlaceholder) ta.placeholder = t(ta.dataset.i18nPlaceholder);
       });
-
-      // dynamic notes
-      document.querySelectorAll(".note-item textarea").forEach(ta=>{
-        ta.placeholder = t("itemPlaceholder");
-      });
-      document.querySelectorAll(".note-delete").forEach(btn=>{
-        btn.title = t("deleteEntry");
-        btn.setAttribute("aria-label", t("deleteEntry"));
+      $$(".note-to-measure").forEach(btn=>{
+        btn.textContent = t("toMeasure");
+        btn.title = t("toMeasure");
       });
 
-      // measures
-      document.querySelectorAll(".measure-item textarea").forEach(ta=>{
-        ta.placeholder = t("measurePlaceholder");
-      });
-      document.querySelectorAll(".measure-delete").forEach(btn=>{
-        btn.title = t("deleteMeasure");
-        btn.setAttribute("aria-label", t("deleteMeasure"));
-      });
-
-      // Active button style
-      const deBtn = document.getElementById("btnLangDE");
-      const enBtn = document.getElementById("btnLangEN");
-      if(deBtn && enBtn){
-        deBtn.classList.toggle("primary", currentLang === "de");
-        enBtn.classList.toggle("primary", currentLang === "en");
-      }
+      updateListHeader();
+      renderMeasures();
     }
 
     function setLanguage(lang){
       currentLang = (lang==="de" || lang==="en") ? lang : "de";
-      localStorage.setItem("qmLang", currentLang);
-      localStorage.setItem("qmLang", currentLang);
+      localStorage.setItem(LANG_KEY, currentLang);
       applyI18n();
       persist();
     }
 
-    function addItem(area, val=""){
-      const container = document.getElementById(`notes-${area}`);
-      const div = document.createElement("div");
-      div.className = "note-item";
-
-      const del = document.createElement("button");
-      del.type = "button";
-      del.className = "note-delete";
-      del.title = t("deleteEntry");
-      del.setAttribute("aria-label", t("deleteEntry"));
-      del.innerHTML = "&times;";
-      del.onclick = ()=>{ div.remove(); persist(); };
-
-      const ta = document.createElement("textarea");
-      ta.rows = 2;
-      ta.placeholder = t("itemPlaceholder");
-      ta.value = val;
-      ta.addEventListener("input", ()=> persist());
-
-      div.appendChild(del);
-      div.appendChild(ta);
-      container.appendChild(div);
-
-      persist();
+    // ---------- State ----------
+    function uid(){
+      try{ return crypto.randomUUID(); }catch{ return "id_" + Math.random().toString(16).slice(2); }
     }
 
-    function addMeasure(m={text:"", due:"", owner:""}){
-      const host = document.getElementById("measuresList");
-      const row = document.createElement("div");
-      row.className = "measure-item";
+    const EMPTY_STATE = () => ({
+      lang: currentLang,
+      processPurpose: "",
+      processStart: "",
+      processEnd: "",
+      riskExtra: "",
+      boxes: { people: [], how: [], with: [], input: [], output: [], risk: [], kpi: [], doc: [] },
+      draft: { text:"", owner:"", due:"" },
+      measures: [], // {id,text,owner,due,status,ts}
+      ts: new Date().toISOString()
+    });
 
-      row.innerHTML = `
-        <textarea rows="2" placeholder="${escapeHtml(t("measurePlaceholder"))}"></textarea>
-        <div>
-          <div style="font-size:12px;color:${getCssVar('--muted')};font-weight:800;text-transform:uppercase;margin-bottom:6px;">${escapeHtml(t("dueLabel"))}</div>
-          <input type="date" />
-        </div>
-        <div>
-          <div style="font-size:12px;color:${getCssVar('--muted')};font-weight:800;text-transform:uppercase;margin-bottom:6px;">${escapeHtml(t("ownerShort"))}</div>
-          <input type="text" placeholder="${escapeHtml(t("ownerShort"))}" />
-        </div>
-        <button type="button" class="measure-delete" title="${escapeHtml(t("deleteMeasure"))}" aria-label="${escapeHtml(t("deleteMeasure"))}">&times;</button>
-      `;
+    let state = EMPTY_STATE();
+    let filter = "all";
+    let editRowId = null;
 
-      const ta = row.querySelector("textarea");
-      const due = row.querySelector('input[type="date"]');
-      const own = row.querySelectorAll('input[type="text"]')[0];
-      const del = row.querySelector(".measure-delete");
-
-      ta.value = m.text || "";
-      due.value = m.due || "";
-      own.value = m.owner || "";
-
-      const onChange = ()=> persist();
-      ta.addEventListener("input", onChange);
-      due.addEventListener("change", onChange);
-      own.addEventListener("input", onChange);
-
-      del.addEventListener("click", ()=>{
-        row.remove();
-        persist();
-      });
-
-      host.appendChild(row);
-      applyI18n();
-      persist();
-    }
-
-    function getMeasures(){
-      return Array.from(document.querySelectorAll("#measuresList .measure-item")).map(row=>{
-        const ta = row.querySelector("textarea");
-        const due = row.querySelector('input[type="date"]');
-        const own = row.querySelectorAll('input[type="text"]')[0];
-        return { text: ta ? ta.value : "", due: due ? due.value : "", owner: own ? own.value : "" };
-      });
-    }
-
-    function collectState(){
-      const areas = ["PEOPLE","METHODS","RESOURCES","INPUTS","OUTPUTS","RISKS","KPIS","DOCS"];
-      const data = {
-        lang: currentLang,
-        meta: {
-          procName: document.getElementById("procName").value,
-          procOwner: document.getElementById("procOwner").value,
-          procDate: document.getElementById("procDate").value,
-          procVersion: document.getElementById("procVersion").value,
-          procScope: document.getElementById("procScope").value,
-          procPurpose: document.getElementById("procPurpose").value,
-          procStart: document.getElementById("procStart").value,
-          procEnd: document.getElementById("procEnd").value
-        },
-        areas: {},
-        measures: getMeasures()
-      };
-      areas.forEach(a=>{
-        data.areas[a] = Array.from(document.querySelectorAll(`#notes-${a} textarea`)).map(x=>x.value);
-      });
-      return data;
-    }
-
+    // ---------- Persist ----------
     function persist(){
-      try{
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(collectState()));
-      }catch(e){}
+      state.lang = currentLang;
+      state.ts = new Date().toISOString();
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     }
-
     function restore(){
       const raw = localStorage.getItem(STORAGE_KEY);
       if(!raw) return false;
       try{
-        const data = JSON.parse(raw);
-        if(!data || typeof data !== "object") return false;
+        const p = JSON.parse(raw);
+        if(!p || typeof p !== "object") return false;
 
-        if(data.lang==="de" || data.lang==="en") currentLang = data.lang;
-        applyI18n();
+        state = EMPTY_STATE();
+        state.lang = (p.lang==="de"||p.lang==="en") ? p.lang : currentLang;
 
-        const m = data.meta || {};
-        document.getElementById("procName").value = m.procName || "";
-        document.getElementById("procOwner").value = m.procOwner || "";
-        document.getElementById("procDate").value = m.procDate || "";
-        document.getElementById("procVersion").value = m.procVersion || "";
-        document.getElementById("procScope").value = m.procScope || "";
-        document.getElementById("procPurpose").value = m.procPurpose || "";
-        document.getElementById("procStart").value = m.procStart || "";
-        document.getElementById("procEnd").value = m.procEnd || "";
+        state.processPurpose = String(p.processPurpose ?? "");
+        state.processStart = String(p.processStart ?? "");
+        state.processEnd = String(p.processEnd ?? "");
+        state.riskExtra = String(p.riskExtra ?? "");
 
-        const areas = ["PEOPLE","METHODS","RESOURCES","INPUTS","OUTPUTS","RISKS","KPIS","DOCS"];
-        areas.forEach(a=>{
-          const c = document.getElementById(`notes-${a}`);
-          c.innerHTML = "";
-          ((data.areas && data.areas[a]) || []).forEach(txt=> addItem(a, txt));
+        const b = p.boxes || {};
+        Object.keys(state.boxes).forEach(k=>{
+          const arr = Array.isArray(b[k]) ? b[k] : [];
+          state.boxes[k] = arr.map(x=>({ id: String(x.id || uid()), text: String(x.text || "") }));
         });
 
-        // measures
-        const ml = document.getElementById("measuresList");
-        ml.innerHTML = "";
-        (Array.isArray(data.measures) ? data.measures : []).forEach(mm=> addMeasure(mm));
+        const d = p.draft || {};
+        state.draft = { text: String(d.text ?? ""), owner: String(d.owner ?? ""), due: String(d.due ?? "") };
 
+        const m = Array.isArray(p.measures) ? p.measures : [];
+        state.measures = m.map(x=>({
+          id: String(x.id || uid()),
+          text: String(x.text || ""),
+          owner: String(x.owner || ""),
+          due: String(x.due || ""),
+          status: (x.status==="done"||x.status==="drop"||x.status==="open") ? x.status : "open",
+          ts: String(x.ts || new Date().toISOString())
+        }));
+
+        state.ts = String(p.ts ?? new Date().toISOString());
         return true;
       }catch(e){
         return false;
       }
     }
 
-    function escapeHtml(s){
+    // ---------- Helpers ----------
+    function esc(s){
       return String(s ?? "")
         .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
         .replace(/"/g,"&quot;").replace(/'/g,"&#039;");
     }
 
-    function getCssVar(name){
-      return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || "#64748b";
+    // ---------- Notes ----------
+    function renderBox(boxKey){
+      const host = $("#notes-"+boxKey);
+      if(!host) return;
+      host.innerHTML = "";
+
+      state.boxes[boxKey].forEach(item=>{
+        const div = document.createElement("div");
+        div.className = "note";
+        div.innerHTML = `
+          <button type="button" class="note-del" title="${esc(t("deleteEntry"))}" aria-label="${esc(t("deleteEntry"))}">&times;</button>
+          <button type="button" class="note-to-measure" title="${esc(t("toMeasure"))}">${esc(t("toMeasure"))}</button>
+          <textarea rows="2" data-i18n-placeholder="entryPlaceholder" placeholder="${esc(t("entryPlaceholder"))}">${esc(item.text)}</textarea>
+        `;
+        const ta = div.querySelector("textarea");
+        const del = div.querySelector(".note-del");
+        const toM = div.querySelector(".note-to-measure");
+
+        ta.addEventListener("input", ()=>{
+          item.text = ta.value;
+          persist();
+        });
+        del.addEventListener("click", ()=>{
+          state.boxes[boxKey] = state.boxes[boxKey].filter(x=>x.id !== item.id);
+          renderBox(boxKey);
+          persist();
+        });
+        toM.addEventListener("click", ()=>{
+          const txt = (ta.value || "").trim();
+          if(!txt) return;
+          $("#draftMeasure").value = txt;
+          state.draft.text = txt;
+          persist();
+          $("#draftMeasure").focus();
+        });
+
+        host.appendChild(div);
+      });
+
+      applyI18n();
     }
 
-    // Autosave meta fields
-    ["procName","procOwner","procDate","procVersion","procScope","procPurpose","procStart","procEnd"].forEach(id=>{
-      const el = document.getElementById(id);
-      el.addEventListener("input", ()=> persist());
-      el.addEventListener("change", ()=> persist());
-    });
+    function addEntry(boxKey){
+      state.boxes[boxKey].push({ id: uid(), text: "" });
+      renderBox(boxKey);
+      persist();
 
-    // Export PNG
-    document.getElementById("btnExport").onclick = ()=>{
-      const area = document.getElementById("capture-area");
-      html2canvas(area, {scale:2, backgroundColor:"#ffffff"}).then(canvas=>{
-        const a = document.createElement("a");
-        a.download = t("pngName");
-        a.href = canvas.toDataURL("image/png");
-        a.click();
+      const host = $("#notes-"+boxKey);
+      const last = host && host.querySelector(".note:last-child textarea");
+      if(last) last.focus();
+    }
+
+    // ---------- Process fields ----------
+    function syncFields(){
+      $("#processPurpose").value = state.processPurpose;
+      $("#processStart").value = state.processStart;
+      $("#processEnd").value = state.processEnd;
+      $("#riskExtra").value = state.riskExtra;
+
+      $("#draftMeasure").value = state.draft.text;
+      $("#draftOwner").value = state.draft.owner;
+      $("#draftDue").value = state.draft.due;
+    }
+
+    // ---------- Measures ----------
+    function statusPill(status){
+      if(status==="done") return `<span class="status-pill status-done">${esc(t("statusDone"))}</span>`;
+      if(status==="drop") return `<span class="status-pill status-drop">${esc(t("statusDrop"))}</span>`;
+      return `<span class="status-pill status-open">${esc(t("statusOpen"))}</span>`;
+    }
+
+    function updateListHeader(){
+      const total = state.measures.length;
+      const open = state.measures.filter(m=>m.status==="open").length;
+      const done = state.measures.filter(m=>m.status==="done").length;
+      const drop = state.measures.filter(m=>m.status==="drop").length;
+
+      const el = $("#listSubText");
+      if(!el) return;
+
+      el.textContent = (currentLang==="de")
+        ? `Gesamt: ${total} · Offen: ${open} · Abgeschlossen: ${done} · Verworfen: ${drop}`
+        : `Total: ${total} · Open: ${open} · Done: ${done} · Discarded: ${drop}`;
+    }
+
+    function filteredMeasures(){
+      const list = [...state.measures];
+      list.sort((a,b)=>{
+        const da = a.due || "9999-12-31";
+        const db = b.due || "9999-12-31";
+        if(da < db) return -1;
+        if(da > db) return 1;
+        return String(a.ts).localeCompare(String(b.ts));
       });
-    };
 
-    // Print
-    document.getElementById("btnPrint").onclick = ()=> window.print();
+      if(filter==="all") return list;
+      return list.filter(m=>m.status===filter);
+    }
 
-    // Save JSON
-    document.getElementById("btnSave").onclick = ()=>{
-      const blob = new Blob([JSON.stringify(collectState(), null, 2)], {type:"application/json"});
+    function renderMeasures(){
+      updateListHeader();
+      const tbody = $("#measuresTbody");
+      tbody.innerHTML = "";
+
+      const list = filteredMeasures();
+      if(list.length === 0){
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td colspan="4" style="color:#64748b; padding:14px;">${currentLang==="de" ? "Keine Maßnahmen im aktuellen Filter." : "No actions in the current filter."}</td>`;
+        tbody.appendChild(tr);
+        return;
+      }
+
+      list.forEach(m=>{
+        const isEdit = (editRowId === m.id);
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>
+            ${isEdit
+              ? `<div class="field" style="margin:0;">
+                   <textarea data-edit="text" style="min-height:70px;">${esc(m.text)}</textarea>
+                 </div>
+                 <div class="two-cols" style="margin-top:8px;">
+                   <div class="field" style="margin:0;">
+                     <label style="margin:0 0 6px;">${esc(t("draftOwnerLabel"))}</label>
+                     <input data-edit="owner" type="text" value="${esc(m.owner)}"/>
+                   </div>
+                   <div class="field" style="margin:0;">
+                     <label style="margin:0 0 6px;">${esc(t("draftDueLabel"))}</label>
+                     <input data-edit="due" type="date" value="${esc(m.due)}"/>
+                   </div>
+                 </div>`
+              : `<p class="m-title">${esc(m.text || "—")}</p>
+                 <div class="m-meta">${esc(m.owner || "—")}</div>`
+            }
+          </td>
+          <td>${isEdit ? "" : esc(m.due || "—")}</td>
+          <td>${statusPill(m.status)}</td>
+          <td style="text-align:right;">
+            <div class="row-actions">
+              ${isEdit
+                ? `<button type="button" class="icon-btn" data-act="save" data-id="${esc(m.id)}">${esc(t("btnSaveRow"))}</button>
+                   <button type="button" class="icon-btn" data-act="cancel" data-id="${esc(m.id)}">${currentLang==="de" ? "Abbrechen" : "Cancel"}</button>`
+                : `<button type="button" class="icon-btn" data-act="edit" data-id="${esc(m.id)}">${esc(t("btnEdit"))}</button>
+                   <button type="button" class="icon-btn" data-act="open" data-id="${esc(m.id)}">${esc(t("btnOpen"))}</button>
+                   <button type="button" class="icon-btn" data-act="done" data-id="${esc(m.id)}">${esc(t("btnDone"))}</button>
+                   <button type="button" class="icon-btn" data-act="drop" data-id="${esc(m.id)}">${esc(t("btnDrop"))}</button>
+                   <button type="button" class="icon-btn danger" data-act="del" data-id="${esc(m.id)}">${esc(t("btnDelete"))}</button>`
+              }
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+
+        tr.querySelectorAll("[data-act]").forEach(btn=>{
+          btn.addEventListener("click", ()=>{
+            const act = btn.getAttribute("data-act");
+            const id = btn.getAttribute("data-id");
+            onRowAction(act, id, tr);
+          });
+        });
+      });
+    }
+
+    function onRowAction(act, id, rowEl){
+      const m = state.measures.find(x=>x.id===id);
+      if(!m) return;
+
+      if(act==="edit"){ editRowId = id; renderMeasures(); return; }
+      if(act==="cancel"){ editRowId = null; renderMeasures(); return; }
+
+      if(act==="save"){
+        const text = rowEl.querySelector('[data-edit="text"]')?.value ?? m.text;
+        const owner = rowEl.querySelector('[data-edit="owner"]')?.value ?? m.owner;
+        const due = rowEl.querySelector('[data-edit="due"]')?.value ?? m.due;
+
+        m.text = String(text).trim();
+        m.owner = String(owner).trim();
+        m.due = String(due).trim();
+
+        editRowId = null;
+        persist();
+        renderMeasures();
+        return;
+      }
+
+      if(act==="open") m.status = "open";
+      if(act==="done") m.status = "done";
+      if(act==="drop") m.status = "drop";
+      if(act==="del"){
+        const ok = confirm(currentLang==="de" ? "Maßnahme löschen?" : "Delete this action?");
+        if(!ok) return;
+        state.measures = state.measures.filter(x=>x.id !== id);
+      }
+
+      persist();
+      renderMeasures();
+    }
+
+    function saveDraftToList(){
+      const text = ($("#draftMeasure").value || "").trim();
+      const owner = ($("#draftOwner").value || "").trim();
+      const due = ($("#draftDue").value || "").trim();
+
+      if(!text){
+        alert(currentLang==="de" ? "Bitte eine Maßnahme formulieren." : "Please enter an action.");
+        $("#draftMeasure").focus();
+        return;
+      }
+      state.measures.push({ id: uid(), text, owner, due, status: "open", ts: new Date().toISOString() });
+
+      state.draft = { text:"", owner:"", due:"" };
+      syncFields();
+
+      persist();
+      renderMeasures();
+      $("#draftMeasure").focus();
+    }
+
+    // ---------- JSON ----------
+    function downloadJson(){
+      state.ts = new Date().toISOString();
+      const blob = new Blob([JSON.stringify(state, null, 2)], {type:"application/json"});
+      const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
+      a.href = url;
       a.download = t("jsonName");
       a.click();
-    };
+      URL.revokeObjectURL(url);
+    }
 
-    // Load JSON
-    document.getElementById("btnLoad").onchange = (e)=>{
-      const file = e.target.files && e.target.files[0];
-      if(!file) return;
-
-      const reader = new FileReader();
-      reader.onload = (ev)=>{
-        try{
-          const parsed = JSON.parse(ev.target.result);
-
-          // store to local storage + restore
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
-          restore();
-          // ensure language button states
-          setLanguage(currentLang);
-
-        }catch(err){
+    function loadJsonFile(file){
+      file.text().then(txt=>{
+        const parsed = JSON.parse(txt);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
+        if(!restore()){
           alert(t("loadError"));
+          return;
         }
-      };
-      reader.readAsText(file);
+        if(state.lang==="de" || state.lang==="en") currentLang = state.lang;
+        localStorage.setItem(LANG_KEY, currentLang);
+        buildAll();
+      }).catch(()=> alert(t("loadError")));
+    }
 
-      e.target.value = "";
-    };
+    // ---------- Build ----------
+    function buildAll(){
+      syncFields();
+      Object.keys(state.boxes).forEach(renderBox);
+      renderMeasures();
+      applyI18n();
 
-    // Reset
-    document.getElementById("btnReset").onclick = ()=>{
-      if(!confirm(t("confirmReset"))) return;
-      localStorage.removeItem(STORAGE_KEY);
-      location.reload();
-    };
+      const yEl = $("#copyrightYear");
+      if(yEl) yEl.textContent = String(new Date().getFullYear());
+    }
 
-    // Language
-    document.getElementById("btnLangDE").onclick = ()=> setLanguage("de");
-    document.getElementById("btnLangEN").onclick = ()=> setLanguage("en");
+    // ---------- Events ----------
+    $("#btnLangDE").addEventListener("click", ()=> setLanguage("de"));
+    $("#btnLangEN").addEventListener("click", ()=> setLanguage("en"));
 
-    // Measures buttons
-    document.getElementById("btnAddMeasure").addEventListener("click", ()=> addMeasure());
-    document.getElementById("btnFromRisks").addEventListener("click", ()=>{
-      const risks = Array.from(document.querySelectorAll("#notes-RISKS textarea"))
-        .map(x=>x.value.trim()).filter(Boolean);
-      if(!risks.length) return;
-      // avoid duplicates: only add those not already present exactly
-      const existing = new Set(getMeasures().map(m=> (m.text||"").trim()).filter(Boolean));
-      risks.forEach(r=>{
-        if(!existing.has(r)) addMeasure({text:r, due:"", owner:""});
+    $$(".add-entry").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const key = btn.getAttribute("data-box");
+        addEntry(key);
       });
-      persist();
     });
 
-    // Footer year
-    (function(){
-      const el = document.getElementById("copyrightYear");
-      if(el) el.textContent = new Date().getFullYear();
-    })();
+    $("#processPurpose").addEventListener("input", (e)=>{ state.processPurpose = e.target.value; persist(); });
+    $("#processStart").addEventListener("input", (e)=>{ state.processStart = e.target.value; persist(); });
+    $("#processEnd").addEventListener("input", (e)=>{ state.processEnd = e.target.value; persist(); });
+    $("#riskExtra").addEventListener("input", (e)=>{ state.riskExtra = e.target.value; persist(); });
 
-    // Init
-    const ok = restore();
-    if(!ok){
-      setLanguage(currentLang);
-      // default date today (optional)
-      const d = document.getElementById("procDate");
-      if(d && !d.value){
-        const now = new Date();
-        const iso = new Date(now.getTime() - now.getTimezoneOffset()*60000).toISOString().slice(0,10);
-        d.value = iso;
-      }
-      applyI18n();
-      // create one empty measure row by default? (neutral: no)
+    $("#draftMeasure").addEventListener("input", (e)=>{ state.draft.text = e.target.value; persist(); });
+    $("#draftOwner").addEventListener("input", (e)=>{ state.draft.owner = e.target.value; persist(); });
+    $("#draftDue").addEventListener("input", (e)=>{ state.draft.due = e.target.value; persist(); });
+
+    $("#btnSaveDraft").addEventListener("click", saveDraftToList);
+    $("#btnClearDraft").addEventListener("click", ()=>{
+      state.draft = { text:"", owner:"", due:"" };
+      syncFields();
       persist();
-    }else{
-      setLanguage(currentLang);
-    }
+      $("#draftMeasure").focus();
+    });
+
+    $$(".chip[data-filter]").forEach(ch=>{
+      ch.addEventListener("click", ()=>{
+        filter = ch.getAttribute("data-filter");
+        $$(".chip[data-filter]").forEach(x=>x.classList.toggle("active", x.getAttribute("data-filter")===filter));
+        renderMeasures();
+      });
+    });
+
+    $("#btnPrint").addEventListener("click", ()=> window.print());
+    $("#btnSaveJson").addEventListener("click", downloadJson);
+    $("#btnLoadJson").addEventListener("click", ()=> $("#jsonFile").click());
+    $("#jsonFile").addEventListener("change", (ev)=>{
+      const f = ev.target.files && ev.target.files[0];
+      if(!f) return;
+      loadJsonFile(f);
+      ev.target.value = "";
+    });
+
+    $("#btnResetAll").addEventListener("click", ()=>{
+      if(!confirm(t("confirmReset"))) return;
+      localStorage.removeItem(STORAGE_KEY);
+      state = EMPTY_STATE();
+      buildAll();
+    });
+
+    // ---------- Init ----------
+    restore();
+    if(state.lang==="de" || state.lang==="en") currentLang = state.lang;
+    localStorage.setItem(LANG_KEY, currentLang);
+
+    buildAll();
+    persist();
+  })();
   </script>
 </body>
 </html>
