@@ -1,0 +1,620 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SWOT Tool – Analyse & Maßnahmen</title>
+
+  <!-- html2canvas (wird für PNG-Export benötigt) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <style>
+    :root {
+      --blue: #1155b2;
+      --dark: #09387a;
+      --light-bg: #f8fafc;
+      --note: #fff9c4;
+
+      /* SWOT Highlights */
+      --s-bg: #ecfdf5;  /* Stärken */
+      --w-bg: #fff1f2;  /* Schwächen */
+      --o-bg: #eff6ff;  /* Chancen */
+      --t-bg: #fff7ed;  /* Risiken */
+      --s-b: #22c55e;
+      --w-b: #ef4444;
+      --o-b: #3b82f6;
+      --t-b: #f97316;
+    }
+
+    body { margin: 0; background: #ffffff; }
+
+    .swot-app { max-width: 1100px; margin: 20px auto; font-family: 'Segoe UI', Roboto, sans-serif; color: #27304d; padding: 0 12px; }
+    .swot-card { background: #fff; border: 1px solid #d1d9e6; border-radius: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); overflow: hidden; }
+
+    /* Intro-Sektion */
+    .tool-intro { padding: 22px 25px; border-bottom: 3px solid var(--blue); background: var(--light-bg); }
+    .tool-intro-top { display:flex; align-items:flex-start; justify-content:space-between; gap: 15px; flex-wrap: wrap; }
+    .tool-title { margin: 0; color: var(--dark); font-size: 20px; text-transform: uppercase; }
+    .tool-sub { margin: 6px 0 0; font-size: 13px; color: #64748b; }
+
+    .tool-grid { margin-top: 16px; display:grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .tool-box { background:#fff; border: 1px solid #d1d9e6; border-radius: 4px; padding: 12px 14px; }
+    .tool-box h3 { margin: 0 0 6px 0; font-size: 13px; color: var(--dark); text-transform: uppercase; }
+    .tool-box p, .tool-box ol { margin: 0; font-size: 13px; color:#334155; }
+    .tool-box ol { padding-left: 18px; }
+    .tool-privacy { border-left: 3px solid var(--blue); }
+
+    .tool-box a { color: var(--blue); text-decoration: none; }
+    .tool-box a:hover { text-decoration: underline; }
+
+    .swot-body { padding: 25px; }
+    .swot-drawing-area { padding: 22px; background: white; border: 1px solid #edf2f7; position: relative; }
+
+    /* Kopfbereich im Capture */
+    .swot-headerbar {
+      display:flex; justify-content:space-between; align-items:flex-start; gap: 12px; flex-wrap: wrap;
+      padding-bottom: 14px; margin-bottom: 14px; border-bottom: 1px solid #eef2f7;
+    }
+    .swot-context { flex: 1; min-width: 260px; }
+    .swot-context label { display:block; font-size: 12px; color:#64748b; margin-bottom: 6px; text-transform: uppercase; font-weight: 700; }
+    .swot-context textarea {
+      width: 100%; min-height: 64px; resize: vertical; border: 1px solid #d1d9e6; border-radius: 4px;
+      padding: 10px; font-family: inherit; font-size: 13px; outline: none;
+    }
+    .swot-badges { display:flex; gap: 8px; flex-wrap: wrap; align-items:center; }
+    .badge {
+      font-size: 11px; font-weight: 800; text-transform: uppercase;
+      padding: 6px 8px; border-radius: 999px; border: 1px solid #d1d9e6; background: #fff; color:#334155;
+    }
+    .badge.s { border-color: var(--s-b); }
+    .badge.w { border-color: var(--w-b); }
+    .badge.o { border-color: var(--o-b); }
+    .badge.t { border-color: var(--t-b); }
+
+    /* Achsen Hinweis */
+    .swot-axis {
+      display:flex; justify-content:space-between; align-items:center; gap: 10px; flex-wrap: wrap;
+      margin: 6px 0 10px 0; font-size: 12px; color:#64748b;
+    }
+    .swot-axis strong { color: var(--dark); }
+
+    /* SWOT Matrix */
+    .swot-matrix {
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .swot-quadrant {
+      border: 1px solid #d1d9e6;
+      border-radius: 4px;
+      padding: 12px 14px;
+      min-height: 190px;
+      display:flex;
+      flex-direction: column;
+    }
+    .q-title {
+      display:flex; justify-content:space-between; align-items:center; gap: 10px;
+      margin: 0 0 10px 0;
+      font-size: 13px; font-weight: 900; text-transform: uppercase;
+      color: var(--dark);
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+    .q-title small { font-weight: 800; color:#64748b; text-transform: none; }
+    .q-s { background: var(--s-bg); border-left: 4px solid var(--s-b); }
+    .q-w { background: var(--w-bg); border-left: 4px solid var(--w-b); }
+    .q-o { background: var(--o-bg); border-left: 4px solid var(--o-b); }
+    .q-t { background: var(--t-bg); border-left: 4px solid var(--t-b); }
+
+    .notes-container { display:flex; flex-direction: column; gap: 6px; flex-grow: 1; }
+    .note-item {
+      background: var(--note);
+      padding: 6px;
+      font-size: 12px;
+      border-left: 3px solid #fbc02d;
+      box-shadow: 2px 2px 4px rgba(0,0,0,0.05);
+      position: relative;
+      padding-right: 30px;
+      border-radius: 3px;
+    }
+    .note-item textarea { width: 100%; border: none; background: transparent; resize: none; font-family: inherit; outline: none; }
+
+    .note-delete {
+      position: absolute;
+      top: 4px; right: 6px;
+      border: none; background: transparent; cursor: pointer;
+      font-size: 18px; line-height: 1;
+      color: #94a3b8;
+    }
+    .note-delete:hover { color: #e53e3e; }
+
+    .btn-add {
+      background: none; border: 1px dashed #cbd5e1; color: #94a3b8;
+      cursor: pointer; font-size: 11px;
+      margin-top: 10px; padding: 6px; border-radius: 4px;
+      text-transform: uppercase; font-weight: 800;
+    }
+    .btn-add:hover { background: rgba(255,255,255,0.7); color: var(--blue); border-color: var(--blue); }
+
+    /* HIGHLIGHT: Ableitung der Maßnahmen */
+    .swot-highlight {
+      margin-top: 16px;
+      border-top: 2px solid var(--blue);
+      padding-top: 14px;
+    }
+    .highlight-title {
+      margin: 0 0 6px 0;
+      font-size: 13px;
+      color: var(--dark);
+      text-transform: uppercase;
+      font-weight: 900;
+    }
+    .highlight-sub {
+      margin: 0 0 10px 0;
+      font-size: 13px;
+      color: #64748b;
+    }
+    .strategy-grid {
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 10px;
+    }
+    .strategy-box {
+      background:#fff;
+      border: 1px solid #d1d9e6;
+      border-radius: 4px;
+      padding: 12px 14px;
+    }
+    .strategy-box h4 {
+      margin: 0 0 6px 0;
+      font-size: 13px;
+      color: var(--dark);
+      text-transform: uppercase;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap: 10px;
+    }
+    .strategy-pill {
+      font-size: 11px;
+      font-weight: 900;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid #d1d9e6;
+      background: #fff;
+      color:#334155;
+      white-space: nowrap;
+    }
+    .pill-so { border-color: var(--s-b); }
+    .pill-st { border-color: var(--t-b); }
+    .pill-wo { border-color: var(--o-b); }
+    .pill-wt { border-color: var(--w-b); }
+
+    .strategy-box p { margin: 0; font-size: 13px; color:#334155; }
+    .strategy-list { margin: 10px 0 0; display:flex; flex-direction: column; gap: 6px; }
+    .measure-item {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 4px;
+      padding: 8px 10px;
+      position: relative;
+      padding-right: 30px;
+    }
+    .measure-item textarea {
+      width: 100%;
+      border: none;
+      resize: vertical;
+      min-height: 42px;
+      font-family: inherit;
+      font-size: 13px;
+      outline: none;
+      background: transparent;
+    }
+    .measure-delete {
+      position:absolute;
+      top: 6px; right: 8px;
+      border: none; background: transparent; cursor: pointer;
+      font-size: 18px; line-height: 1;
+      color: #94a3b8;
+    }
+    .measure-delete:hover { color: #e53e3e; }
+
+    .measure-actions { margin-top: 10px; display:flex; gap: 8px; flex-wrap: wrap; }
+    .mini-btn {
+      padding: 8px 10px;
+      font-size: 11px;
+      font-weight: 900;
+      border-radius: 4px;
+      cursor: pointer;
+      border: 1px solid #d1d9e6;
+      background: #fff;
+      text-transform: uppercase;
+      color:#334155;
+    }
+    .mini-btn:hover { border-color: var(--blue); color: var(--blue); background: #f8fafc; }
+
+    /* Actions */
+    .swot-actions {
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 2px solid var(--blue);
+      display:flex; gap: 10px; flex-wrap: wrap;
+    }
+    .i-btn {
+      padding: 10px 18px;
+      font-size: 13px;
+      font-weight: bold;
+      border-radius: 4px;
+      cursor: pointer;
+      border: 1px solid #d1d9e6;
+      background: #fff;
+      text-transform: uppercase;
+      text-decoration: none;
+      display:inline-flex; align-items:center;
+    }
+    .i-btn.primary { background: var(--blue); color: #fff; border-color: var(--blue); }
+    .i-btn.danger { color: #e53e3e; }
+
+    /* Letzte Sektion */
+    .tool-more { margin-top: 22px; padding-top: 18px; border-top: 2px solid var(--blue); }
+    .more-title { margin: 0 0 6px 0; font-size: 13px; color: var(--dark); text-transform: uppercase; }
+    .more-sub { margin: 0 0 10px 0; font-size: 13px; color: #64748b; }
+    .more-list { margin: 8px 0 0; padding-left: 18px; font-size: 13px; color:#334155; }
+    .more-list li { margin: 4px 0; }
+
+    /* Footer */
+    .swot-footer {
+      padding: 12px 25px;
+      background: var(--light-bg);
+      border-top: 1px solid #d1d9e6;
+      font-size: 12px;
+      color: #64748b;
+      display:flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 900px) {
+      .tool-grid { grid-template-columns: 1fr; }
+      .swot-matrix { grid-template-columns: 1fr; }
+      .strategy-grid { grid-template-columns: 1fr; }
+      .tool-intro, .swot-body, .swot-footer { padding-left: 16px; padding-right: 16px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="qm-swot-app" class="swot-app">
+    <section class="swot-card">
+
+      <!-- Sektion 1: Intro + Grid (Ziel, Datenschutz, ...) -->
+      <section class="tool-intro">
+        <div class="tool-intro-top">
+          <div>
+            <h2 class="tool-title">SWOT Tool – Analyse &amp; Maßnahmen</h2>
+            <p class="tool-sub">Stärken/Schwächen &amp; Chancen/Risiken strukturieren – und daraus konkrete Maßnahmen ableiten.</p>
+          </div>
+          <a class="i-btn" href="https://tools.quality.de/">Zurück zur Startseite</a>
+        </div>
+
+        <div class="tool-grid">
+          <div class="tool-box">
+            <h3>Name Tool</h3>
+            <p>SWOT-Analyse – Matrix + Maßnahmen (SO / ST / WO / WT)</p>
+          </div>
+
+          <div class="tool-box">
+            <h3>Ziel</h3>
+            <p>Eine kompakte Strategie-Übersicht erstellen: Faktoren sammeln, bewerten und anschließend in umsetzbare Maßnahmen überführen.</p>
+          </div>
+
+          <div class="tool-box">
+            <h3>So benutzt du das Tool</h3>
+            <ol>
+              <li>Thema/Scope oben eintragen.</li>
+              <li>SWOT-Faktoren pro Quadrant hinzufügen (X löscht Einträge).</li>
+              <li><b>Highlight:</b> Aus der SWOT Maßnahmen ableiten (SO/ST/WO/WT) und priorisieren.</li>
+              <li>Export als PNG oder als JSON speichern (und wieder laden).</li>
+            </ol>
+          </div>
+
+          <div class="tool-box tool-privacy">
+            <h3>Datenschutz</h3>
+            <p>Dieses Tool arbeitet vollständig im Browser. Es werden keine Daten auf einem Server gespeichert. Zugriff hat nur die Person, die die Datei lokal speichert bzw. lädt.</p>
+          </div>
+        </div>
+      </section>
+
+      <div class="swot-body">
+        <div id="capture-area" class="swot-drawing-area">
+
+          <!-- Kopf / Kontext -->
+          <div class="swot-headerbar">
+            <div class="swot-context">
+              <label for="contextInput">Thema / Ziel / Scope</label>
+              <textarea id="contextInput" placeholder="z.B. Produktlinie X – Markteintritt DACH 2026, Ziel: Umsatz +15% ..."></textarea>
+            </div>
+            <div class="swot-badges" aria-label="Legende">
+              <span class="badge s">Stärken (Intern)</span>
+              <span class="badge w">Schwächen (Intern)</span>
+              <span class="badge o">Chancen (Extern)</span>
+              <span class="badge t">Risiken (Extern)</span>
+            </div>
+          </div>
+
+          <!-- Achsen Hinweis -->
+          <div class="swot-axis">
+            <div><strong>Intern</strong>: Stärken / Schwächen</div>
+            <div><strong>Extern</strong>: Chancen / Risiken</div>
+          </div>
+
+          <!-- SWOT Matrix -->
+          <div class="swot-matrix">
+            <div class="swot-quadrant q-s" data-q="S">
+              <div class="q-title">Stärken <small>(Strengths)</small></div>
+              <div class="notes-container" id="notes-S"></div>
+              <button class="btn-add" type="button" onclick="addNote('S')">+ Faktor</button>
+            </div>
+
+            <div class="swot-quadrant q-w" data-q="W">
+              <div class="q-title">Schwächen <small>(Weaknesses)</small></div>
+              <div class="notes-container" id="notes-W"></div>
+              <button class="btn-add" type="button" onclick="addNote('W')">+ Faktor</button>
+            </div>
+
+            <div class="swot-quadrant q-o" data-q="O">
+              <div class="q-title">Chancen <small>(Opportunities)</small></div>
+              <div class="notes-container" id="notes-O"></div>
+              <button class="btn-add" type="button" onclick="addNote('O')">+ Faktor</button>
+            </div>
+
+            <div class="swot-quadrant q-t" data-q="T">
+              <div class="q-title">Risiken <small>(Threats)</small></div>
+              <div class="notes-container" id="notes-T"></div>
+              <button class="btn-add" type="button" onclick="addNote('T')">+ Faktor</button>
+            </div>
+          </div>
+
+          <!-- HIGHLIGHT: Maßnahmen-Ableitung -->
+          <section class="swot-highlight" aria-label="Maßnahmen aus SWOT">
+            <h3 class="highlight-title">Highlight: Aus SWOT entstehen Maßnahmen</h3>
+            <p class="highlight-sub">
+              Vorgehen: <b>(1)</b> Faktoren clustern &amp; bewerten → <b>(2)</b> Strategietyp wählen (SO/ST/WO/WT) → <b>(3)</b> Maßnahmen formulieren → <b>(4)</b> priorisieren &amp; umsetzen.
+            </p>
+
+            <div class="strategy-grid">
+              <div class="strategy-box">
+                <h4>SO-Strategien <span class="strategy-pill pill-so">Stärken × Chancen</span></h4>
+                <p>Offensiv nutzen: Stärken einsetzen, um Chancen maximal auszuschöpfen.</p>
+                <div class="strategy-list" id="measures-SO"></div>
+                <div class="measure-actions">
+                  <button class="mini-btn" type="button" onclick="addMeasure('SO')">+ Maßnahme</button>
+                </div>
+              </div>
+
+              <div class="strategy-box">
+                <h4>ST-Strategien <span class="strategy-pill pill-st">Stärken × Risiken</span></h4>
+                <p>Absichern: Stärken nutzen, um Risiken zu reduzieren oder zu umgehen.</p>
+                <div class="strategy-list" id="measures-ST"></div>
+                <div class="measure-actions">
+                  <button class="mini-btn" type="button" onclick="addMeasure('ST')">+ Maßnahme</button>
+                </div>
+              </div>
+
+              <div class="strategy-box">
+                <h4>WO-Strategien <span class="strategy-pill pill-wo">Schwächen × Chancen</span></h4>
+                <p>Aufholen: Schwächen abbauen, um Chancen realistisch nutzen zu können.</p>
+                <div class="strategy-list" id="measures-WO"></div>
+                <div class="measure-actions">
+                  <button class="mini-btn" type="button" onclick="addMeasure('WO')">+ Maßnahme</button>
+                </div>
+              </div>
+
+              <div class="strategy-box">
+                <h4>WT-Strategien <span class="strategy-pill pill-wt">Schwächen × Risiken</span></h4>
+                <p>Schützen: Schwächen minimieren und Risiken vermeiden (Defensivstrategie).</p>
+                <div class="strategy-list" id="measures-WT"></div>
+                <div class="measure-actions">
+                  <button class="mini-btn" type="button" onclick="addMeasure('WT')">+ Maßnahme</button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+        </div>
+
+        <!-- Actions -->
+        <div class="swot-actions">
+          <a class="i-btn" href="https://tools.quality.de/">Zurück zur Startseite</a>
+          <button type="button" class="i-btn primary" id="btnExport">Bild exportieren (PNG)</button>
+          <button type="button" class="i-btn" id="btnSave">JSON Speichern</button>
+          <label class="i-btn" style="cursor:pointer">Upload <input type="file" id="btnLoad" hidden></label>
+          <button type="button" class="i-btn danger" onclick="confirm('Alles löschen?') && location.reload()">Reset</button>
+        </div>
+
+        <!-- Letzte Sektion (Links) -->
+        <section class="tool-more">
+          <h3 class="more-title">Weiterführende Infos</h3>
+          <p class="more-sub">Lexikonartikel &amp; passende Weiterbildungen (öffnet in neuem Tab).</p>
+
+          <div class="tool-grid">
+            <div class="tool-box">
+              <h3>Lexikon</h3>
+              <p>Definition, Einsatzbereiche &amp; Tipps zur SWOT-Analyse.</p>
+              <p style="margin-top:8px;">
+                <a href="https://www.quality.de/lexikon/swot-analyse/" target="_blank" rel="noopener">
+                  Zum Lexikonartikel: SWOT-Analyse
+                </a>
+              </p>
+            </div>
+
+            <div class="tool-box">
+              <h3>Ausbildungen &amp; Seminare</h3>
+              <p>Vertiefe deine Methodenkompetenz im Qualitätsmanagement:</p>
+              <ul class="more-list">
+                <li>
+                  <a href="https://www.quality.de/weiterbildung/8d-seminare-8d-schulungen/" target="_blank" rel="noopener">
+                    8D Schulungen
+                  </a>
+                </li>
+                <li>
+                  <a href="https://www.quality.de/weiterbildung/kvp/" target="_blank" rel="noopener">
+                    KVP Schulungen
+                  </a>
+                </li>
+                <li>
+                  <a href="https://www.quality.de/weiterbildung/qualitaetsmanagement/" target="_blank" rel="noopener">
+                    Qualitätsmanagement
+                  </a>
+                </li>
+                <li>
+                  <a href="https://www.quality.de/weiterbildung/opex-seminare-ausbildungen/" target="_blank" rel="noopener">
+                    OPEX Seminare &amp; Ausbildungen
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- Footer -->
+      <footer class="swot-footer">
+        <div>© <span id="copyrightYear"></span></div>
+        <div>Powered by Quality Services &amp; Wissen GmbH</div>
+      </footer>
+
+    </section>
+  </div>
+
+  <script>
+    /* SWOT Faktor hinzufügen (inkl. Löschfunktion) */
+    function addNote(q, val = '') {
+      const container = document.getElementById(`notes-${q}`);
+      const div = document.createElement('div');
+      div.className = 'note-item';
+
+      const del = document.createElement('button');
+      del.type = 'button';
+      del.className = 'note-delete';
+      del.title = 'Eintrag löschen';
+      del.setAttribute('aria-label', 'Eintrag löschen');
+      del.innerHTML = '&times;';
+      del.onclick = () => div.remove();
+
+      const ta = document.createElement('textarea');
+      ta.rows = 2;
+      ta.placeholder = 'Faktor eingeben...';
+      ta.value = val;
+
+      div.appendChild(del);
+      div.appendChild(ta);
+      container.appendChild(div);
+    }
+
+    /* Maßnahme hinzufügen (inkl. Löschfunktion) */
+    function addMeasure(type, val = '') {
+      const container = document.getElementById(`measures-${type}`);
+      const div = document.createElement('div');
+      div.className = 'measure-item';
+
+      const del = document.createElement('button');
+      del.type = 'button';
+      del.className = 'measure-delete';
+      del.title = 'Maßnahme löschen';
+      del.setAttribute('aria-label', 'Maßnahme löschen');
+      del.innerHTML = '&times;';
+      del.onclick = () => div.remove();
+
+      const ta = document.createElement('textarea');
+      ta.placeholder = 'Maßnahme formulieren (Was? Wer? Bis wann? Wirkung?) ...';
+      ta.value = val;
+
+      div.appendChild(del);
+      div.appendChild(ta);
+      container.appendChild(div);
+    }
+
+    /* Export als Bild */
+    document.getElementById('btnExport').onclick = () => {
+      const area = document.getElementById('capture-area');
+      html2canvas(area, { scale: 2 }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'Quality_SWOT.png';
+        link.href = canvas.toDataURL();
+        link.click();
+      });
+    };
+
+    /* Speichern als JSON */
+    document.getElementById('btnSave').onclick = () => {
+      const data = {
+        context: document.getElementById('contextInput').value,
+        swot: {
+          S: Array.from(document.querySelectorAll('#notes-S textarea')).map(t => t.value),
+          W: Array.from(document.querySelectorAll('#notes-W textarea')).map(t => t.value),
+          O: Array.from(document.querySelectorAll('#notes-O textarea')).map(t => t.value),
+          T: Array.from(document.querySelectorAll('#notes-T textarea')).map(t => t.value),
+        },
+        measures: {
+          SO: Array.from(document.querySelectorAll('#measures-SO textarea')).map(t => t.value),
+          ST: Array.from(document.querySelectorAll('#measures-ST textarea')).map(t => t.value),
+          WO: Array.from(document.querySelectorAll('#measures-WO textarea')).map(t => t.value),
+          WT: Array.from(document.querySelectorAll('#measures-WT textarea')).map(t => t.value),
+        }
+      };
+
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'SWOT_Export.json';
+      a.click();
+    };
+
+    /* Laden von JSON */
+    document.getElementById('btnLoad').onchange = (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        try {
+          const data = JSON.parse(ev.target.result);
+
+          document.getElementById('contextInput').value = data.context || '';
+
+          // SWOT
+          ['S','W','O','T'].forEach(k => {
+            const c = document.getElementById(`notes-${k}`);
+            c.innerHTML = '';
+            ((data.swot && data.swot[k]) || []).forEach(txt => addNote(k, txt));
+          });
+
+          // Maßnahmen
+          ['SO','ST','WO','WT'].forEach(k => {
+            const c = document.getElementById(`measures-${k}`);
+            c.innerHTML = '';
+            ((data.measures && data.measures[k]) || []).forEach(txt => addMeasure(k, txt));
+          });
+
+        } catch (err) {
+          alert('Fehler beim Laden der Datei.');
+        }
+      };
+      reader.readAsText(file);
+
+      // Damit man dieselbe Datei direkt nochmal laden kann
+      e.target.value = '';
+    };
+
+    /* Copyright-Jahr automatisch setzen */
+    (function setCopyrightYear(){
+      const el = document.getElementById('copyrightYear');
+      if (el) el.textContent = new Date().getFullYear();
+    })();
+  </script>
+</body>
+</html>
