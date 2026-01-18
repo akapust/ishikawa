@@ -208,7 +208,7 @@
         <button type="button" class="i-btn danger" onclick="confirm('Alles löschen?') && location.reload()">Reset</button>
       </div>
 
-      <!-- NEU: Letzte Sektion (2 Spalten) -->
+      <!-- Letzte Sektion (2 Spalten) -->
       <section class="tool-more">
         <h3 class="more-title">Weiterführende Infos</h3>
         <p class="more-sub">Lexikonartikel & passende Weiterbildungen (öffnet in neuem Tab).</p>
@@ -240,7 +240,12 @@
               </li>
               <li>
                 <a href="https://www.quality.de/weiterbildung/kvp/" target="_blank" rel="noopener">
-                  KVP Schulungen (QM)
+                  KVP Schulungen
+                </a>
+              </li>
+              <li>
+                <a href="https://www.quality.de/weiterbildung/qualitaetsmanagement/" target="_blank" rel="noopener">
+                  Qualitätsmanagement
                 </a>
               </li>
             </ul>
@@ -250,7 +255,7 @@
 
     </div>
 
-    <!-- NEU: Footer mit Copyright + Powered by -->
+    <!-- Footer mit Copyright + Powered by -->
     <footer class="ishikawa-footer">
       <div>© <span id="copyrightYear"></span></div>
       <div>Powered by Quality Services &amp; Wissen GmbH</div>
@@ -337,7 +342,7 @@
     e.target.value = '';
   };
 
-  /* NEU: Copyright-Jahr automatisch setzen */
+  /* Copyright-Jahr automatisch setzen */
   (function setCopyrightYear(){
     const el = document.getElementById('copyrightYear');
     if (el) el.textContent = new Date().getFullYear();
