@@ -85,6 +85,10 @@
   .i-btn.primary { background: var(--blue); color: #fff; border-color: var(--blue); }
   .i-btn.danger { color: #e53e3e; }
 
+  /* NEU: Sprachumschalter */
+  .lang-switch { display:flex; gap: 8px; align-items:center; }
+  .lang-switch .i-btn { padding: 8px 12px; font-size: 12px; }
+
   /* NEU: Weiterführende Infos */
   .tool-more { margin-top: 22px; padding-top: 18px; border-top: 2px solid var(--blue); }
   .more-title { margin: 0 0 6px 0; font-size: 13px; color: var(--dark); text-transform: uppercase; }
@@ -120,33 +124,40 @@
     <section class="tool-intro">
       <div class="tool-intro-top">
         <div>
-          <h2 class="tool-title">Ishikawa Tool (6M) – Ursachenanalyse</h2>
-          <p class="tool-sub">Systematische Ursachenanalyse im Fischgräten-Diagramm.</p>
+          <h2 class="tool-title" data-i18n="title">Ishikawa Tool (6M) – Ursachenanalyse</h2>
+          <p class="tool-sub" data-i18n="subtitle">Systematische Ursachenanalyse im Fischgräten-Diagramm.</p>
         </div>
-        <a class="i-btn" href="https://tools.quality.de/">Zurück zur Startseite</a>
+
+        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end;">
+          <div class="lang-switch" aria-label="Language switch">
+            <button type="button" class="i-btn" id="btnLangDE">DE</button>
+            <button type="button" class="i-btn" id="btnLangEN">EN</button>
+          </div>
+          <a class="i-btn" href="https://tools.quality.de/" data-i18n="backHome">Zurück zur Startseite</a>
+        </div>
       </div>
 
       <div class="tool-grid">
         <div class="tool-box">
-          <h3>Name Tool</h3>
-          <p>Ishikawa-Diagramm (Fischgräte) – 6M</p>
+          <h3 data-i18n="boxToolNameTitle">Name Tool</h3>
+          <p data-i18n="boxToolNameText">Ishikawa-Diagramm (Fischgräte) – 6M</p>
         </div>
         <div class="tool-box">
-          <h3>Ziel</h3>
-          <p>Ursachen strukturiert sammeln, clustern und visualisieren, um den wichtigsten Einflussfaktoren auf den Effekt näherzukommen.</p>
+          <h3 data-i18n="boxGoalTitle">Ziel</h3>
+          <p data-i18n="boxGoalText">Ursachen strukturiert sammeln, clustern und visualisieren, um den wichtigsten Einflussfaktoren auf den Effekt näherzukommen.</p>
         </div>
         <div class="tool-box">
-          <h3>So benutzt du das Tool</h3>
+          <h3 data-i18n="boxHowTitle">So benutzt du das Tool</h3>
           <ol>
-            <li>Effekt / Problem rechts im Kopf eintragen.</li>
-            <li>Pro 6M-Kategorie Ursachen hinzufügen.</li>
-            <li>Bei Bedarf Ursachen einzeln löschen (X).</li>
-            <li>Export als PNG oder als JSON speichern.</li>
+            <li data-i18n="step1">Effekt / Problem rechts im Kopf eintragen.</li>
+            <li data-i18n="step2">Pro 6M-Kategorie Ursachen hinzufügen.</li>
+            <li data-i18n="step3">Bei Bedarf Ursachen einzeln löschen (X).</li>
+            <li data-i18n="step4">Export als PNG oder als JSON speichern.</li>
           </ol>
         </div>
         <div class="tool-box tool-privacy">
-          <h3>Datenschutz</h3>
-          <p>Dieses Tool arbeitet vollständig im Browser. Es werden keine Daten auf einem Server gespeichert. Zugriff hat nur die Person, die die Datei lokal speichert bzw. lädt.</p>
+          <h3 data-i18n="boxPrivacyTitle">Datenschutz</h3>
+          <p data-i18n="boxPrivacyText">Dieses Tool arbeitet vollständig im Browser. Es werden keine Daten auf einem Server gespeichert. Zugriff hat nur die Person, die die Datei lokal speichert bzw. lädt.</p>
         </div>
       </div>
     </section>
@@ -157,43 +168,43 @@
         <div class="ishikawa-skeleton">
           <div class="ishikawa-row top">
             <div class="graete" data-m="Mensch">
-              <div class="m-label">Mensch</div>
+              <div class="m-label" data-i18n="catMensch">Mensch</div>
               <div class="notes-container" id="notes-Mensch"></div>
-              <button class="btn-add" onclick="addNote('Mensch')">+ Ursache</button>
+              <button class="btn-add" type="button" onclick="addNote('Mensch')" data-i18n="addCause">+ Ursache</button>
             </div>
             <div class="graete" data-m="Maschine">
-              <div class="m-label">Maschine</div>
+              <div class="m-label" data-i18n="catMaschine">Maschine</div>
               <div class="notes-container" id="notes-Maschine"></div>
-              <button class="btn-add" onclick="addNote('Maschine')">+ Ursache</button>
+              <button class="btn-add" type="button" onclick="addNote('Maschine')" data-i18n="addCause">+ Ursache</button>
             </div>
             <div class="graete" data-m="Material">
-              <div class="m-label">Material</div>
+              <div class="m-label" data-i18n="catMaterial">Material</div>
               <div class="notes-container" id="notes-Material"></div>
-              <button class="btn-add" onclick="addNote('Material')">+ Ursache</button>
+              <button class="btn-add" type="button" onclick="addNote('Material')" data-i18n="addCause">+ Ursache</button>
             </div>
           </div>
 
           <div class="ishikawa-spine">
             <div class="fish-head">
-              <textarea id="problemInput" placeholder="HAUPTPROBLEM / EFFEKT HIER EINTRAGEN..."></textarea>
+              <textarea id="problemInput" data-i18n-placeholder="problemPlaceholder" placeholder="HAUPTPROBLEM / EFFEKT HIER EINTRAGEN..."></textarea>
             </div>
           </div>
 
           <div class="ishikawa-row bottom">
             <div class="graete" data-m="Methode">
-              <div class="m-label">Methode</div>
+              <div class="m-label" data-i18n="catMethode">Methode</div>
               <div class="notes-container" id="notes-Methode"></div>
-              <button class="btn-add" onclick="addNote('Methode')">+ Ursache</button>
+              <button class="btn-add" type="button" onclick="addNote('Methode')" data-i18n="addCause">+ Ursache</button>
             </div>
             <div class="graete" data-m="Mitwelt">
-              <div class="m-label">Mitwelt</div>
+              <div class="m-label" data-i18n="catMitwelt">Mitwelt</div>
               <div class="notes-container" id="notes-Mitwelt"></div>
-              <button class="btn-add" onclick="addNote('Mitwelt')">+ Ursache</button>
+              <button class="btn-add" type="button" onclick="addNote('Mitwelt')" data-i18n="addCause">+ Ursache</button>
             </div>
             <div class="graete" data-m="Messung">
-              <div class="m-label">Messung</div>
+              <div class="m-label" data-i18n="catMessung">Messung</div>
               <div class="notes-container" id="notes-Messung"></div>
-              <button class="btn-add" onclick="addNote('Messung')">+ Ursache</button>
+              <button class="btn-add" type="button" onclick="addNote('Messung')" data-i18n="addCause">+ Ursache</button>
             </div>
           </div>
         </div>
@@ -201,50 +212,53 @@
       </div>
 
       <div class="ishikawa-actions">
-        <a class="i-btn" href="https://tools.quality.de/">Zurück zur Startseite</a>
-        <button type="button" class="i-btn primary" id="btnExport">Bild exportieren (PNG)</button>
-        <button type="button" class="i-btn" id="btnSave">JSON Speichern</button>
-        <label class="i-btn" style="cursor:pointer">Upload <input type="file" id="btnLoad" hidden></label>
-        <button type="button" class="i-btn danger" onclick="confirm('Alles löschen?') && location.reload()">Reset</button>
+        <a class="i-btn" href="https://tools.quality.de/" data-i18n="backHome">Zurück zur Startseite</a>
+        <button type="button" class="i-btn primary" id="btnExport" data-i18n="btnExport">Bild exportieren (PNG)</button>
+        <button type="button" class="i-btn" id="btnSave" data-i18n="btnSave">JSON Speichern</button>
+        <label class="i-btn" style="cursor:pointer">
+          <span data-i18n="btnUpload">Upload</span>
+          <input type="file" id="btnLoad" hidden>
+        </label>
+        <button type="button" class="i-btn danger" id="btnReset" data-i18n="btnReset">Reset</button>
       </div>
 
       <!-- Letzte Sektion (2 Spalten) -->
       <section class="tool-more">
-        <h3 class="more-title">Weiterführende Infos</h3>
-        <p class="more-sub">Lexikonartikel & passende Weiterbildungen (öffnet in neuem Tab).</p>
+        <h3 class="more-title" data-i18n="moreTitle">Weiterführende Infos</h3>
+        <p class="more-sub" data-i18n="moreSub">Lexikonartikel & passende Weiterbildungen (öffnet in neuem Tab).</p>
 
         <div class="tool-grid">
           <div class="tool-box">
-            <h3>Lexikon</h3>
-            <p>Hintergrund, Nutzen & Anwendung des Ishikawa-Diagramms.</p>
+            <h3 data-i18n="lexTitle">Lexikon</h3>
+            <p data-i18n="lexText">Hintergrund, Nutzen & Anwendung des Ishikawa-Diagramms.</p>
             <p style="margin-top:8px;">
-              <a href="https://www.quality.de/lexikon/ishikawa/" target="_blank" rel="noopener">
+              <a href="https://www.quality.de/lexikon/ishikawa/" target="_blank" rel="noopener" data-i18n="lexLink">
                 Zum Lexikonartikel: Ishikawa
               </a>
             </p>
           </div>
 
           <div class="tool-box">
-            <h3>Ausbildungen &amp; Seminare</h3>
-            <p>Vertiefe deine Methodenkompetenz im Qualitätsmanagement:</p>
+            <h3 data-i18n="trainTitle">Ausbildungen &amp; Seminare</h3>
+            <p data-i18n="trainText">Vertiefe deine Methodenkompetenz im Qualitätsmanagement:</p>
             <ul class="more-list">
               <li>
-                <a href="https://www.quality.de/weiterbildung/fmea-schulung/" target="_blank" rel="noopener">
+                <a href="https://www.quality.de/weiterbildung/fmea-schulung/" target="_blank" rel="noopener" data-i18n="trainFmea">
                   FMEA Schulungen
                 </a>
               </li>
               <li>
-                <a href="https://www.quality.de/weiterbildung/8d-seminare-8d-schulungen/" target="_blank" rel="noopener">
+                <a href="https://www.quality.de/weiterbildung/8d-seminare-8d-schulungen/" target="_blank" rel="noopener" data-i18n="train8d">
                   8D Schulungen
                 </a>
               </li>
               <li>
-                <a href="https://www.quality.de/weiterbildung/kvp/" target="_blank" rel="noopener">
+                <a href="https://www.quality.de/weiterbildung/kvp/" target="_blank" rel="noopener" data-i18n="trainKvp">
                   KVP Schulungen
                 </a>
               </li>
               <li>
-                <a href="https://www.quality.de/weiterbildung/qualitaetsmanagement/" target="_blank" rel="noopener">
+                <a href="https://www.quality.de/weiterbildung/qualitaetsmanagement/" target="_blank" rel="noopener" data-i18n="trainQm">
                   Qualitätsmanagement
                 </a>
               </li>
@@ -258,13 +272,181 @@
     <!-- Footer mit Copyright + Powered by -->
     <footer class="ishikawa-footer">
       <div>© <span id="copyrightYear"></span></div>
-      <div>Powered by Quality Services &amp; Wissen GmbH</div>
+      <div><span data-i18n="poweredBy">Powered by</span> Quality Services &amp; Wissen GmbH</div>
     </footer>
 
   </section>
 </div>
 
 <script>
+  /* ========= i18n (DE/EN) ========= */
+  const I18N = {
+    de: {
+      title: "Ishikawa Tool (6M) – Ursachenanalyse",
+      subtitle: "Systematische Ursachenanalyse im Fischgräten-Diagramm.",
+      backHome: "Zurück zur Startseite",
+
+      boxToolNameTitle: "Name Tool",
+      boxToolNameText: "Ishikawa-Diagramm (Fischgräte) – 6M",
+      boxGoalTitle: "Ziel",
+      boxGoalText: "Ursachen strukturiert sammeln, clustern und visualisieren, um den wichtigsten Einflussfaktoren auf den Effekt näherzukommen.",
+      boxHowTitle: "So benutzt du das Tool",
+      step1: "Effekt / Problem rechts im Kopf eintragen.",
+      step2: "Pro 6M-Kategorie Ursachen hinzufügen.",
+      step3: "Bei Bedarf Ursachen einzeln löschen (X).",
+      step4: "Export als PNG oder als JSON speichern.",
+      boxPrivacyTitle: "Datenschutz",
+      boxPrivacyText: "Dieses Tool arbeitet vollständig im Browser. Es werden keine Daten auf einem Server gespeichert. Zugriff hat nur die Person, die die Datei lokal speichert bzw. lädt.",
+
+      catMensch: "Mensch",
+      catMaschine: "Maschine",
+      catMaterial: "Material",
+      catMethode: "Methode",
+      catMitwelt: "Mitwelt",
+      catMessung: "Messung",
+
+      addCause: "+ Ursache",
+      problemPlaceholder: "HAUPTPROBLEM / EFFEKT HIER EINTRAGEN...",
+      causePlaceholder: "Ursache eingeben...",
+      deleteCause: "Ursache löschen",
+
+      btnExport: "Bild exportieren (PNG)",
+      btnSave: "JSON Speichern",
+      btnUpload: "Upload",
+      btnReset: "Reset",
+      confirmReset: "Alles löschen?",
+
+      moreTitle: "Weiterführende Infos",
+      moreSub: "Lexikonartikel & passende Weiterbildungen (öffnet in neuem Tab).",
+      lexTitle: "Lexikon",
+      lexText: "Hintergrund, Nutzen & Anwendung des Ishikawa-Diagramms.",
+      lexLink: "Zum Lexikonartikel: Ishikawa",
+      trainTitle: "Ausbildungen & Seminare",
+      trainText: "Vertiefe deine Methodenkompetenz im Qualitätsmanagement:",
+      trainFmea: "FMEA Schulungen",
+      train8d: "8D Schulungen",
+      trainKvp: "KVP Schulungen",
+      trainQm: "Qualitätsmanagement",
+
+      poweredBy: "Powered by",
+
+      pngName: "Quality_Ishikawa.png",
+      jsonName: "Ishikawa_Export.json",
+      loadError: "Fehler beim Laden der Datei."
+    },
+    en: {
+      title: "Ishikawa Tool (6M) – Root Cause Analysis",
+      subtitle: "Systematic root cause analysis using a fishbone diagram.",
+      backHome: "Back to home",
+
+      boxToolNameTitle: "Tool name",
+      boxToolNameText: "Ishikawa (Fishbone) Diagram – 6M",
+      boxGoalTitle: "Goal",
+      boxGoalText: "Collect, cluster, and visualize causes in a structured way to get closer to the most important drivers behind the effect.",
+      boxHowTitle: "How to use this tool",
+      step1: "Enter the effect / problem in the head on the right.",
+      step2: "Add causes for each 6M category.",
+      step3: "Delete individual causes if needed (X).",
+      step4: "Export as PNG or save as JSON.",
+      boxPrivacyTitle: "Privacy",
+      boxPrivacyText: "This tool runs entirely in your browser. No data is stored on any server. Only the person who saves/loads files locally has access.",
+
+      catMensch: "People",
+      catMaschine: "Machine",
+      catMaterial: "Material",
+      catMethode: "Method",
+      catMitwelt: "Environment",
+      catMessung: "Measurement",
+
+      addCause: "+ Cause",
+      problemPlaceholder: "ENTER MAIN PROBLEM / EFFECT HERE...",
+      causePlaceholder: "Enter cause...",
+      deleteCause: "Delete cause",
+
+      btnExport: "Export image (PNG)",
+      btnSave: "Save JSON",
+      btnUpload: "Upload",
+      btnReset: "Reset",
+      confirmReset: "Delete everything?",
+
+      moreTitle: "More information",
+      moreSub: "Glossary article & relevant training (opens in a new tab).",
+      lexTitle: "Glossary",
+      lexText: "Background, benefits & how to use the Ishikawa diagram.",
+      lexLink: "Open glossary article: Ishikawa",
+      trainTitle: "Training & courses",
+      trainText: "Deepen your method skills in quality management:",
+      trainFmea: "FMEA training",
+      train8d: "8D training",
+      trainKvp: "Continuous improvement (CIP) training",
+      trainQm: "Quality management",
+
+      poweredBy: "Powered by",
+
+      pngName: "Quality_Ishikawa.png",
+      jsonName: "Ishikawa_Export.json",
+      loadError: "Error loading the file."
+    }
+  };
+
+  let currentLang = (localStorage.getItem("qmLang")
+    || (navigator.language && navigator.language.toLowerCase().startsWith("de") ? "de" : "en"));
+
+  function t(key) {
+    return (I18N[currentLang] && I18N[currentLang][key]) ? I18N[currentLang][key] : key;
+  }
+
+  function applyI18n() {
+    document.documentElement.lang = currentLang;
+
+    // Text nodes
+    document.querySelectorAll("[data-i18n]").forEach(el => {
+      const key = el.dataset.i18n;
+      el.textContent = t(key);
+    });
+
+    // Placeholders
+    document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+      const key = el.dataset.i18nPlaceholder;
+      el.placeholder = t(key);
+    });
+
+    // Titles
+    document.querySelectorAll("[data-i18n-title]").forEach(el => {
+      const key = el.dataset.i18nTitle;
+      el.title = t(key);
+    });
+
+    // Aria labels
+    document.querySelectorAll("[data-i18n-aria]").forEach(el => {
+      const key = el.dataset.i18nAria;
+      el.setAttribute("aria-label", t(key));
+    });
+
+    // Existing notes: placeholder + delete tooltip
+    document.querySelectorAll(".note-item textarea").forEach(ta => {
+      if (ta.dataset.i18nPlaceholder) ta.placeholder = t(ta.dataset.i18nPlaceholder);
+    });
+    document.querySelectorAll(".note-delete").forEach(btn => {
+      if (btn.dataset.i18nTitle) btn.title = t(btn.dataset.i18nTitle);
+      if (btn.dataset.i18nAria) btn.setAttribute("aria-label", t(btn.dataset.i18nAria));
+    });
+
+    // Active button style
+    const deBtn = document.getElementById("btnLangDE");
+    const enBtn = document.getElementById("btnLangEN");
+    if (deBtn && enBtn) {
+      deBtn.classList.toggle("primary", currentLang === "de");
+      enBtn.classList.toggle("primary", currentLang === "en");
+    }
+  }
+
+  function setLanguage(lang) {
+    currentLang = (lang === "de" || lang === "en") ? lang : "de";
+    localStorage.setItem("qmLang", currentLang);
+    applyI18n();
+  }
+
   /* Notizen hinzufügen (inkl. Löschfunktion) */
   function addNote(cat, val = '') {
     const container = document.getElementById(`notes-${cat}`);
@@ -274,14 +456,17 @@
     const del = document.createElement('button');
     del.type = 'button';
     del.className = 'note-delete';
-    del.title = 'Ursache löschen';
-    del.setAttribute('aria-label', 'Ursache löschen');
+    del.dataset.i18nTitle = 'deleteCause';
+    del.dataset.i18nAria  = 'deleteCause';
+    del.title = t('deleteCause');
+    del.setAttribute('aria-label', t('deleteCause'));
     del.innerHTML = '&times;';
     del.onclick = () => div.remove();
 
     const ta = document.createElement('textarea');
     ta.rows = 2;
-    ta.placeholder = 'Ursache eingeben...';
+    ta.dataset.i18nPlaceholder = 'causePlaceholder';
+    ta.placeholder = t('causePlaceholder');
     ta.value = val;
 
     div.appendChild(del);
@@ -294,7 +479,7 @@
     const area = document.getElementById('capture-area');
     html2canvas(area, { scale: 2 }).then(canvas => {
       const link = document.createElement('a');
-      link.download = 'Quality_Ishikawa.png';
+      link.download = t('pngName');
       link.href = canvas.toDataURL();
       link.click();
     });
@@ -303,6 +488,7 @@
   /* Speichern als JSON */
   document.getElementById('btnSave').onclick = () => {
     const data = {
+      lang: currentLang,
       problem: document.getElementById('problemInput').value,
       matrix: {}
     };
@@ -312,7 +498,7 @@
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = 'Ishikawa_Export.json';
+    a.download = t('jsonName');
     a.click();
   };
 
@@ -325,6 +511,10 @@
     reader.onload = (ev) => {
       try {
         const data = JSON.parse(ev.target.result);
+
+        // optional: Sprache aus Datei übernehmen
+        if (data.lang === "de" || data.lang === "en") setLanguage(data.lang);
+
         document.getElementById('problemInput').value = data.problem || '';
         Object.keys(data.matrix || {}).forEach(m => {
           const container = document.getElementById(`notes-${m}`);
@@ -332,8 +522,10 @@
           container.innerHTML = '';
           (data.matrix[m] || []).forEach(txt => addNote(m, txt));
         });
+
+        applyI18n(); // damit Placeholders/Labels sauber sind
       } catch (err) {
-        alert('Fehler beim Laden der Datei.');
+        alert(t('loadError'));
       }
     };
     reader.readAsText(file);
@@ -342,9 +534,21 @@
     e.target.value = '';
   };
 
+  /* Reset */
+  document.getElementById('btnReset').onclick = () => {
+    if (confirm(t('confirmReset'))) location.reload();
+  };
+
   /* Copyright-Jahr automatisch setzen */
   (function setCopyrightYear(){
     const el = document.getElementById('copyrightYear');
     if (el) el.textContent = new Date().getFullYear();
   })();
+
+  /* Language buttons */
+  document.getElementById("btnLangDE").onclick = () => setLanguage("de");
+  document.getElementById("btnLangEN").onclick = () => setLanguage("en");
+
+  /* init */
+  setLanguage(currentLang);
 </script>
