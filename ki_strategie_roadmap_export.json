@@ -1,0 +1,632 @@
+{
+  "lang": "de",
+  "meta": {
+    "topic": "KI-Strategie",
+    "goal": "KI gezielt einsetzen, um messbaren Business-Mehrwert zu schaffen und Risiken kontrollierbar zu halten.",
+    "scope": "Zeitraum: 2026 · Fokus: GenAI + ausgewählte klassische ML-Use Cases · Geltungsbereich: ______",
+    "notes": "Diese Exportdatei enthält eine detaillierte Maßnahmen-Roadmap (Phasen + Gates) inklusive Owners und Terminen. Importiere sie im Tool über „JSON laden“."
+  },
+  "mind": {
+    "meta": {
+      "name": "qm_mindmap",
+      "author": "",
+      "version": "1.0"
+    },
+    "format": "node_array",
+    "data": [
+      {
+        "id": "root",
+        "topic": "KI-Strategie",
+        "isroot": true
+      },
+      {
+        "id": "vzg",
+        "topic": "Vision & Ziele",
+        "parentid": "root"
+      },
+      {
+        "id": "uc",
+        "topic": "Use Cases & Wertbeitrag",
+        "parentid": "root"
+      },
+      {
+        "id": "dg",
+        "topic": "Daten & Governance",
+        "parentid": "root"
+      },
+      {
+        "id": "ta",
+        "topic": "Technologie & Architektur",
+        "parentid": "root"
+      },
+      {
+        "id": "os",
+        "topic": "Organisation & Skills",
+        "parentid": "root"
+      },
+      {
+        "id": "om",
+        "topic": "Operating Model & Prozesse",
+        "parentid": "root"
+      },
+      {
+        "id": "rc",
+        "topic": "Risiko, Compliance & Ethik",
+        "parentid": "root"
+      },
+      {
+        "id": "cc",
+        "topic": "Change, Kommunikation & Kultur",
+        "parentid": "root"
+      },
+      {
+        "id": "rm",
+        "topic": "Roadmap & Portfolio",
+        "parentid": "root"
+      },
+      {
+        "id": "km",
+        "topic": "KPIs & Messung",
+        "parentid": "root"
+      },
+      {
+        "id": "rm_ws",
+        "topic": "Workstreams (A–G)",
+        "parentid": "rm"
+      },
+      {
+        "id": "rm_m",
+        "topic": "Meilensteine / Gates",
+        "parentid": "rm"
+      },
+      {
+        "id": "rm_cad",
+        "topic": "Cadence: Weekly Ops / Monthly Steering",
+        "parentid": "rm"
+      },
+      {
+        "id": "rm_rel",
+        "topic": "Release-Plan: Pilot → Rollout Wellen",
+        "parentid": "rm"
+      },
+      {
+        "id": "rm_ws_a",
+        "topic": "A Strategie & Business Alignment",
+        "parentid": "rm_ws"
+      },
+      {
+        "id": "rm_ws_b",
+        "topic": "B Governance & Compliance",
+        "parentid": "rm_ws"
+      },
+      {
+        "id": "rm_ws_c",
+        "topic": "C Daten & Knowledge",
+        "parentid": "rm_ws"
+      },
+      {
+        "id": "rm_ws_d",
+        "topic": "D Plattform & LLMOps",
+        "parentid": "rm_ws"
+      },
+      {
+        "id": "rm_ws_e",
+        "topic": "E Use-Case Delivery",
+        "parentid": "rm_ws"
+      },
+      {
+        "id": "rm_ws_f",
+        "topic": "F Enablement & Change",
+        "parentid": "rm_ws"
+      },
+      {
+        "id": "rm_ws_g",
+        "topic": "G Value Tracking & KPIs",
+        "parentid": "rm_ws"
+      },
+      {
+        "id": "rm_gate0",
+        "topic": "Gate 0: Sponsorship & Scope fix",
+        "parentid": "rm_m"
+      },
+      {
+        "id": "rm_gate1",
+        "topic": "Gate 1: Top-Use-Cases + Business Cases",
+        "parentid": "rm_m"
+      },
+      {
+        "id": "rm_gate2",
+        "topic": "Gate 2: Plattform + Governance Minimum Ready",
+        "parentid": "rm_m"
+      },
+      {
+        "id": "rm_gate3",
+        "topic": "Gate 3: Pilot Go-Live",
+        "parentid": "rm_m"
+      },
+      {
+        "id": "rm_gate4",
+        "topic": "Gate 4: Scale Decision (Rollout Welle 1)",
+        "parentid": "rm_m"
+      },
+      {
+        "id": "ta_rag",
+        "topic": "RAG / Wissensbasis (Search, Embeddings, Quellen)",
+        "parentid": "ta"
+      },
+      {
+        "id": "ta_eval",
+        "topic": "Evaluation & Guardrails (Tests, Safety, Policies)",
+        "parentid": "ta"
+      },
+      {
+        "id": "ta_obs",
+        "topic": "Observability (Logs, Traces, Quality KPIs)",
+        "parentid": "ta"
+      },
+      {
+        "id": "rc_dpia",
+        "topic": "DPIA/DSFA & Datenschutz-Freigaben",
+        "parentid": "rc"
+      },
+      {
+        "id": "rc_vendor",
+        "topic": "Vendor/Security Review (ISO, SOC2, DPA)",
+        "parentid": "rc"
+      },
+      {
+        "id": "rc_redteam",
+        "topic": "Red Teaming & Prompt-Injection Tests",
+        "parentid": "rc"
+      },
+      {
+        "id": "dg_class",
+        "topic": "Datenklassifizierung & Zugriffskonzepte",
+        "parentid": "dg"
+      },
+      {
+        "id": "dg_ret",
+        "topic": "Retention/Logging/Archiving Policy",
+        "parentid": "dg"
+      },
+      {
+        "id": "dg_know",
+        "topic": "Knowledge Curation (Owner, Aktualität, Quellen)",
+        "parentid": "dg"
+      },
+      {
+        "id": "uc_intake",
+        "topic": "Use-Case Intake (Template, Funnel)",
+        "parentid": "uc"
+      },
+      {
+        "id": "uc_prior",
+        "topic": "Priorisierung (Impact × Aufwand × Risiko)",
+        "parentid": "uc"
+      },
+      {
+        "id": "uc_pilot",
+        "topic": "Pilot Use Cases (1–2)",
+        "parentid": "uc"
+      },
+      {
+        "id": "uc_scale",
+        "topic": "Scale Use Cases (Rollout Wellen)",
+        "parentid": "uc"
+      },
+      {
+        "id": "cc_guides",
+        "topic": "Guidelines & Prompt-Playbooks",
+        "parentid": "cc"
+      },
+      {
+        "id": "cc_train",
+        "topic": "Schulung & Enablement (Rollenbasiert)",
+        "parentid": "cc"
+      },
+      {
+        "id": "cc_comms",
+        "topic": "Kommunikationsplan (Story, Q&A, Champions)",
+        "parentid": "cc"
+      },
+      {
+        "id": "km_benef",
+        "topic": "Benefit Tracking (Baseline → Ist)",
+        "parentid": "km"
+      },
+      {
+        "id": "km_dash",
+        "topic": "KPI Dashboard (Adoption, Value, Risk, Cost)",
+        "parentid": "km"
+      }
+    ]
+  },
+  "measures": [
+    {
+      "id": "m_001",
+      "nodeId": "rm_gate0",
+      "nodeTopic": "Gate 0: Sponsorship & Scope fix",
+      "nodePath": "KI-Strategie › Roadmap & Portfolio › Meilensteine / Gates › Gate 0: Sponsorship & Scope fix",
+      "text": "PHASE 0 (Setup): Executive Sponsor + Product Owner KI benennen; Mandat, Budgetrahmen und Entscheidungswege festlegen. Ergebnis: 1-seitige Governance-Charter.",
+      "due": "2026-01-30",
+      "owner": "Geschäftsführung / Strategie",
+      "status": "open",
+      "createdAt": "2026-01-18T23:44:07.420338+00:00"
+    },
+    {
+      "id": "m_002",
+      "nodeId": "rm_cad",
+      "nodeTopic": "Cadence: Weekly Ops / Monthly Steering",
+      "nodePath": "KI-Strategie › Roadmap & Portfolio › Cadence: Weekly Ops / Monthly Steering",
+      "text": "Weekly Ops (30 Min) + Monthly Steering (60 Min) einführen: Agenda, Teilnehmer, Decision Log, Risk Log, KPI-Review.",
+      "due": "2026-02-03",
+      "owner": "PO KI / PMO",
+      "status": "open",
+      "createdAt": "2026-01-18T23:44:07.420338+00:00"
+    },
+    {
+      "id": "m_003",
+      "nodeId": "vzg",
+      "nodeTopic": "Vision & Ziele",
+      "nodePath": "KI-Strategie › Vision & Ziele",
+      "text": "KI-Strategie-Brief (2 Seiten): Vision, Zielbild 12–24 Monate, Prinzipien (Security/Privacy/Transparency/Human-in-the-loop), Nicht-Ziele.",
+      "due": "2026-02-06",
+      "owner": "Strategie / GF",
+      "status": "open",
+      "createdAt": "2026-01-18T23:44:07.420338+00:00"
+    },
+    {
+      "id": "m_004",
+      "nodeId": "uc_intake",
+      "nodeTopic": "Use-Case Intake (Template, Funnel)",
+      "nodePath": "KI-Strategie › Use Cases & Wertbeitrag › Use-Case Intake (Template, Funnel)",
+      "text": "Use-Case Template bauen (Problem, Ziel, Nutzer, Daten, Risiko, KPI, Aufwand) + Intake-Kanal (Form/Board) bereitstellen.",
+      "due": "2026-02-10",
+      "owner": "PO KI / Fachbereiche",
+      "status": "open",
+      "createdAt": "2026-01-18T23:44:07.420338+00:00"
+    },
+    {
+      "id": "m_005",
+      "nodeId": "uc_prior",
+      "nodeTopic": "Priorisierung (Impact × Aufwand × Risiko)",
+      "nodePath": "KI-Strategie › Use Cases & Wertbeitrag › Priorisierung (Impact × Aufwand × Risiko)",
+      "text": "Scoring-Modell definieren (Impact, Aufwand, Risiko, Compliance, Datenreife). Ergebnis: Bewertungsmatrix + Workshop-Moderationsleitfaden.",
+      "due": "2026-02-13",
+      "owner": "PO KI / Controlling / Risk",
+      "status": "open",
+      "createdAt": "2026-01-18T23:44:07.420338+00:00"
+    },
+    {
+      "id": "m_006",
+      "nodeId": "uc",
+      "nodeTopic": "Use Cases & Wertbeitrag",
+      "nodePath": "KI-Strategie › Use Cases & Wertbeitrag",
+      "text": "Use-Case Workshop(s): Top-15 sammeln, grob bewerten, Top-5 shortlist. Ergebnis: Portfolio-Backlog.",
+      "due": "2026-02-18",
+      "owner": "PO KI / Fachbereiche",
+      "status": "open",
+      "createdAt": "2026-01-18T23:44:07.420338+00:00"
+    },
+    {
+      "id": "m_007",
+      "nodeId": "km_benef",
+      "nodeTopic": "Benefit Tracking (Baseline → Ist)",
+      "nodePath": "KI-Strategie › KPIs & Messung › Benefit Tracking (Baseline → Ist)",
+      "text": "Baseline pro Shortlist-Use-Case erheben (Zeit, Kosten, Qualität, CSAT) + Messmethodik vereinbaren (Vorher/Nachher).",
+      "due": "2026-02-20",
+      "owner": "Controlling / Fachbereiche",
+      "status": "open",
+      "createdAt": "2026-01-18T23:44:07.420338+00:00"
+    },
+    {
+      "id": "m_008",
+      "nodeId": "dg1",
+      "nodeTopic": "Dateninventar",
+      "nodePath": "KI-Strategie › Daten & Governance › Dateninventar (Quellen, Qualität, Zugriffe)",
+      "text": "Dateninventar erstellen: Quellen, Sensitivität, Qualität, Aktualität, Zugriffsrechte. Ergebnis: Data Catalog (MVP) + Data Owner Liste.",
+      "due": "2026-02-24",
+      "owner": "Data / IT",
+      "status": "open",
+      "createdAt": "2026-01-18T23:44:07.420338+00:00"
+    },
+    {
+      "id": "m_009",
+      "nodeId": "rc_vendor",
+      "nodeTopic": "Vendor/Security Review",
+      "nodePath": "KI-Strategie › Risiko, Compliance & Ethik › Vendor/Security Review (ISO, SOC2, DPA)",
+      "text": "Vendor Shortlist + Security/Privacy Due Diligence (DPA, TOMs, SOC2/ISO, Subprozessoren). Ergebnis: Freigabeempfehlung.",
+      "due": "2026-02-28",
+      "owner": "Security / Legal / IT",
+      "status": "open",
+      "createdAt": "2026-01-18T23:44:07.420338+00:00"
+    },
+    {
+      "id": "m_010",
+      "nodeId": "rm_gate1",
+      "nodeTopic": "Gate 1: Top-Use-Cases + Business Cases",
+      "nodePath": "KI-Strategie › Roadmap & Portfolio › Meilensteine / Gates › Gate 1: Top-Use-Cases + Business Cases",
+      "text": "GATE 1: Auswahl Pilot-Use-Case(s) (1–2) + Business Case (Kosten/Nutzen) + KPI-Definition verabschieden (Steering Decision).",
+      "due": "2026-03-03",
+      "owner": "Steering Committee",
+      "status": "open",
+      "createdAt": "2026-01-18T23:44:07.420338+00:00"
+    },
+    {
+      "id": "m_011",
+      "nodeId": "dg_class",
+      "nodeTopic": "Datenklassifizierung & Zugriffskonzepte",
+      "nodePath": "KI-Strategie › Daten & Governance › Datenklassifizierung & Zugriffskonzepte",
+      "text": "Datenklassifizierung finalisieren (Public/Internal/Confidential/Restricted) + Zugriffskonzept (RBAC) + Secrets Handling.",
+      "due": "2026-03-06",
+      "owner": "Data / Security",
+      "status": "open",
+      "createdAt": "2026-01-18T23:44:07.420338+00:00"
+    },
+    {
+      "id": "m_012",
+      "nodeId": "rc_dpia",
+      "nodeTopic": "DPIA/DSFA",
+      "nodePath": "KI-Strategie › Risiko, Compliance & Ethik › DPIA/DSFA & Datenschutz-Freigaben",
+      "text": "DSFA/DPIA für Pilot vorbereiten: Datenflüsse, Rechtsgrundlage, Speicherorte, Löschkonzept. Ergebnis: Datenschutz-Freigabe.",
+      "due": "2026-03-10",
+      "owner": "Legal / DPO / Fachbereich",
+      "status": "open",
+      "createdAt": "2026-01-18T23:44:07.420338+00:00"
+    },
+    {
+      "id": "m_013",
+      "nodeId": "ta2",
+      "nodeTopic": "LLM-Nutzung: API vs. On-Prem",
+      "nodePath": "KI-Strategie › Technologie & Architektur › LLM-Nutzung: API vs. On-Prem",
+      "text": "Architekturentscheidung dokumentieren (API vs On-Prem/Private). Kriterien: Datenschutz, Latenz, Kosten, Skalierung, Vendor Lock-in.",
+      "due": "2026-03-12",
+      "owner": "IT Architektur",
+      "status": "open",
+      "createdAt": "2026-01-18T23:44:07.420338+00:00"
+    },
+    {
+      "id": "m_014",
+      "nodeId": "ta4",
+      "nodeTopic": "MLOps/LLMOps",
+      "nodePath": "KI-Strategie › Technologie & Architektur › MLOps/LLMOps: Deploy, Monitor, Iterate",
+      "text": "LLMOps MVP aufsetzen: Prompt/Model Versioning, Eval Harness, CI Checks, Deployment Pipeline (Dev→Test→Prod).",
+      "due": "2026-03-18",
+      "owner": "IT / Platform",
+      "status": "open",
+      "createdAt": "2026-01-18T23:44:07.420338+00:00"
+    },
+    {
+      "id": "m_015",
+      "nodeId": "ta_eval",
+      "nodeTopic": "Evaluation & Guardrails",
+      "nodePath": "KI-Strategie › Technologie & Architektur › Evaluation & Guardrails (Tests, Safety, Policies)",
+      "text": "Guardrails definieren (Policy, PII-Filter, Tool Permissions) + Testset (Golden Answers) + Qualitätsmetriken (Relevanz/Genauigkeit).",
+      "due": "2026-03-22",
+      "owner": "Platform / Risk / Fachbereich",
+      "status": "open",
+      "createdAt": "2026-01-18T23:44:07.420338+00:00"
+    },
+    {
+      "id": "m_016",
+      "nodeId": "ta_rag",
+      "nodeTopic": "RAG / Wissensbasis",
+      "nodePath": "KI-Strategie › Technologie & Architektur › RAG / Wissensbasis (Search, Embeddings, Quellen)",
+      "text": "RAG-Design (Quellen, Chunking, Retrieval, Zitierpflicht) + Knowledge Owner benennen. Ergebnis: Wissensbasis MVP für Pilot.",
+      "due": "2026-03-29",
+      "owner": "Data / Fachbereich",
+      "status": "open",
+      "createdAt": "2026-01-18T23:44:07.420338+00:00"
+    },
+    {
+      "id": "m_017",
+      "nodeId": "rm_gate2",
+      "nodeTopic": "Gate 2: Plattform + Governance Minimum Ready",
+      "nodePath": "KI-Strategie › Roadmap & Portfolio › Meilensteine / Gates › Gate 2: Plattform + Governance Minimum Ready",
+      "text": "GATE 2: Plattform MVP + Mindest-Governance ready (Policies, Logging, DSFA, Security Review). Go/No-Go für Pilot Build & UAT.",
+      "due": "2026-04-01",
+      "owner": "Steering Committee",
+      "status": "open",
+      "createdAt": "2026-01-18T23:44:07.420338+00:00"
+    },
+    {
+      "id": "m_018",
+      "nodeId": "uc_pilot",
+      "nodeTopic": "Pilot Use Cases",
+      "nodePath": "KI-Strategie › Use Cases & Wertbeitrag › Pilot Use Cases (1–2)",
+      "text": "Pilot Build Sprint 1: UX/Flows, Prompting, Tools/Integrationen, Testdaten. Ergebnis: klickbarer Prototyp + Eval-Report.",
+      "due": "2026-04-10",
+      "owner": "Product / IT / Fachbereich",
+      "status": "open",
+      "createdAt": "2026-01-18T23:44:07.420338+00:00"
+    },
+    {
+      "id": "m_019",
+      "nodeId": "ta_obs",
+      "nodeTopic": "Observability",
+      "nodePath": "KI-Strategie › Technologie & Architektur › Observability (Logs, Traces, Quality KPIs)",
+      "text": "Observability aufsetzen: Telemetrie, Prompt/Response Logging (DSGVO-konform), Qualitäts-Dashboards, Incident Playbooks.",
+      "due": "2026-04-16",
+      "owner": "Platform / Security",
+      "status": "open",
+      "createdAt": "2026-01-18T23:44:07.420338+00:00"
+    },
+    {
+      "id": "m_020",
+      "nodeId": "rc_redteam",
+      "nodeTopic": "Red Teaming",
+      "nodePath": "KI-Strategie › Risiko, Compliance & Ethik › Red Teaming & Prompt-Injection Tests",
+      "text": "Red Teaming für Pilot: Prompt Injection, Data Leakage, Jailbreaks. Ergebnis: Findings + Fixes + Abnahmecheckliste.",
+      "due": "2026-04-22",
+      "owner": "Security / Platform",
+      "status": "open",
+      "createdAt": "2026-01-18T23:44:07.420338+00:00"
+    },
+    {
+      "id": "m_021",
+      "nodeId": "cc_guides",
+      "nodeTopic": "Guidelines & Prompt-Playbooks",
+      "nodePath": "KI-Strategie › Change, Kommunikation & Kultur › Guidelines & Prompt-Playbooks",
+      "text": "Nutzungsrichtlinien + Prompt-Playbook (Do/Don't, Beispiele, Datenklassifizierung, Zitieren) veröffentlichen.",
+      "due": "2026-04-24",
+      "owner": "Change / Legal / PO KI",
+      "status": "open",
+      "createdAt": "2026-01-18T23:44:07.420338+00:00"
+    },
+    {
+      "id": "m_022",
+      "nodeId": "cc_train",
+      "nodeTopic": "Schulung & Enablement",
+      "nodePath": "KI-Strategie › Change, Kommunikation & Kultur › Schulung & Enablement (Rollenbasiert)",
+      "text": "Rollenspezifische Trainings (Enduser, Power User, Admins, Legal/Security) + Lernpfad + Office Hours starten.",
+      "due": "2026-04-30",
+      "owner": "HR / Change / CoE",
+      "status": "open",
+      "createdAt": "2026-01-18T23:44:07.420338+00:00"
+    },
+    {
+      "id": "m_023",
+      "nodeId": "rm_gate3",
+      "nodeTopic": "Gate 3: Pilot Go-Live",
+      "nodePath": "KI-Strategie › Roadmap & Portfolio › Meilensteine / Gates › Gate 3: Pilot Go-Live",
+      "text": "GATE 3: Pilot Go-Live Decision: KPI Baseline vorhanden, Guardrails aktiv, Support/SLA definiert, Abnahme bestanden.",
+      "due": "2026-05-06",
+      "owner": "Steering Committee",
+      "status": "open",
+      "createdAt": "2026-01-18T23:44:07.420338+00:00"
+    },
+    {
+      "id": "m_024",
+      "nodeId": "uc_pilot",
+      "nodeTopic": "Pilot Use Cases",
+      "nodePath": "KI-Strategie › Use Cases & Wertbeitrag › Pilot Use Cases (1–2)",
+      "text": "Pilot Go-Live + 4-Wochen Hypercare: Ticket-Kanal, tägliches Monitoring, wöchentliches KPI-Review.",
+      "due": "2026-05-08",
+      "owner": "PO KI / Support / Fachbereich",
+      "status": "open",
+      "createdAt": "2026-01-18T23:44:07.420338+00:00"
+    },
+    {
+      "id": "m_025",
+      "nodeId": "km_dash",
+      "nodeTopic": "KPI Dashboard",
+      "nodePath": "KI-Strategie › KPIs & Messung › KPI Dashboard (Adoption, Value, Risk, Cost)",
+      "text": "KPI Dashboard v1 live: Adoption, Value, Cost, Risk Incidents. Ergebnis: Steering-Report monatlich.",
+      "due": "2026-06-03",
+      "owner": "Controlling / Platform",
+      "status": "open",
+      "createdAt": "2026-01-18T23:44:07.420338+00:00"
+    },
+    {
+      "id": "m_026",
+      "nodeId": "rm_gate4",
+      "nodeTopic": "Gate 4: Scale Decision",
+      "nodePath": "KI-Strategie › Roadmap & Portfolio › Meilensteine / Gates › Gate 4: Scale Decision (Rollout Welle 1)",
+      "text": "GATE 4: Scale Decision (Rollout Welle 1) basierend auf Pilot-KPIs (Value/Adoption/Risk) + Budgetfreigabe.",
+      "due": "2026-06-10",
+      "owner": "Steering Committee",
+      "status": "open",
+      "createdAt": "2026-01-18T23:44:07.420338+00:00"
+    },
+    {
+      "id": "m_027",
+      "nodeId": "rm_rel",
+      "nodeTopic": "Release-Plan",
+      "nodePath": "KI-Strategie › Roadmap & Portfolio › Release-Plan: Pilot → Rollout Wellen",
+      "text": "Rollout Welle 1 planen: Zielgruppen, Prozesse, Kommunikationspaket, Support-Kapazität, Trainingsslots, Cutover-Plan.",
+      "due": "2026-06-17",
+      "owner": "PMO / Change / IT",
+      "status": "open",
+      "createdAt": "2026-01-18T23:44:07.420338+00:00"
+    },
+    {
+      "id": "m_028",
+      "nodeId": "uc_scale",
+      "nodeTopic": "Scale Use Cases",
+      "nodePath": "KI-Strategie › Use Cases & Wertbeitrag › Scale Use Cases (Rollout Wellen)",
+      "text": "Welle 1 umsetzen: Rollout an ___ Teams/Standorte; Lessons Learned dokumentieren; Backlog-Adjustments.",
+      "due": "2026-07-15",
+      "owner": "PO KI / Fachbereiche",
+      "status": "open",
+      "createdAt": "2026-01-18T23:44:07.420338+00:00"
+    },
+    {
+      "id": "m_029",
+      "nodeId": "om3",
+      "nodeTopic": "Betrieb: Support, Incident, Change, SLA",
+      "nodePath": "KI-Strategie › Operating Model & Prozesse › Betrieb: Support, Incident, Change, SLA",
+      "text": "Betriebsmodell finalisieren: RACI, SLAs, On-Call, Incident Prozess, Change/Release Prozess, Service-Katalog.",
+      "due": "2026-07-22",
+      "owner": "IT Service / CoE",
+      "status": "open",
+      "createdAt": "2026-01-18T23:44:07.420338+00:00"
+    },
+    {
+      "id": "m_030",
+      "nodeId": "ta6",
+      "nodeTopic": "Kostensteuerung",
+      "nodePath": "KI-Strategie › Technologie & Architektur › Kostensteuerung: Token, GPU, Skalierung",
+      "text": "FinOps für KI: Kostenmodelle pro Use Case, Budget Alerts, Quotas, Caching/Compression Maßnahmen, Vendor Pricing Review.",
+      "due": "2026-08-05",
+      "owner": "FinOps / IT",
+      "status": "open",
+      "createdAt": "2026-01-18T23:44:07.420338+00:00"
+    },
+    {
+      "id": "m_031",
+      "nodeId": "uc_scale",
+      "nodeTopic": "Scale Use Cases",
+      "nodePath": "KI-Strategie › Use Cases & Wertbeitrag › Scale Use Cases (Rollout Wellen)",
+      "text": "Rollout Welle 2: Erweiterung auf weitere Use Cases (2–3) inkl. Daten-/Compliance-Checks je Use Case.",
+      "due": "2026-09-02",
+      "owner": "PO KI / Fachbereiche",
+      "status": "open",
+      "createdAt": "2026-01-18T23:44:07.420338+00:00"
+    },
+    {
+      "id": "m_032",
+      "nodeId": "dg_ret",
+      "nodeTopic": "Retention/Logging/Archiving Policy",
+      "nodePath": "KI-Strategie › Daten & Governance › Retention/Logging/Archiving Policy",
+      "text": "Logging/Retention Policy operationalisieren (Audit Trails, Löschläufe, Zugriffsauswertung) + jährlicher Review-Termin.",
+      "due": "2026-10-01",
+      "owner": "Security / DPO",
+      "status": "open",
+      "createdAt": "2026-01-18T23:44:07.420338+00:00"
+    },
+    {
+      "id": "m_033",
+      "nodeId": "os2",
+      "nodeTopic": "CoE vs. föderal",
+      "nodePath": "KI-Strategie › Organisation & Skills › Center of Excellence vs. föderal",
+      "text": "Operating Model Review: CoE/Hub-and-Spoke evaluieren; Skalierungsrollen (Prompt Librarian, Eval Lead, Risk Lead) definieren.",
+      "due": "2026-10-15",
+      "owner": "GF / HR / PO KI",
+      "status": "open",
+      "createdAt": "2026-01-18T23:44:07.420338+00:00"
+    },
+    {
+      "id": "m_034",
+      "nodeId": "km1",
+      "nodeTopic": "Wert-KPIs",
+      "nodePath": "KI-Strategie › KPIs & Messung › Wert-KPIs: Zeitersparnis, Umsatz, Qualität",
+      "text": "Value Realization Report Q4: kumulierter Nutzen, Qualitätsverbesserung, Kosten; Entscheidung über Budget 2027.",
+      "due": "2026-11-20",
+      "owner": "Controlling / Steering",
+      "status": "open",
+      "createdAt": "2026-01-18T23:44:07.420338+00:00"
+    },
+    {
+      "id": "m_035",
+      "nodeId": "rm",
+      "nodeTopic": "Roadmap & Portfolio",
+      "nodePath": "KI-Strategie › Roadmap & Portfolio",
+      "text": "Roadmap 2027 finalisieren: neue Use Cases, Plattform-Verbesserungen, Governance Updates, Trainingsplan; Lessons Learned 2026 integrieren.",
+      "due": "2026-12-10",
+      "owner": "Steering / PMO",
+      "status": "open",
+      "createdAt": "2026-01-18T23:44:07.420338+00:00"
+    }
+  ],
+  "ts": "2026-01-18T23:44:07.420338+00:00"
+}
