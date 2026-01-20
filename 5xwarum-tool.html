@@ -1,0 +1,1667 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- optional: html2canvas (PNG Export) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <title>5xWarum Tool – Ursachenanalyse</title>
+
+  <style>
+    :root {
+      --blue: #1155b2;
+      --dark: #09387a;
+      --light-bg: #f8fafc;
+      --note: #fff9c4;
+
+      --border:#d1d9e6;
+      --text:#27304d;
+      --muted:#64748b;
+
+      --green:#16a34a;
+      --yellow:#f59e0b;
+      --red:#e53e3e;
+
+      --radius: 6px;
+      --shadow: 0 4px 12px rgba(0,0,0,0.10);
+    }
+
+    body { margin:0; background:#fff; color: var(--text); }
+
+    .ishikawa-app {
+      max-width: 1100px;
+      margin: 20px auto;
+      padding: 0 12px;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      color: #27304d;
+    }
+    .ishikawa-card { background: #fff; border: 1px solid var(--border); border-radius: 6px; box-shadow: var(--shadow); overflow:hidden; }
+
+    /* Intro */
+    .tool-intro { padding: 22px 25px; border-bottom: 3px solid var(--blue); background: var(--light-bg); }
+    .tool-intro-top { display:flex; align-items:flex-start; justify-content:space-between; gap: 15px; flex-wrap: wrap; }
+    .tool-title { margin: 0; color: var(--dark); font-size: 20px; text-transform: uppercase; font-weight: 900; letter-spacing:.4px; }
+    .tool-sub { margin: 6px 0 0; font-size: 13px; color: var(--muted); max-width: 85ch; }
+    .tool-grid { margin-top: 16px; display:grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .tool-box { background:#fff; border: 1px solid var(--border); border-radius: 6px; padding: 12px 14px; }
+    .tool-box h3 { margin: 0 0 6px 0; font-size: 13px; color: var(--dark); text-transform: uppercase; font-weight: 900; letter-spacing:.25px; }
+    .tool-box p, .tool-box ol { margin: 0; font-size: 13px; color:#334155; }
+    .tool-box ol { padding-left: 18px; }
+    .tool-privacy { border-left: 3px solid var(--blue); }
+    .tool-box a { color: var(--blue); text-decoration: none; font-weight: 800; }
+    .tool-box a:hover { text-decoration: underline; }
+
+    /* Buttons */
+    .ishikawa-actions {
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 2px solid var(--blue);
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items:center;
+      justify-content: space-between;
+    }
+    .actions-left, .actions-right { display:flex; gap: 10px; flex-wrap: wrap; align-items:center; }
+
+    .i-btn {
+      padding: 10px 16px;
+      font-size: 12px;
+      font-weight: 900;
+      border-radius: 6px;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: #fff;
+      text-transform: uppercase;
+      letter-spacing:.3px;
+      text-decoration: none;
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      user-select:none;
+      color: var(--dark);
+    }
+    .i-btn:hover { background: #f1f5f9; border-color: rgba(17,85,178,.35); }
+    .i-btn.primary { background: var(--blue); color: #fff; border-color: var(--blue); }
+    .i-btn.primary:hover { background: var(--dark); border-color: var(--dark); }
+    .i-btn.danger { color: #e53e3e; border-color: rgba(229,62,62,.35); }
+    .i-btn.small { padding: 8px 10px; font-size: 11px; }
+
+    .lang-switch { display:flex; gap: 8px; align-items:center; }
+    .lang-switch .i-btn { padding: 8px 12px; font-size: 12px; }
+
+    .ishikawa-body { padding: 22px 25px; }
+
+    /* Tree area */
+    .why-area { padding: 18px 16px; background:#fff; border: 1px solid #edf2f7; border-radius: 10px; }
+    .why-topbar{ display:flex; justify-content:space-between; align-items:flex-start; gap: 12px; flex-wrap:wrap; margin-bottom: 12px; }
+    .problem-box{
+      flex: 1 1 420px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #fff;
+      overflow:hidden;
+    }
+    .problem-head{ padding: 10px 14px; background: var(--light-bg); border-bottom: 1px solid rgba(15,23,42,.08); display:flex; align-items:center; justify-content:space-between; gap: 10px; flex-wrap:wrap; }
+    .problem-head strong{ text-transform: uppercase; letter-spacing:.2px; font-size: 12px; color:#334155; }
+    .problem-box textarea{ width:100%; border:none; outline:none; font-family:inherit; font-size:14px; padding: 12px 14px; min-height: 70px; resize: vertical; color:#0f172a; }
+
+    .roots{ display:grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+    @media(max-width: 900px){ .roots{ grid-template-columns: 1fr; } }
+
+    .root-card{ border: 1px solid var(--border); border-radius: 10px; background:#fff; overflow:hidden; }
+    .root-head{ padding: 10px 14px; background: var(--light-bg); border-bottom: 1px solid rgba(15,23,42,.08); display:flex; justify-content:space-between; align-items:center; gap: 10px; flex-wrap:wrap; }
+    .root-title{ margin:0; font-size:12px; text-transform: uppercase; letter-spacing:.2px; color:#334155; font-weight: 900; }
+
+    .tree{ padding: 12px 14px 14px; }
+
+    .node{
+      position: relative;
+      border: 1px solid rgba(15,23,42,.10);
+      border-radius: 10px;
+      background: #fff;
+      padding: 10px 12px;
+      margin: 10px 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .node::before{
+      content:"";
+      position:absolute;
+      left:0; top:0; bottom:0;
+      width: 3px;
+      background: var(--blue);
+      border-radius: 10px 0 0 10px;
+      opacity: .9;
+    }
+    .node-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap; }
+    .node-label{ font-weight: 900; color: var(--dark); text-transform: uppercase; font-size: 12px; letter-spacing:.2px; }
+    .node-actions{ display:flex; gap: 8px; flex-wrap:wrap; justify-content:flex-end; }
+    .mini-btn{
+      border: 1px solid rgba(15,23,42,.12);
+      background:#fff;
+      border-radius: 6px;
+      padding: 8px 10px;
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing:.2px;
+      cursor:pointer;
+      user-select:none;
+      color: var(--dark);
+    }
+    .mini-btn:hover{ border-color: rgba(17,85,178,.45); color: var(--blue); background: rgba(17,85,178,.06); }
+    .mini-btn.danger{ border-color: rgba(239,68,68,.30); color:#b91c1c; }
+    .mini-btn.danger:hover{ background: rgba(239,68,68,.08); border-color: rgba(239,68,68,.45); color:#b91c1c; }
+
+    .node textarea{ width:100%; border: none; outline:none; resize: vertical; font-family:inherit; font-size: 13px; padding: 8px 0 0; color:#0f172a; background: transparent; }
+    .node textarea::placeholder{ color:#64748b; }
+
+    .children{ margin-left: 18px; padding-left: 14px; border-left: 2px solid rgba(17,85,178,.25); }
+
+    /* Bewertung & Maßnahmen */
+    .section{ margin-top: 18px; padding-top: 16px; border-top: 2px solid var(--blue); }
+    .section-title{ margin:0 0 6px; font-size: 13px; color: var(--dark); text-transform: uppercase; font-weight: 900; letter-spacing:.25px; }
+    .section-sub{ margin:0 0 12px; font-size: 13px; color: var(--muted); }
+
+    .triage-box{ border: 1px solid var(--border); border-radius: 10px; background: #fff; overflow:hidden; }
+    .triage-head{ padding: 10px 14px; background: var(--light-bg); border-bottom: 1px solid rgba(15,23,42,.08); display:flex; justify-content: space-between; align-items:center; gap: 10px; flex-wrap: wrap; }
+    .triage-meta{ font-size: 12px; color: var(--muted); font-weight: 800; }
+
+    .triage-table{ width: 100%; border-collapse: collapse; }
+    .triage-table th, .triage-table td{ padding: 10px 14px; border-bottom: 1px solid rgba(15,23,42,.06); vertical-align: top; font-size: 13px; }
+    .triage-table th{ text-align:left; font-size: 12px; text-transform: uppercase; letter-spacing:.2px; color:#334155; background: rgba(248,250,252,.8); }
+
+    .chips{ display:flex; gap: 8px; flex-wrap: wrap; }
+    .chip{ display:inline-flex; align-items:center; gap: 8px; border-radius: 999px; padding: 6px 10px; border: 1px solid rgba(15,23,42,.12); background:#fff; font-size: 12px; font-weight: 900; cursor:pointer; user-select:none; white-space: nowrap; }
+    .chip.active{ border-color: rgba(17,85,178,.45); color: var(--blue); background: rgba(17,85,178,.06); }
+
+    .rate-chips{ display:flex; gap: 8px; flex-wrap: wrap; }
+    .rate{ display:inline-flex; align-items:center; gap: 8px; border-radius: 999px; padding: 6px 10px; border: 1px solid rgba(15,23,42,.12); background:#fff; font-size: 12px; font-weight: 900; cursor:pointer; user-select:none; white-space: nowrap; }
+    .dot{ width: 10px; height: 10px; border-radius: 999px; display:inline-block; }
+    .rate.red .dot{ background: var(--red); }
+    .rate.yellow .dot{ background: var(--yellow); }
+    .rate.green .dot{ background: var(--green); }
+    .rate.selected{ box-shadow: 0 8px 18px rgba(0,0,0,.10); transform: translateY(-1px); border-color: rgba(15,23,42,.18); }
+    .rate.red.selected{ background: rgba(229,62,62,.08); border-color: rgba(229,62,62,.40); }
+    .rate.yellow.selected{ background: rgba(245,158,11,.10); border-color: rgba(245,158,11,.45); }
+    .rate.green.selected{ background: rgba(22,163,74,.08); border-color: rgba(22,163,74,.45); }
+
+    .measure-draft{ border: 1px solid var(--border); border-radius: 10px; background:#fff; padding: 12px 14px; }
+    .draft-grid{ display:grid; grid-template-columns: 1.2fr .6fr .6fr; gap: 10px; align-items:end; }
+    @media(max-width: 900px){ .draft-grid{ grid-template-columns: 1fr; } }
+
+    .field label{ display:block; font-size: 12px; font-weight: 900; text-transform: uppercase; color:#334155; letter-spacing:.2px; margin-bottom: 6px; }
+    .field input, .field textarea{ width: 100%; padding: 10px 12px; border:1px solid rgba(15,23,42,.14); border-radius: 6px; font-size: 14px; font-family: inherit; outline:none; background:#fff; }
+    .field textarea{ min-height: 84px; resize: vertical; }
+
+    .draft-actions{ margin-top: 10px; display:flex; gap: 10px; flex-wrap: wrap; justify-content:flex-end; border-top: 1px solid rgba(15,23,42,.08); padding-top: 10px; }
+    .hint-mini{ font-size: 12px; color: var(--muted); margin-top: 8px; }
+
+    .measures-list{ margin-top: 12px; border:1px solid var(--border); border-radius: 10px; background:#fff; overflow:hidden; }
+    .measures-head{ padding: 10px 14px; background: var(--light-bg); border-bottom: 1px solid rgba(15,23,42,.08); display:flex; justify-content: space-between; align-items:center; gap: 10px; flex-wrap: wrap; }
+    .measures-sub{ font-size: 12px; color: var(--muted); font-weight: 800; margin-top: 4px; }
+
+    .measures-table{ width:100%; border-collapse: collapse; }
+    .measures-table th, .measures-table td{ padding: 10px 14px; border-bottom: 1px solid rgba(15,23,42,.06); vertical-align: top; font-size: 13px; }
+    .measures-table th{ text-align:left; font-size: 12px; text-transform: uppercase; letter-spacing:.2px; color:#334155; background: rgba(248,250,252,.8); }
+
+    .status-pill{ display:inline-flex; align-items:center; gap: 8px; border-radius: 999px; padding: 5px 10px; border: 1px solid rgba(15,23,42,.12); font-size: 12px; font-weight: 900; white-space: nowrap; background:#fff; }
+    .status-open{ border-color: rgba(37,99,235,.30); background: rgba(37,99,235,.06); color: #1d4ed8; }
+    .status-done{ border-color: rgba(22,163,74,.30); background: rgba(22,163,74,.08); color: #15803d; }
+    .status-drop{ border-color: rgba(239,68,68,.28); background: rgba(239,68,68,.08); color: #b91c1c; }
+
+    .row-actions{ display:flex; gap: 8px; flex-wrap: wrap; justify-content:flex-end; }
+    .muted{ color: var(--muted); }
+
+    /* More info + footer */
+    .tool-more { margin-top: 22px; padding-top: 18px; border-top: 2px solid var(--blue); }
+    .more-title { margin: 0 0 6px 0; font-size: 13px; color: var(--dark); text-transform: uppercase; font-weight: 900; }
+    .more-sub { margin: 0 0 10px 0; font-size: 13px; color: var(--muted); }
+    .more-list { margin: 8px 0 0; padding-left: 18px; font-size: 13px; color:#334155; }
+    .more-list li { margin: 4px 0; }
+
+    .ishikawa-footer {
+      padding: 12px 25px;
+      background: var(--light-bg);
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .ishikawa-footer a{ color: var(--dark); font-weight: 900; text-decoration:none; }
+    .ishikawa-footer a:hover{ text-decoration: underline; }
+
+    @media (max-width: 900px) {
+      .tool-grid { grid-template-columns: 1fr; }
+      .triage-table{ display:block; overflow:auto; }
+      .measures-table{ display:block; overflow:auto; }
+    }
+
+    /* Print */
+    @media print {
+      .lang-switch, .tool-intro-top .i-btn, .ishikawa-actions, .tool-more a, .node-actions, .chips, .rate-chips, .row-actions, #btnExportPng { display:none !important; }
+      .ishikawa-card{ box-shadow:none; border:none; }
+      .tool-intro{ border-bottom:none; }
+      .tool-more{ border-top:none; }
+      .ishikawa-footer{ background:#fff; }
+      .why-area{ border:none; }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="qm-5why-app" class="ishikawa-app">
+    <section class="ishikawa-card">
+
+      <!-- Intro -->
+      <section class="tool-intro">
+        <div class="tool-intro-top">
+          <div>
+            <h2 class="tool-title" data-i18n="title">5xWarum Tool – Ursachenanalyse</h2>
+            <p class="tool-sub" data-i18n="subtitle">
+              5xWarum als Baum-/Ordnerstruktur (statt Ishikawa-Fischgräte) – freie Verzweigungen an jedem Ast, Ursachen-Bewertung (Rot/Gelb/Grün) und Maßnahmenableitung 1:1 wie im Ishikawa.
+            </p>
+          </div>
+
+          <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end;">
+            <div class="lang-switch" aria-label="Language switch">
+              <button type="button" class="i-btn" id="btnLangDE">DE</button>
+              <button type="button" class="i-btn" id="btnLangEN">EN</button>
+            </div>
+            <a class="i-btn" href="https://tools.quality.de/" data-i18n="backHome">Zurück zur Startseite</a>
+          </div>
+        </div>
+
+        <div class="tool-grid">
+          <div class="tool-box">
+            <h3 data-i18n="boxToolNameTitle">Name Tool</h3>
+            <p data-i18n="boxToolNameText">5xWarum (Why-Tree) – Auftreten & Nicht-Entdecken</p>
+          </div>
+
+          <div class="tool-box">
+            <h3 data-i18n="boxGoalTitle">Ziel</h3>
+            <p data-i18n="boxGoalText">
+              Ursachenketten nachvollziehbar aufbauen (Warum → Deshalb → Warum …), End-Ursachen bewerten und aus Rot/Gelb gezielt Maßnahmen ableiten.
+            </p>
+          </div>
+
+          <div class="tool-box">
+            <h3 data-i18n="boxHowTitle">So benutzt du das Tool</h3>
+            <ol>
+              <li data-i18n="step1">Problem / Effekt oben eintragen.</li>
+              <li data-i18n="step2">Für Auftreten und Nicht-Entdecken je eine Warum-Kette starten.</li>
+              <li data-i18n="step3">An jedem Knoten weitere „Warum“-Äste hinzufügen (freie Verzweigung).</li>
+              <li data-i18n="step4">Unten End-Ursachen bewerten (Rot/Gelb/Grün).</li>
+              <li data-i18n="step5">Aus Rot/Gelb Maßnahmen ableiten → Maßnahmenliste.</li>
+            </ol>
+          </div>
+
+          <div class="tool-box tool-privacy">
+            <h3 data-i18n="boxPrivacyTitle">Datenschutz</h3>
+            <p data-i18n="boxPrivacyText">
+              Dieses Tool arbeitet vollständig im Browser. Es werden keine Daten auf einem Server gespeichert. Der Stand wird lokal im Browser gespeichert (Autosave) und kann zusätzlich als JSON exportiert/importiert werden.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <div class="ishikawa-body">
+
+        <!-- Tree -->
+        <div id="capture-area" class="why-area">
+
+          <div class="why-topbar">
+            <div class="problem-box">
+              <div class="problem-head">
+                <strong data-i18n="problemTitle">Problembeschreibung</strong>
+                <span class="triage-meta" id="autosaveMeta">—</span>
+              </div>
+              <textarea id="problemInput" data-i18n-placeholder="problemPlaceholder" placeholder="HAUPTPROBLEM / EFFEKT HIER EINTRAGEN..."></textarea>
+            </div>
+
+            <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:flex-start; justify-content:flex-end;">
+              <button type="button" class="i-btn primary" id="btnAddA" data-i18n="btnAddA">+ Auftreten</button>
+              <button type="button" class="i-btn primary" id="btnAddB" data-i18n="btnAddB">+ Nicht-Entdecken</button>
+            </div>
+          </div>
+
+          <div class="roots">
+            <div class="root-card">
+              <div class="root-head">
+                <h3 class="root-title" data-i18n="rootA">AUFTRETEN (Warum ist das Problem entstanden?)</h3>
+                <button type="button" class="i-btn small" id="btnResetA" data-i18n="btnResetBranch">Zweig leeren</button>
+              </div>
+              <div class="tree" id="treeA"></div>
+            </div>
+
+            <div class="root-card">
+              <div class="root-head">
+                <h3 class="root-title" data-i18n="rootB">NICHT-ENTDECKEN (Warum wurde das Problem nicht erkannt?)</h3>
+                <button type="button" class="i-btn small" id="btnResetB" data-i18n="btnResetBranch">Zweig leeren</button>
+              </div>
+              <div class="tree" id="treeB"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ursachen-Bewertung -->
+        <section class="section" aria-label="Ursachen bewerten">
+          <h3 class="section-title" data-i18n="triageTitle">Ursachen bewerten (Rot / Gelb / Grün)</h3>
+          <p class="section-sub" data-i18n="triageSub">
+            Bewertet werden nur Endknoten (Blätter). <strong>Rot</strong> = sehr wahrscheinlich, <strong>Gelb</strong> = schnell prüfbar, <strong>Grün</strong> = momentan ausgeschlossen.
+          </p>
+
+          <div class="triage-box">
+            <div class="triage-head">
+              <div>
+                <div class="section-title" style="margin:0" data-i18n="triageListTitle">Ursachenliste (Endknoten)</div>
+                <div class="triage-meta" id="triageMeta">—</div>
+              </div>
+              <div class="chips" aria-label="Filter">
+                <span class="chip active" data-filter="all" data-i18n="filterAll">Alle</span>
+                <span class="chip" data-filter="red" data-i18n="filterRed">Rot</span>
+                <span class="chip" data-filter="yellow" data-i18n="filterYellow">Gelb</span>
+                <span class="chip" data-filter="green" data-i18n="filterGreen">Grün</span>
+                <span class="chip" data-filter="ry" data-i18n="filterRY">Rot+Gelb</span>
+              </div>
+            </div>
+
+            <table class="triage-table" aria-label="Ursachen Tabelle">
+              <thead>
+                <tr>
+                  <th style="width:170px" data-i18n="thBranch">Zweig</th>
+                  <th data-i18n="thPath">Pfad</th>
+                  <th data-i18n="thCause">Ursache (Endknoten)</th>
+                  <th style="width:340px" data-i18n="thTriage">Bewertung</th>
+                  <th style="width:240px; text-align:right" data-i18n="thActions">Aktion</th>
+                </tr>
+              </thead>
+              <tbody id="triageTbody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Maßnahmen -->
+        <section class="section" aria-label="Ableitung von Maßnahmen">
+          <h3 class="section-title" data-i18n="measuresTitle">Ableitung von Maßnahmen</h3>
+          <p class="section-sub" data-i18n="measuresSub">
+            Aus <strong>roten</strong> und <strong>gelben</strong> End-Ursachen werden Maßnahmen abgeleitet. Jede Maßnahme bleibt mit der Ursache verknüpft.
+          </p>
+
+          <div class="measure-draft">
+            <div class="draft-grid">
+              <div class="field">
+                <label data-i18n="draftCauseRefLabel">Bezug (Ursache)</label>
+                <input id="draftCauseRef" type="text" readonly value="—" />
+                <div class="hint-mini" data-i18n="draftCauseHint">Wähle eine Ursache in der Ursachenliste (Aktion: „Als Maßnahme übernehmen“).</div>
+              </div>
+
+              <div class="field">
+                <label for="draftOwner" data-i18n="draftOwnerLabel">Owner</label>
+                <input id="draftOwner" type="text" data-i18n-placeholder="draftOwnerPh" placeholder="z.B. Qualität / Produktion" />
+              </div>
+
+              <div class="field">
+                <label for="draftDue" data-i18n="draftDueLabel">Termin</label>
+                <input id="draftDue" type="date" />
+              </div>
+            </div>
+
+            <div class="field" style="margin-top:10px;">
+              <label for="draftMeasure" data-i18n="draftMeasureLabel">Maßnahme</label>
+              <textarea id="draftMeasure" data-i18n-placeholder="draftMeasurePh" placeholder="Welche Maßnahme reduziert/prüft diese Ursache?"></textarea>
+            </div>
+
+            <div class="draft-actions">
+              <button type="button" class="i-btn primary" id="btnSaveDraft" data-i18n="btnSaveDraft">In Maßnahmenliste speichern</button>
+              <button type="button" class="i-btn" id="btnClearDraft" data-i18n="btnClearDraft">Eingabe leeren</button>
+              <button type="button" class="i-btn" id="btnSeedFromRY" data-i18n="btnSeedFromRY">Rote/Gelbe als Vorschläge anlegen</button>
+            </div>
+            <div class="hint-mini" data-i18n="draftHint">
+              Tipp: „Rote/Gelbe als Vorschläge“ erstellt pro Rot/Gelb-Ursache (falls noch nicht vorhanden) einen Maßnahmen-Entwurf in der Liste (Status: Offen).
+            </div>
+          </div>
+
+          <div class="measures-list" aria-label="Maßnahmenliste">
+            <div class="measures-head">
+              <div>
+                <div class="section-title" style="margin:0" data-i18n="listTitle">Maßnahmenliste</div>
+                <div class="measures-sub" id="measuresMeta">—</div>
+              </div>
+              <div class="chips" aria-label="Filter">
+                <span class="chip active" data-mfilter="all" data-i18n="filterAll">Alle</span>
+                <span class="chip" data-mfilter="open" data-i18n="mFilterOpen">Offen</span>
+                <span class="chip" data-mfilter="done" data-i18n="mFilterDone">Abgeschlossen</span>
+                <span class="chip" data-mfilter="drop" data-i18n="mFilterDrop">Verworfen</span>
+              </div>
+            </div>
+
+            <table class="measures-table" aria-label="Maßnahmen Tabelle">
+              <thead>
+                <tr>
+                  <th style="width:260px" data-i18n="thRef">Bezug (Ursache)</th>
+                  <th data-i18n="thMeasure">Maßnahme</th>
+                  <th style="width:120px" data-i18n="thDue">Termin</th>
+                  <th style="width:160px" data-i18n="thStatus">Status</th>
+                  <th style="width:260px; text-align:right" data-i18n="thActions">Aktionen</th>
+                </tr>
+              </thead>
+              <tbody id="measuresTbody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Actions -->
+        <div class="ishikawa-actions">
+          <div class="actions-left">
+            <a class="i-btn" href="https://tools.quality.de/" data-i18n="backHome">Zurück zur Startseite</a>
+            <button type="button" class="i-btn primary" id="btnPrint" data-i18n="btnPrint">Drucken</button>
+            <button type="button" class="i-btn" id="btnExportPng" data-i18n="btnExportPng">PNG Export</button>
+          </div>
+
+          <div class="actions-right">
+            <button type="button" class="i-btn" id="btnSaveJson" data-i18n="btnSaveJson">JSON Speichern</button>
+            <button type="button" class="i-btn" id="btnLoadJson" data-i18n="btnLoadJson">JSON Laden</button>
+            <input type="file" id="jsonFile" accept="application/json" style="display:none" />
+            <button type="button" class="i-btn danger" id="btnReset" data-i18n="btnReset">Reset</button>
+          </div>
+        </div>
+
+        <!-- More -->
+        <section class="tool-more">
+          <h3 class="more-title" data-i18n="moreTitle">Weiterführende Infos</h3>
+          <p class="more-sub" data-i18n="moreSub">Lexikonartikel & passende Weiterbildungen (öffnet in neuem Tab).</p>
+
+          <div class="tool-grid">
+            <div class="tool-box">
+              <h3 data-i18n="lexTitle">Lexikon</h3>
+              <p data-i18n="lexText">Hintergrund, Nutzen & Anwendung von 5xWarum.</p>
+              <p style="margin-top:8px;">
+                <a href="https://www.quality.de/lexikon/5xwarum/" target="_blank" rel="noopener" data-i18n="lexLink">Zum Lexikonartikel: 5xWarum</a>
+              </p>
+            </div>
+
+            <div class="tool-box">
+              <h3 data-i18n="trainTitle">Ausbildungen &amp; Seminare</h3>
+              <p data-i18n="trainText">Vertiefe deine Methodenkompetenz im Qualitätsmanagement:</p>
+              <ul class="more-list">
+                <li><a href="https://www.quality.de/weiterbildung/kvp/" target="_blank" rel="noopener" data-i18n="trainKvp">KVP Seminare</a></li>
+                <li><a href="https://www.quality.de/weiterbildung/8d-seminare-8d-schulungen/" target="_blank" rel="noopener" data-i18n="train8d">8D Schulungen</a></li>
+                <li><a href="https://www.quality.de/weiterbildung/qualitaetsmanagement/" target="_blank" rel="noopener" data-i18n="trainQm">Qualitätsmanagement</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <footer class="ishikawa-footer">
+        <div>© <span id="copyrightYear"></span></div>
+        <div><a href="https://www.quality.de/" target="_blank" rel="noopener">Quality Services &amp; Wissen GmbH</a></div>
+      </footer>
+    </section>
+  </div>
+
+  <script>
+  (function(){
+    const ROOT = document.getElementById("qm-5why-app");
+    if(!ROOT) return;
+
+    const STORAGE_KEY = "qm_5why_tree_triage_measures_v1";
+    const LANG_KEY = "qmLang";
+    const $ = (sel) => ROOT.querySelector(sel);
+    const $$ = (sel) => Array.from(ROOT.querySelectorAll(sel));
+
+    // ---------- i18n ----------
+    const I18N = {
+      de: {
+        title: "5xWarum Tool – Ursachenanalyse",
+        subtitle: "5xWarum als Baum-/Ordnerstruktur (statt Ishikawa-Fischgräte) – freie Verzweigungen an jedem Ast, Ursachen-Bewertung (Rot/Gelb/Grün) und Maßnahmenableitung 1:1 wie im Ishikawa.",
+        backHome: "Zurück zur Startseite",
+
+        boxToolNameTitle: "Name Tool",
+        boxToolNameText: "5xWarum (Why-Tree) – Auftreten & Nicht-Entdecken",
+        boxGoalTitle: "Ziel",
+        boxGoalText: "Ursachenketten nachvollziehbar aufbauen (Warum → Deshalb → Warum …), End-Ursachen bewerten und aus Rot/Gelb gezielt Maßnahmen ableiten.",
+        boxHowTitle: "So benutzt du das Tool",
+        step1: "Problem / Effekt oben eintragen.",
+        step2: "Für Auftreten und Nicht-Entdecken je eine Warum-Kette starten.",
+        step3: "An jedem Knoten weitere „Warum“-Äste hinzufügen (freie Verzweigung).",
+        step4: "Unten End-Ursachen bewerten (Rot/Gelb/Grün).",
+        step5: "Aus Rot/Gelb Maßnahmen ableiten → Maßnahmenliste.",
+        boxPrivacyTitle: "Datenschutz",
+        boxPrivacyText: "Dieses Tool arbeitet vollständig im Browser. Es werden keine Daten auf einem Server gespeichert. Der Stand wird lokal im Browser gespeichert (Autosave) und kann zusätzlich als JSON exportiert/importiert werden.",
+
+        problemTitle: "Problembeschreibung",
+        problemPlaceholder: "HAUPTPROBLEM / EFFEKT HIER EINTRAGEN...",
+
+        btnAddA: "+ Auftreten",
+        btnAddB: "+ Nicht-Entdecken",
+        btnResetBranch: "Zweig leeren",
+
+        rootA: "AUFTRETEN (Warum ist das Problem entstanden?)",
+        rootB: "NICHT-ENTDECKEN (Warum wurde das Problem nicht erkannt?)",
+
+        nodeWhy: "Warum",
+        nodePlaceholder: "Warum? (Antwort / Ursache)",
+        addBranch: "+ Ast",
+        deleteNode: "Löschen",
+
+        triageTitle:"Ursachen bewerten (Rot / Gelb / Grün)",
+        triageSub:"Bewertet werden nur Endknoten (Blätter). Rot = sehr wahrscheinlich, Gelb = schnell prüfbar, Grün = momentan ausgeschlossen.",
+        triageListTitle:"Ursachenliste (Endknoten)",
+        filterAll:"Alle",
+        filterRed:"Rot",
+        filterYellow:"Gelb",
+        filterGreen:"Grün",
+        filterRY:"Rot+Gelb",
+        thBranch:"Zweig",
+        thPath:"Pfad",
+        thCause:"Ursache (Endknoten)",
+        thTriage:"Bewertung",
+        thActions:"Aktion",
+        rateRed:"Rot",
+        rateYellow:"Gelb",
+        rateGreen:"Grün",
+        takeAsMeasure:"Als Maßnahme übernehmen",
+
+        measuresTitle:"Ableitung von Maßnahmen",
+        measuresSub:"Aus roten und gelben End-Ursachen werden Maßnahmen abgeleitet. Jede Maßnahme bleibt mit der Ursache verknüpft.",
+        draftCauseRefLabel:"Bezug (Ursache)",
+        draftCauseHint:"Wähle eine Ursache in der Ursachenliste (Aktion: „Als Maßnahme übernehmen“).",
+        draftOwnerLabel:"Owner",
+        draftOwnerPh:"z.B. Qualität / Produktion",
+        draftDueLabel:"Termin",
+        draftMeasureLabel:"Maßnahme",
+        draftMeasurePh:"Welche Maßnahme reduziert/prüft diese Ursache?",
+        btnSaveDraft:"In Maßnahmenliste speichern",
+        btnClearDraft:"Eingabe leeren",
+        btnSeedFromRY:"Rote/Gelbe als Vorschläge anlegen",
+        draftHint:"Tipp: „Rote/Gelbe als Vorschläge“ erstellt pro Rot/Gelb-Ursache (falls noch nicht vorhanden) einen Maßnahmen-Entwurf in der Liste (Status: Offen).",
+
+        listTitle:"Maßnahmenliste",
+        mFilterOpen:"Offen",
+        mFilterDone:"Abgeschlossen",
+        mFilterDrop:"Verworfen",
+        thRef:"Bezug (Ursache)",
+        thMeasure:"Maßnahme",
+        thDue:"Termin",
+        thStatus:"Status",
+        statusOpen:"Offen",
+        statusDone:"Abgeschlossen",
+        statusDrop:"Verworfen",
+        btnOpen:"Offen",
+        btnDone:"Abschließen",
+        btnDrop:"Verwerfen",
+        btnEdit:"Bearbeiten",
+        btnSaveRow:"Speichern",
+        btnDelete:"Löschen",
+        cancel:"Abbrechen",
+
+        btnPrint:"Drucken",
+        btnExportPng:"PNG Export",
+        btnSaveJson:"JSON Speichern",
+        btnLoadJson:"JSON Laden",
+        btnReset:"Reset",
+        confirmReset:"Alles löschen (inkl. Autosave)?",
+        confirmResetBranch:"Diesen Zweig löschen?",
+        pngName:"Quality_5xWarum.png",
+        jsonName:"5xWarum_Export.json",
+        loadError:"Fehler beim Laden der Datei.",
+
+        moreTitle:"Weiterführende Infos",
+        moreSub:"Lexikonartikel & passende Weiterbildungen (öffnet in neuem Tab).",
+        lexTitle:"Lexikon",
+        lexText:"Hintergrund, Nutzen & Anwendung von 5xWarum.",
+        lexLink:"Zum Lexikonartikel: 5xWarum",
+        trainTitle:"Ausbildungen & Seminare",
+        trainText:"Vertiefe deine Methodenkompetenz im Qualitätsmanagement:",
+        trainKvp:"KVP Seminare",
+        train8d:"8D Schulungen",
+        trainQm:"Qualitätsmanagement",
+
+        emptyFilter:"Keine Ursachen im aktuellen Filter.",
+        emptyMeasures:"Keine Maßnahmen im aktuellen Filter.",
+        needCause:"Bitte zuerst eine Ursache auswählen (Als Maßnahme übernehmen).",
+        needMeasure:"Bitte eine Maßnahme formulieren.",
+        deleteMeasureQ:"Maßnahme löschen?",
+        noNewSeeds:"Keine neuen Vorschläge: Für alle Rot/Gelb-Ursachen existiert bereits mindestens eine Maßnahme.",
+        autosave:"Autosave",
+        ownerInline:"Owner",
+        missingCause:"(Ursache nicht mehr im Baum)"
+      },
+
+      en: {
+        title: "5-Why Tool – Root Cause Analysis",
+        subtitle: "5-Why as a tree/folder structure (instead of fishbone) – free branching on every node, cause triage (Red/Yellow/Green) and action derivation 1:1 like Ishikawa.",
+        backHome: "Back to home",
+
+        boxToolNameTitle: "Tool name",
+        boxToolNameText: "5-Why (Why-Tree) – Occurrence & Non-Detection",
+        boxGoalTitle: "Goal",
+        boxGoalText: "Build transparent why-chains (Why → Because → Why …), triage leaf causes and derive actions from Red/Yellow.",
+        boxHowTitle: "How to use this tool",
+        step1: "Enter the problem / effect at the top.",
+        step2: "Start one why-chain for Occurrence and one for Non-Detection.",
+        step3: "Add more “why” branches on any node (free branching).",
+        step4: "Triage leaf causes below (Red/Yellow/Green).",
+        step5: "Derive actions from Red/Yellow → action list.",
+        boxPrivacyTitle: "Privacy",
+        boxPrivacyText: "This tool runs entirely in your browser. No data is stored on any server. State is saved locally (autosave) and can be exported/imported as JSON.",
+
+        problemTitle: "Problem statement",
+        problemPlaceholder: "ENTER MAIN PROBLEM / EFFECT HERE...",
+
+        btnAddA: "+ Occurrence",
+        btnAddB: "+ Non-Detection",
+        btnResetBranch: "Clear branch",
+
+        rootA: "OCCURRENCE (Why did the problem happen?)",
+        rootB: "NON-DETECTION (Why was the problem not detected?)",
+
+        nodeWhy: "Why",
+        nodePlaceholder: "Why? (Answer / cause)",
+        addBranch: "+ Branch",
+        deleteNode: "Delete",
+
+        triageTitle:"Triage causes (Red / Yellow / Green)",
+        triageSub:"Only leaf nodes are triaged. Red = very likely, Yellow = quick to check, Green = excluded for now.",
+        triageListTitle:"Cause list (leaf nodes)",
+        filterAll:"All",
+        filterRed:"Red",
+        filterYellow:"Yellow",
+        filterGreen:"Green",
+        filterRY:"Red+Yellow",
+        thBranch:"Branch",
+        thPath:"Path",
+        thCause:"Cause (leaf)",
+        thTriage:"Triage",
+        thActions:"Action",
+        rateRed:"Red",
+        rateYellow:"Yellow",
+        rateGreen:"Green",
+        takeAsMeasure:"Use as action",
+
+        measuresTitle:"Action derivation",
+        measuresSub:"Actions are derived from red and yellow leaf causes. Each action remains linked to the cause.",
+        draftCauseRefLabel:"Reference (cause)",
+        draftCauseHint:"Select a cause in the cause list (Action: “Use as action”).",
+        draftOwnerLabel:"Owner",
+        draftOwnerPh:"e.g., Quality / Production",
+        draftDueLabel:"Due date",
+        draftMeasureLabel:"Action",
+        draftMeasurePh:"Which action reduces/checks this cause?",
+        btnSaveDraft:"Save to action list",
+        btnClearDraft:"Clear draft",
+        btnSeedFromRY:"Create suggestions from Red/Yellow",
+        draftHint:"Tip: “Create suggestions” creates one open action per Red/Yellow cause (if none exists yet).",
+
+        listTitle:"Action list",
+        mFilterOpen:"Open",
+        mFilterDone:"Done",
+        mFilterDrop:"Discarded",
+        thRef:"Reference (cause)",
+        thMeasure:"Action",
+        thDue:"Due",
+        thStatus:"Status",
+        statusOpen:"Open",
+        statusDone:"Done",
+        statusDrop:"Discarded",
+        btnOpen:"Open",
+        btnDone:"Mark done",
+        btnDrop:"Discard",
+        btnEdit:"Edit",
+        btnSaveRow:"Save",
+        btnDelete:"Delete",
+        cancel:"Cancel",
+
+        btnPrint:"Print",
+        btnExportPng:"PNG export",
+        btnSaveJson:"Save JSON",
+        btnLoadJson:"Load JSON",
+        btnReset:"Reset",
+        confirmReset:"Delete everything (including autosave)?",
+        confirmResetBranch:"Delete this branch?",
+        pngName:"Quality_5Why.png",
+        jsonName:"5Why_Export.json",
+        loadError:"Error loading the file.",
+
+        moreTitle:"More information",
+        moreSub:"Glossary article & relevant training (opens in a new tab).",
+        lexTitle:"Glossary",
+        lexText:"Background, benefits & how to use 5-Why.",
+        lexLink:"Open glossary article: 5-Why",
+        trainTitle:"Training & courses",
+        trainText:"Deepen your method skills in quality management:",
+        trainKvp:"CIP / KVP training",
+        train8d:"8D training",
+        trainQm:"Quality management",
+
+        emptyFilter:"No causes in the current filter.",
+        emptyMeasures:"No actions in the current filter.",
+        needCause:"Please select a cause first (Use as action).",
+        needMeasure:"Please enter an action.",
+        deleteMeasureQ:"Delete this action?",
+        noNewSeeds:"No new suggestions: each Red/Yellow cause already has at least one action.",
+        autosave:"Autosave",
+        ownerInline:"Owner",
+        missingCause:"(cause no longer in tree)"
+      }
+    };
+
+    let currentLang = (localStorage.getItem(LANG_KEY)
+      || ((navigator.language||"").toLowerCase().startsWith("de") ? "de" : "en"));
+
+    function t(key){
+      const d = I18N[currentLang] || I18N.de;
+      return (key in d) ? d[key] : key;
+    }
+
+    // ---------- state ----------
+    function uid(){
+      try{ return crypto.randomUUID(); }catch{ return 'id_' + Math.random().toString(16).slice(2); }
+    }
+
+    function newNode(label){
+      return {
+        id: uid(),
+        label,
+        text: '',
+        triage: 'yellow',
+        children: []
+      };
+    }
+
+    const EMPTY = () => ({
+      lang: currentLang,
+      problem: '',
+      treeA: [],
+      treeB: [],
+      measures: [],
+      draft: { leafId: null, leafSnapshot:'', branch:'', path:'', triage:'', text:'', owner:'', due:'' },
+      ts: new Date().toISOString()
+    });
+
+    let state = EMPTY();
+    let triageFilter = 'all';
+    let measuresFilter = 'all';
+    let editMeasureId = null;
+
+    // ---------- utils ----------
+    function esc(s){
+      return String(s ?? '')
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+    }
+
+    function branchLabel(b){
+      if(b==='A') return currentLang==='de' ? 'Auftreten' : 'Occurrence';
+      if(b==='B') return currentLang==='de' ? 'Nicht-Entdecken' : 'Non-Detection';
+      return b || '—';
+    }
+
+    function triageLabel(k){
+      if(k==='red') return t('rateRed');
+      if(k==='yellow') return t('rateYellow');
+      if(k==='green') return t('rateGreen');
+      return '—';
+    }
+
+    function fmtAutosave(ts){
+      if(!ts) return '—';
+      const d = new Date(ts);
+      if(Number.isNaN(d.getTime())) return '—';
+      try{
+        const date = new Intl.DateTimeFormat(currentLang==='de'?'de-DE':'en-GB', { dateStyle:'medium' }).format(d);
+        const time = new Intl.DateTimeFormat(currentLang==='de'?'de-DE':'en-GB', { timeStyle:'short' }).format(d);
+        return `${t('autosave')}: ${date} · ${time}`;
+      }catch{
+        return `${t('autosave')}: ${d.toLocaleString()}`;
+      }
+    }
+
+    function downloadBlob(filename, blob){
+      const a = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(()=>URL.revokeObjectURL(url), 3000);
+    }
+
+    function debounce(fn, ms){
+      let to = null;
+      return function(...args){
+        clearTimeout(to);
+        to = setTimeout(()=>fn.apply(this, args), ms);
+      }
+    }
+
+    function walk(nodes, fn, parent=null){
+      nodes.forEach(n=>{
+        fn(n, parent);
+        if(Array.isArray(n.children) && n.children.length) walk(n.children, fn, n);
+      });
+    }
+
+    function findNodeById(id){
+      let hit = null;
+      walk(state.treeA, (n)=>{ if(n.id===id) hit = {branch:'A', node:n}; });
+      if(hit) return hit;
+      walk(state.treeB, (n)=>{ if(n.id===id) hit = {branch:'B', node:n}; });
+      return hit;
+    }
+
+    function removeNodeById(branch, id){
+      function rm(arr){
+        const idx = arr.findIndex(x=>x.id===id);
+        if(idx>=0){ arr.splice(idx,1); return true; }
+        for(const n of arr){ if(n.children && rm(n.children)) return true; }
+        return false;
+      }
+      if(branch==='A') return rm(state.treeA);
+      return rm(state.treeB);
+    }
+
+    function pathForLeaf(branch, leafId){
+      const roots = (branch==='A') ? state.treeA : state.treeB;
+      const path = [];
+      let found = false;
+
+      function dfs(arr, stack){
+        for(const n of arr){
+          const next = stack.concat([n.label]);
+          if(n.id===leafId){ path.push(...next); found = true; return; }
+          if(n.children && n.children.length) dfs(n.children, next);
+          if(found) return;
+        }
+      }
+
+      dfs(roots, []);
+      return path.join(' › ');
+    }
+
+    function collectLeaves(){
+      const out = [];
+      function collect(branch, roots){
+        walk(roots, (n)=>{
+          const isLeaf = !n.children || n.children.length===0;
+          const txt = String(n.text||'').trim();
+          if(isLeaf && txt){
+            out.push({
+              branch,
+              id: n.id,
+              label: n.label,
+              text: txt,
+              triage: (n.triage==='red'||n.triage==='yellow'||n.triage==='green') ? n.triage : 'yellow',
+              path: pathForLeaf(branch, n.id)
+            });
+          }
+        });
+      }
+      collect('A', state.treeA);
+      collect('B', state.treeB);
+      return out;
+    }
+
+    // ---------- persistence ----------
+    function updateAutosaveMeta(){
+      $('#autosaveMeta').textContent = fmtAutosave(state.ts);
+    }
+
+    function persist(){
+      state.lang = currentLang;
+      state.problem = $('#problemInput').value || '';
+      state.draft.owner = $('#draftOwner').value || '';
+      state.draft.due = $('#draftDue').value || '';
+      state.ts = new Date().toISOString();
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      updateAutosaveMeta();
+    }
+
+    const persistDebounced = debounce(persist, 200);
+
+    function hydrateFromObject(p){
+      state = EMPTY();
+
+      state.lang = (p.lang==='de'||p.lang==='en') ? p.lang : currentLang;
+      currentLang = state.lang;
+      localStorage.setItem(LANG_KEY, currentLang);
+
+      state.problem = String(p.problem ?? '');
+      $('#problemInput').value = state.problem;
+
+      state.treeA = Array.isArray(p.treeA) ? p.treeA : [];
+      state.treeB = Array.isArray(p.treeB) ? p.treeB : [];
+
+      const meas = Array.isArray(p.measures) ? p.measures : [];
+      state.measures = meas.map(x=>({
+        id: String(x.id || uid()),
+        leafId: x.leafId ? String(x.leafId) : null,
+        leafSnapshot: String(x.leafSnapshot || ''),
+        branch: String(x.branch || ''),
+        path: String(x.path || ''),
+        triageAtCreate: (x.triageAtCreate==='red'||x.triageAtCreate==='yellow'||x.triageAtCreate==='green') ? x.triageAtCreate : '',
+        text: String(x.text || ''),
+        owner: String(x.owner || ''),
+        due: String(x.due || ''),
+        status: (x.status==='open'||x.status==='done'||x.status==='drop') ? x.status : 'open',
+        ts: String(x.ts || new Date().toISOString())
+      }));
+
+      const d = p.draft || {};
+      state.draft = {
+        leafId: d.leafId ? String(d.leafId) : null,
+        leafSnapshot: String(d.leafSnapshot || ''),
+        branch: String(d.branch || ''),
+        path: String(d.path || ''),
+        triage: String(d.triage || ''),
+        text: String(d.text || ''),
+        owner: String(d.owner || ''),
+        due: String(d.due || '')
+      };
+
+      state.ts = String(p.ts || new Date().toISOString());
+
+      $('#draftOwner').value = state.draft.owner || '';
+      $('#draftDue').value = state.draft.due || '';
+      $('#draftMeasure').value = '';
+      $('#draftCauseRef').value = state.draft.leafId ? formatCauseRef(state.draft) : '—';
+    }
+
+    function restore(){
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw) return false;
+      try{
+        const p = JSON.parse(raw);
+        if(!p || typeof p !== 'object') return false;
+        hydrateFromObject(p);
+        return true;
+      }catch(e){
+        return false;
+      }
+    }
+
+    // ---------- i18n apply ----------
+    function applyI18n(){
+      document.documentElement.lang = currentLang;
+      $$('[data-i18n]').forEach(el => el.textContent = t(el.dataset.i18n));
+      $$('[data-i18n-placeholder]').forEach(el => el.placeholder = t(el.dataset.i18nPlaceholder));
+
+      const deBtn = $('#btnLangDE'), enBtn = $('#btnLangEN');
+      if(deBtn && enBtn){
+        deBtn.classList.toggle('primary', currentLang==='de');
+        enBtn.classList.toggle('primary', currentLang==='en');
+      }
+
+      renderTrees();
+      updateTriageMeta();
+      renderTriageTable();
+      updateMeasuresMeta();
+      renderMeasures();
+      updateAutosaveMeta();
+      $('#draftCauseRef').value = state.draft.leafId ? formatCauseRef(state.draft) : '—';
+    }
+
+    function setLanguage(lang){
+      currentLang = (lang==='de'||lang==='en') ? lang : 'de';
+      localStorage.setItem(LANG_KEY, currentLang);
+      applyI18n();
+      persist();
+    }
+
+    // ---------- tree ops ----------
+    function nodeLabelFor(branch){
+      const roots = (branch==='A') ? state.treeA : state.treeB;
+      const prefix = (branch==='A') ? 'A' : 'B';
+      const idx = roots.length + 1;
+      return prefix + idx;
+    }
+
+    function addRoot(branch){
+      const label = nodeLabelFor(branch);
+      const n = newNode(label);
+      if(branch==='A') state.treeA.push(n); else state.treeB.push(n);
+      persist();
+      renderTrees();
+      renderTriageTable();
+      updateTriageMeta();
+    }
+
+    function addChild(branch, parentId){
+      const hit = findNodeById(parentId);
+      if(!hit) return;
+      const p = hit.node;
+      const prefix = (branch==='A') ? 'A' : 'B';
+      const childIdx = (p.children?.length || 0) + 1;
+      const label = `${prefix}${p.label.replace(prefix,'')}.${childIdx}`;
+      p.children = p.children || [];
+      p.children.push(newNode(label));
+      persist();
+      renderTrees();
+      renderTriageTable();
+      updateTriageMeta();
+    }
+
+    function formatCauseRef(o){
+      const br = branchLabel(o.branch || '');
+      const path = o.path ? o.path : (o.leafId ? pathForLeaf(o.branch, o.leafId) : '');
+      const tri = o.triage ? ` · ${triageLabel(o.triage)}` : '';
+      const txt = o.text ? ` · ${o.text}` : (o.leafSnapshot ? ` · ${o.leafSnapshot}` : '');
+      return `${br}${path ? ' · ' + path : ''}${tri}${txt}`;
+    }
+
+    // ---------- rendering: trees ----------
+    function renderNode(branch, n){
+      const wrap = document.createElement('div');
+      wrap.className = 'node';
+      wrap.innerHTML = `
+        <div class="node-top">
+          <div class="node-label">${esc(n.label)} · ${esc(t('nodeWhy'))}</div>
+          <div class="node-actions">
+            <button type="button" class="mini-btn" data-act="add" data-branch="${branch}" data-id="${esc(n.id)}">${esc(t('addBranch'))}</button>
+            <button type="button" class="mini-btn danger" data-act="del" data-branch="${branch}" data-id="${esc(n.id)}">${esc(t('deleteNode'))}</button>
+          </div>
+        </div>
+        <textarea rows="2" data-node-text="${esc(n.id)}" placeholder="${esc(t('nodePlaceholder'))}">${esc(n.text || '')}</textarea>
+        <div class="children" data-children="${esc(n.id)}"></div>
+      `;
+
+      const childBox = wrap.querySelector(`[data-children="${CSS.escape(n.id)}"]`);
+      const children = Array.isArray(n.children) ? n.children : [];
+      children.forEach(ch => childBox.appendChild(renderNode(branch, ch)));
+      return wrap;
+    }
+
+    function renderTreeInto(branch, container, roots){
+      container.innerHTML = '';
+      const arr = Array.isArray(roots) ? roots : [];
+      arr.forEach(n => container.appendChild(renderNode(branch, n)));
+      if(arr.length===0){
+        const hint = document.createElement('div');
+        hint.className = 'muted';
+        hint.style.fontSize = '13px';
+        hint.textContent = currentLang==='de'
+          ? 'Noch kein Ast. Nutze oben „+ Auftreten“ / „+ Nicht-Entdecken“.'
+          : 'No branch yet. Use “+ Occurrence” / “+ Non-Detection” above.';
+        container.appendChild(hint);
+      }
+    }
+
+    function renderTrees(){
+      renderTreeInto('A', $('#treeA'), state.treeA);
+      renderTreeInto('B', $('#treeB'), state.treeB);
+    }
+
+    // ---------- rendering: triage ----------
+    function updateTriageMeta(){
+      const leaves = collectLeaves();
+      const total = leaves.length;
+      const red = leaves.filter(x=>x.triage==='red').length;
+      const yellow = leaves.filter(x=>x.triage==='yellow').length;
+      const green = leaves.filter(x=>x.triage==='green').length;
+      $('#triageMeta').textContent = currentLang==='de'
+        ? `${total} Ursachen · Rot ${red} · Gelb ${yellow} · Grün ${green}`
+        : `${total} causes · Red ${red} · Yellow ${yellow} · Green ${green}`;
+    }
+
+    function passTriageFilter(item){
+      if(triageFilter==='all') return true;
+      if(triageFilter==='ry') return item.triage==='red' || item.triage==='yellow';
+      return item.triage === triageFilter;
+    }
+
+    function renderTriageTable(){
+      const leaves = collectLeaves().filter(passTriageFilter);
+
+      const tbody = $('#triageTbody');
+      tbody.innerHTML = '';
+
+      if(leaves.length===0){
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td colspan="5" class="muted">${esc(t('emptyFilter'))}</td>`;
+        tbody.appendChild(tr);
+        updateTriageMeta();
+        return;
+      }
+
+      leaves.forEach(leaf=>{
+        const tr = document.createElement('tr');
+
+        tr.innerHTML = `
+          <td><strong>${esc(branchLabel(leaf.branch))}</strong></td>
+          <td class="muted">${esc(leaf.path)}</td>
+          <td>${esc(leaf.text)}</td>
+          <td>
+            <div class="rate-chips" data-triage-for="${esc(leaf.id)}">
+              <span class="rate red ${leaf.triage==='red'?'selected':''}" data-rate="red" data-leaf="${esc(leaf.id)}"><span class="dot"></span>${esc(t('rateRed'))}</span>
+              <span class="rate yellow ${leaf.triage==='yellow'?'selected':''}" data-rate="yellow" data-leaf="${esc(leaf.id)}"><span class="dot"></span>${esc(t('rateYellow'))}</span>
+              <span class="rate green ${leaf.triage==='green'?'selected':''}" data-rate="green" data-leaf="${esc(leaf.id)}"><span class="dot"></span>${esc(t('rateGreen'))}</span>
+            </div>
+          </td>
+          <td style="text-align:right">
+            <button type="button" class="i-btn small" data-act="take" data-leaf="${esc(leaf.id)}">${esc(t('takeAsMeasure'))}</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      updateTriageMeta();
+    }
+
+    // ---------- measures ----------
+    function updateMeasuresMeta(){
+      const total = state.measures.length;
+      const open = state.measures.filter(m=>m.status==='open').length;
+      const done = state.measures.filter(m=>m.status==='done').length;
+      const drop = state.measures.filter(m=>m.status==='drop').length;
+      $('#measuresMeta').textContent = currentLang==='de'
+        ? `${total} Maßnahmen · Offen ${open} · Abgeschlossen ${done} · Verworfen ${drop}`
+        : `${total} actions · Open ${open} · Done ${done} · Discarded ${drop}`;
+    }
+
+    function statusPill(status){
+      if(status==='done') return `<span class="status-pill status-done">${esc(t('statusDone'))}</span>`;
+      if(status==='drop') return `<span class="status-pill status-drop">${esc(t('statusDrop'))}</span>`;
+      return `<span class="status-pill status-open">${esc(t('statusOpen'))}</span>`;
+    }
+
+    function passMeasuresFilter(m){
+      if(measuresFilter==='all') return true;
+      return m.status === measuresFilter;
+    }
+
+    function leafStillExists(leafId){
+      if(!leafId) return false;
+      return !!findNodeById(leafId);
+    }
+
+    function renderMeasures(){
+      const tbody = $('#measuresTbody');
+      tbody.innerHTML = '';
+
+      const list = state.measures.filter(passMeasuresFilter);
+
+      if(list.length===0){
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td colspan="5" class="muted">${esc(t('emptyMeasures'))}</td>`;
+        tbody.appendChild(tr);
+        updateMeasuresMeta();
+        return;
+      }
+
+      list.forEach(m=>{
+        const isEditing = (editMeasureId === m.id);
+        const refText = (() => {
+          const missing = m.leafId && !leafStillExists(m.leafId);
+          const base = `${branchLabel(m.branch)}${m.path ? ' · ' + m.path : ''}`;
+          const miss = missing ? ` <span class="muted">${esc(t('missingCause'))}</span>` : '';
+          const tri = m.triageAtCreate ? esc(triageLabel(m.triageAtCreate)) : '—';
+          const snap = m.leafSnapshot ? ` · ${esc(m.leafSnapshot)}` : '';
+          return `<div><strong>${esc(base)}</strong>${miss}</div><div class="muted" style="margin-top:4px">${tri}${snap}</div>`;
+        })();
+
+        const tr = document.createElement('tr');
+
+        if(!isEditing){
+          tr.innerHTML = `
+            <td>${refText}</td>
+            <td>
+              <div>${m.text ? esc(m.text) : '<span class="muted">—</span>'}</div>
+              ${m.owner ? `<div class="muted" style="margin-top:6px">${esc(t('ownerInline'))}: ${esc(m.owner)}</div>` : ''}
+            </td>
+            <td>${m.due ? esc(m.due) : '<span class="muted">—</span>'}</td>
+            <td>${statusPill(m.status)}</td>
+            <td style="text-align:right">
+              <div class="row-actions">
+                <button type="button" class="mini-btn" data-mact="status" data-status="open" data-id="${esc(m.id)}">${esc(t('btnOpen'))}</button>
+                <button type="button" class="mini-btn" data-mact="status" data-status="done" data-id="${esc(m.id)}">${esc(t('btnDone'))}</button>
+                <button type="button" class="mini-btn" data-mact="status" data-status="drop" data-id="${esc(m.id)}">${esc(t('btnDrop'))}</button>
+                <button type="button" class="mini-btn" data-mact="edit" data-id="${esc(m.id)}">${esc(t('btnEdit'))}</button>
+                <button type="button" class="mini-btn danger" data-mact="del" data-id="${esc(m.id)}">${esc(t('btnDelete'))}</button>
+              </div>
+            </td>
+          `;
+        } else {
+          tr.innerHTML = `
+            <td>${refText}</td>
+            <td>
+              <div class="field" style="margin:0">
+                <textarea data-edit="text" data-id="${esc(m.id)}" style="min-height:84px">${esc(m.text || '')}</textarea>
+              </div>
+              <div class="field" style="margin-top:10px">
+                <label style="margin:0 0 6px 0">${esc(t('draftOwnerLabel'))}</label>
+                <input data-edit="owner" data-id="${esc(m.id)}" type="text" value="${esc(m.owner || '')}" />
+              </div>
+            </td>
+            <td>
+              <input data-edit="due" data-id="${esc(m.id)}" type="date" value="${esc(m.due || '')}" style="width:100%; padding:10px 12px; border:1px solid rgba(15,23,42,.14); border-radius:6px; font-family:inherit" />
+            </td>
+            <td>${statusPill(m.status)}</td>
+            <td style="text-align:right">
+              <div class="row-actions">
+                <button type="button" class="mini-btn" data-mact="save" data-id="${esc(m.id)}">${esc(t('btnSaveRow'))}</button>
+                <button type="button" class="mini-btn" data-mact="cancel" data-id="${esc(m.id)}">${esc(t('cancel'))}</button>
+              </div>
+            </td>
+          `;
+        }
+
+        tbody.appendChild(tr);
+      });
+
+      updateMeasuresMeta();
+    }
+
+    function selectCauseForDraft(leaf){
+      state.draft.leafId = leaf.id;
+      state.draft.branch = leaf.branch;
+      state.draft.path = leaf.path;
+      state.draft.triage = leaf.triage;
+      state.draft.text = leaf.text;
+      state.draft.leafSnapshot = leaf.text;
+      $('#draftCauseRef').value = formatCauseRef(state.draft);
+      persist();
+    }
+
+    function clearDraft(all=false){
+      if(all){
+        state.draft = { leafId: null, leafSnapshot:'', branch:'', path:'', triage:'', text:'', owner:'', due:'' };
+        $('#draftOwner').value = '';
+        $('#draftDue').value = '';
+        $('#draftCauseRef').value = '—';
+      }
+      $('#draftMeasure').value = '';
+      persist();
+    }
+
+    function saveDraftToMeasures(){
+      const leafId = state.draft.leafId;
+      if(!leafId){
+        alert(t('needCause'));
+        return;
+      }
+      const txt = String($('#draftMeasure').value || '').trim();
+      if(!txt){
+        alert(t('needMeasure'));
+        return;
+      }
+
+      const owner = String($('#draftOwner').value || '').trim();
+      const due = String($('#draftDue').value || '').trim();
+
+      state.measures.unshift({
+        id: uid(),
+        leafId,
+        leafSnapshot: state.draft.leafSnapshot || state.draft.text || '',
+        branch: state.draft.branch || '',
+        path: state.draft.path || '',
+        triageAtCreate: state.draft.triage || '',
+        text: txt,
+        owner,
+        due,
+        status: 'open',
+        ts: new Date().toISOString()
+      });
+
+      $('#draftMeasure').value = '';
+      persist();
+      renderMeasures();
+      updateMeasuresMeta();
+    }
+
+    function seedFromRedYellow(){
+      const leaves = collectLeaves().filter(l => l.triage==='red' || l.triage==='yellow');
+      let created = 0;
+
+      for(const leaf of leaves){
+        const exists = state.measures.some(m => m.leafId === leaf.id);
+        if(exists) continue;
+
+        state.measures.unshift({
+          id: uid(),
+          leafId: leaf.id,
+          leafSnapshot: leaf.text,
+          branch: leaf.branch,
+          path: leaf.path,
+          triageAtCreate: leaf.triage,
+          text: "",
+          owner: String($('#draftOwner').value || '').trim(),
+          due: String($('#draftDue').value || '').trim(),
+          status: 'open',
+          ts: new Date().toISOString()
+        });
+        created++;
+      }
+
+      if(created===0) alert(t('noNewSeeds'));
+      persist();
+      renderMeasures();
+      updateMeasuresMeta();
+    }
+
+    // ---------- JSON import/export ----------
+    function exportJson(){
+      persist();
+      const blob = new Blob([JSON.stringify(state, null, 2)], {type:'application/json'});
+      downloadBlob(t('jsonName'), blob);
+    }
+
+    function importJsonFile(file){
+      const reader = new FileReader();
+      reader.onload = () => {
+        try{
+          const obj = JSON.parse(String(reader.result || '{}'));
+          hydrateFromObject(obj);
+          applyI18n();
+          persist();
+        }catch(e){
+          alert(t('loadError'));
+        }
+      };
+      reader.onerror = () => alert(t('loadError'));
+      reader.readAsText(file);
+    }
+
+    // ---------- PNG export ----------
+    async function exportPng(){
+      const target = document.getElementById('capture-area');
+      if(!target || !window.html2canvas){
+        alert('html2canvas not available');
+        return;
+      }
+      const canvas = await html2canvas(target, {
+        scale: Math.min(2, (window.devicePixelRatio || 1) + 0.5),
+        backgroundColor: '#ffffff',
+        useCORS: true
+      });
+      canvas.toBlob((blob)=>{
+        if(!blob) return;
+        downloadBlob(t('pngName'), blob);
+      }, 'image/png');
+    }
+
+    // ---------- event wiring ----------
+    function setActiveChip(groupSelector, attrName, value){
+      $$(groupSelector).forEach(ch=>{
+        ch.classList.toggle('active', ch.getAttribute(attrName)===value);
+      });
+    }
+
+    function handleTreeClick(e){
+      const btn = e.target.closest('button');
+      if(!btn) return;
+      const act = btn.dataset.act;
+      const branch = btn.dataset.branch;
+      const id = btn.dataset.id;
+      if(!act || !branch || !id) return;
+
+      if(act==='add'){
+        addChild(branch, id);
+        return;
+      }
+      if(act==='del'){
+        removeNodeById(branch, id);
+        state.measures = state.measures.filter(m => m.leafId !== id);
+        if(state.draft.leafId === id){
+          state.draft.leafId = null;
+          state.draft.leafSnapshot = '';
+          state.draft.branch = '';
+          state.draft.path = '';
+          state.draft.triage = '';
+          state.draft.text = '';
+          $('#draftCauseRef').value = '—';
+        }
+        persist();
+        renderTrees();
+        renderTriageTable();
+        renderMeasures();
+        updateTriageMeta();
+        updateMeasuresMeta();
+        return;
+      }
+    }
+
+    function handleTreeInput(e){
+      const ta = e.target.closest('textarea[data-node-text]');
+      if(!ta) return;
+      const id = ta.getAttribute('data-node-text');
+      const hit = findNodeById(id);
+      if(!hit) return;
+      hit.node.text = ta.value;
+
+      persistDebounced();
+      renderTriageTable();
+      updateTriageMeta();
+    }
+
+    function handleTriageClick(e){
+      const rate = e.target.closest('.rate');
+      if(rate && rate.dataset.leaf && rate.dataset.rate){
+        const leafId = rate.dataset.leaf;
+        const val = rate.dataset.rate;
+        const hit = findNodeById(leafId);
+        if(hit){
+          hit.node.triage = val;
+          if(state.draft.leafId === leafId){
+            state.draft.triage = val;
+            $('#draftCauseRef').value = formatCauseRef(state.draft);
+          }
+          persist();
+          renderTriageTable();
+          updateTriageMeta();
+          return;
+        }
+      }
+
+      const take = e.target.closest('button[data-act="take"]');
+      if(take){
+        const leafId = take.dataset.leaf;
+        const leaves = collectLeaves();
+        const leaf = leaves.find(l=>l.id===leafId);
+        if(leaf){
+          selectCauseForDraft(leaf);
+          $('#draftMeasure').scrollIntoView({behavior:'smooth', block:'center'});
+          $('#draftMeasure').focus({preventScroll:true});
+        }
+        return;
+      }
+
+      const chip = e.target.closest('.chip[data-filter]');
+      if(chip){
+        triageFilter = chip.dataset.filter || 'all';
+        setActiveChip('.triage-head .chip[data-filter]', 'data-filter', triageFilter);
+        renderTriageTable();
+        return;
+      }
+    }
+
+    function handleMeasuresClick(e){
+      const chip = e.target.closest('.chip[data-mfilter]');
+      if(chip){
+        measuresFilter = chip.dataset.mfilter || 'all';
+        setActiveChip('.measures-head .chip[data-mfilter]', 'data-mfilter', measuresFilter);
+        renderMeasures();
+        return;
+      }
+
+      const btn = e.target.closest('[data-mact]');
+      if(!btn) return;
+
+      const act = btn.dataset.mact;
+      const id = btn.dataset.id;
+      if(!id) return;
+
+      const idx = state.measures.findIndex(m=>m.id===id);
+      if(idx<0) return;
+
+      if(act==='status'){
+        const st = btn.dataset.status;
+        if(st==='open' || st==='done' || st==='drop'){
+          state.measures[idx].status = st;
+          persist();
+          renderMeasures();
+        }
+        return;
+      }
+
+      if(act==='edit'){
+        editMeasureId = id;
+        renderMeasures();
+        return;
+      }
+
+      if(act==='cancel'){
+        editMeasureId = null;
+        renderMeasures();
+        return;
+      }
+
+      if(act==='save'){
+        const row = btn.closest('tr');
+        if(!row) return;
+
+        const textEl = row.querySelector(`textarea[data-edit="text"][data-id="${CSS.escape(id)}"]`);
+        const ownerEl = row.querySelector(`input[data-edit="owner"][data-id="${CSS.escape(id)}"]`);
+        const dueEl = row.querySelector(`input[data-edit="due"][data-id="${CSS.escape(id)}"]`);
+
+        state.measures[idx].text = String(textEl?.value || '').trim();
+        state.measures[idx].owner = String(ownerEl?.value || '').trim();
+        state.measures[idx].due = String(dueEl?.value || '').trim();
+        state.measures[idx].ts = new Date().toISOString();
+
+        editMeasureId = null;
+        persist();
+        renderMeasures();
+        return;
+      }
+
+      if(act==='del'){
+        if(confirm(t('deleteMeasureQ'))){
+          state.measures.splice(idx, 1);
+          if(editMeasureId===id) editMeasureId = null;
+          persist();
+          renderMeasures();
+          updateMeasuresMeta();
+        }
+        return;
+      }
+    }
+
+    // ---------- branch reset / global reset ----------
+    function resetBranch(branch){
+      if(!confirm(t('confirmResetBranch'))) return;
+      if(branch==='A') state.treeA = [];
+      if(branch==='B') state.treeB = [];
+      state.measures = state.measures.filter(m => m.branch !== branch);
+
+      if(state.draft.branch === branch){
+        state.draft.leafId = null;
+        state.draft.leafSnapshot = '';
+        state.draft.branch = '';
+        state.draft.path = '';
+        state.draft.triage = '';
+        state.draft.text = '';
+        $('#draftCauseRef').value = '—';
+      }
+
+      persist();
+      renderTrees();
+      renderTriageTable();
+      renderMeasures();
+      updateTriageMeta();
+      updateMeasuresMeta();
+    }
+
+    function resetAll(){
+      if(!confirm(t('confirmReset'))) return;
+      localStorage.removeItem(STORAGE_KEY);
+      state = EMPTY();
+
+      $('#problemInput').value = '';
+      $('#draftOwner').value = '';
+      $('#draftDue').value = '';
+      $('#draftMeasure').value = '';
+      $('#draftCauseRef').value = '—';
+
+      triageFilter = 'all';
+      measuresFilter = 'all';
+      editMeasureId = null;
+
+      persist();
+      applyI18n();
+    }
+
+    // ---------- init ----------
+    function init(){
+      $('#copyrightYear').textContent = String(new Date().getFullYear());
+
+      const savedLang = localStorage.getItem(LANG_KEY);
+      if(savedLang==='de' || savedLang==='en') currentLang = savedLang;
+
+      const ok = restore();
+      if(ok){
+        currentLang = state.lang || currentLang;
+        localStorage.setItem(LANG_KEY, currentLang);
+      }
+
+      $('#btnLangDE').addEventListener('click', ()=>setLanguage('de'));
+      $('#btnLangEN').addEventListener('click', ()=>setLanguage('en'));
+
+      $('#btnAddA').addEventListener('click', ()=>addRoot('A'));
+      $('#btnAddB').addEventListener('click', ()=>addRoot('B'));
+      $('#btnResetA').addEventListener('click', ()=>resetBranch('A'));
+      $('#btnResetB').addEventListener('click', ()=>resetBranch('B'));
+
+      $('#treeA').addEventListener('click', handleTreeClick);
+      $('#treeB').addEventListener('click', handleTreeClick);
+      $('#treeA').addEventListener('input', handleTreeInput);
+      $('#treeB').addEventListener('input', handleTreeInput);
+
+      $('#triageTbody').addEventListener('click', handleTriageClick);
+      $('.triage-head').addEventListener('click', handleTriageClick);
+
+      $('#measuresTbody').addEventListener('click', handleMeasuresClick);
+      $('.measures-head').addEventListener('click', handleMeasuresClick);
+
+      $('#problemInput').addEventListener('input', ()=>{ persistDebounced(); });
+      $('#draftOwner').addEventListener('input', ()=>{ state.draft.owner = $('#draftOwner').value || ''; persistDebounced(); });
+      $('#draftDue').addEventListener('input', ()=>{ state.draft.due = $('#draftDue').value || ''; persistDebounced(); });
+
+      $('#btnSaveDraft').addEventListener('click', saveDraftToMeasures);
+      $('#btnClearDraft').addEventListener('click', ()=>clearDraft(false));
+      $('#btnSeedFromRY').addEventListener('click', seedFromRedYellow);
+
+      $('#btnSaveJson').addEventListener('click', ()=>exportJson());
+      $('#btnLoadJson').addEventListener('click', ()=>$('#jsonFile').click());
+      $('#jsonFile').addEventListener('change', (e)=>{
+        const f = e.target.files && e.target.files[0];
+        if(!f) return;
+        importJsonFile(f);
+        e.target.value = '';
+      });
+
+      $('#btnReset').addEventListener('click', resetAll);
+      $('#btnPrint').addEventListener('click', ()=>window.print());
+      $('#btnExportPng').addEventListener('click', exportPng);
+
+      applyI18n();
+      renderTrees();
+      renderTriageTable();
+      renderMeasures();
+      updateTriageMeta();
+      updateMeasuresMeta();
+      updateAutosaveMeta();
+    }
+
+    init();
+  })();
+  </script>
+</body>
+</html>
