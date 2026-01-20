@@ -1,0 +1,1988 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mindmap Tool – Ideen → Maßnahmen</title>
+
+  <!-- jsMind (SVG/Canvas Mindmap Library) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsmind@0.9.1/style/jsmind.css">
+  <script src="https://cdn.jsdelivr.net/npm/jsmind@0.9.1/es6/jsmind.js"></script>
+
+  <style>
+    :root{
+      --blue:#1155b2;
+      --dark:#09387a;
+      --light-bg:#f8fafc;
+      --border:#d1d9e6;
+      --text:#27304d;
+      --muted:#64748b;
+      --note:#fff9c4;
+      --radius:4px;
+      --shadow: 0 4px 12px rgba(0,0,0,0.10);
+      --green:#16a34a;
+      --yellow:#f59e0b;
+      --red:#e53e3e;
+    }
+
+    body{ margin:0; background:#ffffff; color:var(--text); font-family:'Segoe UI', Roboto, sans-serif; }
+    #qm-mindmap-app{ max-width:1100px; margin:20px auto; padding:0 12px; }
+
+    #qm-mindmap-app .card{
+      background:#fff; border:1px solid var(--border); border-radius:var(--radius);
+      box-shadow:var(--shadow); overflow:hidden;
+    }
+
+    /* Intro / Header */
+    #qm-mindmap-app .tool-intro{ padding:22px 25px; border-bottom:3px solid var(--blue); background:var(--light-bg); }
+    #qm-mindmap-app .intro-top{ display:flex; align-items:flex-start; justify-content:space-between; gap:14px; flex-wrap:wrap; }
+    #qm-mindmap-app .tool-title{ margin:0; color:var(--dark); font-size:20px; text-transform:uppercase; }
+    #qm-mindmap-app .tool-sub{ margin:6px 0 0; font-size:13px; color:var(--muted); }
+
+    #qm-mindmap-app .tool-grid{ margin-top:16px; display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    #qm-mindmap-app .tool-box{ background:#fff; border:1px solid var(--border); border-radius:var(--radius); padding:12px 14px; }
+    #qm-mindmap-app .tool-box h3{ margin:0 0 6px 0; font-size:13px; color:var(--dark); text-transform:uppercase; }
+    #qm-mindmap-app .tool-box h4{ margin:10px 0 6px 0; font-size:12px; color:var(--dark); text-transform:uppercase; letter-spacing:.2px; }
+    #qm-mindmap-app .tool-box p, #qm-mindmap-app .tool-box ol{ margin:0; font-size:13px; color:#334155; }
+    #qm-mindmap-app .tool-box ol{ padding-left:18px; }
+    #qm-mindmap-app .tool-privacy{ border-left:3px solid var(--blue); }
+
+    #qm-mindmap-app a{ color:var(--blue); text-decoration:none; }
+    #qm-mindmap-app a:hover{ text-decoration:underline; }
+
+    /* Buttons */
+    #qm-mindmap-app .btn-row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    #qm-mindmap-app .btn{
+      padding:10px 18px; font-size:13px; font-weight:800; border-radius:var(--radius);
+      cursor:pointer; border:1px solid var(--border); background:#fff; text-transform:uppercase;
+      display:inline-flex; align-items:center; gap:8px;
+    }
+    #qm-mindmap-app .btn.primary{ background:var(--blue); color:#fff; border-color:var(--blue); }
+    #qm-mindmap-app .btn.primary:hover{ background:var(--dark); border-color:var(--dark); }
+    #qm-mindmap-app .btn.danger{ color:var(--red); border-color:rgba(229,62,62,.35); }
+    #qm-mindmap-app .btn.small{ padding:8px 12px; font-size:12px; }
+    #qm-mindmap-app .btn:disabled{ opacity:.55; cursor:not-allowed; }
+
+    /* Language switch */
+    #qm-mindmap-app .lang-switch{ display:flex; gap:8px; align-items:center; }
+    #qm-mindmap-app .lang-switch .btn{ padding:8px 12px; font-size:12px; }
+
+    /* Body sections */
+    #qm-mindmap-app .body{ padding:25px; }
+    #qm-mindmap-app .section{
+      border:1px solid #edf2f7; border-radius:var(--radius); padding:16px; background:#fff;
+      margin-bottom:16px;
+    }
+    #qm-mindmap-app .section-head{
+      display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;
+      padding-bottom:10px; margin-bottom:12px; border-bottom:1px solid #eef2f7;
+    }
+    #qm-mindmap-app .sec-title{
+      margin:0; font-size:14px; font-weight:900; color:var(--dark); text-transform:uppercase;
+      letter-spacing:.3px;
+    }
+    #qm-mindmap-app .sec-sub{ margin:4px 0 0; font-size:13px; color:var(--muted); }
+
+    /* Form */
+    #qm-mindmap-app .form-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    #qm-mindmap-app .full{ grid-column:1 / -1; }
+    #qm-mindmap-app label{ display:block; font-size:12px; color:var(--muted); margin-bottom:6px; text-transform:uppercase; font-weight:900; }
+    #qm-mindmap-app input, #qm-mindmap-app textarea, #qm-mindmap-app select{
+      width:100%; border:1px solid var(--border); border-radius:var(--radius);
+      padding:10px; font-family:inherit; font-size:13px; outline:none; background:#fff;
+    }
+    #qm-mindmap-app textarea{ min-height:72px; resize:vertical; }
+    #qm-mindmap-app input:focus, #qm-mindmap-app textarea:focus, #qm-mindmap-app select:focus{
+      border-color:rgba(17,85,178,.65); box-shadow:0 0 0 3px rgba(17,85,178,.12);
+    }
+
+    /* Status pill */
+    #qm-mindmap-app .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      border:1px solid var(--border); border-radius:999px; padding:6px 10px;
+      font-size:12px; font-weight:900; background:#fff; color:#0f172a;
+    }
+    #qm-mindmap-app .pill.ok{ border-color:rgba(22,163,74,.35); background:rgba(22,163,74,.08); }
+    #qm-mindmap-app .pill.warn{ border-color:rgba(245,158,11,.35); background:rgba(245,158,11,.10); }
+    #qm-mindmap-app .pill.bad{ border-color:rgba(229,62,62,.35); background:rgba(229,62,62,.08); }
+
+    /* Badge */
+    #qm-mindmap-app .badge{
+      display:inline-flex; align-items:center; justify-content:center;
+      border-radius:999px; padding:4px 10px;
+      font-size:11px; font-weight:900; text-transform:uppercase; letter-spacing:.3px;
+      border:1px solid var(--border); background:#fff; color:#0f172a;
+    }
+    #qm-mindmap-app .badge.premium{ border-color:rgba(245,158,11,.35); background:rgba(245,158,11,.10); color:#7c2d12; }
+    #qm-mindmap-app .badge.api{ border-color:rgba(17,85,178,.35); background:rgba(17,85,178,.08); color:var(--dark); }
+    #qm-mindmap-app .badge.lic{ border-color:rgba(22,163,74,.35); background:rgba(22,163,74,.08); color:#14532d; }
+
+    /* Mindmap area */
+    #qm-mindmap-app .map-wrap{
+      border:1px solid rgba(17,85,178,.15);
+      border-radius:var(--radius);
+      background: radial-gradient(circle at center, rgba(17,85,178,.06) 0%, transparent 70%);
+      padding:10px;
+    }
+    #qm-mindmap-app #jsmind_container{
+      width:100%;
+      height:520px;
+      background:#ffffff;
+      border:1px solid rgba(17,85,178,.15);
+      border-radius:var(--radius);
+      overflow:hidden;
+    }
+    #qm-mindmap-app .map-tools{
+      display:flex; gap:10px; flex-wrap:wrap; align-items:center;
+      margin:10px 0 0;
+      padding-top:10px; border-top:1px solid rgba(17,85,178,.12);
+    }
+    #qm-mindmap-app .hint{ margin:10px 0 0; font-size:12px; color:var(--muted); }
+
+    /* Measures table styles (existing) */
+    #qm-mindmap-app .measure-list{ display:block; margin-top:10px; }
+    #qm-mindmap-app .measure-table-wrap{
+      border:1px solid #e2e8f0;
+      border-radius:var(--radius);
+      background:#fff;
+      max-height:none;
+      overflow-y:visible;
+      overflow-x:auto;
+    }
+    #qm-mindmap-app .measure-table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+      min-width:980px;
+      font-size:13px;
+    }
+    #qm-mindmap-app .measure-table thead th{
+      position:sticky;
+      top:0;
+      z-index:2;
+      background:var(--light-bg);
+      color:var(--dark);
+      text-transform:uppercase;
+      letter-spacing:.3px;
+      font-weight:900;
+      font-size:11px;
+      padding:10px 12px;
+      border-bottom:1px solid #e5eaf2;
+      white-space:nowrap;
+    }
+    #qm-mindmap-app .measure-table td{
+      padding:10px 12px;
+      border-bottom:1px solid #eef2f7;
+      vertical-align:top;
+    }
+    #qm-mindmap-app .measure-table tbody tr:nth-child(even){ background:#fbfcfe; }
+    #qm-mindmap-app .measure-table tbody tr:hover{ background:#f8fafc; }
+    #qm-mindmap-app .measure-table td:first-child{ border-left:4px solid transparent; }
+    #qm-mindmap-app .measure-table tr[data-status="open"] td:first-child{ border-left-color:rgba(245,158,11,.75); }
+    #qm-mindmap-app .measure-table tr[data-status="done"] td:first-child{ border-left-color:rgba(22,163,74,.75); }
+    #qm-mindmap-app .measure-table tr[data-status="drop"] td:first-child{ border-left-color:rgba(229,62,62,.75); }
+
+    #qm-mindmap-app .measure-table .col-status{ width:120px; }
+    #qm-mindmap-app .measure-table .col-due{ width:140px; white-space:nowrap; }
+    #qm-mindmap-app .measure-table .col-owner{ width:220px; }
+    #qm-mindmap-app .measure-table .col-actions{ width:260px; }
+    #qm-mindmap-app .measure-table .col-proof{ width:240px; }
+
+    #qm-mindmap-app .m-action{ font-weight:900; color:#0f172a; margin:0 0 4px 0; line-height:1.25; word-break:break-word; }
+    #qm-mindmap-app .m-sub{ font-size:12px; color:var(--muted); line-height:1.3; }
+    #qm-mindmap-app .m-label{ display:inline-block; margin-right:6px; font-weight:900; text-transform:uppercase; font-size:10px; letter-spacing:.25px; color:#64748b; }
+    #qm-mindmap-app .muted{ color:var(--muted); }
+
+    #qm-mindmap-app .measure-row-actions{
+      display:flex;
+      gap:6px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      align-items:center;
+    }
+    #qm-mindmap-app .mini{
+      padding:7px 10px; font-size:11px; font-weight:900; border-radius:999px;
+      cursor:pointer; border:1px solid var(--border); background:#fff; text-transform:uppercase;
+    }
+    #qm-mindmap-app .mini:hover{ border-color:var(--blue); color:var(--blue); background:#f8fafc; }
+
+    #qm-mindmap-app .status{
+      display:inline-flex; align-items:center; gap:8px;
+      border:1px solid var(--border); border-radius:999px; padding:6px 10px;
+      font-size:11px; font-weight:900; text-transform:uppercase;
+    }
+    #qm-mindmap-app .st-open{ border-color:rgba(245,158,11,.35); background:rgba(245,158,11,.10); color:#7c2d12; }
+    #qm-mindmap-app .st-done{ border-color:rgba(22,163,74,.35); background:rgba(22,163,74,.08); color:#14532d; }
+    #qm-mindmap-app .st-drop{ border-color:rgba(229,62,62,.35); background:rgba(229,62,62,.08); color:#7f1d1d; }
+
+    /* Bottom actions + More info + Footer */
+    #qm-mindmap-app .actions-bottom{
+      margin-top:18px; padding-top:16px; border-top:2px solid var(--blue);
+      display:flex; gap:10px; flex-wrap:wrap;
+    }
+
+    #qm-mindmap-app .tool-more{ margin-top:22px; padding-top:18px; border-top:2px solid var(--blue); }
+    #qm-mindmap-app .more-title{ margin:0 0 6px 0; font-size:13px; color:var(--dark); text-transform:uppercase; }
+    #qm-mindmap-app .more-sub{ margin:0 0 10px 0; font-size:13px; color:var(--muted); }
+    #qm-mindmap-app .more-list{ margin:8px 0 0; padding-left:18px; font-size:13px; color:#334155; }
+    #qm-mindmap-app .more-list li{ margin:4px 0; }
+
+    #qm-mindmap-app .footer{
+      padding:12px 25px; background:var(--light-bg); border-top:1px solid var(--border);
+      font-size:12px; color:var(--muted);
+      display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap;
+    }
+
+    /* Toast */
+    #qm-mindmap-app .toast{
+      position:fixed; bottom:18px; left:50%; transform:translateX(-50%);
+      background:#0f172a; color:#fff; padding:12px 18px; border-radius:999px;
+      font-size:14px; z-index:9999; opacity:0; pointer-events:none; transition:opacity .25s;
+      box-shadow:0 10px 22px rgba(0,0,0,.18);
+    }
+    #qm-mindmap-app .toast.show{ opacity:1; }
+
+    /* Responsive */
+    @media (max-width: 900px){
+      #qm-mindmap-app .tool-grid{ grid-template-columns:1fr; }
+      #qm-mindmap-app .body{ padding:16px; }
+      #qm-mindmap-app .tool-intro{ padding-left:16px; padding-right:16px; }
+      #qm-mindmap-app .form-grid{ grid-template-columns:1fr; }
+      #qm-mindmap-app #jsmind_container{ height:460px; }
+    }
+
+    /* Print */
+    @media print{
+      body{ background:#fff; }
+      #qm-mindmap-app{ margin:0; padding:0; }
+      #qm-mindmap-app .tool-intro{ border-bottom:2px solid #000; }
+      #qm-mindmap-app .btn, #qm-mindmap-app .mini, #qm-mindmap-app .lang-switch, #qm-mindmap-app .toast{ display:none !important; }
+      #qm-mindmap-app .card{ box-shadow:none; border:0; }
+      #qm-mindmap-app #jsmind_container{ height:640px; }
+      #qm-mindmap-app .footer{ border-top:1px solid #000; }
+      a{ color:#000; text-decoration:none; }
+      #qm-mindmap-app .measure-table-wrap{ max-height:none; overflow:visible; }
+      #qm-mindmap-app .measure-table{ min-width:0; }
+    }
+
+    /* Mobile: stack table rows */
+    @media (max-width: 720px){
+      #qm-mindmap-app .measure-table{ min-width:0; }
+      #qm-mindmap-app .measure-table thead{ display:none; }
+      #qm-mindmap-app .measure-table,
+      #qm-mindmap-app .measure-table tbody,
+      #qm-mindmap-app .measure-table tr,
+      #qm-mindmap-app .measure-table td{
+        display:block;
+        width:100%;
+      }
+
+      #qm-mindmap-app .measure-table tbody tr{
+        border:1px solid #e2e8f0;
+        border-radius:var(--radius);
+        margin:10px 0;
+        background:#fff !important;
+        overflow:hidden;
+      }
+
+      #qm-mindmap-app .measure-table td{
+        border-bottom:1px solid #eef2f7;
+        padding:10px 12px;
+      }
+
+      #qm-mindmap-app .measure-table td::before{
+        content:attr(data-label);
+        display:block;
+        margin-bottom:6px;
+        font-size:11px;
+        text-transform:uppercase;
+        font-weight:900;
+        color:var(--muted);
+        letter-spacing:.25px;
+      }
+
+      #qm-mindmap-app .measure-row-actions{ justify-content:flex-start; }
+      #qm-mindmap-app .measure-table td.col-actions{ border-bottom:0; }
+    }
+
+    /* AI Section */
+    #qm-mindmap-app .ai-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    #qm-mindmap-app .ai-grid .full{ grid-column:1 / -1; }
+    #qm-mindmap-app .ai-note{
+      margin:10px 0 0;
+      font-size:13px;
+      color:#334155;
+    }
+    #qm-mindmap-app .ai-note strong{ color:#0f172a; }
+    #qm-mindmap-app .ai-actions{
+      margin-top:12px;
+      padding-top:12px;
+      border-top:1px solid rgba(17,85,178,.12);
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:flex-start;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="qm-mindmap-app">
+    <section class="card">
+
+      <!-- INTRO -->
+      <section class="tool-intro">
+        <div class="intro-top">
+          <div>
+            <h2 class="tool-title" data-i18n="title">Mindmap Tool – Ideen → Maßnahmen</h2>
+            <p class="tool-sub" data-i18n="subtitle">
+              Ideen strukturieren, verknüpfen und in konkrete Maßnahmen überführen – inklusive Maßnahmenliste und Druckansicht.
+            </p>
+          </div>
+
+          <div class="btn-row" style="justify-content:flex-end;">
+            <div class="lang-switch" aria-label="Language switch">
+              <button type="button" class="btn small" id="btnLangDE">DE</button>
+              <button type="button" class="btn small" id="btnLangEN">EN</button>
+            </div>
+            <a class="btn" href="https://tools.quality.de/" data-i18n="backHome">Zurück zur Startseite</a>
+          </div>
+        </div>
+
+        <div class="tool-grid">
+          <div class="tool-box">
+            <h3 data-i18n="boxToolNameTitle">Name Tool</h3>
+            <p data-i18n="boxToolNameText">Mindmap – Struktur & Maßnahmen</p>
+          </div>
+          <div class="tool-box">
+            <h3 data-i18n="boxGoalTitle">Ziel</h3>
+            <p data-i18n="boxGoalText">Ideen sichtbar machen, Beziehungen klären und relevante Punkte in umsetzbare Maßnahmen überführen.</p>
+          </div>
+
+          <!-- Steps: separated -->
+          <div class="tool-box">
+            <h3 data-i18n="boxHowTitle">So benutzt du das Tool</h3>
+
+            <h4 data-i18n="stepsNoAiTitle">Ohne KI</h4>
+            <ol>
+              <li data-i18n="step1">Meta speichern: Thema / Ziel / Scope / Notizen → setzt die Wurzel (Root) der Mindmap.</li>
+              <li data-i18n="step2">Mindmap bauen: Unterknoten / Nachbarknoten anlegen, verschieben (Drag) und zoomen (Scroll).</li>
+              <li data-i18n="step3">Aus Knoten Maßnahmen ableiten: Knoten auswählen → Maßnahme + Termin speichern.</li>
+              <li data-i18n="step4">Maßnahmen steuern: offen / abgeschlossen / verworfen, löschen, drucken, JSON exportieren/importieren.</li>
+            </ol>
+
+            <h4 data-i18n="stepsAiTitle">Mit KI Premium</h4>
+            <ol>
+              <li data-i18n="aiStep1">Prozessschritt + Kontext eingeben.</li>
+              <li data-i18n="aiStep2">API-Key + Lizenzschlüssel eintragen.</li>
+              <li data-i18n="aiStep3">Mindmap & Maßnahmen automatisch generieren.</li>
+              <li data-i18n="aiStep4">Ergebnis übernehmen, anschließend wie gewohnt anpassen (ergänzen, bewerten, löschen).</li>
+            </ol>
+          </div>
+
+          <!-- Privacy: separated -->
+          <div class="tool-box tool-privacy">
+            <h3 data-i18n="boxPrivacyTitle">Datenschutz</h3>
+
+            <h4 data-i18n="privacyNoApiTitle">Datenschutz (ohne API)</h4>
+            <p data-i18n="privacyNoApiText">Dieses Tool arbeitet vollständig im Browser. Daten werden lokal (Browser-Speicher) gehalten und optional als JSON exportiert/importiert. Es werden keine Daten an Server übertragen.</p>
+
+            <h4 data-i18n="privacyApiTitle">Datenschutz (Premium mit API/KI)</h4>
+            <p data-i18n="privacyApiText">Wenn du die Premium-KI nutzt, werden ausschließlich die von dir eingegebenen Inhalte (Prozessschritt, Kontext) sowie die aktuelle Tool-Struktur aus deinem Browser an die konfigurierte OpenAI-API übertragen, um Vorschläge zu erzeugen. Der API-Key wird nicht serverseitig gespeichert.</p>
+          </div>
+        </div>
+      </section>
+
+      <div class="body">
+
+        <!-- SECTION 1 -->
+        <section class="section" aria-labelledby="sec1">
+          <div class="section-head">
+            <div>
+              <h3 class="sec-title" id="sec1" data-i18n="sec1Title">1. Meta (Thema / Ziel / Scope)</h3>
+              <p class="sec-sub" data-i18n="sec1Sub">Wichtig: „Speichern“ aktualisiert die Wurzel (Root) der Mindmap und wird lokal gesichert.</p>
+            </div>
+            <div class="btn-row">
+              <span class="pill warn" id="metaStatePill" title="Status">● <span data-i18n="metaNotSaved">Nicht gespeichert</span></span>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="full">
+              <label for="metaTopic" data-i18n="metaTopicLabel">Thema (wird Root-Knoten)</label>
+              <input id="metaTopic" type="text" placeholder="z.B. Prozess X – Probleme & Verbesserungen">
+            </div>
+            <div>
+              <label for="metaGoal" data-i18n="metaGoalLabel">Ziel / Outcome</label>
+              <input id="metaGoal" type="text" placeholder="z.B. Fehlerquote senken, Durchlaufzeit reduzieren ...">
+            </div>
+            <div>
+              <label for="metaScope" data-i18n="metaScopeLabel">Scope</label>
+              <input id="metaScope" type="text" placeholder="z.B. Linie A, Schicht 2, Q1/2026">
+            </div>
+            <div class="full">
+              <label for="metaNotes" data-i18n="metaNotesLabel">Notizen</label>
+              <textarea id="metaNotes" placeholder="Kontext, Annahmen, Randbedingungen ..."></textarea>
+            </div>
+          </div>
+
+          <div class="btn-row" style="margin-top:12px; padding-top:12px; border-top:1px solid rgba(17,85,178,.12);">
+            <button class="btn primary" type="button" id="btnSaveMeta" data-i18n="btnSaveMeta">Speichern</button>
+            <button class="btn" type="button" id="btnRecenterRoot" data-i18n="btnRecenter">Recenter</button>
+            <span class="hint" id="metaHint" style="margin:0;" data-i18n="metaHint">
+              Tipp: Root entspricht dem Thema. Leere Themen werden neutral dargestellt.
+            </span>
+          </div>
+        </section>
+
+        <!-- SECTION 2: MINDMAP -->
+        <section class="section" aria-labelledby="sec2">
+          <div class="section-head">
+            <div>
+              <h3 class="sec-title" id="sec2" data-i18n="sec2Title">2. Mindmap (bauen & strukturieren)</h3>
+              <p class="sec-sub" data-i18n="sec2Sub">Scroll = Zoom · Drag = Pan · Doppelklick = Text bearbeiten · Knoten auswählen für Aktionen.</p>
+            </div>
+            <div class="btn-row">
+              <span class="pill" id="selPill">● <span id="selText" data-i18n="selNone">Kein Knoten ausgewählt</span></span>
+            </div>
+          </div>
+
+          <div class="map-wrap">
+            <div id="jsmind_container" aria-label="Mindmap canvas"></div>
+
+            <div class="map-tools">
+              <button class="btn small primary" type="button" id="btnAddChild" data-i18n="btnChild">Unterknoten</button>
+              <button class="btn small" type="button" id="btnAddSibling" data-i18n="btnSibling">Nachbarknoten</button>
+              <button class="btn small" type="button" id="btnEditNode" data-i18n="btnEdit">Bearbeiten</button>
+              <button class="btn small danger" type="button" id="btnDeleteNode" data-i18n="btnDelete">Löschen</button>
+
+              <span style="flex:1 1 auto;"></span>
+
+              <button class="btn small" type="button" id="btnUndo" data-i18n="btnUndo">Rückgängig</button>
+              <button class="btn small" type="button" id="btnRedo" data-i18n="btnRedo">Wiederholen</button>
+              <button class="btn small" type="button" id="btnZoomIn" data-i18n="btnZoomIn">Zoom +</button>
+              <button class="btn small" type="button" id="btnZoomOut" data-i18n="btnZoomOut">Zoom −</button>
+              <button class="btn small" type="button" id="btnResetMap" data-i18n="btnResetMap">Reset Mindmap</button>
+            </div>
+
+            <p class="hint" data-i18n="mapHint">
+              Hinweis: „Unterknoten“ legt ein Kind unter dem ausgewählten Knoten an. „Nachbarknoten“ erzeugt ein Geschwister-Element (Root hat keine Geschwister).
+            </p>
+          </div>
+        </section>
+
+        <!-- SECTION 3: DERIVE MEASURES -->
+        <section class="section" aria-labelledby="sec3">
+          <div class="section-head">
+            <div>
+              <h3 class="sec-title" id="sec3" data-i18n="sec3Title">3. Ableitung von Maßnahmen</h3>
+              <p class="sec-sub" data-i18n="sec3Sub">Knoten auswählen → Maßnahme formulieren → Termin setzen → Speichern (wandert in die Maßnahmenliste).</p>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="full">
+              <label data-i18n="srcNodeLabel">Bezug (aus Mindmap)</label>
+              <input id="srcNode" type="text" readonly value="—">
+              <div class="hint" data-i18n="srcNodeHint">Tipp: Knoten anklicken. Der Bezug wird automatisch gesetzt.</div>
+            </div>
+            <div class="full">
+              <label for="actionText" data-i18n="actionLabel">Maßnahme</label>
+              <textarea id="actionText" placeholder="Was? Wer? Bis wann? Wirkung? ..."></textarea>
+            </div>
+
+            <div>
+              <label for="actionDue" data-i18n="dueLabel">Termin / Datum</label>
+              <input id="actionDue" type="date">
+            </div>
+            <div>
+              <label for="actionOwner" data-i18n="ownerLabel">Owner (optional)</label>
+              <input id="actionOwner" type="text" placeholder="z.B. Einkauf / QS / Produktion">
+            </div>
+
+            <div class="full">
+              <label for="actionProof" data-i18n="proofLabel">Nachweis / Wirksamkeit (optional)</label>
+              <input id="actionProof" type="text" placeholder="z.B. Dummy-Prüfung, Audit, Kennzahl, Versuch, Kurzzeitfähigkeit ...">
+            </div>
+          </div>
+
+          <div class="btn-row" style="margin-top:12px; padding-top:12px; border-top:1px solid rgba(17,85,178,.12);">
+            <button class="btn primary" type="button" id="btnSaveAction" data-i18n="btnSaveAction">Maßnahme speichern</button>
+            <button class="btn" type="button" id="btnClearAction" data-i18n="btnClearAction">Eingabe leeren</button>
+            <span class="hint" data-i18n="actionHint">Nach dem Speichern kannst du direkt die nächste Maßnahme anlegen.</span>
+          </div>
+        </section>
+
+        <!-- SECTION 4: MEASURE LIST -->
+        <section class="section" aria-labelledby="sec4">
+          <div class="section-head">
+            <div>
+              <h3 class="sec-title" id="sec4" data-i18n="sec4Title">4. Maßnahmenliste</h3>
+              <p class="sec-sub" data-i18n="sec4Sub">Status steuern: offen / abgeschlossen / verworfen. Maßnahmen können gelöscht werden.</p>
+            </div>
+            <div class="btn-row">
+              <span class="pill ok" id="countPill">● <span id="countText">0</span> <span data-i18n="items">Einträge</span></span>
+            </div>
+          </div>
+
+          <div class="measure-list" id="measureList"></div>
+
+          <div class="hint" data-i18n="listHint">
+            Profi-Tipp: Nutze „Verworfen“ statt Löschen, wenn du Transparenz für Entscheidungen behalten willst.
+          </div>
+        </section>
+
+        <!-- BOTTOM ACTIONS -->
+        <div class="actions-bottom">
+          <button type="button" class="btn primary" id="btnExportJson" data-i18n="btnExportJson">JSON speichern</button>
+          <button type="button" class="btn" id="btnImportJson" data-i18n="btnImportJson">JSON laden</button>
+          <input type="file" id="jsonFile" accept="application/json" style="display:none;" />
+          <button type="button" class="btn" id="btnPrint" data-i18n="btnPrint">Drucken</button>
+          <button type="button" class="btn danger" id="btnResetAll" data-i18n="btnResetAll">Alles löschen</button>
+        </div>
+
+        <!-- AI ASSISTANT (Premium) -->
+        <section class="section" aria-labelledby="secAI">
+          <div class="section-head">
+            <div>
+              <h3 class="sec-title" id="secAI" data-i18n="aiTitle">KI Assistent (Premium)</h3>
+              <p class="sec-sub" data-i18n="aiSub">Erzeuge in Sekunden eine erste Mindmap-Struktur inkl. konkreter Maßnahmen – danach arbeitest du wie gewohnt weiter.</p>
+            </div>
+            <div class="btn-row">
+              <span class="badge premium" data-i18n="aiPremiumBadge">Premium</span>
+            </div>
+          </div>
+
+          <p class="ai-note" data-i18n="aiPitch">
+            Nutze die volle Power des Tools: Der KI‑Assistent erstellt dir auf Basis von Prozessschritt & Kontext eine strukturierte Mindmap samt Maßnahmenliste – du bist damit <strong>bis zu 80% schneller</strong> und deutlich effizienter unterwegs. <strong>Kunden der Quality Services &amp; Wissen GmbH erhalten diese Funktion kostenlos.</strong>
+          </p>
+
+          <div class="ai-grid" style="margin-top:12px;">
+            <div>
+              <label for="aiLicense" data-i18n="aiLicenseLabel">Lizenzschlüssel</label>
+              <div style="display:flex; gap:10px; align-items:center;">
+                <span class="badge lic" data-i18n="aiLicBadge">Lizenz</span>
+                <input id="aiLicense" type="password" placeholder="••••">
+              </div>
+              <div class="hint" data-i18n="aiLicenseHint">Hinweis: erforderlich, um den KI‑Assistenten zu aktivieren.</div>
+            </div>
+
+            <div>
+              <label for="aiApiKey" data-i18n="aiApiLabel">OpenAI API Key</label>
+              <div style="display:flex; gap:10px; align-items:center;">
+                <span class="badge api" data-i18n="aiApiBadge">API</span>
+                <input id="aiApiKey" type="password" placeholder="sk-…">
+              </div>
+              <div class="hint" data-i18n="aiApiHint">Der Key bleibt in deinem Browser und wird nicht serverseitig gespeichert.</div>
+            </div>
+
+            <div class="full">
+              <label for="aiProcessStep" data-i18n="aiProcessLabel">Zu welchem Prozessschritt erstellen wir ein Mindmap?</label>
+              <input id="aiProcessStep" type="text" placeholder="z.B. Wareneingangsprüfung / Reklamationsbearbeitung / Produktion Linie A …">
+            </div>
+
+            <div class="full">
+              <label for="aiContext" data-i18n="aiContextLabel">Kontext</label>
+              <textarea id="aiContext" placeholder="Ziel, Probleme, Rahmenbedingungen, bekannte Ursachen/Ideen, Stakeholder …"></textarea>
+            </div>
+
+            <div class="full">
+              <div class="ai-actions">
+                <button type="button" class="btn primary" id="btnAiGenerate" data-i18n="aiBtnGenerate">Mindmap & Maßnahmen generieren</button>
+                <button type="button" class="btn" id="btnAiApply" data-i18n="aiBtnApply" disabled>Ergebnis übernehmen</button>
+                <button type="button" class="btn" id="btnAiDownload" data-i18n="aiBtnDownload" disabled>Ergebnis als JSON speichern</button>
+                <span class="pill warn" id="aiStatePill">● <span id="aiStateText" data-i18n="aiStateIdle">Bereit</span></span>
+              </div>
+              <div class="hint" data-i18n="aiHint">Tipp: Nach dem Übernehmen kannst du Knoten und Maßnahmen wie gewohnt bearbeiten, ergänzen oder löschen.</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- MORE INFO -->
+        <section class="tool-more">
+          <h3 class="more-title" data-i18n="moreTitle">Weiterführende Infos</h3>
+          <p class="more-sub" data-i18n="moreSub">Lexikonartikel & passende Weiterbildungen (öffnet in neuem Tab).</p>
+
+          <div class="tool-grid">
+            <div class="tool-box">
+              <h3 data-i18n="lexTitle">Lexikon</h3>
+              <p data-i18n="lexText">Definition, Einsatzbereiche & Tipps für Mindmaps.</p>
+              <p style="margin-top:8px;">
+                <a href="https://www.quality.de/lexikon/mindmap/" target="_blank" rel="noopener" data-i18n="lexLink">
+                  Zum Lexikonartikel: Mindmap
+                </a>
+              </p>
+            </div>
+
+            <div class="tool-box">
+              <h3 data-i18n="trainTitle">Ausbildungen &amp; Seminare</h3>
+              <p data-i18n="trainText">Vertiefe deine Methodenkompetenz im Qualitätsmanagement:</p>
+              <ul class="more-list">
+                <li><a href="https://www.quality.de/weiterbildung/kvp/" target="_blank" rel="noopener" data-i18n="trainKvp">KVP Seminare</a></li>
+                <li><a href="https://www.quality.de/weiterbildung/qualitaetsmanagement/" target="_blank" rel="noopener" data-i18n="trainQm">Qualitätsmanagement</a></li>
+                <li><a href="https://www.quality.de/weiterbildung/opex-seminare-ausbildungen/" target="_blank" rel="noopener" data-i18n="trainOpex">OPEX Seminare &amp; Ausbildungen</a></li>
+                <li><a href="https://www.quality.de/weiterbildung/fmea-schulung/" target="_blank" rel="noopener" data-i18n="trainFmea">FMEA Schulungen</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <footer class="footer">
+        <div>© <span id="copyrightYear"></span></div>
+        <div><span data-i18n="poweredBy">Powered by</span> <a href="https://www.quality.de/" target="_blank" rel="noopener">Quality Services &amp; Wissen GmbH</a></div>
+      </footer>
+    </section>
+
+    <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+  </div>
+
+  <script>
+    (function(){
+      const ROOT = document.getElementById("qm-mindmap-app");
+      const $ = (sel) => ROOT.querySelector(sel);
+
+      const STORAGE_KEY = "qm_mindmap_v2_state";
+      const LANG_KEY = "qmLang";
+
+      /* ========== i18n ========== */
+      const I18N = {
+        de: {
+          title: "Mindmap Tool – Ideen → Maßnahmen",
+          subtitle: "Ideen strukturieren, verknüpfen und in konkrete Maßnahmen überführen – inklusive Maßnahmenliste und Druckansicht.",
+          backHome: "Zurück zur Startseite",
+
+          boxToolNameTitle: "Name Tool",
+          boxToolNameText: "Mindmap – Struktur & Maßnahmen",
+          boxGoalTitle: "Ziel",
+          boxGoalText: "Ideen sichtbar machen, Beziehungen klären und relevante Punkte in umsetzbare Maßnahmen überführen.",
+          boxHowTitle: "So benutzt du das Tool",
+
+          stepsNoAiTitle: "Ohne KI",
+          step1: "Meta speichern: Thema / Ziel / Scope / Notizen → setzt die Wurzel (Root) der Mindmap.",
+          step2: "Mindmap bauen: Unterknoten / Nachbarknoten anlegen, verschieben (Drag) und zoomen (Scroll).",
+          step3: "Aus Knoten Maßnahmen ableiten: Knoten auswählen → Maßnahme + Termin speichern.",
+          step4: "Maßnahmen steuern: offen / abgeschlossen / verworfen, löschen, drucken, JSON exportieren/importieren.",
+
+          stepsAiTitle: "Mit KI Premium",
+          aiStep1: "Prozessschritt + Kontext eingeben.",
+          aiStep2: "API-Key + Lizenzschlüssel eintragen.",
+          aiStep3: "Mindmap & Maßnahmen automatisch generieren.",
+          aiStep4: "Ergebnis übernehmen, anschließend wie gewohnt anpassen (ergänzen, bewerten, löschen).",
+
+          boxPrivacyTitle: "Datenschutz",
+          privacyNoApiTitle: "Datenschutz (ohne API)",
+          privacyNoApiText: "Dieses Tool arbeitet vollständig im Browser. Daten werden lokal (Browser-Speicher) gehalten und optional als JSON exportiert/importiert. Es werden keine Daten an Server übertragen.",
+          privacyApiTitle: "Datenschutz (Premium mit API/KI)",
+          privacyApiText: "Wenn du die Premium-KI nutzt, werden ausschließlich die von dir eingegebenen Inhalte (Prozessschritt, Kontext) sowie die aktuelle Tool-Struktur aus deinem Browser an die konfigurierte OpenAI-API übertragen, um Vorschläge zu erzeugen. Der API-Key wird nicht serverseitig gespeichert.",
+
+          sec1Title: "1. Meta (Thema / Ziel / Scope)",
+          sec1Sub: "Wichtig: „Speichern“ aktualisiert die Wurzel (Root) der Mindmap und wird lokal gesichert.",
+          metaNotSaved: "Nicht gespeichert",
+          metaSaved: "Gespeichert",
+          metaTopicLabel: "Thema (wird Root-Knoten)",
+          metaGoalLabel: "Ziel / Outcome",
+          metaScopeLabel: "Scope",
+          metaNotesLabel: "Notizen",
+          btnSaveMeta: "Speichern",
+          btnRecenter: "Recenter",
+          metaHint: "Tipp: Root entspricht dem Thema. Leere Themen werden neutral dargestellt.",
+
+          sec2Title: "2. Mindmap (bauen & strukturieren)",
+          sec2Sub: "Scroll = Zoom · Drag = Pan · Doppelklick = Text bearbeiten · Knoten auswählen für Aktionen.",
+          selNone: "Kein Knoten ausgewählt",
+          btnChild: "Unterknoten",
+          btnSibling: "Nachbarknoten",
+          btnEdit: "Bearbeiten",
+          btnDelete: "Löschen",
+          btnUndo: "Rückgängig",
+          btnRedo: "Wiederholen",
+          btnZoomIn: "Zoom +",
+          btnZoomOut: "Zoom −",
+          btnResetMap: "Reset Mindmap",
+          mapHint: "Hinweis: „Unterknoten“ legt ein Kind unter dem ausgewählten Knoten an. „Nachbarknoten“ erzeugt ein Geschwister-Element (Root hat keine Geschwister).",
+
+          sec3Title: "3. Ableitung von Maßnahmen",
+          sec3Sub: "Knoten auswählen → Maßnahme formulieren → Termin setzen → Speichern (wandert in die Maßnahmenliste).",
+          srcNodeLabel: "Bezug (aus Mindmap)",
+          srcNodeHint: "Tipp: Knoten anklicken. Der Bezug wird automatisch gesetzt.",
+          actionLabel: "Maßnahme",
+          dueLabel: "Termin / Datum",
+          ownerLabel: "Owner (optional)",
+          proofLabel: "Nachweis / Wirksamkeit (optional)",
+          btnSaveAction: "Maßnahme speichern",
+          btnClearAction: "Eingabe leeren",
+          actionHint: "Nach dem Speichern kannst du direkt die nächste Maßnahme anlegen.",
+
+          sec4Title: "4. Maßnahmenliste",
+          sec4Sub: "Status steuern: offen / abgeschlossen / verworfen. Maßnahmen können gelöscht werden.",
+          items: "Einträge",
+          listHint: "Profi-Tipp: Nutze „Verworfen“ statt Löschen, wenn du Transparenz für Entscheidungen behalten willst.",
+
+          statusOpen: "Offen",
+          statusDone: "Abgeschlossen",
+          statusDrop: "Verworfen",
+          setOpen: "Offen",
+          setDone: "Abschließen",
+          setDrop: "Verwerfen",
+          del: "Löschen",
+
+          colStatus: "Status",
+          colAction: "Maßnahme",
+          colProof: "Nachweis",
+          colDue: "Termin",
+          colOwner: "Owner",
+          colActions: "Aktionen",
+          refShort: "Bezug:",
+
+          btnExportJson: "JSON speichern",
+          btnImportJson: "JSON laden",
+          btnPrint: "Drucken",
+          btnResetAll: "Alles löschen",
+
+          aiTitle: "KI Assistent (Premium)",
+          aiSub: "Erzeuge in Sekunden eine erste Mindmap-Struktur inkl. konkreter Maßnahmen – danach arbeitest du wie gewohnt weiter.",
+          aiPremiumBadge: "Premium",
+          aiPitch: "Nutze die volle Power des Tools: Der KI‑Assistent erstellt dir auf Basis von Prozessschritt & Kontext eine strukturierte Mindmap samt Maßnahmenliste – du bist damit <strong>bis zu 80% schneller</strong> und deutlich effizienter unterwegs. <strong>Kunden der Quality Services &amp; Wissen GmbH erhalten diese Funktion kostenlos.</strong>",
+
+          aiLicenseLabel: "Lizenzschlüssel",
+          aiLicBadge: "Lizenz",
+          aiLicenseHint: "Hinweis: erforderlich, um den KI‑Assistenten zu aktivieren.",
+          aiApiLabel: "OpenAI API Key",
+          aiApiBadge: "API",
+          aiApiHint: "Der Key bleibt in deinem Browser und wird nicht serverseitig gespeichert.",
+          aiProcessLabel: "Zu welchem Prozessschritt erstellen wir ein Mindmap?",
+          aiContextLabel: "Kontext",
+          aiBtnGenerate: "Mindmap & Maßnahmen generieren",
+          aiBtnApply: "Ergebnis übernehmen",
+          aiBtnDownload: "Ergebnis als JSON speichern",
+          aiStateIdle: "Bereit",
+          aiHint: "Tipp: Nach dem Übernehmen kannst du Knoten und Maßnahmen wie gewohnt bearbeiten, ergänzen oder löschen.",
+
+          moreTitle: "Weiterführende Infos",
+          moreSub: "Lexikonartikel & passende Weiterbildungen (öffnet in neuem Tab).",
+          lexTitle: "Lexikon",
+          lexText: "Definition, Einsatzbereiche & Tipps für Mindmaps.",
+          lexLink: "Zum Lexikonartikel: Mindmap",
+          trainTitle: "Ausbildungen & Seminare",
+          trainText: "Vertiefe deine Methodenkompetenz im Qualitätsmanagement:",
+          trainKvp: "KVP Seminare",
+          trainQm: "Qualitätsmanagement",
+          trainOpex: "OPEX Seminare & Ausbildungen",
+          trainFmea: "FMEA Schulungen",
+
+          poweredBy: "Powered by",
+
+          confirmResetMap: "Mindmap zurücksetzen (nur Root behalten)?",
+          confirmResetAll: "Alles löschen (Meta, Mindmap, Maßnahmen)?",
+          needSelection: "Bitte zuerst einen Knoten auswählen.",
+          cannotSiblingRoot: "Root hat keinen Nachbarknoten.",
+          cannotDeleteRoot: "Root kann nicht gelöscht werden.",
+          savedToast: "Gespeichert.",
+          importedToast: "JSON geladen.",
+          invalidJson: "JSON ungültig.",
+          printToast: "Druckdialog geöffnet.",
+          actionNeedText: "Bitte Maßnahme ausfüllen.",
+          actionNeedNode: "Bitte einen Knoten als Bezug auswählen.",
+          newNodeTopic: "Neue Idee",
+
+          aiNeedLicense: "Lizenzschlüssel erforderlich.",
+          aiBadLicense: "Lizenzschlüssel ungültig.",
+          aiNeedApi: "Bitte OpenAI API Key eintragen.",
+          aiNeedProcess: "Bitte Prozessschritt angeben.",
+          aiGenerating: "KI generiert…",
+          aiGenerated: "Ergebnis bereit.",
+          aiApplied: "Ergebnis übernommen.",
+          aiFailed: "KI konnte nicht erzeugen.",
+          aiConfirmApply: "Ergebnis übernehmen? Dabei wird Meta, Mindmap und Maßnahmenliste überschrieben.",
+          aiDownloaded: "Ergebnis als JSON gespeichert."
+        },
+        en: {
+          title: "Mindmap Tool – Ideas → Actions",
+          subtitle: "Structure ideas, connect them, and turn the relevant ones into concrete actions – including action list and print view.",
+          backHome: "Back to home",
+
+          boxToolNameTitle: "Tool name",
+          boxToolNameText: "Mindmap – Structure & Actions",
+          boxGoalTitle: "Goal",
+          boxGoalText: "Make ideas visible, clarify relationships, and turn relevant points into executable actions.",
+          boxHowTitle: "How to use this tool",
+
+          stepsNoAiTitle: "Without AI",
+          step1: "Save meta: Topic / Goal / Scope / Notes → sets the mindmap root node.",
+          step2: "Build the mindmap: add child/sibling nodes, move (drag) and zoom (scroll).",
+          step3: "Derive actions from nodes: select a node → save action + due date.",
+          step4: "Manage actions: open / done / discarded, delete, print, export/import JSON.",
+
+          stepsAiTitle: "With AI Premium",
+          aiStep1: "Enter process step + context.",
+          aiStep2: "Provide API key + license key.",
+          aiStep3: "Generate mindmap & actions automatically.",
+          aiStep4: "Apply the result, then work as usual (add, edit, delete).",
+
+          boxPrivacyTitle: "Privacy",
+          privacyNoApiTitle: "Privacy (no API)",
+          privacyNoApiText: "This tool runs entirely in your browser. Data is stored locally (browser storage) and can optionally be exported/imported as JSON. No data is sent to any server.",
+          privacyApiTitle: "Privacy (Premium with API/AI)",
+          privacyApiText: "If you use Premium AI, only the inputs you provide (process step, context) and the current tool structure from your browser are sent to the configured OpenAI API to generate suggestions. The API key is not stored server-side.",
+
+          sec1Title: "1. Meta (Topic / Goal / Scope)",
+          sec1Sub: "Important: “Save” updates the root node and stores everything locally.",
+          metaNotSaved: "Not saved",
+          metaSaved: "Saved",
+          metaTopicLabel: "Topic (becomes the root node)",
+          metaGoalLabel: "Goal / Outcome",
+          metaScopeLabel: "Scope",
+          metaNotesLabel: "Notes",
+          btnSaveMeta: "Save",
+          btnRecenter: "Recenter",
+          metaHint: "Tip: The root equals the topic. Empty topics stay neutral.",
+
+          sec2Title: "2. Mindmap (build & structure)",
+          sec2Sub: "Scroll = Zoom · Drag = Pan · Double click = edit text · Select nodes for actions.",
+          selNone: "No node selected",
+          btnChild: "Child node",
+          btnSibling: "Sibling node",
+          btnEdit: "Edit",
+          btnDelete: "Delete",
+          btnUndo: "Undo",
+          btnRedo: "Redo",
+          btnZoomIn: "Zoom +",
+          btnZoomOut: "Zoom −",
+          btnResetMap: "Reset mindmap",
+          mapHint: "Note: “Child node” adds a child under the selected node. “Sibling node” adds a sibling (root has no siblings).",
+
+          sec3Title: "3. Derive actions",
+          sec3Sub: "Select a node → write an action → set due date → Save (moves into the action list).",
+          srcNodeLabel: "Reference (from mindmap)",
+          srcNodeHint: "Tip: click a node. The reference updates automatically.",
+          actionLabel: "Action",
+          dueLabel: "Due date",
+          ownerLabel: "Owner (optional)",
+          proofLabel: "Proof / effectiveness (optional)",
+          btnSaveAction: "Save action",
+          btnClearAction: "Clear input",
+          actionHint: "After saving you can immediately create the next action.",
+
+          sec4Title: "4. Action list",
+          sec4Sub: "Manage status: open / done / discarded. Actions can be deleted.",
+          items: "items",
+          listHint: "Pro tip: use “Discarded” instead of delete to keep decision transparency.",
+
+          statusOpen: "Open",
+          statusDone: "Done",
+          statusDrop: "Discarded",
+          setOpen: "Open",
+          setDone: "Mark done",
+          setDrop: "Discard",
+          del: "Delete",
+
+          colStatus: "Status",
+          colAction: "Action",
+          colProof: "Proof",
+          colDue: "Due",
+          colOwner: "Owner",
+          colActions: "Actions",
+          refShort: "Ref:",
+
+          btnExportJson: "Export JSON",
+          btnImportJson: "Import JSON",
+          btnPrint: "Print",
+          btnResetAll: "Clear all",
+
+          aiTitle: "AI Assistant (Premium)",
+          aiSub: "Generate a first mindmap structure with concrete actions in seconds – then continue working as usual.",
+          aiPremiumBadge: "Premium",
+          aiPitch: "Use the full power of the tool: the AI assistant creates a structured mindmap and an action list based on your process step & context – making you up to <strong>80% faster</strong> and more efficient. <strong>Customers of Quality Services &amp; Wissen GmbH get this feature for free.</strong>",
+
+          aiLicenseLabel: "License key",
+          aiLicBadge: "License",
+          aiLicenseHint: "Required to activate the AI assistant.",
+          aiApiLabel: "OpenAI API key",
+          aiApiBadge: "API",
+          aiApiHint: "The key stays in your browser and is not stored server-side.",
+          aiProcessLabel: "For which process step should we create a mindmap?",
+          aiContextLabel: "Context",
+          aiBtnGenerate: "Generate mindmap & actions",
+          aiBtnApply: "Apply result",
+          aiBtnDownload: "Download result as JSON",
+          aiStateIdle: "Ready",
+          aiHint: "Tip: After applying, you can edit nodes and actions as usual.",
+
+          moreTitle: "More information",
+          moreSub: "Glossary article & relevant training (opens in a new tab).",
+          lexTitle: "Glossary",
+          lexText: "Definition, use cases & tips for mindmaps.",
+          lexLink: "Open glossary article: Mindmap",
+          trainTitle: "Training & courses",
+          trainText: "Deepen your method skills in quality management:",
+          trainKvp: "CIP (KVP) seminars",
+          trainQm: "Quality management",
+          trainOpex: "OPEX training & courses",
+          trainFmea: "FMEA training",
+
+          poweredBy: "Powered by",
+
+          confirmResetMap: "Reset mindmap (keep only root)?",
+          confirmResetAll: "Clear everything (meta, mindmap, actions)?",
+          needSelection: "Please select a node first.",
+          cannotSiblingRoot: "Root has no sibling.",
+          cannotDeleteRoot: "Root cannot be deleted.",
+          savedToast: "Saved.",
+          importedToast: "JSON loaded.",
+          invalidJson: "Invalid JSON.",
+          printToast: "Print dialog opened.",
+          actionNeedText: "Please fill in the action.",
+          actionNeedNode: "Please select a node as reference.",
+          newNodeTopic: "New idea",
+
+          aiNeedLicense: "License key required.",
+          aiBadLicense: "Invalid license key.",
+          aiNeedApi: "Please enter an OpenAI API key.",
+          aiNeedProcess: "Please provide a process step.",
+          aiGenerating: "AI generating…",
+          aiGenerated: "Result ready.",
+          aiApplied: "Result applied.",
+          aiFailed: "AI generation failed.",
+          aiConfirmApply: "Apply the result? This will overwrite meta, mindmap and action list.",
+          aiDownloaded: "Result saved as JSON."
+        }
+      };
+
+      let currentLang = localStorage.getItem(LANG_KEY)
+        || (navigator.language && navigator.language.toLowerCase().startsWith("de") ? "de" : "en");
+
+      function t(key){ return (I18N[currentLang] && I18N[currentLang][key]) ? I18N[currentLang][key] : key; }
+
+      function applyI18n(){
+        document.documentElement.lang = currentLang;
+
+        ROOT.querySelectorAll("[data-i18n]").forEach(el=>{
+          // allow rich text for aiPitch only
+          if(el.dataset.i18n === "aiPitch"){
+            el.innerHTML = t(el.dataset.i18n);
+          }else{
+            el.textContent = t(el.dataset.i18n);
+          }
+        });
+
+        $("#btnLangDE").classList.toggle("primary", currentLang === "de");
+        $("#btnLangEN").classList.toggle("primary", currentLang === "en");
+      }
+
+      function setLanguage(lang){
+        currentLang = (lang === "de" || lang === "en") ? lang : "de";
+        localStorage.setItem(LANG_KEY, currentLang);
+        applyI18n();
+        renderMeasures();
+      }
+
+      /* ========== Toast ========== */
+      function toast(msg){
+        const el = $("#toast");
+        el.textContent = msg;
+        el.classList.add("show");
+        window.clearTimeout(toast._tmr);
+        toast._tmr = window.setTimeout(()=> el.classList.remove("show"), 2400);
+      }
+
+      /* ========== State ========== */
+      let state = {
+        lang: currentLang,
+        meta: { topic:"", goal:"", scope:"", notes:"" },
+        mind: null,
+        measures: [],
+        ts: new Date().toISOString()
+      };
+
+      function defaultRootTopic(){
+        return (currentLang === "de") ? "Thema" : "Topic";
+      }
+
+      function defaultMind(){
+        const topic = (state.meta.topic && state.meta.topic.trim()) ? state.meta.topic.trim() : defaultRootTopic();
+        return {
+          meta: { name:"qm_mindmap", author:"", version:"1.0" },
+          format: "node_array",
+          data: [
+            { id:"root", isroot:true, topic }
+          ]
+        };
+      }
+
+      function persist(){
+        state.lang = currentLang;
+        state.ts = new Date().toISOString();
+        try{
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        }catch(e){}
+      }
+
+      function restore(){
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if(!raw) return false;
+        try{
+          const p = JSON.parse(raw);
+          if(!p || typeof p !== "object") return false;
+          state.lang = (p.lang === "de" || p.lang === "en") ? p.lang : currentLang;
+          state.meta = p.meta && typeof p.meta === "object" ? {
+            topic: String(p.meta.topic ?? ""),
+            goal: String(p.meta.goal ?? ""),
+            scope: String(p.meta.scope ?? ""),
+            notes: String(p.meta.notes ?? "")
+          } : { topic:"", goal:"", scope:"", notes:"" };
+
+          state.mind = p.mind && typeof p.mind === "object" ? p.mind : null;
+          state.measures = Array.isArray(p.measures) ? p.measures : [];
+          state.ts = String(p.ts ?? new Date().toISOString());
+          return true;
+        }catch(e){
+          return false;
+        }
+      }
+
+      function syncMetaInputs(){
+        $("#metaTopic").value = state.meta.topic;
+        $("#metaGoal").value  = state.meta.goal;
+        $("#metaScope").value = state.meta.scope;
+        $("#metaNotes").value = state.meta.notes;
+      }
+
+      /* ========== jsMind init ========== */
+      let jm = null;
+
+      const options = {
+        container: "jsmind_container",
+        editable: true,
+        theme: "primary",
+        mode: "full",
+        view: {
+          engine: "svg",
+          draggable: true,
+          hide_scrollbars_when_draggable: true,
+          zoom: { min: 0.5, max: 2.0, step: 0.1 }
+        }
+      };
+
+      function safeGetMind(){
+        try{
+          if(jm && typeof jm.get_data === "function"){
+            return jm.get_data("node_array");
+          }
+        }catch(e){}
+        return null;
+      }
+
+      /* ========== History (Undo/Redo) ========== */
+      const HISTORY_MAX = 30;
+      let history = [];
+      let future = [];
+      let lastSig = "";
+      let lastChangeAt = 0;
+
+      function sigOf(mind){
+        try{ return JSON.stringify(mind && mind.data ? mind.data : []); }
+        catch(e){ return String(Date.now()); }
+      }
+
+      function commitHistorySnapshot(){
+        const mind = safeGetMind();
+        if(!mind) return;
+        const sig = sigOf(mind);
+        const top = history.length ? history[history.length-1].sig : "";
+        if(sig === top) return;
+
+        history.push({ sig, mind });
+        if(history.length > HISTORY_MAX) history.shift();
+        future = [];
+
+        $("#btnUndo").disabled = history.length <= 1;
+        $("#btnRedo").disabled = future.length === 0;
+      }
+
+      function applyMindSnapshot(mind){
+        if(!jm) return;
+        jm.show(mind);
+        window.setTimeout(updateSelectionUI, 60);
+        lastSig = sigOf(safeGetMind());
+      }
+
+      function undo(){
+        if(history.length <= 1) return;
+        const cur = history.pop();
+        future.push(cur);
+        const prev = history[history.length-1];
+        applyMindSnapshot(prev.mind);
+
+        $("#btnUndo").disabled = history.length <= 1;
+        $("#btnRedo").disabled = future.length === 0;
+      }
+
+      function redo(){
+        if(!future.length) return;
+        const snap = future.pop();
+        history.push(snap);
+        applyMindSnapshot(snap.mind);
+
+        $("#btnUndo").disabled = history.length <= 1;
+        $("#btnRedo").disabled = future.length <= 0;
+      }
+
+      /* ========== Selection helpers ========== */
+      function getSelectedNode(){
+        try{
+          if(!jm) return null;
+          if(typeof jm.get_selected_node === "function") return jm.get_selected_node();
+        }catch(e){}
+        return null;
+      }
+
+      function nodePath(node){
+        if(!node) return "—";
+        const parts = [];
+        let cur = node;
+        while(cur){
+          parts.push(cur.topic || "");
+          if(cur.isroot) break;
+          cur = cur.parent || null;
+        }
+        return parts.reverse().filter(Boolean).join(" › ") || "—";
+      }
+
+      function updateSelectionUI(){
+        const n = getSelectedNode();
+        const label = n ? (n.topic || "") : t("selNone");
+        $("#selText").textContent = n ? label : t("selNone");
+        $("#srcNode").value = n ? nodePath(n) : "—";
+      }
+
+      /* ========== Map operations ========== */
+      function newId(){
+        return "n_" + Date.now().toString(16) + "_" + Math.random().toString(16).slice(2);
+      }
+
+      function addChild(){
+        const sel = getSelectedNode();
+        const parentId = sel ? sel.id : "root";
+        const id = newId();
+        const topic = t("newNodeTopic");
+
+        try{
+          if(typeof jm.add_node === "function"){
+            jm.add_node(parentId, id, topic);
+          }else{
+            const mind = safeGetMind() || defaultMind();
+            mind.data.push({ id, parentid: parentId, topic });
+            applyMindSnapshot(mind);
+          }
+          if(typeof jm.select_node === "function") jm.select_node(id);
+          if(typeof jm.begin_edit === "function") jm.begin_edit(id);
+        }catch(e){}
+
+        markDirty();
+      }
+
+      function addSibling(){
+        const sel = getSelectedNode();
+        if(!sel){ toast(t("needSelection")); return; }
+        if(sel.isroot){ toast(t("cannotSiblingRoot")); return; }
+
+        const id = newId();
+        const topic = t("newNodeTopic");
+        try{
+          if(typeof jm.insert_node_after === "function"){
+            jm.insert_node_after(sel.id, id, topic);
+          }else if(typeof jm.add_node === "function"){
+            const pid = sel.parent ? sel.parent.id : "root";
+            jm.add_node(pid, id, topic);
+          }
+          if(typeof jm.select_node === "function") jm.select_node(id);
+          if(typeof jm.begin_edit === "function") jm.begin_edit(id);
+        }catch(e){}
+
+        markDirty();
+      }
+
+      function editNode(){
+        const sel = getSelectedNode();
+        if(!sel){ toast(t("needSelection")); return; }
+        try{
+          if(typeof jm.begin_edit === "function") jm.begin_edit(sel.id);
+        }catch(e){}
+      }
+
+      function deleteNode(){
+        const sel = getSelectedNode();
+        if(!sel){ toast(t("needSelection")); return; }
+        if(sel.isroot){ toast(t("cannotDeleteRoot")); return; }
+
+        try{
+          if(typeof jm.remove_node === "function") jm.remove_node(sel.id);
+        }catch(e){}
+
+        markDirty();
+      }
+
+      function zoomIn(){
+        try{
+          if(jm && jm.view && typeof jm.view.zoomIn === "function") return jm.view.zoomIn();
+          if(jm && jm.view && typeof jm.view.zoom_in === "function") return jm.view.zoom_in();
+        }catch(e){}
+      }
+
+      function zoomOut(){
+        try{
+          if(jm && jm.view && typeof jm.view.zoomOut === "function") return jm.view.zoomOut();
+          if(jm && jm.view && typeof jm.view.zoom_out === "function") return jm.view.zoom_out();
+        }catch(e){}
+      }
+
+      function recenter(){
+        try{
+          if(jm && jm.view && typeof jm.view.center_node === "function"){
+            const root = jm.get_node ? jm.get_node("root") : null;
+            if(root) return jm.view.center_node(root);
+          }
+        }catch(e){}
+        try{
+          if(typeof jm.select_node === "function") jm.select_node("root");
+        }catch(e){}
+      }
+
+      function resetMap(){
+        if(!confirm(t("confirmResetMap"))) return;
+        const mind = defaultMind();
+        applyMindSnapshot(mind);
+        markDirty(true);
+      }
+
+      function resetAll(){
+        if(!confirm(t("confirmResetAll"))) return;
+        localStorage.removeItem(STORAGE_KEY);
+        state = { lang: currentLang, meta:{topic:"",goal:"",scope:"",notes:""}, mind:null, measures:[], ts:new Date().toISOString() };
+
+        syncMetaInputs();
+        $("#actionText").value = "";
+        $("#actionDue").value = "";
+        $("#actionOwner").value = "";
+        $("#actionProof").value = "";
+        $("#srcNode").value = "—";
+
+        applyMindSnapshot(defaultMind());
+        history = [];
+        future = [];
+        initHistory();
+        renderMeasures();
+        setMetaSaved(false);
+        toast("OK");
+      }
+
+      /* ========== Meta save (must update root) ========== */
+      function setMetaSaved(saved){
+        const pill = $("#metaStatePill");
+        pill.classList.remove("ok","warn");
+        if(saved){
+          pill.classList.add("ok");
+          pill.innerHTML = "● " + t("metaSaved");
+        }else{
+          pill.classList.add("warn");
+          pill.innerHTML = "● " + t("metaNotSaved");
+        }
+      }
+
+      function saveMeta(){
+        state.meta.topic = $("#metaTopic").value.trim();
+        state.meta.goal  = $("#metaGoal").value.trim();
+        state.meta.scope = $("#metaScope").value.trim();
+        state.meta.notes = $("#metaNotes").value.trim();
+
+        const rootText = state.meta.topic || defaultRootTopic();
+
+        try{
+          if(jm && typeof jm.update_node === "function"){
+            jm.update_node("root", rootText);
+          }else{
+            const mind = safeGetMind() || defaultMind();
+            const root = (mind.data || []).find(n=>n.id==="root") || null;
+            if(root) root.topic = rootText;
+            applyMindSnapshot(mind);
+          }
+          if(typeof jm.select_node === "function") jm.select_node("root");
+        }catch(e){}
+
+        setMetaSaved(true);
+        commitHistorySnapshot();
+        persistAll();
+        toast(t("savedToast"));
+      }
+
+      /* ========== Measures (TABLE VIEW) ========== */
+      function renderMeasures(){
+        const host = $("#measureList");
+        host.innerHTML = "";
+
+        $("#countText").textContent = String(state.measures.length);
+
+        if(!state.measures.length){
+          const empty = document.createElement("div");
+          empty.className = "hint";
+          empty.textContent = (currentLang === "de")
+            ? "Noch keine Maßnahmen. Wähle einen Mindmap-Knoten aus und speichere eine Maßnahme."
+            : "No actions yet. Select a mindmap node and save an action.";
+          host.appendChild(empty);
+          return;
+        }
+
+        const html = `
+          <div class="measure-table-wrap">
+            <table class="measure-table" role="table" aria-label="${escapeHtml(t("sec4Title"))}">
+              <thead>
+                <tr>
+                  <th class="col-status">${escapeHtml(t("colStatus"))}</th>
+                  <th>${escapeHtml(t("colAction"))}</th>
+                  <th class="col-proof">${escapeHtml(t("colProof"))}</th>
+                  <th class="col-due">${escapeHtml(t("colDue"))}</th>
+                  <th class="col-owner">${escapeHtml(t("colOwner"))}</th>
+                  <th class="col-actions" style="text-align:right">${escapeHtml(t("colActions"))}</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${state.measures.map(m=>{
+                  const stClass = (m.status === "done") ? "st-done" : (m.status === "drop") ? "st-drop" : "st-open";
+                  const stLabel = (m.status === "done") ? t("statusDone") : (m.status === "drop") ? t("statusDrop") : t("statusOpen");
+
+                  const dueTxt = m.due ? escapeHtml(m.due) : `<span class="muted">—</span>`;
+                  const ownerTxt = m.owner ? escapeHtml(m.owner) : `<span class="muted">—</span>`;
+                  const proofTxt = m.proof ? escapeHtml(m.proof) : `<span class="muted">—</span>`;
+                  const refTxt = escapeHtml(m.nodePath || "—");
+                  const actionTxt = escapeHtml(m.text || "");
+
+                  const statusKey = (m.status === "done") ? "done" : (m.status === "drop") ? "drop" : "open";
+
+                  return `
+                    <tr data-status="${escapeHtml(statusKey)}">
+                      <td class="col-status" data-label="${escapeHtml(t("colStatus"))}">
+                        <span class="status ${stClass}">${escapeHtml(stLabel)}</span>
+                      </td>
+
+                      <td class="col-action" data-label="${escapeHtml(t("colAction"))}">
+                        <div class="m-action">${actionTxt}</div>
+                        <div class="m-sub">
+                          <span class="m-label">${escapeHtml(t("refShort"))}</span>
+                          <strong>${refTxt}</strong>
+                        </div>
+                      </td>
+
+                      <td class="col-proof" data-label="${escapeHtml(t("colProof"))}">
+                        ${proofTxt}
+                      </td>
+
+                      <td class="col-due" data-label="${escapeHtml(t("colDue"))}">
+                        ${dueTxt}
+                      </td>
+
+                      <td class="col-owner" data-label="${escapeHtml(t("colOwner"))}">
+                        ${ownerTxt}
+                      </td>
+
+                      <td class="col-actions" data-label="${escapeHtml(t("colActions"))}">
+                        <div class="measure-row-actions">
+                          <button type="button" class="mini" data-act="open" data-id="${escapeHtml(m.id)}">${escapeHtml(t("setOpen"))}</button>
+                          <button type="button" class="mini" data-act="done" data-id="${escapeHtml(m.id)}">${escapeHtml(t("setDone"))}</button>
+                          <button type="button" class="mini" data-act="drop" data-id="${escapeHtml(m.id)}">${escapeHtml(t("setDrop"))}</button>
+                          <button type="button" class="mini" data-act="del" data-id="${escapeHtml(m.id)}">${escapeHtml(t("del"))}</button>
+                        </div>
+                      </td>
+                    </tr>
+                  `;
+                }).join("")}
+              </tbody>
+            </table>
+          </div>
+        `;
+
+        host.innerHTML = html;
+
+        host.querySelectorAll("button[data-act]").forEach(btn=>{
+          btn.addEventListener("click", ()=>{
+            const act = btn.getAttribute("data-act");
+            const id = btn.getAttribute("data-id");
+            const idx = state.measures.findIndex(x=>x.id===id);
+            if(idx < 0) return;
+
+            if(act === "del"){
+              state.measures.splice(idx,1);
+              persistAll();
+              renderMeasures();
+              return;
+            }
+            state.measures[idx].status = (act === "done") ? "done" : (act === "drop") ? "drop" : "open";
+            persistAll();
+            renderMeasures();
+          });
+        });
+      }
+
+      function saveAction(){
+        const sel = getSelectedNode();
+        if(!sel){ toast(t("actionNeedNode")); return; }
+
+        const text = $("#actionText").value.trim();
+        if(!text){ toast(t("actionNeedText")); return; }
+
+        const due = $("#actionDue").value || "";
+        const owner = $("#actionOwner").value.trim();
+        const proof = $("#actionProof").value.trim();
+
+        state.measures.unshift({
+          id: newId(),
+          nodeId: sel.id,
+          nodeTopic: sel.topic || "",
+          nodePath: nodePath(sel),
+          text,
+          proof,
+          due,
+          owner,
+          status: "open",
+          createdAt: new Date().toISOString()
+        });
+
+        persistAll();
+        renderMeasures();
+
+        $("#actionText").value = "";
+        $("#actionDue").value = "";
+        $("#actionOwner").value = "";
+        $("#actionProof").value = "";
+        toast(t("savedToast"));
+      }
+
+      function clearAction(){
+        $("#actionText").value = "";
+        $("#actionDue").value = "";
+        $("#actionOwner").value = "";
+        $("#actionProof").value = "";
+      }
+
+      /* ========== JSON import/export ========== */
+      function downloadJson(dataOverride=null, filename="mindmap_tool_export.json"){
+        const payload = dataOverride ? dataOverride : (()=>{
+          state.mind = safeGetMind() || defaultMind();
+          state.lang = currentLang;
+          state.ts = new Date().toISOString();
+          return state;
+        })();
+
+        const blob = new Blob([JSON.stringify(payload, null, 2)], {type:"application/json"});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      function loadJsonFile(file){
+        file.text().then(txt=>{
+          const parsed = JSON.parse(txt);
+          if(!parsed || typeof parsed !== "object") throw new Error("bad json");
+
+          if(parsed.lang === "de" || parsed.lang === "en"){
+            setLanguage(parsed.lang);
+          }
+
+          state.lang = (parsed.lang === "de" || parsed.lang === "en") ? parsed.lang : currentLang;
+          state.meta = parsed.meta && typeof parsed.meta==="object" ? {
+            topic: String(parsed.meta.topic ?? ""),
+            goal: String(parsed.meta.goal ?? ""),
+            scope: String(parsed.meta.scope ?? ""),
+            notes: String(parsed.meta.notes ?? "")
+          } : { topic:"", goal:"", scope:"", notes:"" };
+
+          state.mind = parsed.mind && typeof parsed.mind==="object" ? parsed.mind : null;
+
+          // measures: upgrade older exports
+          state.measures = Array.isArray(parsed.measures) ? parsed.measures.map(m=>({
+            id: String(m.id ?? newId()),
+            nodeId: String(m.nodeId ?? "root"),
+            nodeTopic: String(m.nodeTopic ?? ""),
+            nodePath: String(m.nodePath ?? "—"),
+            text: String(m.text ?? ""),
+            proof: String(m.proof ?? ""),
+            due: String(m.due ?? ""),
+            owner: String(m.owner ?? ""),
+            status: (m.status==="done"||m.status==="drop"||m.status==="open") ? m.status : "open",
+            createdAt: String(m.createdAt ?? new Date().toISOString())
+          })) : [];
+
+          state.ts = String(parsed.ts ?? new Date().toISOString());
+
+          syncMetaInputs();
+
+          const mind = state.mind || defaultMind();
+          const rootTxt = state.meta.topic || defaultRootTopic();
+          try{
+            const root = (mind.data || []).find(n=>n.id==="root");
+            if(root) root.topic = rootTxt;
+          }catch(e){}
+
+          applyMindSnapshot(mind);
+
+          renderMeasures();
+          setMetaSaved(true);
+          persist();
+
+          history = [];
+          future = [];
+          initHistory();
+
+          toast(t("importedToast"));
+        }).catch(()=>{
+          toast(t("invalidJson"));
+        });
+      }
+
+      /* ========== Autosave / Dirty tracking ========== */
+      function persistAll(){
+        state.mind = safeGetMind() || defaultMind();
+        persist();
+      }
+
+      function markDirty(forceCommit=false){
+        lastChangeAt = Date.now();
+        persistAll();
+        updateSelectionUI();
+
+        if(forceCommit){
+          commitHistorySnapshot();
+          lastChangeAt = 0;
+        }
+      }
+
+      function initHistory(){
+        const mind = safeGetMind() || defaultMind();
+        lastSig = sigOf(mind);
+        history.push({ sig:lastSig, mind });
+        $("#btnUndo").disabled = history.length <= 1;
+        $("#btnRedo").disabled = true;
+      }
+
+      window.setInterval(()=>{
+        const mind = safeGetMind();
+        if(!mind) return;
+
+        const sig = sigOf(mind);
+        if(sig !== lastSig){
+          lastSig = sig;
+          lastChangeAt = Date.now();
+          persistAll();
+          updateSelectionUI();
+        }else{
+          if(lastChangeAt && (Date.now() - lastChangeAt) > 1200){
+            commitHistorySnapshot();
+            lastChangeAt = 0;
+          }
+        }
+      }, 450);
+
+      /* ========== Utilities ========== */
+      function escapeHtml(s){
+        return String(s ?? "")
+          .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+          .replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+      }
+
+      /* ========== Scroll = Zoom (wheel) ========== */
+      function bindScrollZoom(){
+        const el = $("#jsmind_container");
+        el.addEventListener("wheel", (ev)=>{
+          ev.preventDefault();
+          if(ev.deltaY < 0) zoomIn();
+          else zoomOut();
+        }, { passive:false });
+      }
+
+      /* ============================================================
+         AI ASSISTANT (Premium)
+         - License gate (hash check; the plain code is NOT present)
+         - OpenAI Responses API call
+         - Generates JSON compatible with this tool
+         ============================================================ */
+
+      // SHA-256 helper (browser)
+      async function sha256Hex(str){
+        const data = new TextEncoder().encode(str);
+        const digest = await crypto.subtle.digest("SHA-256", data);
+        return Array.from(new Uint8Array(digest)).map(b=>b.toString(16).padStart(2,"0")).join("");
+      }
+
+      // hash of the license code (plain code intentionally not included)
+      const LICENSE_HASH = "07aa2015d482734372d4a9a1c07c8290198526b9ce1fd2e2dcff4d05f6792a29";
+
+      let aiLastResult = null;
+
+      function setAiState(kind, textKey){
+        const pill = $("#aiStatePill");
+        const label = $("#aiStateText");
+        pill.classList.remove("ok","warn","bad");
+        pill.classList.add(kind === "ok" ? "ok" : kind === "bad" ? "bad" : "warn");
+        label.textContent = t(textKey);
+      }
+
+      async function validateLicense(){
+        const key = ($("#aiLicense").value || "").trim();
+        if(!key) { toast(t("aiNeedLicense")); return { ok:false, reason:"empty" }; }
+        const h = await sha256Hex(key);
+        if(h !== LICENSE_HASH){
+          toast(t("aiBadLicense"));
+          return { ok:false, reason:"bad" };
+        }
+        return { ok:true };
+      }
+
+      function normalizeGeneratedPayload(obj){
+        // Minimal hardening & compatibility
+        const nowIso = new Date().toISOString();
+        const lang = (obj && (obj.lang==="de"||obj.lang==="en")) ? obj.lang : currentLang;
+
+        const meta = obj && obj.meta && typeof obj.meta==="object" ? obj.meta : {};
+        const mind = obj && obj.mind && typeof obj.mind==="object" ? obj.mind : null;
+        const measures = Array.isArray(obj && obj.measures) ? obj.measures : [];
+
+        const safeMeta = {
+          topic: String(meta.topic ?? ""),
+          goal: String(meta.goal ?? ""),
+          scope: String(meta.scope ?? ""),
+          notes: String(meta.notes ?? "")
+        };
+
+        let safeMind = mind && typeof mind==="object" ? mind : null;
+        if(!safeMind || !safeMind.data || !Array.isArray(safeMind.data)){
+          safeMind = defaultMind();
+        }
+
+        // Ensure root exists
+        const hasRoot = safeMind.data.some(n=>n && n.id==="root");
+        if(!hasRoot){
+          safeMind.data.unshift({ id:"root", isroot:true, topic: safeMeta.topic || defaultRootTopic() });
+        }
+
+        // Force root topic
+        const root = safeMind.data.find(n=>n && n.id==="root");
+        if(root) root.topic = safeMeta.topic || defaultRootTopic();
+
+        const safeMeasures = measures.map((m,i)=>({
+          id: String(m.id ?? ("m_" + (Date.now()+i))),
+          nodeId: String(m.nodeId ?? "root"),
+          nodeTopic: String(m.nodeTopic ?? ""),
+          nodePath: String(m.nodePath ?? "—"),
+          text: String(m.text ?? ""),
+          proof: String(m.proof ?? ""),
+          due: String(m.due ?? ""),
+          owner: String(m.owner ?? ""),
+          status: (m.status==="done"||m.status==="drop"||m.status==="open") ? m.status : "open",
+          createdAt: String(m.createdAt ?? nowIso)
+        }));
+
+        return { lang, meta: safeMeta, mind: safeMind, measures: safeMeasures, ts: String(obj.ts ?? nowIso) };
+      }
+
+      async function callOpenAI({ apiKey, processStep, contextText }){
+        // System prompt tuned to output STRICT JSON
+        const system = (currentLang==="de")
+          ? "Du bist ein Qualitäts- und Prozess-Experte. Gib ausschließlich gültiges JSON zurück – ohne Markdown, ohne Kommentar, ohne zusätzliche Texte."
+          : "You are a quality & process expert. Return ONLY valid JSON – no markdown, no comments, no extra text.";
+
+        const schemaHint = (currentLang==="de") ? `
+Erzeuge eine Mindmap und Maßnahmenliste für den angegebenen Prozessschritt.
+JSON-Schema (exakt einhalten):
+{
+  "lang": "de",
+  "meta": { "topic": string, "goal": string, "scope": string, "notes": string },
+  "mind": {
+    "meta": { "name":"qm_mindmap","author":"","version":"1.0" },
+    "format": "node_array",
+    "data": [
+      { "id":"root", "topic": string, "isroot": true },
+      { "id": string, "topic": string, "parentid": "root" | string },
+      ...
+    ]
+  },
+  "measures": [
+    {
+      "id": string,
+      "nodeId": string,
+      "nodeTopic": string,
+      "nodePath": string,
+      "text": string,
+      "proof": string,
+      "due": "YYYY-MM-DD" | "",
+      "owner": string,
+      "status": "open",
+      "createdAt": string
+    }
+  ],
+  "ts": string
+}
+
+Inhaltliche Anforderungen:
+- meta.topic = Prozessschritt (kurz, klar)
+- meta.goal, meta.scope, meta.notes sinnvoll ausfüllen (kurz, QM-tauglich)
+- Mindmap: 6–10 Hauptzweige unter Root, je 2–4 Unterpunkte (insgesamt 20–45 Knoten)
+- Maßnahmen: 10–18 Maßnahmen, jeweils einer passenden nodeId zugeordnet
+- nodePath sauber mit " › " (Root zuerst), passend zum Knoten
+- due: wenn sinnvoll, mit realistischen Terminen (nächste 2–12 Wochen), sonst ""
+- proof: Vorschlag für Wirksamkeitsnachweis (z.B. Audit, Kennzahl, Test, Versuch, Kurzzeitfähigkeit …)
+- Alle IDs eindeutig, kompakt (z.B. "a1","a1_1","m_01" …)
+`.trim() : `
+Create a mindmap and action list for the given process step.
+Strict JSON schema:
+{
+  "lang": "en",
+  "meta": { "topic": string, "goal": string, "scope": string, "notes": string },
+  "mind": {
+    "meta": { "name":"qm_mindmap","author":"","version":"1.0" },
+    "format": "node_array",
+    "data": [
+      { "id":"root", "topic": string, "isroot": true },
+      { "id": string, "topic": string, "parentid": "root" | string },
+      ...
+    ]
+  },
+  "measures": [
+    {
+      "id": string,
+      "nodeId": string,
+      "nodeTopic": string,
+      "nodePath": string,
+      "text": string,
+      "proof": string,
+      "due": "YYYY-MM-DD" | "",
+      "owner": string,
+      "status": "open",
+      "createdAt": string
+    }
+  ],
+  "ts": string
+}
+
+Content requirements:
+- meta.topic = process step (short, clear)
+- Fill meta.goal, meta.scope, meta.notes (short, QM-appropriate)
+- Mindmap: 6–10 main branches under root, each 2–4 subpoints (20–45 nodes total)
+- Actions: 10–18 actions, each mapped to a nodeId
+- nodePath uses " › " (root first), matches the node
+- due: realistic dates (next 2–12 weeks) where useful, else ""
+- proof: suggested effectiveness evidence (audit, KPI, test, trial, capability check…)
+- IDs unique and compact (e.g. "a1","a1_1","m_01" …)
+`.trim();
+
+        const user = (currentLang==="de")
+          ? `Prozessschritt: ${processStep}
+Kontext: ${contextText}
+
+${schemaHint}`
+          : `Process step: ${processStep}
+Context: ${contextText}
+
+${schemaHint}`;
+
+        const res = await fetch("https://api.openai.com/v1/responses", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + apiKey
+          },
+          body: JSON.stringify({
+            model: "gpt-4.1-mini",
+            input: [
+              { role: "system", content: system },
+              { role: "user", content: user }
+            ],
+            temperature: 0.4
+          })
+        });
+
+        if(!res.ok){
+          const txt = await res.text().catch(()=> "");
+          throw new Error("OpenAI error: " + res.status + " " + txt);
+        }
+
+        const data = await res.json();
+
+        // Extract text from Responses API
+        const text = (data && data.output_text) ? data.output_text : (()=> {
+          try{
+            const out = data.output || [];
+            let acc = "";
+            out.forEach(item=>{
+              (item.content||[]).forEach(c=>{
+                if(c.type==="output_text" && c.text) acc += c.text;
+              });
+            });
+            return acc.trim();
+          }catch(e){ return ""; }
+        })();
+
+        if(!text) throw new Error("No output_text");
+
+        // Must be JSON only
+        return JSON.parse(text);
+      }
+
+      async function aiGenerate(){
+        const licOk = await validateLicense();
+        if(!licOk.ok) return;
+
+        const apiKey = ($("#aiApiKey").value || "").trim();
+        if(!apiKey){ toast(t("aiNeedApi")); return; }
+
+        const processStep = ($("#aiProcessStep").value || "").trim();
+        if(!processStep){ toast(t("aiNeedProcess")); return; }
+
+        const contextText = ($("#aiContext").value || "").trim();
+
+        $("#btnAiGenerate").disabled = true;
+        $("#btnAiApply").disabled = true;
+        $("#btnAiDownload").disabled = true;
+        setAiState("warn", "aiGenerating");
+
+        try{
+          const raw = await callOpenAI({ apiKey, processStep, contextText });
+          aiLastResult = normalizeGeneratedPayload(raw);
+          setAiState("ok", "aiGenerated");
+          $("#btnAiApply").disabled = false;
+          $("#btnAiDownload").disabled = false;
+          toast(t("aiGenerated"));
+        }catch(e){
+          console.error(e);
+          setAiState("bad", "aiFailed");
+          toast(t("aiFailed"));
+          aiLastResult = null;
+        }finally{
+          $("#btnAiGenerate").disabled = false;
+        }
+      }
+
+      async function aiApply(){
+        const licOk = await validateLicense();
+        if(!licOk.ok) return;
+        if(!aiLastResult) return;
+
+        const msg = t("aiConfirmApply");
+        if(!confirm(msg)) return;
+
+        // Apply
+        state.lang = aiLastResult.lang;
+        if(aiLastResult.lang === "de" || aiLastResult.lang === "en"){
+          setLanguage(aiLastResult.lang);
+        }
+
+        state.meta = { ...aiLastResult.meta };
+        state.mind = aiLastResult.mind;
+        state.measures = aiLastResult.measures;
+        state.ts = aiLastResult.ts;
+
+        syncMetaInputs();
+        applyMindSnapshot(state.mind);
+        renderMeasures();
+        setMetaSaved(true);
+
+        history = [];
+        future = [];
+        initHistory();
+
+        persistAll();
+        setAiState("ok", "aiApplied");
+        toast(t("aiApplied"));
+      }
+
+      async function aiDownload(){
+        const licOk = await validateLicense();
+        if(!licOk.ok) return;
+        if(!aiLastResult) return;
+        downloadJson(aiLastResult, "mindmap_tool_ai_export.json");
+        toast(t("aiDownloaded"));
+      }
+
+      /* ========== Init ========== */
+      restore();
+      if(state.lang === "de" || state.lang === "en") currentLang = state.lang;
+
+      setLanguage(currentLang);
+      syncMetaInputs();
+
+      $("#copyrightYear").textContent = String(new Date().getFullYear());
+
+      jm = new jsMind(options);
+      const mindToShow = state.mind || defaultMind();
+
+      const rootTxt = state.meta.topic || defaultRootTopic();
+      try{
+        const root = (mindToShow.data || []).find(n=>n.id==="root");
+        if(root) root.topic = rootTxt;
+      }catch(e){}
+
+      jm.show(mindToShow);
+
+      bindScrollZoom();
+      initHistory();
+      renderMeasures();
+      updateSelectionUI();
+      setMetaSaved(false);
+
+      $("#jsmind_container").addEventListener("mousedown", ()=> window.setTimeout(updateSelectionUI, 40));
+      $("#jsmind_container").addEventListener("touchstart", ()=> window.setTimeout(updateSelectionUI, 40), {passive:true});
+
+      // Buttons
+      $("#btnLangDE").addEventListener("click", ()=> setLanguage("de"));
+      $("#btnLangEN").addEventListener("click", ()=> setLanguage("en"));
+
+      $("#btnSaveMeta").addEventListener("click", saveMeta);
+      $("#btnRecenterRoot").addEventListener("click", ()=>{ recenter(); toast(t("savedToast")); });
+
+      $("#btnAddChild").addEventListener("click", ()=>{ addChild(); setMetaSaved(false); });
+      $("#btnAddSibling").addEventListener("click", ()=>{ addSibling(); setMetaSaved(false); });
+      $("#btnEditNode").addEventListener("click", ()=>{ editNode(); });
+      $("#btnDeleteNode").addEventListener("click", ()=>{ deleteNode(); setMetaSaved(false); });
+
+      $("#btnUndo").addEventListener("click", ()=>{ undo(); markDirty(true); });
+      $("#btnRedo").addEventListener("click", ()=>{ redo(); markDirty(true); });
+
+      $("#btnZoomIn").addEventListener("click", zoomIn);
+      $("#btnZoomOut").addEventListener("click", zoomOut);
+
+      $("#btnResetMap").addEventListener("click", ()=>{ resetMap(); setMetaSaved(false); });
+
+      $("#btnSaveAction").addEventListener("click", saveAction);
+      $("#btnClearAction").addEventListener("click", clearAction);
+
+      $("#btnExportJson").addEventListener("click", ()=>downloadJson());
+      $("#btnImportJson").addEventListener("click", ()=> $("#jsonFile").click());
+      $("#jsonFile").addEventListener("change", (ev)=>{
+        const f = ev.target.files && ev.target.files[0];
+        if(!f) return;
+        loadJsonFile(f);
+        ev.target.value = "";
+      });
+
+      $("#btnPrint").addEventListener("click", ()=>{
+        window.print();
+        toast(t("printToast"));
+      });
+
+      $("#btnResetAll").addEventListener("click", resetAll);
+
+      // AI
+      $("#btnAiGenerate").addEventListener("click", aiGenerate);
+      $("#btnAiApply").addEventListener("click", aiApply);
+      $("#btnAiDownload").addEventListener("click", aiDownload);
+
+      persistAll();
+
+    })();
+  </script>
+</body>
+</html>
