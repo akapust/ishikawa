@@ -52,6 +52,9 @@
 
     /* Buttons */
     #qm-mindmap-app .btn-row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    #qm-mindmap-app .btn-row.end{ justify-content:flex-end; }
+    #qm-mindmap-app .btn-row.topbar{ justify-content:flex-end; }
+
     #qm-mindmap-app .btn{
       padding:10px 18px; font-size:13px; font-weight:800; border-radius:var(--radius);
       cursor:pointer; border:1px solid var(--border); background:#fff; text-transform:uppercase;
@@ -139,7 +142,7 @@
     }
     #qm-mindmap-app .hint{ margin:10px 0 0; font-size:12px; color:var(--muted); }
 
-    /* Measures table styles (existing) */
+    /* Measures table styles */
     #qm-mindmap-app .measure-list{ display:block; margin-top:10px; }
     #qm-mindmap-app .measure-table-wrap{
       border:1px solid #e2e8f0;
@@ -324,6 +327,17 @@
       align-items:center;
       justify-content:flex-start;
     }
+
+    /* Small helper rows (removed inline style need) */
+    #qm-mindmap-app .row-top-divider{
+      margin-top:12px; padding-top:12px; border-top:1px solid rgba(17,85,178,.12);
+    }
+    #qm-mindmap-app .row-top-divider .hint{ margin:0; }
+    #qm-mindmap-app .flex{ display:flex; }
+    #qm-mindmap-app .gap10{ gap:10px; }
+    #qm-mindmap-app .ai-inputline{ display:flex; gap:10px; align-items:center; }
+    #qm-mindmap-app .spacer{ flex:1 1 auto; }
+    #qm-mindmap-app .right{ text-align:right; }
   </style>
 </head>
 
@@ -341,7 +355,7 @@
             </p>
           </div>
 
-          <div class="btn-row" style="justify-content:flex-end;">
+          <div class="btn-row topbar">
             <div class="lang-switch" aria-label="Language switch">
               <button type="button" class="btn small" id="btnLangDE">DE</button>
               <button type="button" class="btn small" id="btnLangEN">EN</button>
@@ -360,7 +374,7 @@
             <p data-i18n="boxGoalText">Ideen sichtbar machen, Beziehungen klären und relevante Punkte in umsetzbare Maßnahmen überführen.</p>
           </div>
 
-          <!-- Steps: separated -->
+          <!-- Steps -->
           <div class="tool-box">
             <h3 data-i18n="boxHowTitle">So benutzt du das Tool</h3>
 
@@ -381,7 +395,7 @@
             </ol>
           </div>
 
-          <!-- Privacy: separated -->
+          <!-- Privacy -->
           <div class="tool-box tool-privacy">
             <h3 data-i18n="boxPrivacyTitle">Datenschutz</h3>
 
@@ -427,16 +441,16 @@
             </div>
           </div>
 
-          <div class="btn-row" style="margin-top:12px; padding-top:12px; border-top:1px solid rgba(17,85,178,.12);">
+          <div class="btn-row row-top-divider">
             <button class="btn primary" type="button" id="btnSaveMeta" data-i18n="btnSaveMeta">Speichern</button>
             <button class="btn" type="button" id="btnRecenterRoot" data-i18n="btnRecenter">Recenter</button>
-            <span class="hint" id="metaHint" style="margin:0;" data-i18n="metaHint">
+            <span class="hint" id="metaHint" data-i18n="metaHint">
               Tipp: Root entspricht dem Thema. Leere Themen werden neutral dargestellt.
             </span>
           </div>
         </section>
 
-        <!-- SECTION 2: MINDMAP -->
+        <!-- SECTION 2 -->
         <section class="section" aria-labelledby="sec2">
           <div class="section-head">
             <div>
@@ -457,7 +471,7 @@
               <button class="btn small" type="button" id="btnEditNode" data-i18n="btnEdit">Bearbeiten</button>
               <button class="btn small danger" type="button" id="btnDeleteNode" data-i18n="btnDelete">Löschen</button>
 
-              <span style="flex:1 1 auto;"></span>
+              <span class="spacer"></span>
 
               <button class="btn small" type="button" id="btnUndo" data-i18n="btnUndo">Rückgängig</button>
               <button class="btn small" type="button" id="btnRedo" data-i18n="btnRedo">Wiederholen</button>
@@ -472,7 +486,7 @@
           </div>
         </section>
 
-        <!-- SECTION 3: DERIVE MEASURES -->
+        <!-- SECTION 3 -->
         <section class="section" aria-labelledby="sec3">
           <div class="section-head">
             <div>
@@ -507,14 +521,14 @@
             </div>
           </div>
 
-          <div class="btn-row" style="margin-top:12px; padding-top:12px; border-top:1px solid rgba(17,85,178,.12);">
+          <div class="btn-row row-top-divider">
             <button class="btn primary" type="button" id="btnSaveAction" data-i18n="btnSaveAction">Maßnahme speichern</button>
             <button class="btn" type="button" id="btnClearAction" data-i18n="btnClearAction">Eingabe leeren</button>
             <span class="hint" data-i18n="actionHint">Nach dem Speichern kannst du direkt die nächste Maßnahme anlegen.</span>
           </div>
         </section>
 
-        <!-- SECTION 4: MEASURE LIST -->
+        <!-- SECTION 4 -->
         <section class="section" aria-labelledby="sec4">
           <div class="section-head">
             <div>
@@ -542,7 +556,7 @@
           <button type="button" class="btn danger" id="btnResetAll" data-i18n="btnResetAll">Alles löschen</button>
         </div>
 
-        <!-- AI ASSISTANT (Premium) -->
+        <!-- AI ASSISTANT -->
         <section class="section" aria-labelledby="secAI">
           <div class="section-head">
             <div>
@@ -555,22 +569,22 @@
           </div>
 
           <p class="ai-note" data-i18n="aiPitch">
-            Nutze die volle Power des Tools: Der KI‑Assistent erstellt dir auf Basis von Prozessschritt & Kontext eine strukturierte Mindmap samt Maßnahmenliste – du bist damit <strong>bis zu 80% schneller</strong> und deutlich effizienter unterwegs. <strong>Kunden der Quality Services &amp; Wissen GmbH erhalten diese Funktion kostenlos.</strong>
+            Nutze die volle Power des Tools: Der KI-Assistent erstellt dir auf Basis von Prozessschritt & Kontext eine strukturierte Mindmap samt Maßnahmenliste – du bist damit <strong>bis zu 80% schneller</strong> und deutlich effizienter unterwegs. <strong>Kunden der Quality Services &amp; Wissen GmbH erhalten diese Funktion kostenlos.</strong>
           </p>
 
           <div class="ai-grid" style="margin-top:12px;">
             <div>
               <label for="aiLicense" data-i18n="aiLicenseLabel">Lizenzschlüssel</label>
-              <div style="display:flex; gap:10px; align-items:center;">
+              <div class="ai-inputline">
                 <span class="badge lic" data-i18n="aiLicBadge">Lizenz</span>
                 <input id="aiLicense" type="password" placeholder="••••">
               </div>
-              <div class="hint" data-i18n="aiLicenseHint">Hinweis: erforderlich, um den KI‑Assistenten zu aktivieren.</div>
+              <div class="hint" data-i18n="aiLicenseHint">Hinweis: erforderlich, um den KI-Assistenten zu aktivieren.</div>
             </div>
 
             <div>
               <label for="aiApiKey" data-i18n="aiApiLabel">OpenAI API Key</label>
-              <div style="display:flex; gap:10px; align-items:center;">
+              <div class="ai-inputline">
                 <span class="badge api" data-i18n="aiApiBadge">API</span>
                 <input id="aiApiKey" type="password" placeholder="sk-…">
               </div>
@@ -647,7 +661,9 @@
       const STORAGE_KEY = "qm_mindmap_v2_state";
       const LANG_KEY = "qmLang";
 
-      /* ========== i18n ========== */
+      /* ==========================
+         i18n
+      ========================== */
       const I18N = {
         de: {
           title: "Mindmap Tool – Ideen → Maßnahmen",
@@ -745,11 +761,11 @@
           aiTitle: "KI Assistent (Premium)",
           aiSub: "Erzeuge in Sekunden eine erste Mindmap-Struktur inkl. konkreter Maßnahmen – danach arbeitest du wie gewohnt weiter.",
           aiPremiumBadge: "Premium",
-          aiPitch: "Nutze die volle Power des Tools: Der KI‑Assistent erstellt dir auf Basis von Prozessschritt & Kontext eine strukturierte Mindmap samt Maßnahmenliste – du bist damit <strong>bis zu 80% schneller</strong> und deutlich effizienter unterwegs. <strong>Kunden der Quality Services &amp; Wissen GmbH erhalten diese Funktion kostenlos.</strong>",
+          aiPitch: "Nutze die volle Power des Tools: Der KI-Assistent erstellt dir auf Basis von Prozessschritt & Kontext eine strukturierte Mindmap samt Maßnahmenliste – du bist damit <strong>bis zu 80% schneller</strong> und deutlich effizienter unterwegs. <strong>Kunden der Quality Services &amp; Wissen GmbH erhalten diese Funktion kostenlos.</strong>",
 
           aiLicenseLabel: "Lizenzschlüssel",
           aiLicBadge: "Lizenz",
-          aiLicenseHint: "Hinweis: erforderlich, um den KI‑Assistenten zu aktivieren.",
+          aiLicenseHint: "Hinweis: erforderlich, um den KI-Assistenten zu aktivieren.",
           aiApiLabel: "OpenAI API Key",
           aiApiBadge: "API",
           aiApiHint: "Der Key bleibt in deinem Browser und wird nicht serverseitig gespeichert.",
@@ -797,7 +813,9 @@
           aiApplied: "Ergebnis übernommen.",
           aiFailed: "KI konnte nicht erzeugen.",
           aiConfirmApply: "Ergebnis übernehmen? Dabei wird Meta, Mindmap und Maßnahmenliste überschrieben.",
-          aiDownloaded: "Ergebnis als JSON gespeichert."
+          aiDownloaded: "Ergebnis als JSON gespeichert.",
+
+          aiNoCrypto: "Lizenzprüfung nicht möglich (Browser/Seite blockiert Kryptografie). Bitte Seite über HTTPS laden."
         },
         en: {
           title: "Mindmap Tool – Ideas → Actions",
@@ -947,7 +965,9 @@
           aiApplied: "Result applied.",
           aiFailed: "AI generation failed.",
           aiConfirmApply: "Apply the result? This will overwrite meta, mindmap and action list.",
-          aiDownloaded: "Result saved as JSON."
+          aiDownloaded: "Result saved as JSON.",
+
+          aiNoCrypto: "License validation not possible (crypto blocked). Please load the page over HTTPS."
         }
       };
 
@@ -958,16 +978,13 @@
 
       function applyI18n(){
         document.documentElement.lang = currentLang;
-
         ROOT.querySelectorAll("[data-i18n]").forEach(el=>{
-          // allow rich text for aiPitch only
           if(el.dataset.i18n === "aiPitch"){
             el.innerHTML = t(el.dataset.i18n);
           }else{
             el.textContent = t(el.dataset.i18n);
           }
         });
-
         $("#btnLangDE").classList.toggle("primary", currentLang === "de");
         $("#btnLangEN").classList.toggle("primary", currentLang === "en");
       }
@@ -979,7 +996,9 @@
         renderMeasures();
       }
 
-      /* ========== Toast ========== */
+      /* ==========================
+         Toast
+      ========================== */
       function toast(msg){
         const el = $("#toast");
         el.textContent = msg;
@@ -988,7 +1007,9 @@
         toast._tmr = window.setTimeout(()=> el.classList.remove("show"), 2400);
       }
 
-      /* ========== State ========== */
+      /* ==========================
+         State
+      ========================== */
       let state = {
         lang: currentLang,
         meta: { topic:"", goal:"", scope:"", notes:"" },
@@ -1033,7 +1054,6 @@
             scope: String(p.meta.scope ?? ""),
             notes: String(p.meta.notes ?? "")
           } : { topic:"", goal:"", scope:"", notes:"" };
-
           state.mind = p.mind && typeof p.mind === "object" ? p.mind : null;
           state.measures = Array.isArray(p.measures) ? p.measures : [];
           state.ts = String(p.ts ?? new Date().toISOString());
@@ -1050,7 +1070,9 @@
         $("#metaNotes").value = state.meta.notes;
       }
 
-      /* ========== jsMind init ========== */
+      /* ==========================
+         jsMind init
+      ========================== */
       let jm = null;
 
       const options = {
@@ -1075,7 +1097,9 @@
         return null;
       }
 
-      /* ========== History (Undo/Redo) ========== */
+      /* ==========================
+         History (Undo/Redo)
+      ========================== */
       const HISTORY_MAX = 30;
       let history = [];
       let future = [];
@@ -1130,7 +1154,9 @@
         $("#btnRedo").disabled = future.length <= 0;
       }
 
-      /* ========== Selection helpers ========== */
+      /* ==========================
+         Selection helpers
+      ========================== */
       function getSelectedNode(){
         try{
           if(!jm) return null;
@@ -1158,7 +1184,9 @@
         $("#srcNode").value = n ? nodePath(n) : "—";
       }
 
-      /* ========== Map operations ========== */
+      /* ==========================
+         Map operations
+      ========================== */
       function newId(){
         return "n_" + Date.now().toString(16) + "_" + Math.random().toString(16).slice(2);
       }
@@ -1180,7 +1208,6 @@
           if(typeof jm.select_node === "function") jm.select_node(id);
           if(typeof jm.begin_edit === "function") jm.begin_edit(id);
         }catch(e){}
-
         markDirty();
       }
 
@@ -1201,7 +1228,6 @@
           if(typeof jm.select_node === "function") jm.select_node(id);
           if(typeof jm.begin_edit === "function") jm.begin_edit(id);
         }catch(e){}
-
         markDirty();
       }
 
@@ -1217,11 +1243,9 @@
         const sel = getSelectedNode();
         if(!sel){ toast(t("needSelection")); return; }
         if(sel.isroot){ toast(t("cannotDeleteRoot")); return; }
-
         try{
           if(typeof jm.remove_node === "function") jm.remove_node(sel.id);
         }catch(e){}
-
         markDirty();
       }
 
@@ -1279,7 +1303,9 @@
         toast("OK");
       }
 
-      /* ========== Meta save (must update root) ========== */
+      /* ==========================
+         Meta save (updates root)
+      ========================== */
       function setMetaSaved(saved){
         const pill = $("#metaStatePill");
         pill.classList.remove("ok","warn");
@@ -1318,7 +1344,9 @@
         toast(t("savedToast"));
       }
 
-      /* ========== Measures (TABLE VIEW) ========== */
+      /* ==========================
+         Measures (TABLE VIEW)
+      ========================== */
       function renderMeasures(){
         const host = $("#measureList");
         host.innerHTML = "";
@@ -1345,7 +1373,7 @@
                   <th class="col-proof">${escapeHtml(t("colProof"))}</th>
                   <th class="col-due">${escapeHtml(t("colDue"))}</th>
                   <th class="col-owner">${escapeHtml(t("colOwner"))}</th>
-                  <th class="col-actions" style="text-align:right">${escapeHtml(t("colActions"))}</th>
+                  <th class="col-actions right">${escapeHtml(t("colActions"))}</th>
                 </tr>
               </thead>
               <tbody>
@@ -1387,7 +1415,7 @@
                         ${ownerTxt}
                       </td>
 
-                      <td class="col-actions" data-label="${escapeHtml(t("colActions"))}">
+                      <td class="col-actions right" data-label="${escapeHtml(t("colActions"))}">
                         <div class="measure-row-actions">
                           <button type="button" class="mini" data-act="open" data-id="${escapeHtml(m.id)}">${escapeHtml(t("setOpen"))}</button>
                           <button type="button" class="mini" data-act="done" data-id="${escapeHtml(m.id)}">${escapeHtml(t("setDone"))}</button>
@@ -1466,7 +1494,9 @@
         $("#actionProof").value = "";
       }
 
-      /* ========== JSON import/export ========== */
+      /* ==========================
+         JSON import/export
+      ========================== */
       function downloadJson(dataOverride=null, filename="mindmap_tool_export.json"){
         const payload = dataOverride ? dataOverride : (()=>{
           state.mind = safeGetMind() || defaultMind();
@@ -1503,7 +1533,6 @@
 
           state.mind = parsed.mind && typeof parsed.mind==="object" ? parsed.mind : null;
 
-          // measures: upgrade older exports
           state.measures = Array.isArray(parsed.measures) ? parsed.measures.map(m=>({
             id: String(m.id ?? newId()),
             nodeId: String(m.nodeId ?? "root"),
@@ -1544,7 +1573,9 @@
         });
       }
 
-      /* ========== Autosave / Dirty tracking ========== */
+      /* ==========================
+         Autosave / Dirty tracking
+      ========================== */
       function persistAll(){
         state.mind = safeGetMind() || defaultMind();
         persist();
@@ -1587,14 +1618,16 @@
         }
       }, 450);
 
-      /* ========== Utilities ========== */
+      /* ==========================
+         Utilities
+      ========================== */
       function escapeHtml(s){
         return String(s ?? "")
           .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
           .replace(/"/g,"&quot;").replace(/'/g,"&#039;");
       }
 
-      /* ========== Scroll = Zoom (wheel) ========== */
+      /* Scroll = Zoom (wheel) */
       function bindScrollZoom(){
         const el = $("#jsmind_container");
         el.addEventListener("wheel", (ev)=>{
@@ -1605,21 +1638,111 @@
       }
 
       /* ============================================================
-         AI ASSISTANT (Premium)
-         - License gate (hash check; the plain code is NOT present)
-         - OpenAI Responses API call
-         - Generates JSON compatible with this tool
+         AI ASSISTANT (Premium) – LICENSE FIX
+         Warum dein License-Key “nicht funktioniert”:
+         - WebCrypto (crypto.subtle) ist oft blockiert, wenn die Seite NICHT über HTTPS läuft
+           oder wenn der Editor/Snippet-Container ein “unsicheres” Kontext-Wrapper ist.
+         - Lösung: Fallback SHA-256 in purem JS (ohne crypto.subtle).
          ============================================================ */
 
-      // SHA-256 helper (browser)
-      async function sha256Hex(str){
-        const data = new TextEncoder().encode(str);
-        const digest = await crypto.subtle.digest("SHA-256", data);
-        return Array.from(new Uint8Array(digest)).map(b=>b.toString(16).padStart(2,"0")).join("");
+      // 1) License hash (dein vorhandener Hash bleibt)
+      const LICENSE_HASH = "07aa2015d482734372d4a9a1c07c8290198526b9ce1fd2e2dcff4d05f6792a29";
+
+      // 2) Normalisierung: erlaubt Tippfehler wie Leerzeichen/Bindestriche
+      function normalizeLicenseKey(raw){
+        return String(raw || "")
+          .trim()
+          .replace(/[\s-]+/g, "")   // spaces + hyphens removed
+          .toUpperCase();
       }
 
-      // hash of the license code (plain code intentionally not included)
-      const LICENSE_HASH = "07aa2015d482734372d4a9a1c07c8290198526b9ce1fd2e2dcff4d05f6792a29";
+      // 3) Pure JS SHA-256 (Fallback, wenn crypto.subtle nicht verfügbar ist)
+      function sha256HexFallback(ascii) {
+        function rightRotate(value, amount) { return (value>>>amount) | (value<<(32 - amount)); }
+
+        let mathPow = Math.pow;
+        let maxWord = mathPow(2, 32);
+        let result = "";
+
+        let words = [];
+        let asciiBitLength = ascii.length * 8;
+
+        let hash = sha256HexFallback.h = sha256HexFallback.h || [];
+        let k = sha256HexFallback.k = sha256HexFallback.k || [];
+        let primeCounter = k.length;
+
+        let isComposite = {};
+        for (let candidate = 2; primeCounter < 64; candidate++) {
+          if (!isComposite[candidate]) {
+            for (let i = 0; i < 313; i += candidate) { isComposite[i] = candidate; }
+            hash[primeCounter] = (mathPow(candidate, .5) * maxWord) | 0;
+            k[primeCounter++] = (mathPow(candidate, 1/3) * maxWord) | 0;
+          }
+        }
+
+        ascii += "\x80";
+        while (ascii.length % 64 - 56) ascii += "\x00";
+        for (let i = 0; i < ascii.length; i++) {
+          let j = ascii.charCodeAt(i);
+          if (j >> 8) return ""; // only ASCII supported (ok for license keys)
+          words[i >> 2] |= j << ((3 - i) % 4) * 8;
+        }
+        words[words.length] = ((asciiBitLength / maxWord) | 0);
+        words[words.length] = (asciiBitLength);
+
+        for (let j = 0; j < words.length; ) {
+          let w = words.slice(j, j += 16);
+          let oldHash = hash.slice(0);
+
+          for (let i = 0; i < 64; i++) {
+            let w15 = w[i - 15], w2 = w[i - 2];
+
+            let a = hash[0], e = hash[4];
+            let temp1 = hash[7]
+              + (rightRotate(e, 6) ^ rightRotate(e, 11) ^ rightRotate(e, 25))
+              + ((e & hash[5]) ^ ((~e) & hash[6]))
+              + k[i]
+              + (w[i] = (i < 16) ? w[i] : (
+                  w[i - 16]
+                  + (rightRotate(w15, 7) ^ rightRotate(w15, 18) ^ (w15 >>> 3))
+                  + w[i - 7]
+                  + (rightRotate(w2, 17) ^ rightRotate(w2, 19) ^ (w2 >>> 10))
+                ) | 0
+              );
+
+            let temp2 = (rightRotate(a, 2) ^ rightRotate(a, 13) ^ rightRotate(a, 22))
+              + ((a & hash[1]) ^ (a & hash[2]) ^ (hash[1] & hash[2]));
+
+            hash = [(temp1 + temp2) | 0].concat(hash);
+            hash[4] = (hash[4] + temp1) | 0;
+            hash.pop();
+          }
+
+          for (let i = 0; i < 8; i++) { hash[i] = (hash[i] + oldHash[i]) | 0; }
+        }
+
+        for (let i = 0; i < 8; i++) {
+          for (let j = 3; j + 1; j--) {
+            let b = (hash[i] >> (j * 8)) & 255;
+            result += ((b < 16) ? "0" : "") + b.toString(16);
+          }
+        }
+        return result;
+      }
+
+      // 4) SHA-256 helper (tries crypto.subtle first, falls back to pure JS)
+      async function sha256Hex(str){
+        try{
+          if (window.crypto && crypto.subtle && typeof crypto.subtle.digest === "function") {
+            const data = new TextEncoder().encode(str);
+            const digest = await crypto.subtle.digest("SHA-256", data);
+            return Array.from(new Uint8Array(digest)).map(b=>b.toString(16).padStart(2,"0")).join("");
+          }
+        }catch(e){}
+        // fallback
+        const hex = sha256HexFallback(str);
+        return hex || "";
+      }
 
       let aiLastResult = null;
 
@@ -1632,18 +1755,37 @@
       }
 
       async function validateLicense(){
-        const key = ($("#aiLicense").value || "").trim();
-        if(!key) { toast(t("aiNeedLicense")); return { ok:false, reason:"empty" }; }
-        const h = await sha256Hex(key);
-        if(h !== LICENSE_HASH){
-          toast(t("aiBadLicense"));
-          return { ok:false, reason:"bad" };
+        const raw = ($("#aiLicense").value || "");
+        if(!raw.trim()) { toast(t("aiNeedLicense")); return { ok:false, reason:"empty" }; }
+
+        // tolerant checks (raw + normalized)
+        const variants = [
+          raw.trim(),
+          normalizeLicenseKey(raw),
+          raw.trim().toLowerCase(),
+          raw.trim().toUpperCase()
+        ].filter(Boolean);
+
+        let anyHashWorked = false;
+
+        for(const v of variants){
+          const h = await sha256Hex(v);
+          if(h){ anyHashWorked = true; }
+          if(h && h === LICENSE_HASH){
+            return { ok:true };
+          }
         }
-        return { ok:true };
+
+        if(!anyHashWorked){
+          toast(t("aiNoCrypto"));
+          return { ok:false, reason:"no_crypto" };
+        }
+
+        toast(t("aiBadLicense"));
+        return { ok:false, reason:"bad" };
       }
 
       function normalizeGeneratedPayload(obj){
-        // Minimal hardening & compatibility
         const nowIso = new Date().toISOString();
         const lang = (obj && (obj.lang==="de"||obj.lang==="en")) ? obj.lang : currentLang;
 
@@ -1663,13 +1805,11 @@
           safeMind = defaultMind();
         }
 
-        // Ensure root exists
         const hasRoot = safeMind.data.some(n=>n && n.id==="root");
         if(!hasRoot){
           safeMind.data.unshift({ id:"root", isroot:true, topic: safeMeta.topic || defaultRootTopic() });
         }
 
-        // Force root topic
         const root = safeMind.data.find(n=>n && n.id==="root");
         if(root) root.topic = safeMeta.topic || defaultRootTopic();
 
@@ -1690,7 +1830,6 @@
       }
 
       async function callOpenAI({ apiKey, processStep, contextText }){
-        // System prompt tuned to output STRICT JSON
         const system = (currentLang==="de")
           ? "Du bist ein Qualitäts- und Prozess-Experte. Gib ausschließlich gültiges JSON zurück – ohne Markdown, ohne Kommentar, ohne zusätzliche Texte."
           : "You are a quality & process expert. Return ONLY valid JSON – no markdown, no comments, no extra text.";
@@ -1812,7 +1951,6 @@ ${schemaHint}`;
 
         const data = await res.json();
 
-        // Extract text from Responses API
         const text = (data && data.output_text) ? data.output_text : (()=> {
           try{
             const out = data.output || [];
@@ -1827,8 +1965,6 @@ ${schemaHint}`;
         })();
 
         if(!text) throw new Error("No output_text");
-
-        // Must be JSON only
         return JSON.parse(text);
       }
 
@@ -1874,7 +2010,6 @@ ${schemaHint}`;
         const msg = t("aiConfirmApply");
         if(!confirm(msg)) return;
 
-        // Apply
         state.lang = aiLastResult.lang;
         if(aiLastResult.lang === "de" || aiLastResult.lang === "en"){
           setLanguage(aiLastResult.lang);
@@ -1907,7 +2042,9 @@ ${schemaHint}`;
         toast(t("aiDownloaded"));
       }
 
-      /* ========== Init ========== */
+      /* ==========================
+         Init
+      ========================== */
       restore();
       if(state.lang === "de" || state.lang === "en") currentLang = state.lang;
 
@@ -1931,7 +2068,9 @@ ${schemaHint}`;
       initHistory();
       renderMeasures();
       updateSelectionUI();
-      setMetaSaved(false);
+
+      // Set meta saved state based on existing topic (optional)
+      setMetaSaved(!!(state.meta.topic && state.meta.topic.trim()));
 
       $("#jsmind_container").addEventListener("mousedown", ()=> window.setTimeout(updateSelectionUI, 40));
       $("#jsmind_container").addEventListener("touchstart", ()=> window.setTimeout(updateSelectionUI, 40), {passive:true});
