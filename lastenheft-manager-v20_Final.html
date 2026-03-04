@@ -1,0 +1,926 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lastenheft Manager – v11 (Lastenheft-Kategorien + KI Prompt)</title>
+  <style>
+    :root{
+      --blue:#1155b2; --dark:#09387a;
+      --bg:#f8fafc; --card:#fff;
+      --border:rgba(15,23,42,.12);
+      --muted:#64748b; --text:#0f172a;
+      --shadow: 0 12px 30px rgba(2,6,23,.08);
+      --green:#16a34a;
+      --red:#dc2626;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;color:var(--text);background:var(--bg)}
+    .wrap{max-width:100%;width:100%;margin:0 auto;padding:14px 12px 36px}
+
+    /* Intro/Header */
+    .tool-intro{background:var(--bg);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);padding:18px 18px 14px;margin-bottom:14px}
+    .tool-intro-top{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap}
+    .tool-title{margin:0;color:var(--dark);font-size:20px;text-transform:uppercase;font-weight:900;letter-spacing:.4px}
+    .tool-sub{margin:6px 0 0;font-size:13px;color:var(--muted);max-width:90ch}
+    .intro-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+
+    .tool-grid{margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .tool-box{background:#fff;border:1px solid var(--border);border-radius:12px;padding:12px 14px}
+    .tool-box h3{margin:0 0 6px 0;font-size:12px;color:var(--dark);text-transform:uppercase;font-weight:900;letter-spacing:.25px}
+    .tool-box p,.tool-box ol{margin:0;font-size:13px;color:#334155}
+    .tool-box ol{padding-left:18px}
+    @media(max-width:900px){.tool-grid{grid-template-columns:1fr}}
+
+    /* Buttons */
+    .btn{
+      border:1px solid var(--border); background:#fff; color:var(--dark);
+      padding:9px 12px; border-radius:10px; font-weight:900; font-size:11px;
+      letter-spacing:.03em; text-transform:uppercase; cursor:pointer;
+      display:inline-flex; align-items:center; gap:8px;
+      box-shadow: 0 6px 14px rgba(2,6,23,.06);
+    }
+    .btn:hover{ border-color: rgba(17,85,178,.22); background: rgba(17,85,178,.04); }
+    .btn.primary{ background: rgba(17,85,178,.10); border-color: rgba(17,85,178,.22); color:var(--dark); }
+    .btn.danger{ color:#b91c1c; border-color: rgba(239,68,68,.35); }
+    .btn.danger:hover{ background: rgba(239,68,68,.06); border-color: rgba(239,68,68,.45); }
+    .btn:disabled{ opacity:.55; cursor:not-allowed; }
+
+    .panel{
+      background: linear-gradient(180deg, rgba(17,85,178,.10), rgba(17,85,178,0));
+      border:1px solid var(--border); border-radius: 14px;
+      padding:14px 14px; box-shadow: var(--shadow);
+    }
+    .panel + .panel{ margin-top:12px; }
+    .title{margin:0;font-size:16px;text-transform:uppercase;letter-spacing:.06em;color:var(--dark);font-weight:900}
+    .sub{margin:6px 0 0;font-size:12.5px;color:var(--muted);line-height:1.35}
+
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;padding-top:10px;border-top:1px solid rgba(15,23,42,.08);align-items:stretch}
+    @media (max-width:860px){ .grid{grid-template-columns:1fr} }
+
+    .cellbox{
+      border:1px dashed rgba(15,23,42,.18);
+      border-radius:12px;
+      padding:10px;
+      background: rgba(248,250,252,.7);
+    }
+    .label{font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:900;color:var(--muted);margin-bottom:6px}
+    input,select,textarea{
+      width:100%;
+      padding:10px 12px;
+      border:1px solid rgba(15,23,42,.14);
+      border-radius:10px;
+      font-size:14px;
+      font-family:inherit;
+      outline:none;
+      background:#fff;
+    }
+    textarea{min-height:84px;resize:vertical}
+    .meta{color:var(--muted);font-size:12px}
+    .toolbar{
+      display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+      margin-top:10px; padding-top:10px; border-top:1px solid rgba(15,23,42,.08);
+    }
+    .toolbar .right{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+    .toolbar .left{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .badge{
+      font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.06em;
+      color:rgba(9,56,122,85);
+      background: rgba(17,85,178,10);
+      border:1px solid rgba(17,85,178,18);
+      padding:3px 8px;border-radius:999px;
+      display:inline-flex;align-items:center;gap:6px;
+    }
+
+    /* Kategorie Container */
+    .cats{margin-top:12px;display:flex;flex-direction:column;gap:12px}
+    .cat{
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:14px;
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .cat-head{
+      display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;
+      padding:12px 14px;
+      background: rgba(248,250,252,.95);
+      border-bottom:1px solid rgba(15,23,42,.08);
+    }
+    .cat-title{
+      display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap;
+      min-width: 260px;
+    }
+    .cat-pill{
+      font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.08em;
+      color:rgba(9,56,122,.92);
+      background: rgba(17,85,178,.10);
+      border:1px solid rgba(17,85,178,.22);
+      padding:4px 10px;border-radius:999px;
+      flex: 0 0 auto;
+      margin-top:1px;
+    }
+    .cat-name{
+      margin:0;
+      font-weight:900;
+      letter-spacing:.02em;
+      color:var(--dark);
+      text-transform:uppercase;
+      font-size:12px;
+      line-height:1.2;
+    }
+    .cat-desc{
+      margin:4px 0 0;
+      font-size:12px;
+      color: var(--muted);
+      max-width: 105ch;
+      line-height: 1.35;
+    }
+    .cat-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+
+    /* Tabelle */
+    table{width:100%;border-collapse:collapse;table-layout:fixed}
+    thead th{
+      background:#fff;
+      color:var(--dark);
+      font-size:11px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      font-weight:900;
+      padding:10px 10px;
+      border-bottom:1px solid rgba(15,23,42,.10);
+    }
+    tbody td{
+      padding:8px 10px;
+      border-bottom:1px solid rgba(15,23,42,.08);
+      vertical-align:top;
+      background:#fff;
+    }
+    tbody tr:last-child td{border-bottom:none}
+
+    .row-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+    .mini{
+      border:1px solid rgba(15,23,42,.12);
+      background:#fff;border-radius:10px;
+      padding:7px 9px;font-weight:900;font-size:11px;
+      text-transform:uppercase;cursor:pointer;white-space:nowrap;
+    }
+    .mini.primary{background:rgba(17,85,178,.10); border-color:rgba(17,85,178,.22); color:var(--dark)}
+    .mini:hover{background:rgba(17,85,178,.05)}
+    .mini.danger{color:#b91c1c;border-color:rgba(239,68,68,.35)}
+    .mini.danger:hover{background:rgba(239,68,68,.06)}
+
+    /* Content-Type look */
+    .slot{ display:flex; gap:10px; align-items:center; }
+    .pill-pos{
+      display:inline-flex;align-items:center;gap:6px;
+      padding:3px 8px;border-radius:999px;
+      border:1px solid rgba(34,197,94,.22);
+      background: rgba(34,197,94,.06);
+      font-size:10px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;
+      color: rgba(22,163,74,.95);
+      flex: 0 0 auto;
+    }
+    .pill-neg{
+      display:inline-flex;align-items:center;gap:6px;
+      padding:3px 8px;border-radius:999px;
+      border:1px solid rgba(239,68,68,.22);
+      background: rgba(239,68,68,.06);
+      font-size:10px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;
+      color: rgba(185,28,28,.95);
+      flex: 0 0 auto;
+    }
+    .bchip{
+      display:inline-flex;align-items:center;justify-content:center;
+      padding:3px 8px;border-radius:999px;
+      border:1px solid rgba(239,68,68,.22);
+      background: rgba(239,68,68,.06);
+      font-size:10px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;
+      color: rgba(185,28,28,.95);
+      min-width:40px;
+    }
+
+    /* AI card */
+    .ai-assistant{ margin-top: 12px; padding-top: 12px; border-top: 2px solid rgba(17,85,178,.22); }
+    .ai-card{ border: 1px solid rgba(15,23,42,.12); border-radius: 14px; background:#fff; overflow:hidden; box-shadow: 0 10px 24px rgba(2,6,23,.06); }
+    .ai-card-head{ padding: 10px 14px; background: rgba(248,250,252,.95); border-bottom: 1px solid rgba(15,23,42,.08); display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; }
+    .ai-card-body{ padding: 12px 14px; }
+    .ai-actions{ display:flex; gap: 10px; flex-wrap: wrap; align-items:center; justify-content:flex-end; margin-top: 10px; }
+    .ai-status{ margin-top: 10px; font-size: 12px; color: var(--muted); white-space: pre-wrap; }
+    .ai-preview{
+      margin:10px 0 0;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 12px;
+      background: rgba(248,250,252,.90);
+      border: 1px solid rgba(15,23,42,.12);
+      border-radius: 14px;
+      padding: 12px;
+      overflow: auto;
+      max-height: 420px;
+    }
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    @media(max-width:860px){.two-col{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <section class="tool-intro">
+    <div class="tool-intro-top">
+      <div>
+        <h2 class="tool-title">Lastenheft Manager</h2>
+        <p class="tool-sub">
+          v11: Lastenheft-Kategorien (1–13) inkl. „Beinhaltet:“ pro Kategorie. Pro Zeile: ✅ Anforderung | ❌ Fehlerfolge | B.
+        </p>
+      </div>
+      <div class="intro-actions">
+        <a class="btn" href="https://tools.quality.de/">Zurück zur Startseite</a>
+      </div>
+    </div>
+
+    <div class="tool-grid">
+      <div class="tool-box">
+        <h3>Ziel</h3>
+        <p>KI generiert einmal. Danach: manuell verbessern/erweitern/löschen + B ändern.</p>
+      </div>
+      <div class="tool-box">
+        <h3>Beispiel</h3>
+        <p><strong>✅ Dicht</strong> steht links – <strong>❌ Undicht</strong> rechts derselben Zeile, B nur bei ❌.</p>
+      </div>
+      <div class="tool-box">
+        <h3>Regeln</h3>
+        <p>✅ grün · ❌ rot · B (1–10) nur bei ❌ (wenn Fehlerfolge gefüllt).</p>
+      </div>
+      <div class="tool-box">
+        <h3>Format</h3>
+        <p>Export/Import als JSON. Zeilen bleiben kompatibel: <code>{catNr, reqText, failText, B}</code>.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="panel">
+    <h3 class="title">Stammdaten</h3>
+    <p class="sub">Stammdaten bleiben oben. Kategorien enthalten nur Anforderungen, die eine Fehlerfolge haben können.</p>
+
+    <div class="grid">
+      <div class="cellbox">
+        <div class="label">Produkt</div>
+        <input id="product" placeholder="z. B. Locher" />
+      </div>
+      <div class="cellbox">
+        <div class="label">Bauteil / Komponente</div>
+        <input id="component" placeholder="optional, sonst = Produkt" />
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <div class="left">
+        <span class="badge">Kategorien 1–13</span>
+        <span class="meta" id="countMeta">—</span>
+      </div>
+      <div class="right">
+        <button class="btn" id="exportText">Textansicht</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="cats" id="cats"></div>
+
+  <div class="panel" style="background:#fff;border:1px solid var(--border);">
+    <div class="toolbar" style="border-top:none;margin-top:0;padding-top:0">
+      <div class="left"><span class="meta">Datei-Aktionen</span></div>
+      <div class="right">
+        <button class="btn" id="saveJson">JSON Speichern</button>
+        <button class="btn" id="loadJson">JSON Laden</button>
+        <input type="file" id="file" accept="application/json" style="display:none">
+        <button class="btn danger" id="reset">Reset</button>
+      </div>
+    </div>
+
+    <section class="ai-assistant" aria-label="KI Assistent">
+      <h3 class="title">KI Assistent – Erstentwurf (einmalig)</h3>
+      <p class="sub">Prompt v11: Lastenheft-Kategorien 1–13, nur Anforderungen mit Fehlerfolge, B-Regeln wie gehabt.</p>
+
+      <div class="ai-card">
+        <div class="ai-card-head">
+          <div class="title" style="margin:0;font-size:13px;">KI Einstellungen</div>
+          <div>
+            <select id="applyMode" style="width:auto;min-width:180px">
+              <option value="replace">Ersetzen</option>
+              <option value="append">Anhängen</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="ai-card-body">
+          <div class="two-col">
+            <div>
+              <div class="label">Lizenzschlüssel</div>
+              <input id="aiLicense" type="password" placeholder="••••" />
+            </div>
+            <div>
+              <div class="label">OpenAI API Key</div>
+              <input id="aiApiKey" type="password" placeholder="sk-…" />
+            </div>
+          </div>
+
+          <div style="margin-top:10px">
+            <div class="label">Kontext (optional)</div>
+            <textarea id="aiContext" placeholder="Optional: Nutzung, Umgebung, Risiken, Normen, Schnittstellen, Lebensdauer…"></textarea>
+          </div>
+
+          <div class="ai-actions">
+            <button type="button" class="btn primary" id="btnAiGenerate">Generieren</button>
+            <button type="button" class="btn" id="btnAiApply" disabled>Übernehmen</button>
+            <button type="button" class="btn" id="btnAiDownload" disabled>JSON Download</button>
+            <button type="button" class="btn" id="btnAiClear">Zurücksetzen</button>
+          </div>
+
+          <div id="aiStatus" class="ai-status"></div>
+          <div class="meta" style="margin-top:8px;">Vorschau (KI-JSON)</div>
+          <pre class="ai-preview" id="aiPreview">{ "info": "Noch nichts generiert." }</pre>
+          <div class="meta" id="aiPreviewMeta" style="margin-top:6px;">—</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+</div>
+
+<script>
+(() => {
+  const STORAGE = "lastenheft_manager_v11";
+  const $ = (s, r=document) => r.querySelector(s);
+  const uid = (p="id") => p + Math.random().toString(16).slice(2,10) + Date.now().toString(16);
+  const clamp = (n,min,max)=>Math.max(min,Math.min(max,n));
+
+  function esc(s){
+    return (s ?? "").toString()
+      .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;").replaceAll("'","&#039;");
+  }
+
+  const CATS = [
+    { nr:1,  title:"Funktionale Anforderungen", alias:"Hauptfunktion, Nebenfunktionen, Eigenschaften & Merkmale", includes:["Kernfunktionen des Produkts","unterstützende Funktionen","funktionale Eigenschaften","funktionale Merkmale (nicht konstruktiv)"], failureLogic:"Funktion wird nicht oder falsch ausgeführt" },
+    { nr:2,  title:"Leistungs- & Qualitätsanforderungen", alias:"Eigenschaften – leistungsbezogen", includes:["Genauigkeit","Geschwindigkeit","Kräfte und Zeiten","Grenzwerte und Toleranzen","Lebensdauerziele","Performance"], failureLogic:"Grenzwerte oder Qualitätsziele werden nicht erreicht" },
+    { nr:3,  title:"Zuverlässigkeit & Robustheit", alias:"—", includes:["Ausfallsicherheit","Stabilität über Zeit","Robustheit gegen Fehlbedienung","Robustheit gegen Umwelteinflüsse"], failureLogic:"Ausfall oder wiederkehrende Fehler treten auf" },
+    { nr:4,  title:"Konstruktion & physische Merkmale", alias:"Merkmale", includes:["Materialien","Geometrien","Oberflächen","mechanische Auslegung"], failureLogic:"Bauteile brechen oder verschleißen vorzeitig" },
+    { nr:5,  title:"Herstellbarkeit & Weiterverarbeitung", alias:"Merkmale an Weiterverarbeitung: Fertigung und Produktion", includes:["Fertigbarkeit","Montagefähigkeit","Toleranzkonzepte","Serien- und Produktionsfähigkeit"], failureLogic:"Montage, Fertigung oder Serie nicht möglich" },
+    { nr:6,  title:"Logistik, Transport & Verpackung", alias:"—", includes:["Verpackungskonzepte","Transportfähigkeit","Lagerfähigkeit"], failureLogic:"Produkt wird beschädigt oder Transport ist unzulässig" },
+    { nr:7,  title:"Sicherheit & Gefährdungen", alias:"Sicherheit", includes:["Nutzer-, Produkt- und Umfeldsicherheit","mechanische und physische Risiken","Fehlbedienung mit Schadenfolge"], failureLogic:"Verletzung oder Sachschaden entsteht" },
+    { nr:8,  title:"Recht, Normen & Konformität", alias:"Normen", includes:["Gesetze","Richtlinien","Normen","Konformitätsanforderungen"], failureLogic:"Produkt darf nicht in Verkehr gebracht werden" },
+    { nr:9,  title:"Benutzerfreundlichkeit & Ergonomie", alias:"Merkmale an Benutzerfreundlichkeit", includes:["Ergonomie","Verständlichkeit","intuitive Bedienung","Vermeidung von Fehlbedienung"], failureLogic:"Bedienfehler treten auf oder Akzeptanz sinkt" },
+    { nr:10, title:"Wartung & Instandhaltung", alias:"Wartung", includes:["Wartungszugänglichkeit","Wartungsintervalle","Austauschbarkeit von Verschleißteilen"], failureLogic:"Wartung nicht möglich oder Stillstand entsteht" },
+    { nr:11, title:"Service & Ersatzteile", alias:"Services", includes:["Reparierbarkeit","Ersatzteilverfügbarkeit","Servicekonzepte"], failureLogic:"Reparatur nicht möglich oder Servicekosten steigen" },
+    { nr:12, title:"Lebenszyklus & Nachhaltigkeit", alias:"—", includes:["Lebensdauerende","Entsorgung","Recycling","Umweltauflagen"], failureLogic:"Entsorgung oder Umweltauflagen werden verletzt" },
+    { nr:13, title:"Schnittstellen & Systemintegration", alias:"—", includes:["mechanische Schnittstellen","elektrische / organisatorische Schnittstellen","Integration in Gesamtsysteme"], failureLogic:"System funktioniert nicht im Verbund" }
+  ];
+
+  const state = {
+    meta: { product:"", component:"" },
+    rows: []
+  };
+
+  function saveLocal(){
+    state.meta.product = ($("#product").value || "").trim();
+    state.meta.component = ($("#component").value || "").trim();
+    try{ localStorage.setItem(STORAGE, JSON.stringify(state)); }catch(e){}
+    updateMeta();
+  }
+  function loadLocal(){
+    try{
+      const raw = localStorage.getItem(STORAGE);
+      if(!raw) return;
+      const parsed = JSON.parse(raw);
+      if(!parsed || !Array.isArray(parsed.rows)) return;
+      state.meta = parsed.meta || state.meta;
+      state.rows = parsed.rows || [];
+    }catch(e){}
+  }
+
+  function updateMeta(){
+    const prod = state.meta.product || "—";
+    const comp = state.meta.component || "";
+    const shown = comp ? `${prod} · ${comp}` : prod;
+    $("#countMeta").textContent = `${shown} · Zeilen: ${state.rows.length}`;
+  }
+
+  function makeRow({catNr=1,reqText="",failText="",B=""}={}){
+    return {
+      id: uid("lh"),
+      catNr: clamp(Number(catNr)||1,1,99),
+      reqText: String(reqText||""),
+      failText: String(failText||""),
+      B: (B==="" || B==null) ? "" : clamp(Number(B)||8,1,10)
+    };
+  }
+
+  function defaultBFromText(text){
+    const t = (text||"").toLowerCase();
+    const isInjury = /verletz|quetsch|schnitt|gefahr|unfall|schaden|brand|stromschlag/.test(t);
+    const isLegal  = /gesetz|norm|ce|konform|compliance|richtlinie|verordnung|rückverfolg|identifikation|zulassung/.test(t);
+    return isInjury ? 10 : (isLegal ? 9 : 8);
+  }
+
+  function ensureB(row){
+    if(!row.failText.trim()){ row.B=""; return; }
+    if(row.B==="" || row.B==null) row.B = defaultBFromText(row.failText);
+    row.B = clamp(Number(row.B)||8,1,10);
+  }
+
+  function render(){
+    const catsEl = $("#cats");
+    catsEl.innerHTML = "";
+
+    for(const c of CATS){
+      const box = document.createElement("section");
+      box.className = "cat";
+      box.dataset.cat = c.nr;
+
+      const head = document.createElement("div");
+      head.className = "cat-head";
+      const alias = (c.alias && c.alias!=="—") ? ` (${esc(c.alias)})` : "";
+      const includes = Array.isArray(c.includes) && c.includes.length ? c.includes.map(x=>esc(x)).join(" · ") : "";
+      const desc = `Beinhaltet: ${includes}${c.failureLogic ? ` • Fehlerfolge: ${esc(c.failureLogic)}` : ""}`;
+
+      head.innerHTML = `
+        <div class="cat-title">
+          <span class="cat-pill">${c.nr}</span>
+          <div>
+            <h4 class="cat-name">${esc(c.title)}${alias}</h4>
+            <p class="cat-desc">${desc}</p>
+          </div>
+        </div>
+        <div class="cat-actions">
+          <button class="btn primary" data-add="${c.nr}">+ Zeile</button>
+        </div>
+      `;
+
+      const tbl = document.createElement("div");
+      tbl.innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th style="width:46%">✅ Anforderung</th>
+              <th style="width:34%">❌ Fehlerfolge</th>
+              <th style="width:120px">B (1–10)</th>
+              <th style="width:210px;text-align:right">Aktionen</th>
+            </tr>
+          </thead>
+          <tbody id="tb-${c.nr}"></tbody>
+        </table>
+      `;
+
+      box.appendChild(head);
+      box.appendChild(tbl);
+      catsEl.appendChild(box);
+
+      const body = box.querySelector(`#tb-${c.nr}`);
+      const list = state.rows.filter(r=>r.catNr===c.nr);
+
+      if(list.length===0){
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td class="meta" colspan="4" style="padding:12px 10px;"><strong>${esc(c.title)}</strong> · keine Einträge</td>`;
+        body.appendChild(tr);
+      }else{
+        for(const r of list){
+          const tr = document.createElement("tr");
+          tr.dataset.id = r.id;
+
+          const hasFail = r.failText.trim().length>0;
+          const bDisabled = hasFail ? "" : "disabled";
+          const bVal = hasFail ? (r.B==="" ? "" : String(r.B)) : "";
+          const bChip = hasFail ? `<span class="bchip">B</span>` : `<span class="meta">—</span>`;
+
+          tr.innerHTML = `
+            <td>
+              <div class="slot">
+                <span class="pill-pos">✅ Anforderung</span>
+                <input data-k="reqText" data-id="${r.id}" value="${esc(r.reqText)}" placeholder="kurz, eindeutig, erfüllbar" />
+              </div>
+            </td>
+            <td>
+              <div class="slot">
+                <span class="pill-neg">❌ Fehlerfolge</span>
+                <input data-k="failText" data-id="${r.id}" value="${esc(r.failText)}" placeholder="Was passiert, wenn NICHT erfüllt?" />
+              </div>
+            </td>
+            <td>
+              ${bChip}
+              <div style="margin-top:6px">
+                <input ${bDisabled} data-k="B" data-id="${r.id}" type="number" min="1" max="10" step="1" value="${esc(bVal)}" placeholder="1–10" />
+              </div>
+              <div class="meta" style="margin-top:6px">${hasFail ? "Editierbar" : "nur bei ❌"}</div>
+            </td>
+            <td style="text-align:right">
+              <div class="row-actions">
+                <button class="mini" data-up="${r.id}">↑</button>
+                <button class="mini" data-down="${r.id}">↓</button>
+                <button class="mini danger" data-del="${r.id}">Löschen</button>
+              </div>
+            </td>
+          `;
+          body.appendChild(tr);
+        }
+      }
+    }
+
+    updateMeta();
+    saveLocal();
+  }
+
+  function addRow(catNr){
+    const r = makeRow({catNr});
+    state.rows.push(r);
+    render();
+    setTimeout(()=>{
+      const inp = document.querySelector(`input[data-id="${r.id}"][data-k="reqText"]`);
+      if(inp){ inp.focus(); inp.select(); }
+    },0);
+  }
+
+  function moveRowWithinCat(id, dir){
+    const idx = state.rows.findIndex(x=>x.id===id);
+    if(idx<0) return;
+    const catNr = state.rows[idx].catNr;
+
+    const indices = [];
+    for(let i=0;i<state.rows.length;i++){
+      if(state.rows[i].catNr===catNr) indices.push(i);
+    }
+    const pos = indices.indexOf(idx);
+    const newPos = pos + dir;
+    if(newPos < 0 || newPos >= indices.length) return;
+
+    const swapIdx = indices[newPos];
+    const tmp = state.rows[idx];
+    state.rows[idx] = state.rows[swapIdx];
+    state.rows[swapIdx] = tmp;
+    render();
+  }
+
+  function exportTextView(){
+    const lines = [];
+    const prod = state.meta.product || "—";
+    const comp = state.meta.component || "";
+    lines.push(`Produkt: ${prod}${comp ? " | Bauteil: " + comp : ""}`);
+    for(const c of CATS){
+      const alias = (c.alias && c.alias!=="—") ? ` (${c.alias})` : "";
+      lines.push(`${c.nr} ${c.title}${alias}`);
+      const list = state.rows.filter(r=>r.catNr===c.nr);
+      if(!list.length){ lines.push("  (keine Einträge)"); continue; }
+      for(const r of list){
+        if(r.reqText.trim()) lines.push(`  ✅ ${r.reqText.trim()}`);
+        if(r.failText.trim()){
+          const b = (r.B==="" ? defaultBFromText(r.failText) : r.B);
+          lines.push(`  ❌ ${r.failText.trim()} B:${b}`);
+        }
+      }
+    }
+    const txt = lines.join("\n");
+    const w = window.open("", "_blank");
+    w.document.write(`<pre style="white-space:pre-wrap;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;padding:16px">${esc(txt)}</pre>`);
+    w.document.close();
+  }
+
+  function downloadJsonFile(filename, obj){
+    const json = JSON.stringify(obj, null, 2);
+    const blob = new Blob([json], { type:"application/json;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.style.display = "none";
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => {
+      try{ URL.revokeObjectURL(url); }catch(e){}
+      try{ a.remove(); }catch(e){}
+    }, 4000);
+  }
+
+  $("#saveJson").addEventListener("click", () => {
+    saveLocal();
+    downloadJsonFile("lastenheft-manager.json", state);
+  });
+
+  $("#loadJson").addEventListener("click", () => $("#file").click());
+  $("#file").addEventListener("change", async (e) => {
+    const f = e.target.files && e.target.files[0];
+    if(!f) return;
+    try{
+      const txt = await f.text();
+      const parsed = JSON.parse(txt);
+      if(!parsed?.rows || !Array.isArray(parsed.rows)) throw new Error("invalid");
+      state.meta = parsed.meta || state.meta;
+      state.rows = parsed.rows || [];
+      for(const r of state.rows){
+        r.id = r.id || uid("lh");
+        r.catNr = clamp(Number(r.catNr)||1,1,99);
+        r.reqText = String(r.reqText||"");
+        r.failText = String(r.failText||"");
+        if(r.failText.trim()){
+          r.B = (r.B==="" || r.B==null) ? defaultBFromText(r.failText) : clamp(Number(r.B)||8,1,10);
+        }else{
+          r.B = "";
+        }
+      }
+      aiClear();
+      $("#product").value = state.meta.product || "";
+      $("#component").value = state.meta.component || "";
+      render();
+    }catch(err){
+      alert("JSON konnte nicht geladen werden.");
+    }finally{
+      e.target.value="";
+    }
+  });
+
+  $("#reset").addEventListener("click", () => {
+    if(!confirm("Wirklich alles löschen? (inkl. Autosave)")) return;
+    state.meta = { product:"", component:"" };
+    state.rows = [];
+    try{ localStorage.removeItem(STORAGE); }catch(e){}
+    aiClear();
+    $("#product").value = "";
+    $("#component").value = "";
+    render();
+  });
+
+  $("#exportText").addEventListener("click", exportTextView);
+
+  $("#cats").addEventListener("click", (ev) => {
+    const add = ev.target.closest("[data-add]");
+    if(add){ addRow(Number(add.dataset.add)||1); return; }
+
+    const del = ev.target.closest("[data-del]");
+    if(del){
+      const id = del.dataset.del;
+      const idx = state.rows.findIndex(x=>x.id===id);
+      if(idx>=0){ state.rows.splice(idx,1); render(); }
+      return;
+    }
+
+    const up = ev.target.closest("[data-up]");
+    if(up){ moveRowWithinCat(up.dataset.up, -1); return; }
+
+    const down = ev.target.closest("[data-down]");
+    if(down){ moveRowWithinCat(down.dataset.down, +1); return; }
+  });
+
+  $("#cats").addEventListener("input", (ev) => {
+    const inp = ev.target.closest("input[data-id][data-k]");
+    if(!inp) return;
+    const id = inp.dataset.id;
+    const key = inp.dataset.k;
+    const r = state.rows.find(x=>x.id===id);
+    if(!r) return;
+
+    if(key==="reqText"){
+      r.reqText = (inp.value||"");
+      saveLocal();
+      return;
+    }
+    if(key==="failText"){
+      r.failText = (inp.value||"");
+      ensureB(r);
+      render();
+      return;
+    }
+    if(key==="B"){
+      const v = (inp.value||"").trim();
+      if(!r.failText.trim()) r.B="";
+      else r.B = v==="" ? "" : clamp(Number(v)||8,1,10);
+      saveLocal();
+      return;
+    }
+  });
+
+  const AI_MODEL = "gpt-4.1";
+  const LICENSE_HASH = "07aa2015d482734372d4a9a1c07c8290198526b9ce1fd2e2dcff4d05f6792a29";
+  let aiLastJson = null;
+
+  function aiSetStatus(msg){ $("#aiStatus").textContent = msg || ""; }
+  function aiSetMeta(text){ $("#aiPreviewMeta").textContent = text || "—"; }
+  function aiSetPreview(obj){
+    if(!obj){ $("#aiPreview").textContent = `{
+  "info": "Noch nichts generiert."
+}`; return; }
+    $("#aiPreview").textContent = JSON.stringify(obj, null, 2);
+  }
+
+  async function sha256Hex(str){
+    const enc = new TextEncoder();
+    const buf = await crypto.subtle.digest("SHA-256", enc.encode(str));
+    return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
+  }
+
+  async function validateLicense(){
+    const lic = ($("#aiLicense").value||"").trim();
+    if(!lic){ return { ok:true }; }
+    const h = await sha256Hex(lic);
+    if(h !== LICENSE_HASH){
+      aiSetStatus("Lizenz ungültig.");
+      return { ok:false };
+    }
+    return { ok:true };
+  }
+
+  function aiGetOutputText(resp){
+    try{
+      if(resp && typeof resp.output_text === "string") return resp.output_text;
+      if(resp && Array.isArray(resp.output)){
+        for(const o of resp.output){
+          if(o && Array.isArray(o.content)){
+            for(const c of o.content){
+              if(c && typeof c.text === "string") return c.text;
+              if(c && c.type==="output_text" && typeof c.text === "string") return c.text;
+            }
+          }
+        }
+      }
+    }catch(e){}
+    return "";
+  }
+
+  function aiExtractJsonObject(text){
+    const t = String(text||"");
+    const i = t.indexOf("{");
+    const j = t.lastIndexOf("}");
+    if(i<0 || j<0 || j<=i) return null;
+    try{ return JSON.parse(t.slice(i, j+1)); }catch(e){ return null; }
+  }
+
+  function aiBuildPrompt(){
+    const product = ($("#product").value || "").trim() || "Produkt";
+    const component = ($("#component").value || "").trim() || product;
+    const ctx = ($("#aiContext").value || "").trim();
+
+    const catBlock = CATS.map(c => {
+      const alias = (c.alias && c.alias!=="—") ? ` (${c.alias})` : "";
+      const inc = (c.includes||[]).join("; ");
+      return `${c.nr}. ${c.title}${alias}\n   Beinhaltet: ${inc}\n   Typische Fehlerfolge: ${c.failureLogic}`;
+    }).join("\n\n");
+
+    return `
+Du bearbeitest GENAU EIN Formularfeld. Jede Eingabe ist unabhängig.
+Ignoriere alle früheren Eingaben. Verwende KEINE Informationen aus vorherigen Formularfeldern.
+
+Produkt/Bauteil: ${component}
+
+AUFGABE:
+Erstelle ein realistisches technisches LASTENHEFT als Anforderungsliste.
+WICHTIG: Jede Anforderung MUSS eine mögliche Fehlerfolge haben.
+Liefere pro Zeile ein Paar: ✅ Anforderung links, ❌ Fehlerfolge rechts direkt daneben. Keine Unterordner.
+
+REGELN:
+- ✅ Anforderung: kurz, eindeutig, erfüllbar (keine Marketingtexte)
+- ❌ Fehlerfolge: konkret (was passiert, wenn NICHT erfüllt?)
+- B-Bewertung nur für ❌:
+  - Standard: 8
+  - Gesetz/Norm/Konformität: 9
+  - Verletzungs-/Sicherheitsrisiko: 10
+- Decke ALLE Kategorien 1–13 ab (mindestens 2 Zeilen pro Kategorie, wenn sinnvoll).
+- Gib NUR JSON zurück.
+
+KATEGORIEN 1–13 (v11):
+${catBlock}
+
+KONTEXT (optional):
+${ctx || "—"}
+
+ANTWORTFORMAT (NUR JSON):
+{
+  "product":"${product.replaceAll('"','\\"')}",
+  "component":"${component.replaceAll('"','\\"')}",
+  "field":"lastenheft",
+  "rows":[
+    {"catNr":1,"reqText":"...","failText":"...","B":8}
+  ],
+  "ts":"ISO-8601"
+}
+`.trim();
+  }
+
+  async function aiGenerate(){
+    const apiKey = ($("#aiApiKey").value || "").trim();
+    const product = ($("#product").value || "").trim();
+    if(!product){ aiSetStatus("Bitte Produkt eintragen."); return; }
+    if(!apiKey){ aiSetStatus("API Key fehlt."); return; }
+
+    try{
+      localStorage.setItem("lastenheft_ai_license", ($("#aiLicense").value||"").trim());
+      localStorage.setItem("lastenheft_ai_apikey", apiKey);
+    }catch(e){}
+
+    $("#btnAiGenerate").disabled = true;
+    $("#btnAiApply").disabled = true;
+    $("#btnAiDownload").disabled = true;
+    aiSetStatus("Prüfe Lizenz …");
+
+    const ok = await validateLicense();
+    if(!ok.ok){ $("#btnAiGenerate").disabled = false; return; }
+
+    aiSetStatus("Sende Anfrage an KI …");
+
+    try{
+      const prompt = aiBuildPrompt();
+      const res = await fetch("https://api.openai.com/v1/responses", {
+        method:"POST",
+        headers: { "Content-Type":"application/json","Authorization":"Bearer " + apiKey },
+        body: JSON.stringify({ model: AI_MODEL, input: prompt })
+      });
+
+      const raw = await res.text();
+      if(!res.ok) throw new Error(`OpenAI Fehler ${res.status}:\n${raw}`);
+
+      const data = JSON.parse(raw);
+      const outText = aiGetOutputText(data);
+      const obj = aiExtractJsonObject(outText);
+
+      if(!obj || !Array.isArray(obj.rows)) throw new Error("KI-JSON ist nicht im erwarteten Schema (rows fehlt).");
+
+      aiLastJson = obj;
+      aiSetPreview(aiLastJson);
+      aiSetMeta(`${AI_MODEL} · ${new Date().toLocaleString()}`);
+      aiSetStatus("Fertig. Du kannst jetzt übernehmen.");
+      $("#btnAiApply").disabled = false;
+      $("#btnAiDownload").disabled = false;
+    }catch(err){
+      aiLastJson = null;
+      aiSetPreview(null);
+      aiSetMeta("—");
+      aiSetStatus("Fehler:\n" + (err?.message || String(err)));
+    }finally{
+      $("#btnAiGenerate").disabled = false;
+    }
+  }
+
+  function aiClear(){
+    aiLastJson = null;
+    aiSetPreview(null);
+    aiSetMeta("—");
+    aiSetStatus("");
+    $("#btnAiApply").disabled = true;
+    $("#btnAiDownload").disabled = true;
+  }
+
+  function importFromAiJson(obj, mode="replace"){
+    const rows = Array.isArray(obj.rows) ? obj.rows : [];
+    const mapped = [];
+    for(const x of rows){
+      const r = makeRow({
+        catNr: x.catNr,
+        reqText: x.reqText || "",
+        failText: x.failText || "",
+        B: x.B
+      });
+      ensureB(r);
+      mapped.push(r);
+    }
+
+    if(mode==="append") state.rows.push(...mapped);
+    else state.rows = mapped;
+
+    state.meta.product = String(obj.product || state.meta.product || "").trim();
+    state.meta.component = String(obj.component || state.meta.component || "").trim();
+    $("#product").value = state.meta.product || "";
+    $("#component").value = state.meta.component || "";
+    render();
+  }
+
+  function aiApply(){
+    if(!aiLastJson){ alert("Kein gültiger KI-Output vorhanden."); return; }
+    const mode = ($("#applyMode").value || "replace");
+    importFromAiJson(aiLastJson, mode);
+    aiSetStatus(`Übernommen ✅ (${mode==="append" ? "Anhängen" : "Ersetzen"})`);
+    $("#btnAiDownload").disabled = false;
+  }
+
+  $("#btnAiGenerate").addEventListener("click", aiGenerate);
+  $("#btnAiApply").addEventListener("click", aiApply);
+  $("#btnAiClear").addEventListener("click", aiClear);
+
+  $("#btnAiDownload").addEventListener("click", () => {
+    const obj = aiLastJson || state;
+    const fname = aiLastJson ? "lastenheft-ai-output.json" : "lastenheft-manager-current.json";
+    downloadJsonFile(fname, obj);
+  });
+
+  // init
+  loadLocal();
+  $("#product").value = state.meta.product || "";
+  $("#component").value = state.meta.component || "";
+  try{
+    $("#aiLicense").value = localStorage.getItem("lastenheft_ai_license") || "";
+    $("#aiApiKey").value = localStorage.getItem("lastenheft_ai_apikey") || "";
+  }catch(e){}
+
+  $("#product").addEventListener("input", saveLocal);
+  $("#component").addEventListener("input", saveLocal);
+
+  render();
+})();
+</script>
+</body>
+</html>
