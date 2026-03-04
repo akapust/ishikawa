@@ -1,0 +1,3490 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FMEA Trainingssoftware mit KI Unterstützung</title>
+  <style>
+    :root{
+      --blue:#1155b2; --dark:#09387a;
+      --bg:#f8fafc; --card:#fff;
+      --border:rgba(15,23,42,.12);
+      --muted:#64748b; --text:#0f172a;
+      --shadow: 0 12px 30px rgba(2,6,23,.08);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;color:var(--text);background:var(--bg)}
+    \ .wrap{max-width:100%;width:100%;margin:0 auto;padding:14px 12px 36px}
+
+    /* --- Ishikawa-like header (intro) --- */
+    .tool-intro{background:var(--bg);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);padding:18px 18px 14px;margin-bottom:14px}
+    .tool-intro-top{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap}
+    .tool-title{margin:0;color:var(--dark);font-size:20px;text-transform:uppercase;font-weight:900;letter-spacing:.4px}
+    .tool-sub{margin:6px 0 0;font-size:13px;color:var(--muted);max-width:90ch}
+    .intro-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+    .lang-switch{display:flex;gap:8px;align-items:center}
+    .tool-grid{margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .tool-box{background:#fff;border:1px solid var(--border);border-radius:12px;padding:12px 14px}
+    .tool-box h3{margin:0 0 6px 0;font-size:12px;color:var(--dark);text-transform:uppercase;font-weight:900;letter-spacing:.25px}
+    .tool-box p,.tool-box ol{margin:0;font-size:13px;color:#334155}
+    .tool-box ol{padding-left:18px}
+    .subhead{margin:10px 0 6px;font-size:12px;letter-spacing:.10em;text-transform:uppercase;color:var(--muted);font-weight:900}
+    .divider-mini{height:1px;background:var(--border);margin:10px 0;opacity:.9}
+    @media(max-width:900px){.tool-grid{grid-template-columns:1fr}}
+    /* evaluation inputs */
+    #evalTbody input.eval-inp{width:100%;padding:10px 12px;border:1px solid rgba(15,23,42,.14);border-radius:10px;font-size:14px;font-family:inherit;outline:none;background:#fff}
+    #evalTbody select.eval-sel{width:100%;padding:10px 10px;border:1px solid rgba(15,23,42,.14);border-radius:10px;font-size:14px;font-family:inherit;outline:none;background:#fff}
+
+
+    .panel{
+      background: linear-gradient(180deg, rgba(17,85,178,.10), rgba(17,85,178,0));
+      border:1px solid var(--border); border-radius: 14px;
+      padding:14px 14px; box-shadow: var(--shadow);
+    }
+    .panel + .panel{ margin-top:12px; }
+    .title{margin:0;font-size:16px;text-transform:uppercase;letter-spacing:.06em;color:var(--dark);font-weight:900}
+    .sub{margin:6px 0 0;font-size:12.5px;color:var(--muted);line-height:1.35}
+
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;padding-top:10px;border-top:1px solid rgba(15,23,42,.08);align-items:stretch}
+    @media (max-width:860px){ .grid{grid-template-columns:1fr} }
+
+    .sheet{
+      margin-top:12px;
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius: 14px;
+      overflow:hidden;
+      box-shadow: var(--shadow);
+    }
+    table{width:100%;border-collapse:collapse;table-layout:fixed}
+    thead th{
+      background: rgba(248,250,252,.95);
+      color:var(--dark);
+      font-size:11px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      font-weight:900;
+      padding:10px 10px;
+      border-bottom:1px solid rgba(15,23,42,.14);
+      border-right:1px solid rgba(15,23,42,.10);
+    }
+    thead th:last-child{border-right:none}
+    tbody td{
+      padding:6px 8px;
+      border-bottom:1px solid rgba(15,23,42,.10);
+      border-right:1px solid rgba(15,23,42,.08);
+      vertical-align:top;
+      background:#fff;
+    }
+    tbody tr:last-child td{border-bottom:none}
+    tbody td:last-child{border-right:none}
+
+    .cellbox{
+      border:1px dashed rgba(15,23,42,.18);
+      border-radius:12px;
+      padding:8px;
+      min-height:54px;
+      background: rgba(248,250,252,.7);
+    }
+    .cellbox.drag-over{ outline:2px solid rgba(17,85,178,.30); background: rgba(17,85,178,.05); }
+
+    .chips{display:flex;flex-wrap:wrap;gap:6px;align-items:flex-start}
+    .meta{color:var(--muted);font-size:12px}
+
+    .chip{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:6px 9px;border-radius:999px;
+      border:1px solid rgba(15,23,42,.12);
+      background: rgba(255,249,196,.62);
+      user-select:none;cursor:grab;max-width:100%;
+    }
+    .chip:active{cursor:grabbing}
+    .chip.dragging{opacity:.6}
+    .chip .t{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:520px;font-size:12.5px}
+    .chip .x{
+      width:18px;height:18px;border-radius:999px;
+      border:1px solid rgba(15,23,42,.14);
+      display:grid;place-items:center;
+      background:#fff;cursor:pointer;
+      line-height:1;font-size:14px;
+    }
+    .chip .tag{
+      font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.06em;
+      color:rgba(9,56,122,.85);
+      background: rgba(17,85,178,.10);
+      border:1px solid rgba(17,85,178,.18);
+      padding:3px 6px;border-radius:999px;
+    }
+    .chip.ref{ background: rgba(255,249,196,.35); border-style:dashed; }
+
+    .addline{display:flex;gap:6px;margin-top:8px}
+    .addline input{
+      flex:1;border:1px solid rgba(15,23,42,.12);
+      border-radius:10px;padding:7px 8px;font:inherit;outline:none;background:#fff;
+    }
+
+    .mini{
+      border:1px solid rgba(15,23,42,.12);
+      background:#fff;border-radius:10px;
+      padding:7px 9px;font-weight:900;font-size:11px;
+      text-transform:uppercase;cursor:pointer;white-space:nowrap;
+    }
+    .mini.primary{background:rgba(17,85,178,.10); border-color:rgba(17,85,178,.22); color:var(--dark)}
+    .mini:hover{background:rgba(17,85,178,.05)}
+    .mini.danger{color:#b91c1c;border-color:rgba(239,68,68,.35)}
+    .mini.danger:hover{background:rgba(239,68,68,.06)}
+
+    .btn{
+      border:1px solid var(--border); background:#fff; color:var(--dark);
+      padding:9px 12px; border-radius:10px; font-weight:900; font-size:11px;
+      letter-spacing:.03em; text-transform:uppercase; cursor:pointer;
+      display:inline-flex; align-items:center; gap:8px;
+      box-shadow: 0 6px 14px rgba(2,6,23,.06);
+    }
+    .btn:hover{ border-color: rgba(17,85,178,.35); background: rgba(17,85,178,.05); transform: translateY(-1px); }
+    .btn.primary{ background: var(--blue); border-color: var(--blue); color:#fff; }
+    .btn.primary:hover{ background: var(--dark); border-color: var(--dark); }
+    .btn.danger{ border-color: rgba(239,68,68,.35); color:#b91c1c; }
+    .btn.danger:hover{ background: rgba(239,68,68,.06); border-color: rgba(239,68,68,.55); }
+
+    .row-actions{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap}
+    .toolbar{display:flex; gap:10px; flex-wrap:wrap; justify-content:space-between; align-items:center;
+      margin-top:10px; padding-top:10px; border-top:1px solid rgba(15,23,42,.08); }
+
+    select{
+      width:100%;
+      border:1px solid rgba(15,23,42,.12);
+      border-radius:10px;
+      padding:8px 10px;
+      font:inherit;
+      background:#fff;
+      outline:none;
+    }
+    select:focus{ border-color: rgba(17,85,178,.45); box-shadow: 0 0 0 3px rgba(17,85,178,.10); }
+    .label{
+      display:block;
+      font-size:11px;
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      color:var(--dark);
+      margin:0 0 6px;
+    }
+
+    .section{ margin-top: 12px; padding-top: 12px; border-top: 2px solid rgba(17,85,178,.22); }
+    .section-title{ margin:0 0 6px; font-size: 13px; color: var(--dark); text-transform: uppercase; font-weight: 900; letter-spacing:.25px; }
+    .section-sub{ margin:0 0 12px; font-size: 13px; color: var(--muted); }
+
+    .measure-draft{
+      border: 1px solid rgba(15,23,42,.12);
+      border-radius: 14px;
+      background:#fff;
+      padding: 12px 14px;
+      box-shadow: 0 10px 24px rgba(2,6,23,.06);
+    }
+    .draft-grid{ display:grid; grid-template-columns: 1.2fr .6fr .6fr; gap: 10px; align-items:end; }
+    @media(max-width: 900px){ .draft-grid{ grid-template-columns: 1fr; } }
+
+    .field label{
+      display:block;
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      color:#334155;
+      letter-spacing:.2px;
+      margin-bottom: 6px;
+    }
+    .field input, .field textarea, .field select{
+      width: 100%;
+      padding: 10px 12px;
+      border:1px solid rgba(15,23,42,.14);
+      border-radius: 10px;
+      font-size: 14px;
+      font-family: inherit;
+      outline:none;
+      background:#fff;
+    }
+    .field textarea{ min-height: 84px; resize: vertical; }
+
+    .draft-actions{
+      margin-top: 10px;
+      display:flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content:flex-end;
+      border-top: 1px solid rgba(15,23,42,.08);
+      padding-top: 10px;
+    }
+    .hint-mini{ font-size: 12px; color: var(--muted); margin-top: 8px; }
+
+    .measures-list{
+      margin-top: 12px;
+      border:1px solid rgba(15,23,42,.12);
+      border-radius: 14px;
+      background:#fff;
+      overflow:hidden;
+      box-shadow: 0 10px 24px rgba(2,6,23,.06);
+    }
+    .measures-head{
+      padding: 10px 14px;
+      background: rgba(248,250,252,.95);
+      border-bottom: 1px solid rgba(15,23,42,.08);
+      display:flex;
+      justify-content: space-between;
+      align-items:center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .measures-sub{ font-size: 12px; color: var(--muted); font-weight: 800; margin-top: 4px; }
+
+    .measures-table{ width:100%; border-collapse: collapse; }
+    .measures-table th, .measures-table td{
+      padding: 10px 14px;
+      border-bottom: 1px solid rgba(15,23,42,.06);
+      vertical-align: top;
+      font-size: 13px;
+    }
+    tr[draggable="true"]{cursor:grab}
+    tr.dragging{opacity:.55}
+
+    .measures-table th{
+      text-align:left;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing:.2px;
+      color:#334155;
+      background: rgba(248,250,252,.8);
+    }
+
+    .status-pill{
+      display:inline-flex; align-items:center; gap: 8px;
+      border-radius: 999px; padding: 5px 10px;
+      border: 1px solid rgba(15,23,42,.12);
+      font-size: 12px; font-weight: 900; white-space: nowrap;
+      background:#fff;
+    }
+    .status-open{ border-color: rgba(37,99,235,.30); background: rgba(37,99,235,.06); color: #1d4ed8; }
+    .status-done{ border-color: rgba(22,163,74,.30); background: rgba(22,163,74,.08); color: #15803d; }
+    .status-drop{ border-color: rgba(239,68,68,.28); background: rgba(239,68,68,.08); color: #b91c1c; }
+
+    .chipsbar{ display:flex; gap:8px; flex-wrap:wrap; }
+    .chipfilter{
+      display:inline-flex;align-items:center;gap:8px;border-radius:999px;
+      padding:6px 10px;border:1px solid rgba(15,23,42,.12);background:#fff;
+      font-size:12px;font-weight:900;cursor:pointer;user-select:none;white-space:nowrap;
+    }
+    .chipfilter.active{ border-color: rgba(17,85,178,.45); color: var(--blue); background: rgba(17,85,178,.06); }
+
+    .mini-btn{
+      border: 1px solid rgba(15,23,42,.12);
+      background:#fff;
+      border-radius: 10px;
+      padding: 8px 10px;
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing:.2px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .mini-btn:hover{ border-color: rgba(17,85,178,.45); color: var(--blue); background: rgba(17,85,178,.06); }
+    .mini-btn.danger{ border-color: rgba(239,68,68,.30); color:#b91c1c; }
+    .mini-btn.danger:hover{ background: rgba(239,68,68,.08); border-color: rgba(239,68,68,.45); color:#b91c1c; }
+
+    .ai-assistant{ margin-top: 12px; padding-top: 12px; border-top: 2px solid rgba(17,85,178,.22); }
+    .ai-card{ border: 1px solid rgba(15,23,42,.12); border-radius: 14px; background:#fff; overflow:hidden; box-shadow: 0 10px 24px rgba(2,6,23,.06); }
+    .ai-card-head{ padding: 10px 14px; background: rgba(248,250,252,.95); border-bottom: 1px solid rgba(15,23,42,.08); display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; }
+    .ai-card-body{ padding: 12px 14px; }
+    .ai-actions{ display:flex; gap: 10px; flex-wrap: wrap; align-items:center; justify-content:flex-end; margin-top: 10px; }
+    .ai-status{ margin-top: 10px; font-size: 12px; color: var(--muted); white-space: pre-wrap; }
+    .ai-preview{
+      margin:10px 0 0;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 12px;
+      background: rgba(248,250,252,.9);
+      border: 1px solid rgba(15,23,42,.12);
+      border-radius: 14px;
+      padding: 12px;
+      overflow: auto;
+      max-height: 420px;
+    }
+  
+  /* ==== Finale FMEA Formblatt (VDA/AIAG) ==== */
+  .final-formblatt{ margin-top:22px; }
+  .final-formblatt .ff-head{ display:flex; align-items:flex-start; justify-content:space-between; gap:16px; flex-wrap:wrap; border-bottom:2px solid var(--ink); padding-bottom:10px; }
+  .final-formblatt .ff-title{ margin:0; font-size:20px; font-weight:900; letter-spacing:-0.01em; }
+  .final-formblatt .ff-sub{ margin:4px 0 0 0; color: var(--muted); font-size:13px; }
+  .final-formblatt .ff-meta{ display:grid; grid-template-columns: repeat(4, minmax(160px, 1fr)); gap:10px 12px; align-items:end; }
+  .final-formblatt .ff-meta label{ display:block; font-size:11px; color: var(--muted); margin-bottom:4px; text-transform:uppercase; letter-spacing:.08em; }
+  .final-formblatt .ff-meta input{ width:100%; }
+  .final-formblatt .ff-actions{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-top:12px; }
+  .final-formblatt .ff-tablewrap{ overflow:auto; border:1px solid var(--line); border-radius:16px; background: var(--card); box-shadow: var(--shadow); }
+  .final-formblatt table{ width:100%; border-collapse:collapse; font-size:12px; min-width:0; table-layout:fixed; }
+  .final-formblatt th, .final-formblatt td{ border:1px solid #cbd5e1; padding:8px; vertical-align:top; }
+  .final-formblatt thead tr{ background:#eef2ff; }
+  .final-formblatt th{ text-align:center; font-weight:900; white-space:normal; line-height:1.2; word-break:break-word; hyphens:auto; }
+  .final-formblatt .ff-col-step{ background:#f1f5f9; }
+  .final-formblatt .ff-col-risk{ background:#f8fafc; }
+  .final-formblatt .ff-col-opt{ background:#fff; }
+  .final-formblatt .ff-rating{ text-align:center; font-weight:900; width:34px; }
+  /* --- V25 tweak: make rating columns compact so the formblatt fits without horizontal scrolling --- */
+  .final-formblatt .ff-table{ width:100%; table-layout:fixed; }
+  .final-formblatt .ff-table th, .final-formblatt .ff-table td{ padding:4px 6px; font-size:11px; }
+  /* compact rating / RPZ columns */
+  .final-formblatt .ff-table th:nth-child(3),
+  .final-formblatt .ff-table td:nth-child(3),
+  .final-formblatt .ff-table th:nth-child(7),
+  .final-formblatt .ff-table td:nth-child(7),
+  .final-formblatt .ff-table th:nth-child(10),
+  .final-formblatt .ff-table td:nth-child(10),
+  .final-formblatt .ff-table th:nth-child(14),
+  .final-formblatt .ff-table td:nth-child(14){ width:42px; }
+  .final-formblatt .ff-table th:nth-child(11),
+  .final-formblatt .ff-table td:nth-child(11),
+  .final-formblatt .ff-table th:nth-child(15),
+  .final-formblatt .ff-table td:nth-child(15){ width:64px; }
+  /* allow text columns to wrap nicely */
+  .final-formblatt .ff-table td{ word-break:break-word; hyphens:auto; }
+
+  .final-formblatt .ff-ap{ display:inline-block; padding:3px 8px; border-radius:999px; font-weight:900; font-size:11px; border:1px solid #cbd5e1; }
+  .final-formblatt .ff-ap.h{ background:#fecaca; border-color:#991b1b; color:#991b1b; }
+  .final-formblatt .ff-ap.m{ background:#fef08a; border-color:#854d0e; color:#854d0e; }
+  .final-formblatt .ff-ap.l{ background:#bbf7d0; border-color:#166534; color:#166534; }
+  .final-formblatt .ff-cell-muted{ color: var(--muted); }
+  .final-formblatt .ff-textarea{ width:100%; min-height:42px; resize:vertical; }
+  .final-formblatt .ff-text{ white-space:pre-wrap; word-break:break-word; line-height:1.25; }
+  .final-formblatt .cause-text{ font-weight:600; color:#0f172a; }
+  .final-formblatt .action-text{ color:#2563eb; font-weight:600; }
+  .final-formblatt .ff-edit{ outline: 2px solid transparent; outline-offset: 2px; }
+  .final-formblatt .ff-edit:focus{ outline-color: rgba(37,99,235,.35); }
+
+  /* Risk highlight (screen + print) */
+  .final-formblatt .risk-h{ background: rgba(254,202,202,.95); color:#991b1b; border-color: rgba(153,27,27,.35) !important; }
+  .final-formblatt .risk-m{ background: rgba(254,240,138,.95); color:#854d0e; border-color: rgba(133,77,14,.28) !important; }
+  .final-formblatt .risk-l{ background: rgba(187,247,208,.95); color:#166534; border-color: rgba(22,101,52,.22) !important; }
+
+  .final-formblatt .ff-rpz{ font-weight:900; }
+
+  .final-formblatt .ff-legend{ padding:10px 12px; font-size:12px; color: var(--muted); }
+  .final-formblatt .ff-mtext{ font-weight:700; }
+.final-formblatt .ff-mmeta{ color: var(--muted); font-size:11px; margin-top:4px; line-height:1.2; }
+.final-formblatt .ff-mrow + .ff-mrow{ margin-top:6px; padding-top:6px; border-top:1px dashed rgba(100,116,139,.35); }
+@media print{
+    .no-print{ display:none !important; }
+    @page{ size: A3 landscape; margin: 10mm; }
+    body{ background:white; }
+    .wrap{ box-shadow:none !important; }
+    .final-formblatt .ff-tablewrap{ box-shadow:none; border-radius:0; }
+  }
+
+
+  /* --- V23: Formblatt (Ansicht) --- */
+  .final-formblatt .ff-meta{ display:none; } /* legacy inputs hidden (V21) */
+  .final-formblatt .ff-meta-view{ display:grid; grid-template-columns: repeat(4, minmax(160px, 1fr)); gap:10px 12px; align-items:stretch; }
+  .final-formblatt .ff-meta-item{ border:1px solid var(--border); border-radius:10px; padding:10px 12px; background:#fff; }
+  .final-formblatt .ff-meta-label{ font-size:11px; color: var(--muted); margin-bottom:4px; text-transform:uppercase; letter-spacing:.08em; font-weight:900; }
+  .final-formblatt .ff-meta-value{ font-size:13px; color:#0f172a; font-weight:700; min-height:18px; }
+  .final-formblatt tr.rpz-high{ background: rgba(239, 68, 68, .10); }
+  .final-formblatt tr.rpz-low{ background: rgba(34, 197, 94, .10); }
+  .final-formblatt .rpz-chip{ display:inline-block; padding:2px 8px; border-radius:999px; font-size:11px; font-weight:900; border:1px solid var(--border); vertical-align:baseline; }
+  .final-formblatt .rpz-chip.rpz-high{ background: rgba(239, 68, 68, .12); }
+  .final-formblatt .rpz-chip.rpz-low{ background: rgba(34, 197, 94, .12); }
+
+
+    /* Lastenheft (Block 1) */
+    .lh-table{ width:100%; border-collapse:collapse; font-size:13px; }
+    .lh-table th, .lh-table td{ border:1px solid #e5e7eb; padding:10px; vertical-align:top; }
+    .lh-table thead th{ background:#f3f4f6; text-align:left; font-weight:800; }
+    .lh-sel{ width:100%; padding:10px; border:1px solid #d1d5db; border-radius:12px; background:#fff; font-weight:700; }
+    .lh-sub{ margin-top:6px; font-size:12px; color:#6b7280; }
+
+  
+/* V25 patch: measures section header not needed */
+section[aria-label="Ableitung von Maßnahmen"] > .section-title,
+section[aria-label="Ableitung von Maßnahmen"] > .section-sub{ display:none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+
+  <section class="tool-intro">
+    <div class="tool-intro-top">
+      <div>
+        <h2 class="tool-title" data-i18n="title">FMEA Formblatt (Verknüpfen)</h2>
+        <p class="tool-sub" data-i18n="subtitle">
+          Funktion + Fehler je Zeile, Fehlerursachen per Referenz verknüpfen (ohne Kopie) – inkl. KI‑Vorschläge und Maßnahmenableitung.
+        </p>
+      </div>
+
+      <div class="intro-actions">
+        <div class="lang-switch" aria-label="Language switch">
+          <button type="button" class="btn" id="btnLangDE">DE</button>
+          <button type="button" class="btn" id="btnLangEN">EN</button>
+        </div>
+        <a class="btn" href="https://tools.quality.de/" data-i18n="backHome">Zurück zur Startseite</a>
+      </div>
+    </div>
+
+    <div class="tool-grid">
+      <div class="tool-box">
+        <h3 data-i18n="boxGoalTitle">Ziel</h3>
+        <p data-i18n="boxGoalText">Fehler systematisch aufnehmen, Ursachen verknüpfen, bewerten (A/E) und daraus Vermeidungs- und Entdeckungsmaßnahmen ableiten.</p>
+      </div>
+
+      <div class="tool-box">
+        <h3 data-i18n="boxHowTitle">Vorgehen</h3>
+        <ol>
+          <li data-i18n="step1">FMEA‑Typ wählen und ein Systemelement anlegen.</li>
+          <li data-i18n="step2">Zeilen anlegen: Funktion + Fehler.</li>
+          <li data-i18n="step3">Fehlerursachen anlegen und per Drag‑&‑Drop zu Fehlern verknüpfen.</li>
+          <li data-i18n="step4">Ursachen bewerten (A/E) und je Ursache Vermeidungs‑ & Entdeckungsmaßnahme erfassen.</li>
+          <li data-i18n="step5">Optional: KI Ursachen generieren und übernehmen.</li>
+        </ol>
+      </div>
+
+      <div class="tool-box">
+        <h3 data-i18n="boxBenefitTitle">Nutzen</h3>
+        <p data-i18n="boxBenefitText">Ein Cause‑Datensatz kann mit mehreren Fehlern verbunden werden. Bewertung & Maßnahmen bleiben konsistent im Export/Import erhalten.</p>
+      </div>
+
+      <div class="tool-box tool-privacy">
+        <h3 data-i18n="boxPrivacyTitle">Datenschutz</h3>
+        <h4 class="subhead" data-i18n="privacyNoApiTitle">Datenschutz (ohne API/KI)</h4>
+        <p data-i18n="privacyNoApiText">Dieses Tool arbeitet vollständig im Browser. Daten werden lokal gespeichert und optional als JSON exportiert/importiert.</p>
+        <div class="divider-mini"></div>
+        <h4 class="subhead" data-i18n="privacyApiTitle">Datenschutz (mit API/KI – Premium)</h4>
+        <p data-i18n="privacyApiText">Bei Nutzung der KI werden nur die ausgewählten Inhalte aus deinem Browser an die OpenAI‑API übertragen. API‑Key wird nicht serverseitig gespeichert; Lizenz dient nur zur Freischaltung.</p>
+      </div>
+    </div>
+  </section>
+
+  
+  <div class="panel" style="background:#fff;">
+    <h2 class="title">BLOCK 1 – Eingabe: FMEA‑Art & Fokuselement</h2>
+  </div>
+
+  <div class="panel">
+<div class="grid">
+      <div class="cellbox" style="min-height:0">
+        <div class="label" data-i18n="fmeaTypeLabel">FMEA-Typ</div>
+        <select id="fmeaType">
+          <option value="K-FMEA">K-FMEA</option>
+          <option value="P-FMEA">P-FMEA</option>
+        </select>
+        <div class="meta" id="typeHint" style="margin-top:6px" data-i18n="typeHint">K-FMEA: Konstruktion/Produkt • P-FMEA: Prozess</div>
+      </div>
+
+      <div class="cellbox" style="min-height:0">
+        <div class="label" data-i18n="systemElementLabel">Systemelement</div>
+        <div class="chips" id="systemChip"></div>
+        <div class="addline">
+          <input type="text" id="systemInput" placeholder="+ Fokuselement anlegen…" />
+          <button class="mini primary" id="systemAdd" type="button">+ Fokuselement</button>
+        </div>
+        <div class="meta" id="systemHint" style="margin-top:6px">K-FMEA: Fokuselement (Bauteil/Subsystem) • P-FMEA: Fokuselement (Tätigkeitschritt)</div>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <div><button class="btn primary" id="addRow">+ Neue Zeile</button></div>
+      <div class="meta">Tipp: Ursache anklicken → Draft wird gefüllt.</div>
+    </div>
+  
+    <div class="panel" style="margin-top:12px;">
+      <div class="tool-box">
+        <h3>Lastenheft-Import (JSON) – Anforderung / Fehlerfolge / B</h3>
+        <p class="meta" style="margin:6px 0 10px 0">
+          Lade ein Lastenheft-JSON hoch. Danach kannst du in BLOCK 2 je Fehler eine Fehlerfolge verknüpfen.
+          Mit der Verknüpfung werden <strong>Anforderung</strong>, <strong>Fehlerfolge</strong> und <strong>B</strong> automatisch ins Formblatt übernommen.
+        </p>
+
+        <div class="addline" style="align-items:center">
+          <input id="lhFile" type="file" accept="application/json" />
+          <button class="mini" id="lhClear" type="button">Lastenheft entfernen</button>
+          <div class="meta" id="lhMeta" style="margin-left:auto">— kein Lastenheft geladen —</div>
+        </div>
+
+        <div class="divider-mini"></div>
+
+        <div class="sheet" style="margin:0">
+          <table class="lh-table">
+            <thead>
+              <tr>
+                <th style="width:38%">Anforderung</th>
+                <th>Fehlerfolge</th>
+                <th style="width:80px" title="Bedeutung">B</th>
+              </tr>
+            </thead>
+            <tbody id="lhTbody">
+              <tr><td colspan="3" class="ff-cell-muted">— Noch keine Lastenheft-Daten —</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="meta" style="margin-top:10px">
+          Hinweis: Der Import erwartet ein JSON mit <code>rows[]</code> (z.B. Felder <code>reqText</code>, <code>failText</code>, <code>B</code>). Nach dem Upload erscheinen die Einträge sofort hier.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="panel" style="background:#fff;">
+    <h2 class="title">BLOCK 2 – Eingabe: Funktion · Fehler · Fehlerursache(n)</h2>
+  </div>
+
+  <div class="sheet">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:24%" data-i18n="thFunction">Funktion</th>
+          <th style="width:24%" data-i18n="thError">Fehler</th>
+          <th data-i18n="thCauses">Fehlerursache(n)</th>
+          <th style="width:22%">Lastenheft-Verknüpfung</th>
+          <th style="width:170px" data-i18n="thAction">Aktion</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+
+
+  <div class="panel" style="background:#fff;">
+    <h2 class="title">BLOCK 3 – Bewertung & Maßnahmen je Ursache</h2>
+  </div>
+
+<div class="panel" style="background:#fff;">
+    <section class="section" aria-label="Bewertung Fehlerursachen">
+      <h3 class="section-title" data-i18n="evalTitle">Bewertung der Fehlerursachen (A/E) + Maßnahmen je Ursache</h3>
+      <p class="section-sub" data-i18n="evalSub">
+        Jede Fehlerursache ist eine Zeile. Werte <strong>A</strong> und <strong>E</strong> (1–10) bewerten die Ursache.
+        Zusätzlich: Vermeidungsmaßnahme (A) und Entdeckungsmaßnahme (E) – jeweils mit 1–10.
+      </p>
+
+      <div class="triage-box">
+        <div class="triage-head">
+          <div>
+            <div class="section-title" style="margin:0" data-i18n="evalListTitle">Ursachenliste</div>
+            <div class="triage-meta" id="evalMeta">—</div>
+          </div>
+        </div>
+
+        <table class="triage-table" aria-label="Bewertungstabelle">
+          <thead>
+            <tr>
+              <th data-i18n="thCause">Fehlerursache</th>
+              <th data-i18n="thAvoidIst">Vermeidungsmaßnahme (Ist)</th>
+              <th style="width:90px" data-i18n="thAvoidAIst">A (Ist)</th>
+              <th data-i18n="thAvoidSoll">Vermeidungsmaßnahme (Soll)</th>
+              <th style="width:90px" data-i18n="thAvoidASoll">A (Soll)</th>
+              <th data-i18n="thDetectIst">Entdeckungsmaßnahme (Ist)</th>
+              <th style="width:90px" data-i18n="thDetectEIst">E (Ist)</th>
+              <th data-i18n="thDetectSoll">Entdeckungsmaßnahme (Soll)</th>
+              <th style="width:90px" data-i18n="thDetectESoll">E (Soll)</th>
+</tr>
+          </thead>
+          <tbody id="evalTbody"></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <div class="panel" style="background:#fff;">
+    <section class="section" aria-label="Ableitung von Maßnahmen">
+      <h3 class="section-title" data-i18n="measuresTitle">Ableitung von Maßnahmen</h3>
+      <p class="section-sub"><span data-i18n="measuresSub">Maßnahmen sind per <strong>causeId</strong> mit der Fehlerursache verknüpft.</span></p>
+      <div class="measure-draft">
+        <div class="draft-grid">
+          <div class="field">
+            <label>Bezug (Fehlerursache)</label>
+            <input id="draftCauseRef" type="text" readonly value="—" />
+            <div class="hint-mini">Klicke eine Ursache in der Tabelle an.</div>
+          </div>
+          <div class="field">
+            <label>Maßnahmenart</label>
+            <select id="draftType">
+              <option value="avoid">Vermeidungsmaßnahme (A)</option>
+              <option value="detect">Entdeckungsmaßnahme (E)</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>Phase</label>
+            <select id="draftPhase">
+              <option value="soll">Soll</option>
+              <option value="ist">Ist</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>Termin</label>
+            <input id="draftDue" type="date" />
+          </div>
+        </div>
+
+        <div class="draft-grid" style="margin-top:10px; grid-template-columns: .6fr .6fr .6fr 1.2fr;">
+          <div class="field">
+            <label>Owner (Bereich)</label>
+            <input id="draftOwner" type="text" placeholder="z.B. Qualität / Produktion" />
+          </div>
+          <div class="field">
+            <label>Verantwortung</label>
+            <input id="draftResp" type="text" placeholder="z.B. Name / Rolle" />
+          </div>
+
+          <div class="field">
+            <label>Status</label>
+            <select id="draftStatus">
+              <option value="open">Offen</option>
+              <option value="done">Abgeschlossen</option>
+              <option value="drop">Verworfen</option>
+            </select>
+          </div>
+<div class="field">
+            <label>System / Zeile (Info)</label>
+            <input id="draftRowInfo" type="text" readonly value="—" />
+          </div>
+        </div>
+
+        <div class="field" style="margin-top:10px;">
+          <label>Maßnahme</label>
+          <textarea id="draftMeasure" placeholder="Welche Maßnahme reduziert/prüft diese Ursache?"></textarea>
+        </div>
+
+        <div class="field" style="margin-top:10px;">
+          <label>Nachweis / Wirksamkeit</label>
+          <textarea id="draftEvidence" placeholder="Prüfung, KPI, Audit, Test, etc." style="min-height:72px;"></textarea>
+        </div>
+
+        <div class="draft-actions">
+          <button type="button" class="btn primary" id="btnSaveDraft">In Maßnahmenliste speichern</button>
+          <button type="button" class="btn" id="btnClearDraft">Eingabe leeren</button>
+          <button type="button" class="btn" id="btnSeedFromAllCauses">Aus allen Ursachen Vorschläge</button>
+        </div>
+        <div class="hint-mini">„Vorschläge“ = pro Ursache (wenn noch keine Maßnahme existiert) eine leere offene Maßnahme.</div>
+      </div>
+
+      <div class="measures-list">
+        <div class="measures-head">
+          <div>
+            <div class="section-title" style="margin:0">Maßnahmenliste</div>
+            <div class="measures-sub" id="measuresMeta">—</div>
+          </div>
+          <div class="chipsbar">
+            <span class="chipfilter active" data-mfilter="all">Alle</span>
+            <span class="chipfilter" data-mfilter="open">Offen</span>
+            <span class="chipfilter" data-mfilter="done">Abgeschlossen</span>
+            <span class="chipfilter" data-mfilter="drop">Verworfen</span>
+          </div>
+        </div>
+
+        <table class="measures-table">
+          <thead>
+            <tr>
+              <th style="width:260px">Bezug (Ursache)</th>
+              <th style="width:150px">Art</th>
+              <th>Maßnahme</th>
+              <th style="width:260px">Nachweis</th>
+              <th style="width:220px">Owner / Verantwortung</th>
+              <th style="width:120px">Termin</th>
+              <th style="width:160px">Status</th>
+              <th style="width:260px; text-align:right">Aktionen</th>
+            </tr>
+          </thead>
+          <tbody id="measuresTbody"></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <div class="panel" style="background:#fff;border:1px solid var(--border);">
+    <div class="toolbar" style="border-top:none;margin-top:0;padding-top:0">
+      <div class="left"><span class="meta">Datei-Aktionen</span></div>
+      <div class="right" style="display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end">
+        <button class="btn" id="saveJson" data-i18n="btnSaveJson">JSON Speichern</button>
+        <button class="btn" id="loadJson" data-i18n="btnLoadJson">JSON Laden</button>
+        <input type="file" id="file" accept="application/json" style="display:none">
+        <button class="btn danger" id="reset" data-i18n="btnReset">Reset</button>
+      </div>
+    </div>
+
+    
+
+    <div class="panel" style="background:#fff; margin-top:12px;">
+      <h2 class="title">BLOCK 4 – Formblatt (VDA/AIAG)</h2>
+    </div>
+
+    <section class="panel final-formblatt" id="finalFormblatt" aria-label="Finale FMEA Formblatt">
+      <div class="panel-head">
+        <div>
+          <div class="kicker">Finale FMEA Formblatt</div>
+          <h2 class="panel-title">FMEA Formblatt (VDA/AIAG)</h2>
+          <p class="panel-sub">Ansicht aus deinen aktuellen Einträgen (Blöcke 1–3) · RPZ automatisch berechnet · keine Eingaben im Formblatt.</p>
+        </div>
+        <div class="panel-actions no-print">
+          <button class="btn" id="ffRefresh">Aktualisieren</button>
+          <button class="btn" id="ffPrint">Drucken / PDF</button>
+        </div>
+      </div>
+
+      <div class="panel-body">
+        <div class="ff-head">
+          <div class="header-info">
+            <h3 class="ff-title">FMEA Formblatt (Prozess)</h3>
+            <p class="ff-sub">Nach VDA / AIAG Standard · automatisch aus dem Projekt generiert</p>
+          </div>
+
+          <div class="ff-meta-view" aria-label="Formblatt-Metadaten">
+            <div class="ff-meta-item"><div class="ff-meta-label">FMEA‑Nr.</div><div class="ff-meta-value" id="ffNoV">—</div></div>
+            <div class="ff-meta-item"><div class="ff-meta-label">Bauteil</div><div class="ff-meta-value" id="ffPartV">—</div></div>
+            <div class="ff-meta-item"><div class="ff-meta-label">Prozess / OP</div><div class="ff-meta-value" id="ffProcessV">—</div></div>
+            <div class="ff-meta-item"><div class="ff-meta-label">Datum</div><div class="ff-meta-value" id="ffDateV">—</div></div>
+          </div>
+        </div>
+
+        <div class="ff-table-wrap">
+          <table class="ff-table">
+            <thead>
+              <tr>
+                <th>Anforderung</th>
+                <th>Fehlerfolge</th>
+                <th class="ff-col-risk" title="Bedeutung">B</th>
+                <th>Funktion</th>
+                <th>Fehler</th>
+                <th>Fehlerursache</th>
+                <th class="ff-col-risk" title="Auftreten">A</th>
+                <th>Vermeidungsmaßnahme (Ist)</th>
+                <th>Entdeckungsmaßnahmen (Ist)</th>
+                <th class="ff-col-risk" title="Entdeckung (Ist)">E</th>
+                <th class="ff-col-risk" title="RPZ (Ist)">RPZ (Ist)</th>
+                <th>Vermeidungsmaßnahme (Soll)</th>
+                <th>Entdeckungsmaßnahmen (Soll)</th>
+                <th class="ff-col-risk" title="Entdeckung (Soll)">E</th>
+                <th class="ff-col-risk" title="RPZ (Soll)">RPZ (Soll)</th>
+              </tr>
+            </thead>
+            <tbody id="ffTbody">
+              <tr><td colspan="15" class="ff-cell-muted">— Noch keine Ursachen vorhanden —</td></tr>
+            </tbody>
+          </table>
+
+          <div class="ff-legend">
+            <strong>Hinweis:</strong> Das Formblatt ist eine reine Ansicht. RPZ = B × A × E. Zeile wird <span class="rpz-chip rpz-high">hellrot</span> markiert, wenn RPZ &gt; 100 (Ist oder Soll), sonst <span class="rpz-chip rpz-low">grünlich</span>.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="panel" style="background:#fff; margin-top:12px;">
+      <h2 class="title">BLOCK 5 – AI / KI</h2>
+    </div>
+
+    <section class="ai-assistant" aria-label="KI Assistent">
+      <h3 class="section-title">KI Assistent – Fehlerursachen finden</h3>
+      <p class="section-sub">
+        Wie im Ishikawa/Mindmap-Tool: Lizenz + API‑Key lokal im Browser, danach Ursachen je Zeile generieren und direkt verknüpfen.
+      </p>
+
+      <div class="ai-card">
+        <div class="ai-card-head">
+          <div class="section-title" style="margin:0">KI Einstellungen</div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; align-items:center;">
+            <button type="button" class="mini-btn" id="btnAiContextFromTool">Kontext aus Tool</button>
+          </div>
+        </div>
+
+        <div class="ai-card-body">
+          <div class="draft-grid" style="grid-template-columns:1fr 1fr; align-items:end;">
+            <div class="field">
+              <label for="aiLicense">Lizenzschlüssel</label>
+              <input id="aiLicense" type="password" placeholder="••••" />
+              <div class="hint-mini">Erforderlich, um den KI‑Assistenten zu aktivieren.</div>
+            </div>
+            <div class="field">
+              <label for="aiApiKey">OpenAI API Key</label>
+              <input id="aiApiKey" type="password" placeholder="sk-…" />
+              <div class="hint-mini">Der Key bleibt lokal im Browser und wird nicht serverseitig gespeichert.</div>
+            </div>
+            <div class="field">
+              <label for="aiModel">AI Model</label>
+              <select id="aiModel">
+                <option value="gpt-5.2">gpt-5.2 (Standard)</option>
+                <option value="gpt-5.1">gpt-5.1</option>
+                <option value="gpt-5">gpt-5</option>
+                <option value="gpt-4.1">gpt-4.1</option>
+                <option value="gpt-4o">gpt-4o</option>
+                <option value="gpt-4o-mini">gpt-4o-mini</option>
+                <option value="o4-mini">o4-mini</option>
+                <option value="o3-mini">o3-mini</option>
+              </select>
+              <div class="hint-mini">Wird lokal gespeichert und nur für API-Anfragen verwendet.</div>
+            </div>
+            <div class="field">
+              <label for="aiGenMode">Bei erneutem Generieren</label>
+              <select id="aiGenMode">
+                <option value="overwrite">Überschreiben</option>
+                <option value="append">Neu generieren (anhängen)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field" style="margin-top:10px;">
+            <label for="aiProblem">Aufgabe (kurz)</label>
+            <input id="aiProblem" type="text" value="Fehlerursachen (FMEA) vorschlagen" />
+          </div>
+
+          <div class="field" style="margin-top:10px;">
+            <label for="aiContext">Kontext (optional)</label>
+            <textarea id="aiContext" placeholder="Optional: Prozessdetails, Material, Maschine, Symptome, Messung, Randbedingungen…" style="min-height: 150px;"></textarea>
+          </div>
+
+          <div class="ai-actions">
+            <button type="button" class="btn primary" id="btnAiGenerate">Ursachen generieren</button>
+            <button type="button" class="btn" id="btnAiApply" disabled>Ins Tool übernehmen</button>
+            <button type="button" class="btn" id="btnAiDownload" disabled>JSON Download</button>
+            <button type="button" class="btn" id="btnAiClear">Zurücksetzen</button>
+          </div>
+
+          <div class="divider-mini"></div>
+
+          <div class="ai-actions">
+            <button type="button" class="btn primary" id="btnAiGenerateAvoid">Vermeidungsmaßnahmen (2 je Ursache) generieren</button>
+            <button type="button" class="btn" id="btnAiApplyAvoid" disabled>Vermeidung ins Tool übernehmen</button>
+            <button type="button" class="btn" id="btnAiDownloadAvoid" disabled>JSON Download</button>
+            <button type="button" class="btn" id="btnAiClearAvoid">Zurücksetzen</button>
+          </div>
+
+          <div class="field" style="margin-top:10px;">
+            <label for="aiApplyModeAvoid">Übernahme-Modus (Vermeidungsmaßnahmen)</label>
+            <select id="aiApplyModeAvoid">
+              <option value="append">Anhängen (bestehende Ist-Maßnahmen behalten)</option>
+              <option value="replace">Ersetzen (Ist-Maßnahmen je Ursache überschreiben)</option>
+            </select>
+          </div>
+
+          <div id="aiStatus" class="ai-status"></div>
+          <div class="meta" style="margin-top:8px;">Vorschau (Ursachen)</div>
+          <pre class="ai-preview" id="aiPreview">{ "info": "Noch nichts generiert." }</pre>
+          <div class="meta" id="aiPreviewMeta" style="margin-top:6px;">—</div>
+
+          <div class="divider-mini"></div>
+
+          <div id="aiStatusAvoid" class="ai-status"></div>
+          <div class="meta" style="margin-top:8px;">Vorschau (Vermeidungsmaßnahmen)</div>
+          <pre class="ai-preview" id="aiPreviewAvoid">{ "info": "Noch nichts generiert." }</pre>
+          <div class="meta" id="aiPreviewAvoidMeta" style="margin-top:6px;">—</div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>
+<script>
+
+(() => {
+  const STORAGE = "fmea_formblatt_final_v1";
+  const $ = (s, r=document) => r.querySelector(s);
+  const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+  const uid = (p="id") => p + Math.random().toString(16).slice(2,10) + Date.now().toString(16);
+
+  // --- i18n (DE/EN) ---
+  const LANG_KEY = "fmea_lang";
+  const I18N = {
+    de: {
+      title: "FMEA Formblatt (Verknüpfen)",
+      subtitle: "Funktion + Fehler je Zeile, Fehlerursachen per Referenz verknüpfen (ohne Kopie) – inkl. KI‑Vorschläge und Maßnahmenableitung.",
+      backHome: "Zurück zur Startseite",
+
+      boxGoalTitle: "Ziel",
+      boxGoalText: "Fehler systematisch aufnehmen, Ursachen verknüpfen, bewerten (A/E) und daraus Vermeidungs- und Entdeckungsmaßnahmen ableiten.",
+      boxHowTitle: "Vorgehen",
+      step1: "FMEA‑Typ wählen und ein Systemelement anlegen.",
+      step2: "Zeilen anlegen: Funktion + Fehler.",
+      step3: "Fehlerursachen anlegen und per Drag‑&‑Drop zu Fehlern verknüpfen.",
+      step4: "Ursachen bewerten (A/E) und je Ursache Vermeidungs‑ & Entdeckungsmaßnahme erfassen.",
+      step5: "Optional: KI Ursachen generieren und übernehmen.",
+      boxBenefitTitle: "Nutzen",
+      boxBenefitText: "Ein Cause‑Datensatz kann mit mehreren Fehlern verbunden werden. Bewertung & Maßnahmen bleiben konsistent im Export/Import erhalten.",
+      boxPrivacyTitle: "Datenschutz",
+      privacyNoApiTitle: "Datenschutz (ohne API/KI)",
+      privacyNoApiText: "Dieses Tool arbeitet vollständig im Browser. Daten werden lokal gespeichert und optional als JSON exportiert/importiert.",
+      privacyApiTitle: "Datenschutz (mit API/KI – Premium)",
+      privacyApiText: "Bei Nutzung der KI werden nur die ausgewählten Inhalte aus deinem Browser an die OpenAI‑API übertragen. API‑Key wird nicht serverseitig gespeichert; Lizenz dient nur zur Freischaltung.",
+
+      fmeaTypeLabel: "FMEA‑Typ",
+      typeHint: "K‑FMEA: Konstruktion/Produkt • P‑FMEA: Prozess",
+      systemElementLabel: "Fokuselement",
+      thFunction: "Funktion",
+      thError: "Fehler",
+      thCauses: "Fehlerursache(n)",
+      thAction: "Aktion",
+
+      evalTitle: "Bewertung der Fehlerursachen (A/E) + Maßnahmen je Ursache",
+      evalSub: "Each root cause is one row. Add as-is and to-be prevention (A) and detection (E) measures – each rated 1–10.",
+      evalListTitle: "Ursachenliste",
+      thCause: "Fehlerursache",
+      thA: "A",
+      thE: "E",
+      thAvoid: "Vermeidungsmaßnahme",
+      thAvoidIst: "Vermeidungsmaßnahme (Ist)",
+      thAvoidAIst: "A (Ist)",
+      thAvoidSoll: "Vermeidungsmaßnahme (Soll)",
+      thAvoidASoll: "A (Soll)",
+      thDetectIst: "Entdeckungsmaßnahme (Ist)",
+      thDetectEIst: "E (Ist)",
+      thDetectSoll: "Entdeckungsmaßnahme (Soll)",
+      thDetectESoll: "E (Soll)",
+
+      thAvoidA: "A",
+      thDetect: "Entdeckungsmaßnahme",
+      thDetectE: "E",
+      phAvoid: "Was verhindert die Ursache?",
+      phDetect: "Was entdeckt die Ursache?",
+
+      measuresTitle: "Ableitung von Maßnahmen",
+      measuresSub: "Maßnahmen sind per causeId mit der Fehlerursache verknüpft.",
+
+      btnSaveJson: "JSON Speichern",
+      btnLoadJson: "JSON Laden",
+      btnReset: "Reset",
+      confirmReset: "Wirklich alles löschen? (inkl. Autosave)",
+      loadError: "JSON konnte nicht geladen werden.",
+
+      aiTitle: "KI Assistent"
+    },
+    en: {
+      title: "FMEA Sheet (Linking)",
+      subtitle: "One row = function + failure. Root causes are linked by reference (no copies) – incl. AI suggestions and action derivation.",
+      backHome: "Back to home",
+
+      boxGoalTitle: "Goal",
+      boxGoalText: "Capture failures, link causes, rate them (A/E) and derive prevention & detection measures.",
+      boxHowTitle: "Workflow",
+      step1: "Select FMEA type and create one system element.",
+      step2: "Add rows: Function + Failure.",
+      step3: "Create root causes and link them to failures via drag & drop.",
+      step4: "Rate causes (A/E) and add prevention & detection measures per cause.",
+      step5: "Optional: generate causes with AI and apply.",
+      boxBenefitTitle: "Benefit",
+      boxBenefitText: "One cause record can be linked to multiple failures. Ratings & measures remain consistent in JSON export/import.",
+      boxPrivacyTitle: "Privacy",
+      privacyNoApiTitle: "Privacy (no API/AI)",
+      privacyNoApiText: "Runs fully in your browser. Data is stored locally and can be exported/imported as JSON.",
+      privacyApiTitle: "Privacy (with API/AI – Premium)",
+      privacyApiText: "When using AI, only selected content is sent from your browser to the OpenAI API. API key is not stored server-side; license only unlocks access.",
+
+      fmeaTypeLabel: "FMEA type",
+      typeHint: "K‑FMEA: Design/Product • P‑FMEA: Process",
+      systemElementLabel: "Focus element",
+      thFunction: "Function",
+      thError: "Failure",
+      thCauses: "Root cause(s)",
+      thAction: "Action",
+
+      evalTitle: "Rate root causes (A/E) + measures per cause",
+      evalSub: "Each root cause is one row. Rate A and E (1–10). Additionally: prevention measure (A) and detection measure (E) – each rated 1–10.",
+      evalListTitle: "Cause list",
+      thCause: "Root cause",
+      thA: "A",
+      thE: "E",
+      thAvoid: "Prevention measure",
+      thAvoidIst: "Prevention measure (as-is)",
+      thAvoidAIst: "A (as-is)",
+      thAvoidSoll: "Prevention measure (to-be)",
+      thAvoidASoll: "A (to-be)",
+      thDetectIst: "Detection measure (as-is)",
+      thDetectEIst: "E (as-is)",
+      thDetectSoll: "Detection measure (to-be)",
+      thDetectESoll: "E (to-be)",
+
+      thAvoidA: "A",
+      thDetect: "Detection measure",
+      thDetectE: "E",
+      phAvoid: "How to prevent the cause?",
+      phDetect: "How to detect the cause?",
+
+      measuresTitle: "Action derivation",
+      measuresSub: "Actions are linked to the root cause via causeId.",
+
+      btnSaveJson: "Save JSON",
+      btnLoadJson: "Load JSON",
+      btnReset: "Reset",
+      confirmReset: "Delete everything (including autosave)?",
+      loadError: "Could not load JSON.",
+
+      aiTitle: "AI Assistant"
+    }
+  };
+
+  let currentLang = (localStorage.getItem(LANG_KEY) || ((navigator.language||"").toLowerCase().startsWith("de") ? "de" : "en"));
+  function t(key){ return (I18N[currentLang] && I18N[currentLang][key]) ? I18N[currentLang][key] : key; }
+
+  function applyI18n(){
+    document.documentElement.lang = currentLang;
+    document.querySelectorAll("[data-i18n]").forEach(el => el.textContent = t(el.getAttribute("data-i18n")));
+    // keep HTML in measuresSub span (it contains <strong>) by setting innerHTML only when needed
+    document.querySelectorAll("[data-i18n-html]").forEach(el => el.innerHTML = t(el.getAttribute("data-i18n-html")));
+
+    // update dynamic hints
+    const typeHint = document.getElementById("typeHint");
+    if(typeHint) typeHint.textContent = t("typeHint");
+
+    // language buttons active
+    const bde = document.getElementById("btnLangDE");
+    const ben = document.getElementById("btnLangEN");
+    if(bde && ben){
+      bde.classList.toggle("primary", currentLang==="de");
+      ben.classList.toggle("primary", currentLang==="en");
+    }
+
+  }
+
+  document.getElementById("btnLangDE")?.addEventListener("click", () => { currentLang="de"; localStorage.setItem(LANG_KEY, currentLang); renderAll(); applyI18n(); });
+  document.getElementById("btnLangEN")?.addEventListener("click", () => { currentLang="en"; localStorage.setItem(LANG_KEY, currentLang); renderAll(); applyI18n(); });
+
+
+  const state = {
+    meta: { fmeaType: "K-FMEA", systemElementId: null },
+    originsDB: { func:{}, err:{}, cause:{}, system:{}, meas:{} },
+    rows: [],
+    measures: [],
+    draft: { causeId:null, causeSnapshot:"", rowId:null, rowInfo:"", type:"avoid", text:"", evidence:"", owner:"", responsible:"", due:"" },
+    eval: {},
+    lastenheft: { meta:{}, rows:[], byId:{} }
+  };
+  const drag = { kind:null, originId:null };
+
+  function makeRow(){ return { id: uid("r"), funcId: null, errId: null, causeIds: [], lhRefIds: [] }; }
+
+  // ===== Lastenheft (JSON) =====
+  function cleanKey(k){
+    return (k||"").toString().toLowerCase().replace(/[\s_\-]/g,"").replace(/[ä]/g,"ae").replace(/[ö]/g,"oe").replace(/[ü]/g,"ue").replace(/[ß]/g,"ss");
+  }
+  function pickField(obj, keys){
+    for(const k of Object.keys(obj||{})){
+      const ck = cleanKey(k);
+      if(keys.includes(ck)) return obj[k];
+    }
+    return "";
+  }
+  function normalizeLastenheft(data){
+    const out = { meta:{}, rows:[], byId:{} };
+    if(!data || typeof data !== "object") return out;
+    out.meta = (data.meta && typeof data.meta === "object") ? data.meta : {};
+    const rows = Array.isArray(data.rows) ? data.rows : (Array.isArray(data) ? data : []);
+    out.rows = rows.map((r,i) => {
+      const id = (r && (r.id || r.ID || r.Id)) ? String(r.id || r.ID || r.Id) : ("lh_" + (i+1));
+      const anforderung = String(pickField(r, ["anforderung","requirement","req","reqtext","forderung","anford","anf"]) || "").trim();
+      const fehlerfolge = String(pickField(r, ["fehlerfolge","failureeffect","failtext","folge","effect","failure","fail"]) || "").trim();
+      const Braw = pickField(r, ["b","bedeutung","severity","bewertungb"]);
+      const B = (Braw === "" || Braw === null || Braw === undefined) ? "" : Number(Braw);
+      return { id, anforderung, fehlerfolge, B: Number.isFinite(B) ? B : "" };
+    }).filter(x => x.anforderung || x.fehlerfolge);
+    return out;
+  }
+  function indexLastenheft(){
+    const lh = state.lastenheft || { meta:{}, rows:[], byId:{} };
+    lh.byId = {};
+    (lh.rows || []).forEach(r => { if(r && r.id) lh.byId[String(r.id)] = r; });
+    state.lastenheft = lh;
+  }
+
+  function renderLastenheft(){
+    const metaEl = document.getElementById("lhMeta");
+    const tbody = document.getElementById("lhTbody");
+    if(!metaEl || !tbody) return;
+
+    indexLastenheft();
+    const rows = state.lastenheft.rows || [];
+    const prod = (state.lastenheft.meta?.product || "").toString().trim();
+    const comp = (state.lastenheft.meta?.component || "").toString().trim();
+    metaEl.textContent = rows.length ? `${rows.length} Einträge${prod||comp ? " · " : ""}${[prod,comp].filter(Boolean).join(" / ")}` : "— kein Lastenheft geladen —";
+
+    if(!rows.length){
+      tbody.innerHTML = `<tr><td colspan="3" class="ff-cell-muted">— Noch keine Lastenheft-Daten —</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = rows.map(r => `
+      <tr>
+        <td>${esc(r.anforderung || "—")}</td>
+        <td>${esc(r.fehlerfolge || "—")}</td>
+        <td style="font-weight:900">${esc((r.B===""||r.B==null) ? "—" : String(r.B))}</td>
+      </tr>
+    `).join("");
+  }
+
+  async function loadLastenheftFromFile(file){
+    const txt = await file.text();
+    const data = JSON.parse(txt);
+    state.lastenheft = normalizeLastenheft(data);
+    indexLastenheft();
+    renderAll();
+  }
+
+  function esc(s){
+    return (s ?? "").toString()
+      .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;").replaceAll("'","&#039;");
+  }
+
+  function saveLocal(){
+    state.meta.fmeaType = $("#fmeaType").value;
+    try{ localStorage.setItem(STORAGE, JSON.stringify(state)); }catch(e){}
+  }
+
+  function sanitizeRefs(){
+    if(state.meta.systemElementId && !state.originsDB.system[state.meta.systemElementId]) state.meta.systemElementId = null;
+    for(const r of state.rows){
+      if(r.funcId && !state.originsDB.func[r.funcId]) r.funcId = null;
+      if(r.errId  && !state.originsDB.err[r.errId])   r.errId = null;
+      r.causeIds = Array.isArray(r.causeIds) ? r.causeIds.filter(id => !!state.originsDB.cause[id]) : [];
+
+      // Lastenheft-Links (0..n Verknüpfungen möglich)
+      if(Array.isArray(r.lhRefIds)){
+        r.lhRefIds = r.lhRefIds.map(x => (x==null ? "" : String(x))).map(x=>x.trim()).filter(Boolean);
+      }else{
+        const a = [];
+        if(r.lhRefId) a.push(String(r.lhRefId));
+        if(r.lhRefId2) a.push(String(r.lhRefId2));
+        r.lhRefIds = a.map(x=>x.trim()).filter(Boolean);
+      }
+      delete r.lhRefId; // legacy
+    }
+
+    // keep only measures that still reference existing causes; also normalize type to avoid/detect
+    state.measures = Array.isArray(state.measures)
+      ? state.measures
+          .filter(m => !m.causeId || !!state.originsDB.cause[m.causeId])
+          .map(m => ({...m, kind: (m.kind||m.type)==="detect" ? "detect" : "avoid", phase: (m.phase==="ist" ? "ist" : "soll") }))
+      : [];
+
+    // eval: keep only valid links & migrate formats (Ist/Soll)
+    state.eval = state.eval || {};
+    for(const [cid, ev0] of Object.entries(state.eval)){
+      if(!state.originsDB.cause[cid]){ delete state.eval[cid]; continue; }
+      const ev = (ev0 && typeof ev0 === "object") ? ev0 : (state.eval[cid] = {});
+
+      // migrate: legacy -> Ist/Soll lists
+      if(Array.isArray(ev.avoidIstIds) === false) ev.avoidIstIds = [];
+      if(Array.isArray(ev.avoidSollIds) === false) ev.avoidSollIds = [];
+      if(Array.isArray(ev.detectIstIds) === false) ev.detectIstIds = [];
+      if(Array.isArray(ev.detectSollIds) === false) ev.detectSollIds = [];
+
+      // legacy arrays
+      if(Array.isArray(ev.avoidIds) && ev.avoidIds.length && !ev.avoidIstIds.length) ev.avoidIstIds = ev.avoidIds.map(x=>String(x));
+      if(Array.isArray(ev.detectIds) && ev.detectIds.length && !ev.detectIstIds.length) ev.detectIstIds = ev.detectIds.map(x=>String(x));
+
+      // legacy single ids
+      if(ev.avoidId && !ev.avoidIstIds.length) ev.avoidIstIds = [String(ev.avoidId)];
+      if(ev.detectId && !ev.detectIstIds.length) ev.detectIstIds = [String(ev.detectId)];
+
+      // remove old keys to avoid confusion
+      delete ev.avoidIds; delete ev.detectIds; delete ev.avoidId; delete ev.detectId;
+
+      // filter invalid measure references
+      const hasMeas = (id) => !!state.originsDB.meas?.[id];
+      ev.avoidIstIds = (ev.avoidIstIds||[]).map(x=>String(x)).filter(hasMeas);
+      ev.avoidSollIds = (ev.avoidSollIds||[]).map(x=>String(x)).filter(hasMeas);
+      ev.detectIstIds = (ev.detectIstIds||[]).map(x=>String(x)).filter(hasMeas);
+      ev.detectSollIds = (ev.detectSollIds||[]).map(x=>String(x)).filter(hasMeas);
+
+      // migrate ratings
+      if(ev.avoidA !== undefined && ev.avoidAIst === undefined) ev.avoidAIst = ev.avoidA;
+      if(ev.detectE !== undefined && ev.detectEIst === undefined) ev.detectEIst = ev.detectE;
+      delete ev.avoidA; delete ev.detectE;
+
+      // normalize number fields
+      const normNum = (v) => (v === "" || v == null) ? "" : (Number(v) || "");
+      if(ev.avoidAIst !== undefined) ev.avoidAIst = normNum(ev.avoidAIst);
+      if(ev.avoidASoll !== undefined) ev.avoidASoll = normNum(ev.avoidASoll);
+      if(ev.detectEIst !== undefined) ev.detectEIst = normNum(ev.detectEIst);
+      if(ev.detectESoll !== undefined) ev.detectESoll = normNum(ev.detectESoll);
+    }
+  }
+
+
+  function loadLocal(){
+    try{
+      const raw = localStorage.getItem(STORAGE);
+      if(!raw) return false;
+      const parsed = JSON.parse(raw);
+      if(!parsed?.originsDB || !parsed?.rows) return false;
+
+      state.meta = {
+        fmeaType: (parsed.meta?.fmeaType || "K-FMEA").toString(),
+        systemElementId: parsed.meta?.systemElementId ? parsed.meta.systemElementId.toString() : null
+      };
+      state.originsDB = {
+        func: parsed.originsDB.func || {},
+        err: parsed.originsDB.err || {},
+        cause: parsed.originsDB.cause || {},
+        system: parsed.originsDB.system || {},
+        meas: parsed.originsDB.meas || {}
+      };
+      state.rows = Array.isArray(parsed.rows) ? parsed.rows.map(r => ({
+        id: (r.id || uid("r")).toString(),
+        funcId: r.funcId ? r.funcId.toString() : null,
+        errId:  r.errId ? r.errId.toString() : null,
+        causeIds: Array.isArray(r.causeIds) ? r.causeIds.map(x => x.toString()) : [],
+        lhRefIds: (Array.isArray(r.lhRefIds) ? r.lhRefIds.map(x=>String(x||"")).map(x=>x.trim()).filter(Boolean) : ([r.lhRefId, r.lhRefId2].filter(Boolean).map(x=>String(x).trim()).filter(Boolean)))
+      })) : [];
+
+      state.measures = Array.isArray(parsed.measures) ? parsed.measures.map(m => ({
+        id: (m.id || uid("m")).toString(),
+        causeId: m.causeId ? m.causeId.toString() : null,
+        causeSnapshot: (m.causeSnapshot||"").toString(),
+        rowId: m.rowId ? m.rowId.toString() : null,
+        rowInfo: (m.rowInfo||"").toString(),
+        kind: (m.kind || m.type || "avoid").toString(),
+        phase: (m.phase || "soll").toString(),
+        text: (m.text||"").toString(),
+        evidence: (m.evidence||"").toString(),
+        owner: (m.owner||"").toString(),
+        responsible: (m.responsible||"").toString(),
+        due: (m.due||"").toString(),
+        status: (m.status||"open").toString(),
+      })) : [];
+
+      state.draft = parsed.draft ? {
+        causeId: parsed.draft.causeId || null,
+        causeSnapshot: (parsed.draft.causeSnapshot||"").toString(),
+        rowId: parsed.draft.rowId || null,
+        rowInfo: (parsed.draft.rowInfo||"").toString(),
+        type: (parsed.draft.type||"avoid").toString(),
+        text: (parsed.draft.text||"").toString(),
+        evidence: (parsed.draft.evidence||"").toString(),
+        owner: (parsed.draft.owner||"").toString(),
+        responsible: (parsed.draft.responsible||"").toString(),
+        due: (parsed.draft.due||"").toString(),
+      } : state.draft;
+
+      state.eval = (parsed.eval && typeof parsed.eval === "object") ? parsed.eval : {};
+
+      // Lastenheft (intern normalisiert oder als Original)
+      const lhIn = parsed.lastenheft || parsed.lastenheftData || null;
+      state.lastenheft = (lhIn && Array.isArray(lhIn.rows) && (lhIn.rows[0] && (lhIn.rows[0].anforderung !== undefined || lhIn.rows[0].fehlerfolge !== undefined)))
+        ? lhIn
+        : normalizeLastenheft(lhIn || {meta:{}, rows:[]});
+      indexLastenheft();
+
+      state.lastenheft = (parsed.lastenheft && typeof parsed.lastenheft === "object") ? parsed.lastenheft : state.lastenheft;
+      indexLastenheft();
+
+      if(!state.rows.length) state.rows = [ makeRow(), makeRow() ];
+      sanitizeRefs();
+      return true;
+    }catch(e){ return false; }
+  }
+
+  function updateSystemHints(){
+    const t = $("#fmeaType").value;
+    const hint = $("#systemHint");
+    const inp = $("#systemInput");
+    if(t === "P-FMEA"){
+      hint.textContent = "P-FMEA: Fokuselement (Tätigkeitschritt) (z. B. „Schrauben anziehen“, „Reinigen“ …)";
+      inp.placeholder = "+ Tätigkeitschritt anlegen…";
+    }else{
+      hint.textContent = "K-FMEA: Fokuselement (Bauteil/Subsystem) (z. B. „Ventilgehäuse“, „Leiterplatte“ …)";
+      inp.placeholder = "+ Fokuselement anlegen…";
+    }
+    // set link select values + sub text
+    tbody.querySelectorAll("tr").forEach(tr => {
+      const rowId = tr.dataset.rowId;
+      const r = state.rows.find(x => x.id === rowId);
+            const sels = tr.querySelectorAll("select.lh-sel");
+      const subs = tr.querySelectorAll(".lh-sub[data-lh-sub]");
+      if(!r || !sels.length) return;
+      if(!Array.isArray(r.lhRefIds)) r.lhRefIds = ["",""];
+      sels.forEach((sel,i) => {
+        sel.value = r.lhRefIds[i] || "";
+        const sub = tr.querySelector(`[data-lh-sub="${i}"]`);
+        const rec = (r.lhRefIds[i] && state.lastenheft.byId?.[r.lhRefIds[i]]) ? state.lastenheft.byId[r.lhRefIds[i]] : null;
+        if(sub){
+          if(rec){
+            sub.textContent = `${rec.anforderung || "—"}  |  ${rec.fehlerfolge || "—"}  |  B:${rec.B ?? "—"}`;
+          }else{
+            sub.textContent = "—";
+          }
+        }
+      });
+    });
+
+    saveLocal();
+  }
+
+  function renderSystemChip(){
+    const host = $("#systemChip");
+    host.innerHTML = "";
+    const id = state.meta.systemElementId;
+    if(!id){
+      host.innerHTML = `<span class="meta">— Noch nichts angelegt —</span>`;
+      return;
+    }
+    const text = state.originsDB.system[id]?.text || "—";
+    host.innerHTML = `
+      <span class="chip" draggable="true" data-kind="system" data-id="${esc(id)}" title="Doppelklick = bearbeiten">
+        <span class="tag">S</span>
+        <span class="t">${esc(text)}</span>
+        <span class="x" data-system-clear="1" title="Leeren">×</span>
+      </span>
+    `;
+  }
+
+  function chipHTML(kind, id, text){
+    const tag = kind === "func" ? "F" : kind === "err" ? "E" : kind === "cause" ? "U" : kind === "system" ? "S" : kind === "lh" ? "LH" : "";
+    const refClass = kind === "cause" ? "ref" : "";
+    return `
+      <span class="chip ${refClass}" draggable="true" data-kind="${kind}" data-id="${esc(id)}">
+        <span class="tag">${tag}</span>
+        <span class="t">${esc(text || "—")}</span>
+        <span class="x" data-x="1">×</span>
+      </span>
+    `;
+  }
+
+  function measChipHTML(id, phase="ist"){
+    const rec = state.originsDB.meas?.[id];
+    const mk = rec?.kind === "detect" ? "detect" : "avoid";
+    const tag = mk === "detect" ? "E" : "A";
+    const title = mk === "detect" ? "Entdeckungsmaßnahme" : "Vermeidungsmaßnahme";
+    const ph = (phase==="soll") ? "soll" : "ist";
+    return `
+      <span class="chip ref" draggable="true" data-kind="meas" data-id="${esc(id)}" data-mkind="${esc(mk)}" data-mphase="${esc(ph)}" title="${esc(title)} (${ph.toUpperCase()}) (Doppelklick = bearbeiten)">
+        <span class="tag">${tag}</span>
+        <span class="t">${esc(rec?.text || "—")}</span>
+        <span class="x" data-mx="1" title="Entfernen">×</span>
+      </span>
+    `;
+  }
+
+  function rowInfoText(row){
+    const se = state.meta.systemElementId ? (state.originsDB.system[state.meta.systemElementId]?.text || "") : "";
+    const f = row.funcId ? (state.originsDB.func[row.funcId]?.text || "") : "";
+    const e = row.errId ? (state.originsDB.err[row.errId]?.text || "") : "";
+    const bits = [];
+    if(se) bits.push(`System: ${se}`);
+    if(f) bits.push(`Funktion: ${f}`);
+    if(e) bits.push(`Fehler: ${e}`);
+    return bits.join(" | ") || "—";
+  }
+
+  function renderTable(){
+    const tbody = $("#tbody");
+    tbody.innerHTML = "";
+
+    // Lastenheft Optionen (Anforderung / Fehlerfolge / B)
+    indexLastenheft();
+    const lhList = Array.isArray(state.lastenheft?.rows) ? state.lastenheft.rows : [];
+    const lhOpts = [`<option value="">+ Fehlerfolge hinzufügen…</option>`].concat(
+      lhList.map(r => `<option value="${esc(String(r.id))}">${esc((r.anforderung||"").slice(0,70))}${(r.anforderung||"").length>70?"…":""} · ${esc((r.fehlerfolge||"").slice(0,70))}${(r.fehlerfolge||"").length>70?"…":""} (B:${esc(String(r.B||"—"))})</option>`)
+    ).join("");
+
+    for(const r of state.rows){
+      const funcChip = r.funcId ? chipHTML("func", r.funcId, state.originsDB.func[r.funcId]?.text || "—") : `<span class="meta">— anlegen oder verknüpfen —</span>`;
+      const errChip  = r.errId  ? chipHTML("err",  r.errId,  state.originsDB.err[r.errId]?.text || "—")   : `<span class="meta">— anlegen oder verknüpfen —</span>`;
+      const causeChips = (r.causeIds && r.causeIds.length)
+        ? r.causeIds.map(id => chipHTML("cause", id, state.originsDB.cause[id]?.text || "—")).join("")
+        : `<span class="meta">— Ursachen anlegen oder verknüpfen —</span>`;
+
+      // Lastenheft-Verknüpfungen als Chips (mehrere möglich)
+      const lhIds = Array.isArray(r.lhRefIds) ? r.lhRefIds : [];
+      const uniq = Array.from(new Set(lhIds.map(x => String(x||"").trim()).filter(Boolean)));
+      const lhChips = uniq.length
+        ? uniq.map(id => {
+            const rec = state.lastenheft?.byId?.[id] || null;
+            const label = rec ? `${rec.anforderung || "—"} · ${rec.fehlerfolge || "—"} (B:${rec.B ?? "—"})` : `#${id}`;
+            // Chip wie Ursachen: gelb + X (nur Link entfernen, nicht Datensatz löschen)
+            return `
+              <span class="chip" draggable="false" data-kind="lh" data-lh-id="${esc(id)}">
+                <span class="tag">LH</span>
+                <span class="t">${esc(label)}</span>
+                <span class="x" data-lh-x="1" title="Verknüpfung entfernen">×</span>
+              </span>
+            `;
+          }).join("")
+        : `<span class="meta">— keine Fehlerfolge verknüpft —</span>`;
+
+      const tr = document.createElement("tr");
+      tr.dataset.rowId = r.id;
+      tr.innerHTML = `
+        <td>
+          <div class="cellbox" data-drop="1" data-drop-kind="func">
+            <div class="chips">${funcChip}</div>
+            <div class="addline">
+              <input type="text" data-input-kind="func" placeholder="+ Funktion anlegen…">
+              <button class="mini primary" data-add-kind="func" type="button">+ Funktion</button>
+            </div>
+          </div>
+        </td>
+        <td>
+          <div class="cellbox" data-drop="1" data-drop-kind="err">
+            <div class="chips">${errChip}</div>
+            <div class="addline">
+              <input type="text" data-input-kind="err" placeholder="+ Fehler anlegen…">
+              <button class="mini primary" data-add-kind="err" type="button">+ Fehler</button>
+            </div>
+          </div>
+        </td>
+        <td>
+          <div class="cellbox" data-drop="1" data-drop-kind="cause">
+            <div class="chips">${causeChips}</div>
+            <div class="addline">
+              <input type="text" data-causeinput="1" placeholder="+ Fehlerursache anlegen…">
+              <button class="mini primary" data-add-cause="1" type="button">+ Ursache</button>
+            </div>
+            <div class="meta" style="margin-top:8px;">Klick auf Ursache füllt den Maßnahmen-Draft.</div>
+          </div>
+        </td>
+        <td>
+          <div class="cellbox" style="min-height:0">
+            <div class="chips" data-lh-chips="1">${lhChips}</div>
+            <div class="addline" style="margin-top:8px">
+              <select class="lh-sel">${lhOpts}</select>
+              <button class="mini primary" data-lh-add="1" type="button">+ Hinzufügen</button>
+            </div>
+            <div class="lh-sub" style="margin-top:8px">Tipp: Mehrere Fehlerfolgen möglich – Chips mit × entfernen.</div>
+          </div>
+        </td>
+        <td>
+          <div class="row-actions">
+            <button class="mini primary" data-act="add" type="button">+ Zeile</button>
+            <button class="mini" data-act="dup" type="button">Dup</button>
+            <button class="mini danger" data-act="del" type="button">Del</button>
+          </div>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    }
+
+    saveLocal();
+  }
+
+
+  // Measures
+  let measuresFilter = "all";
+  let mDragId = null;
+
+  let editMeasureId = null;
+
+  function typeLabel(kind, phase){
+    const k = (kind==="detect") ? "Entdeckung" : "Vermeidung";
+    const p = (phase==="ist") ? "Ist" : "Soll";
+    return `${k} (${p})`;
+  }
+  function statusPill(s){
+    if(s==="done") return `<span class="status-pill status-done">Abgeschlossen</span>`;
+    if(s==="drop") return `<span class="status-pill status-drop">Verworfen</span>`;
+    return `<span class="status-pill status-open">Offen</span>`;
+  }
+  function measureRefText(m){
+    const c = m.causeId ? (state.originsDB.cause[m.causeId]?.text || m.causeSnapshot || "—") : (m.causeSnapshot || "—");
+    return c.length > 90 ? (c.slice(0,90) + "…") : c;
+  }
+
+  function renderDraft(){
+    $("#draftCauseRef").value = state.draft.causeSnapshot || "—";
+    $("#draftRowInfo").value = state.draft.rowInfo || "—";
+    $("#draftType").value = state.draft.type || "avoid";
+    $("#draftOwner").value = state.draft.owner || "";
+    $("#draftResp").value = state.draft.responsible || "";
+    $("#draftDue").value = state.draft.due || "";
+    $("#draftMeasure").value = state.draft.text || "";
+    $("#draftEvidence").value = state.draft.evidence || "";
+  }
+
+  
+  function renderEval(){
+    const tbody = document.getElementById("evalTbody");
+    const meta = document.getElementById("evalMeta");
+    if(!tbody || !meta){ return; }
+
+    const causeEntries = Object.entries(state.originsDB.cause || {});
+    causeEntries.sort((a,b) => (a[1]?.text||"").localeCompare(b[1]?.text||"", undefined, {sensitivity:"base"}));
+
+    meta.textContent = (currentLang==="en")
+      ? `${causeEntries.length} causes`
+      : `${causeEntries.length} Ursachen`;
+
+    const opts = Array.from({length:10}, (_,i)=>i+1).map(n=>`<option value="${n}">${n}</option>`).join("");
+
+    const getArr = (v) => Array.isArray(v) ? v.map(x=>String(x)) : [];
+    tbody.innerHTML = causeEntries.map(([id, rec]) => {
+      const ev = state.eval?.[id] || {};
+      const avoidIstIds = getArr(ev.avoidIstIds);
+      const avoidSollIds = getArr(ev.avoidSollIds);
+      const detectIstIds = getArr(ev.detectIstIds);
+      const detectSollIds = getArr(ev.detectSollIds);
+
+      return `
+        <tr data-cause-id="${id}">
+          <td>
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap">
+              <div>
+                <div style="font-weight:900">${esc(rec?.text||"")}</div>
+                <div class="muted" style="margin-top:4px">${esc(refLineForCause(id))}</div>
+              </div>
+            </div>
+          </td>
+
+          <td>
+            <div class="cellbox" data-eval-drop="1" data-eval-kind="avoid" data-eval-phase="ist">
+              <div class="chips">
+                ${(avoidIstIds && avoidIstIds.length) ? avoidIstIds.filter(mid=>state.originsDB.meas?.[mid]).map(mid=>measChipHTML(mid,"ist")).join("") : `<span class="meta">— Ist Maßnahme verknüpfen —</span>`}
+              </div>
+              <div class="addline">
+                <input type="text" data-eval-new="avoid-ist" placeholder="${esc(t('phAvoid'))}">
+                <button class="mini primary" type="button" data-eval-add="avoid-ist">+ Ist Maßnahme</button>
+              </div>
+            </div>
+          </td>
+
+          <td>
+            <select class="eval-sel" data-k="avoidAIst">
+              <option value=""></option>${opts}
+            </select>
+          </td>
+
+          <td>
+            <div class="cellbox" data-eval-drop="1" data-eval-kind="avoid" data-eval-phase="soll">
+              <div class="chips">
+                ${(avoidSollIds && avoidSollIds.length) ? avoidSollIds.filter(mid=>state.originsDB.meas?.[mid]).map(mid=>measChipHTML(mid,"soll")).join("") : `<span class="meta">— Soll Maßnahme verknüpfen —</span>`}
+              </div>
+              <div class="addline">
+                <input type="text" data-eval-new="avoid-soll" placeholder="${esc(t('phAvoid'))}">
+                <button class="mini primary" type="button" data-eval-add="avoid-soll">+ Soll Maßnahme</button>
+              </div>
+            </div>
+          </td>
+
+          <td>
+            <select class="eval-sel" data-k="avoidASoll">
+              <option value=""></option>${opts}
+            </select>
+          </td>
+
+          <td>
+            <div class="cellbox" data-eval-drop="1" data-eval-kind="detect" data-eval-phase="ist">
+              <div class="chips">
+                ${(detectIstIds && detectIstIds.length) ? detectIstIds.filter(mid=>state.originsDB.meas?.[mid]).map(mid=>measChipHTML(mid,"ist")).join("") : `<span class="meta">— Ist Maßnahme verknüpfen —</span>`}
+              </div>
+              <div class="addline">
+                <input type="text" data-eval-new="detect-ist" placeholder="${esc(t('phDetect'))}">
+                <button class="mini primary" type="button" data-eval-add="detect-ist">+ Ist Maßnahme</button>
+              </div>
+            </div>
+          </td>
+
+          <td>
+            <select class="eval-sel" data-k="detectEIst">
+              <option value=""></option>${opts}
+            </select>
+          </td>
+
+          <td>
+            <div class="cellbox" data-eval-drop="1" data-eval-kind="detect" data-eval-phase="soll">
+              <div class="chips">
+                ${(detectSollIds && detectSollIds.length) ? detectSollIds.filter(mid=>state.originsDB.meas?.[mid]).map(mid=>measChipHTML(mid,"soll")).join("") : `<span class="meta">— Soll Maßnahme verknüpfen —</span>`}
+              </div>
+              <div class="addline">
+                <input type="text" data-eval-new="detect-soll" placeholder="${esc(t('phDetect'))}">
+                <button class="mini primary" type="button" data-eval-add="detect-soll">+ Soll Maßnahme</button>
+              </div>
+            </div>
+          </td>
+
+          <td>
+            <select class="eval-sel" data-k="detectESoll">
+              <option value=""></option>${opts}
+            </select>
+          </td>
+        </tr>
+      `;
+    }).join("");
+
+    // set select values (after DOM insertion)
+    tbody.querySelectorAll("tr").forEach(tr => {
+      const id = tr.getAttribute("data-cause-id");
+      const ev = state.eval?.[id] || {};
+      tr.querySelectorAll("select.eval-sel").forEach(sel => {
+        const k = sel.getAttribute("data-k");
+        const v = ev[k];
+        if(v !== undefined && v !== null && v !== "") sel.value = String(v);
+      });
+    });
+  }
+
+  function refLineForCause(causeId){
+    // show which errors currently reference this cause (helpful, but compact)
+    const errIds = new Set();
+    state.rows.forEach(r => {
+      if((r.causeIds||[]).includes(causeId) && r.errId) errIds.add(r.errId);
+    });
+    const names = Array.from(errIds).map(id => state.originsDB.err?.[id]?.text).filter(Boolean);
+    if(!names.length) return (currentLang==="en") ? "Not linked to any error yet." : "Noch mit keinem Fehler verknüpft.";
+    const label = (currentLang==="en") ? "Linked errors:" : "Verknüpfte Fehler:";
+    return `${label} ${names.slice(0,3).join(" · ")}${names.length>3 ? " …" : ""}`;
+  }
+
+  // eval change handlers (event delegation)
+  document.addEventListener("input", (e) => {
+    const el = e.target;
+    if(!el) return;
+    const tr = el.closest && el.closest("#evalTbody tr");
+    if(!tr) return;
+    const causeId = tr.getAttribute("data-cause-id");
+    if(!causeId) return;
+    state.eval[causeId] = state.eval[causeId] || {};
+    const k = el.getAttribute("data-k");
+    if(!k) return;
+    if(el.classList.contains("eval-inp")){
+      state.eval[causeId][k] = el.value;
+      saveLocal();
+      return;
+    }
+  }, true);
+
+  document.addEventListener("change", (e) => {
+    const el = e.target;
+    if(!el) return;
+    const tr = el.closest && el.closest("#evalTbody tr");
+    if(!tr) return;
+    const causeId = tr.getAttribute("data-cause-id");
+    if(!causeId) return;
+    if(!el.classList.contains("eval-sel")) return;
+    state.eval[causeId] = state.eval[causeId] || {};
+    const k = el.getAttribute("data-k");
+    const v = el.value ? Number(el.value) : "";
+    state.eval[causeId][k] = v;
+    saveLocal();
+  }, true);
+
+  // --- Eval measures: create/link/remove + drag & drop onto causes ---
+  const evalBody = document.getElementById("evalTbody");
+
+  function parseEvalKey(key){
+    const k = String(key||"").toLowerCase();
+    const parts = k.split("-");
+    const kind = (parts[0]==="detect") ? "detect" : "avoid";
+    const phase = (parts[1]==="soll") ? "soll" : "ist";
+    return { kind, phase };
+  }
+
+  function ensureEvalLists(ev){
+    if(Array.isArray(ev.avoidIstIds) === false) ev.avoidIstIds = [];
+    if(Array.isArray(ev.avoidSollIds) === false) ev.avoidSollIds = [];
+    if(Array.isArray(ev.detectIstIds) === false) ev.detectIstIds = [];
+    if(Array.isArray(ev.detectSollIds) === false) ev.detectSollIds = [];
+  }
+
+  function getEvalList(ev, kind, phase){
+    ensureEvalLists(ev);
+    if(kind==="detect") return (phase==="soll") ? ev.detectSollIds : ev.detectIstIds;
+    return (phase==="soll") ? ev.avoidSollIds : ev.avoidIstIds;
+  }
+
+  
+function createAndLinkEvalMeasure(causeId, key, text){
+    const t = (text||"").trim();
+    if(!t) return;
+    const { kind, phase } = parseEvalKey(key);
+    const id = uid("m");
+
+    // master record for chips + formblatt
+    state.originsDB.meas[id] = { text: t, kind, phase };
+
+    // link to eval lists
+    state.eval[causeId] = state.eval[causeId] || {};
+    const ev = state.eval[causeId];
+    const list = getEvalList(ev, kind, phase);
+    list.push(id);
+
+    // create detailed record so Soll measures have Termin/Verantwortliche/Status
+    state.measures.unshift({
+      id,
+      causeId,
+      causeSnapshot: state.originsDB.cause?.[causeId]?.text || "",
+      rowId: null,
+      rowInfo: "",
+      kind,
+      phase,
+      text: t,
+      evidence: "",
+      owner: "",
+      responsible: "",
+      due: "",
+      status: "open"
+    });
+
+    renderAll();
+  }
+
+
+  function linkEvalMeasure(causeId, kind, phase, measId){
+    if(!state.originsDB.meas?.[measId]) return;
+    const mk = (kind==="detect" ? "detect" : "avoid");
+    const ph = (phase==="soll" ? "soll" : "ist");
+
+    state.eval[causeId] = state.eval[causeId] || {};
+    const ev = state.eval[causeId];
+    const list = getEvalList(ev, mk, ph);
+    if(!list.includes(String(measId))) list.push(String(measId));
+    renderEval();
+    // set link select values + sub text
+    tbody.querySelectorAll("tr").forEach(tr => {
+      const rowId = tr.dataset.rowId;
+      const r = state.rows.find(x => x.id === rowId);
+            const sels = tr.querySelectorAll("select.lh-sel");
+      const subs = tr.querySelectorAll(".lh-sub[data-lh-sub]");
+      if(!r || !sels.length) return;
+      if(!Array.isArray(r.lhRefIds)) r.lhRefIds = ["",""];
+      sels.forEach((sel,i) => {
+        sel.value = r.lhRefIds[i] || "";
+        const sub = tr.querySelector(`[data-lh-sub="${i}"]`);
+        const rec = (r.lhRefIds[i] && state.lastenheft.byId?.[r.lhRefIds[i]]) ? state.lastenheft.byId[r.lhRefIds[i]] : null;
+        if(sub){
+          if(rec){
+            sub.textContent = `${rec.anforderung || "—"}  |  ${rec.fehlerfolge || "—"}  |  B:${rec.B ?? "—"}`;
+          }else{
+            sub.textContent = "—";
+          }
+        }
+      });
+    });
+
+    saveLocal();
+  }
+
+  if(evalBody){
+    evalBody.addEventListener("click", (ev) => {
+      const tr = ev.target.closest("tr");
+      if(!tr) return;
+      const causeId = tr.getAttribute("data-cause-id");
+      if(!causeId) return;
+
+      const addBtn = ev.target.closest("[data-eval-add]");
+      if(addBtn){
+        const key = addBtn.getAttribute("data-eval-add");
+        const inp = tr.querySelector(`input[data-eval-new="${key}"]`);
+        createAndLinkEvalMeasure(causeId, key, inp?.value || "");
+        if(inp){ inp.value=""; inp.focus(); }
+        return;
+      }
+
+      // remove link (remove this one chip from the list)
+      const mx = ev.target.closest("[data-mx='1']");
+      if(mx){
+        const chip = ev.target.closest(".chip[data-kind='meas']");
+        const measId = chip?.getAttribute("data-id");
+        const mkind = chip?.getAttribute("data-mkind") || "avoid";
+        const mphase = chip?.getAttribute("data-mphase") || "ist";
+        state.eval[causeId] = state.eval[causeId] || {};
+        const evr = state.eval[causeId];
+        const list = getEvalList(evr, (mkind==="detect"?"detect":"avoid"), (mphase==="soll"?"soll":"ist"));
+        if(measId){
+          const idx = list.indexOf(String(measId));
+          if(idx >= 0) list.splice(idx, 1);
+        }
+        renderEval();
+        saveLocal();
+        return;
+      }
+
+      // click on cause -> prefill draft (optional helper)
+      const firstTd = tr.querySelector("td");
+      if(firstTd && firstTd.contains(ev.target) && !ev.target.closest("button") && !ev.target.closest("input") && !ev.target.closest(".x")){
+        const causeText = state.originsDB.cause[causeId]?.text || "—";
+        state.draft.causeId = causeId;
+        state.draft.causeSnapshot = causeText;
+        state.draft.rowId = null;
+        state.draft.rowInfo = "—";
+        renderDraft();
+        saveLocal();
+      }
+    });
+
+    evalBody.addEventListener("dblclick", (ev) => {
+      const chip = ev.target.closest(".chip[data-kind='meas']");
+      if(!chip) return;
+      const id = chip.getAttribute("data-id");
+      const rec = state.originsDB.meas?.[id];
+      if(!rec) return;
+      const label = (rec.kind==="detect") ? "Entdeckungsmaßnahme" : "Vermeidungsmaßnahme";
+      const v = prompt(label + " bearbeiten:", rec.text || "");
+      if(v === null) return;
+      const t = v.trim();
+      if(!t) return;
+      rec.text = t;
+      renderEval();
+      saveLocal();
+    });
+
+    // drag start for measure chips
+    evalBody.addEventListener("dragstart", (ev) => {
+      const chip = ev.target.closest(".chip[data-kind='meas']");
+      if(!chip) return;
+      chip.classList.add("dragging");
+      const measId = chip.getAttribute("data-id");
+      const mkind = chip.getAttribute("data-mkind") || "avoid";
+      const mphase = chip.getAttribute("data-mphase") || "ist";
+      try{
+        ev.dataTransfer.effectAllowed = "copy";
+        ev.dataTransfer.setData("text/plain", JSON.stringify({ kind:"meas", originId: measId, mkind, mphase }));
+      }catch(e){}
+    });
+
+    evalBody.addEventListener("dragend", (ev) => {
+      const chip = ev.target.closest(".chip[data-kind='meas']");
+      if(chip) chip.classList.remove("dragging");
+      document.querySelectorAll("[data-eval-drop='1']").forEach(z=>z.classList.remove("drag-over"));
+    });
+
+    evalBody.addEventListener("dragover", (ev) => {
+      const zone = ev.target.closest("[data-eval-drop='1']");
+      if(!zone) return;
+      ev.preventDefault();
+      zone.classList.add("drag-over");
+      ev.dataTransfer.dropEffect = "copy";
+    });
+
+    evalBody.addEventListener("dragleave", (ev) => {
+      const zone = ev.target.closest("[data-eval-drop='1']");
+      if(!zone) return;
+      if(!zone.contains(ev.relatedTarget)) zone.classList.remove("drag-over");
+    });
+
+    evalBody.addEventListener("drop", (ev) => {
+      const zone = ev.target.closest("[data-eval-drop='1']");
+      if(!zone) return;
+      ev.preventDefault();
+      zone.classList.remove("drag-over");
+
+      const tr = ev.target.closest("tr");
+      const causeId = tr?.getAttribute("data-cause-id");
+      if(!causeId) return;
+
+      let payload = null;
+      try{
+        payload = JSON.parse(ev.dataTransfer.getData("text/plain") || "{}");
+      }catch(e){ payload = null; }
+      if(!payload || payload.kind!=="meas") return;
+
+      const targetKind = zone.getAttribute("data-eval-kind") || "avoid";
+      const targetPhase = zone.getAttribute("data-eval-phase") || "ist";
+
+      const mkind = payload.mkind === "detect" ? "detect" : "avoid";
+      const mphase = payload.mphase === "soll" ? "soll" : "ist";
+
+      // only allow same kind; phase can be switched by dropping onto Soll/Ist
+      if(targetKind !== mkind) return;
+
+      linkEvalMeasure(causeId, mkind, targetPhase, payload.originId);
+    });
+  }
+
+
+
+function renderMeasures(){
+    const total = state.measures.length;
+    const open = state.measures.filter(m=>m.status==="open").length;
+    const done = state.measures.filter(m=>m.status==="done").length;
+    const drop = state.measures.filter(m=>m.status==="drop").length;
+    $("#measuresMeta").textContent = `Gesamt: ${total} · Offen: ${open} · Abgeschlossen: ${done} · Verworfen: ${drop}`;
+
+    const tbody = $("#measuresTbody");
+
+    tbody.innerHTML = "";
+
+    // Lastenheft Optionen (Anforderung / Fehlerfolge / B)
+    indexLastenheft();
+    const lhList = Array.isArray(state.lastenheft?.rows) ? state.lastenheft.rows : [];
+    const lhOpts = [`<option value="">— keine Verknüpfung —</option>`].concat(
+      lhList.map(r => `<option value="${esc(String(r.id))}">${esc((r.anforderung||"").slice(0,70))}${(r.anforderung||"").length>70?"…":""} · ${esc((r.fehlerfolge||"").slice(0,70))}${(r.fehlerfolge||"").length>70?"…":""} (B:${esc(String(r.B||"—"))})</option>`)
+    ).join("");
+
+    const list = state.measures.filter(m=> measuresFilter==="all" ? true : m.status === measuresFilter);
+
+    for(const m of list){
+      const tr = document.createElement("tr");
+      tr.dataset.mid = m.id;
+
+      // enable drag & drop reorder (only when not editing)
+      tr.draggable = (editMeasureId !== m.id);
+
+
+      if(editMeasureId === m.id){
+        tr.innerHTML = `
+          <td>${esc(measureRefText(m))}</td>
+          <td>
+            <div style="display:grid; gap:6px">
+              <select data-me="kind">
+                <option value="avoid" ${m.kind==="avoid"?"selected":""}>Vermeidungsmaßnahme</option>
+                <option value="detect" ${m.kind==="detect"?"selected":""}>Entdeckungsmaßnahme</option>
+              </select>
+              <select data-me="phase">
+                <option value="soll" ${m.phase==="soll"?"selected":""}>Soll</option>
+                <option value="ist" ${m.phase==="ist"?"selected":""}>Ist</option>
+              </select>
+            </div>
+          </td>
+          <td><textarea data-me="text" style="min-height:84px">${esc(m.text)}</textarea></td>
+          <td><textarea data-me="evidence" style="min-height:84px">${esc(m.evidence)}</textarea></td>
+          <td>
+            <input data-me="owner" placeholder="Owner" value="${esc(m.owner)}" />
+            <div style="height:8px"></div>
+            <input data-me="responsible" placeholder="Verantwortung" value="${esc(m.responsible)}" />
+          </td>
+          <td><input data-me="due" type="date" value="${esc(m.due)}" /></td>
+          <td>
+            <select data-me="status">
+              <option value="open" ${m.status==="open"?"selected":""}>Offen</option>
+              <option value="done" ${m.status==="done"?"selected":""}>Abgeschlossen</option>
+              <option value="drop" ${m.status==="drop"?"selected":""}>Verworfen</option>
+            </select>
+          </td>
+          <td style="text-align:right">
+            <button class="mini-btn" data-mact="save">Speichern</button>
+            <button class="mini-btn" data-mact="cancel">Abbrechen</button>
+          </td>
+        `;
+      } else {
+        tr.innerHTML = `
+          <td>${esc(measureRefText(m))}<div class="meta" style="margin-top:4px">${esc(m.rowInfo||"")}</div></td>
+          <td>${esc(typeLabel(m.kind||m.type, m.phase))}</td>
+          <td>${esc((m.text||"").trim() || "—")}</td>
+          <td>${esc((m.evidence||"").trim() || "—")}</td>
+          <td>${esc((m.owner||"").trim() || "—")}<div class="meta">${esc((m.responsible||"").trim() || "")}</div></td>
+          <td>${esc(m.due || "—")}</td>
+          <td>
+            <select data-me="status">
+              <option value="open" ${m.status==="open"?"selected":""}>Offen</option>
+              <option value="done" ${m.status==="done"?"selected":""}>Abgeschlossen</option>
+              <option value="drop" ${m.status==="drop"?"selected":""}>Verworfen</option>
+            </select>
+          </td>
+          <td style="text-align:right">
+            <button class="mini-btn" data-mact="open">Offen</button>
+            <button class="mini-btn" data-mact="done">Abschließen</button>
+            <button class="mini-btn danger" data-mact="drop">Verwerfen</button>
+            <button class="mini-btn" data-mact="edit">Bearbeiten</button>
+            <button class="mini-btn danger" data-mact="del">Löschen</button>
+          </td>
+        `;
+      }
+      tbody.appendChild(tr);
+    }
+
+    renderDraft();
+    // set link select values + sub text
+    tbody.querySelectorAll("tr").forEach(tr => {
+      const rowId = tr.dataset.rowId;
+      const r = state.rows.find(x => x.id === rowId);
+            const sels = tr.querySelectorAll("select.lh-sel");
+      const subs = tr.querySelectorAll(".lh-sub[data-lh-sub]");
+      if(!r || !sels.length) return;
+      if(!Array.isArray(r.lhRefIds)) r.lhRefIds = ["",""];
+      sels.forEach((sel,i) => {
+        sel.value = r.lhRefIds[i] || "";
+        const sub = tr.querySelector(`[data-lh-sub="${i}"]`);
+        const rec = (r.lhRefIds[i] && state.lastenheft.byId?.[r.lhRefIds[i]]) ? state.lastenheft.byId[r.lhRefIds[i]] : null;
+        if(sub){
+          if(rec){
+            sub.textContent = `${rec.anforderung || "—"}  |  ${rec.fehlerfolge || "—"}  |  B:${rec.B ?? "—"}`;
+          }else{
+            sub.textContent = "—";
+          }
+        }
+      });
+    });
+
+    saveLocal();
+  }
+
+  function setDraftFromCause(rowId, causeId){
+    const row = state.rows.find(r=>r.id===rowId);
+    const causeText = state.originsDB.cause[causeId]?.text || "—";
+    state.draft.causeId = causeId;
+    state.draft.causeSnapshot = causeText;
+    state.draft.rowId = rowId;
+    state.draft.rowInfo = row ? rowInfoText(row) : "—";
+    renderMeasures();
+  }
+
+  function clearDraft(){
+    state.draft = { causeId:null, causeSnapshot:"", rowId:null, rowInfo:"", type:"avoid", text:"", evidence:"", owner:"", responsible:"", due:"" };
+    state.eval = {};
+    renderMeasures();
+  }
+
+  
+function saveDraftToMeasures(){
+    if(!state.draft.causeId){ alert("Bitte zuerst eine Ursache auswählen (in der Tabelle anklicken)."); return; }
+
+    const type = ($("#draftType")?.value || "avoid");
+    const kind = (type === "detect") ? "detect" : "avoid";
+    const phase = ($("#draftPhase")?.value === "ist") ? "ist" : "soll";
+    const status = ($("#draftStatus")?.value || "open");
+
+    const text = ($("#draftMeasure").value||"").trim();
+    if(!text){ alert("Bitte eine Maßnahme eingeben."); return; }
+
+    const id = uid("m");
+
+    // 1) measure master record (used by chips + formblatt)
+    state.originsDB.meas[id] = { text, kind, phase, evidence: ($("#draftEvidence").value||"").trim(), owner: ($("#draftOwner").value||"").trim(), responsible: ($("#draftResp").value||"").trim(), due: $("#draftDue").value || "", status: status, promotedFromSoll: false };
+
+    // 2) link to cause in eval lists (Ist/Soll) so it appears in BLOCK 3 Bewertung
+    state.eval[state.draft.causeId] = state.eval[state.draft.causeId] || {};
+    const ev = state.eval[state.draft.causeId];
+    ensureEvalLists(ev);
+    const list = getEvalList(ev, kind, phase);
+    list.push(id);
+
+    // 3) detailed measure record (Termin/Owner/Status etc.)
+    const m = {
+      id,
+      causeId: state.draft.causeId,
+      causeSnapshot: state.draft.causeSnapshot || "",
+      rowId: state.draft.rowId,
+      rowInfo: state.draft.rowInfo || "",
+      kind,
+      phase,
+      text,
+      evidence: ($("#draftEvidence").value||"").trim(),
+      owner: ($("#draftOwner").value||"").trim(),
+      responsible: ($("#draftResp").value||"").trim(),
+      due: $("#draftDue").value || "",
+      status: status
+    };
+
+    state.measures.unshift(m);
+
+    clearDraft();
+    renderAll();
+  }
+
+
+
+  function seedMeasuresFromAllCauses(){
+    const existing = new Set(state.measures.map(m=>`${m.rowId||""}::${m.causeId||""}`));
+    let added = 0;
+    for(const row of state.rows){
+      for(const cid of (row.causeIds||[])){
+        const key = `${row.id}::${cid}`;
+        if(existing.has(key)) continue;
+        const ctext = state.originsDB.cause[cid]?.text || "";
+        state.measures.unshift({
+          id: uid("m"),
+          causeId: cid,
+          causeSnapshot: ctext,
+          rowId: row.id,
+          rowInfo: rowInfoText(row),
+          kind: "avoid",
+          phase: "soll",
+          text: "",
+          evidence: "",
+          owner: "",
+          responsible: "",
+          due: "",
+          status: "open"
+        });
+        existing.add(key);
+        added++;
+      }
+    }
+    renderMeasures();
+    alert(`Angelegt: ${added} Vorschlag/Vorschläge.`);
+  }
+
+  function createAndLinkRow(rowId, kind, text){
+    const t = (text||"").trim();
+    if(!t) return;
+    const id = uid(kind === "cause" ? "c" : kind === "func" ? "f" : "e");
+    state.originsDB[kind][id] = { text: t };
+    const row = state.rows.find(r => r.id === rowId);
+    if(!row) return;
+    if(kind === "func") row.funcId = id;
+    if(kind === "err")  row.errId = id;
+    if(kind === "cause") row.causeIds.push(id);
+    renderAll();
+  }
+
+  function createOrReplaceSystem(text){
+    const t = (text||"").trim();
+    if(!t) return;
+    if(state.meta.systemElementId && state.originsDB.system[state.meta.systemElementId]){
+      state.originsDB.system[state.meta.systemElementId].text = t;
+      renderAll();
+      return;
+    }
+    const id = uid("s");
+    state.originsDB.system[id] = { text: t };
+    state.meta.systemElementId = id;
+    renderAll();
+  }
+
+  function removeLinkRow(rowId, kind, id){
+    const row = state.rows.find(r => r.id === rowId);
+    if(!row) return;
+    if(kind === "func") row.funcId = null;
+    if(kind === "err")  row.errId = null;
+    if(kind === "cause") row.causeIds = row.causeIds.filter(x => x !== id);
+    renderAll();
+  }
+
+  function linkExistingRow(rowId, kind, id){
+    const row = state.rows.find(r => r.id === rowId);
+    if(!row) return;
+    if(!state.originsDB[kind][id]) return;
+    if(kind === "func"){ row.funcId = id; renderAll(); return; }
+    if(kind === "err"){ row.errId = id; renderAll(); return; }
+    if(kind === "cause"){
+      if(row.causeIds.includes(id)) return;
+      row.causeIds.push(id);
+      renderAll(); return;
+    }
+  }
+
+  function editDB(kind, id){
+    const rec = state.originsDB[kind][id];
+    if(!rec) return;
+    const label = kind==="func" ? "Funktion" : kind==="err" ? "Fehler" : kind==="cause" ? "Fehlerursache" : "Systemelement";
+    const v = prompt(label + " bearbeiten:", rec.text);
+    if(v === null) return;
+    const t = v.trim();
+    if(!t) return;
+    rec.text = t;
+    if(kind==="cause"){
+      for(const m of state.measures){ if(m.causeId === id) m.causeSnapshot = t; }
+      if(state.draft.causeId === id) state.draft.causeSnapshot = t;
+    }
+    renderAll();
+  }
+
+  // ===== Finale FMEA Formblatt =====
+  function ensureFinalSheetMeta(){
+    state.meta = state.meta || {};
+    state.meta.finalSheet = state.meta.finalSheet || {};
+    const fs = state.meta.finalSheet;
+    if(typeof fs.no !== "string") fs.no = "";
+    if(typeof fs.part !== "string") fs.part = "";
+    if(typeof fs.process !== "string") fs.process = "";
+    if(typeof fs.date !== "string") fs.date = "";
+  }
+
+  function getCauseRefs(causeId){
+    // returns {system, func, err} best-effort from first referenced row
+    let system = "";
+    const seId = state.meta.systemElementId;
+    if(seId && state.originsDB.system?.[seId]) system = state.originsDB.system[seId].text || "";
+    let func = "", err = "";
+    const row = state.rows.find(r => Array.isArray(r.causeIds) && r.causeIds.includes(causeId));
+    if(row){
+      if(row.funcId && state.originsDB.func?.[row.funcId]) func = state.originsDB.func[row.funcId].text || "";
+      if(row.errId && state.originsDB.err?.[row.errId]) err = state.originsDB.err[row.errId].text || "";
+    }
+    return { system, func, err };
+  }
+
+  function midText(mid){
+    const rec = state.originsDB.meas?.[mid];
+    return (rec && typeof rec.text === "string") ? rec.text.trim() : "";
+  }
+
+  function measureRec(mid){
+  const rec = state.originsDB.meas?.[mid];
+  if(!rec) return null;
+  return {
+    id: String(mid),
+    text: (rec.text || "").toString().trim(),
+    owner: (rec.owner || "").toString().trim(),
+    responsible: (rec.responsible || "").toString().trim(),
+    due: (rec.due || "").toString().trim(),
+    status: (rec.status || "").toString().trim()
+  };
+}
+
+function joinMeasuresHTML(ids){
+  const list = (Array.isArray(ids) ? ids : [])
+    .map(String)
+    .filter(id => !!state.originsDB.meas?.[id])
+    .map(measureRec)
+    .filter(x => x && x.text);
+
+  if(!list.length) return { html: "", hasAny: false };
+
+  const statusLabel = (s) => {
+    const v = (s||"").toString().toLowerCase();
+    if(v==="done") return "Abgeschlossen";
+    if(v==="drop") return "Verworfen";
+    if(v==="open") return "Offen";
+    return s || "";
+  };
+
+  const rows = list.map(m => {
+    const who = [m.owner, m.responsible].filter(Boolean).join(" / ");
+    const when = m.due ? m.due : "";
+    const st = statusLabel(m.status);
+
+    const parts = [];
+    if(who) parts.push(`Verantwortlich: ${who}`);
+    if(when) parts.push(`Termin: ${when}`);
+    if(st) parts.push(`Status: ${st}`);
+
+    const meta = parts.join(" · ");
+
+    return `<div class="ff-mrow"><div class="ff-mtext">${esc(m.text)}</div>${meta ? `<div class="ff-mmeta">${esc(meta)}</div>` : ""}</div>`;
+  }).join("");
+
+  return { html: rows, hasAny: true };
+}
+
+function joinRespDueText(ids){
+  const list = (Array.isArray(ids) ? ids : [])
+    .map(String)
+    .filter(id => !!state.originsDB.meas?.[id])
+    .map(measureRec)
+    .filter(x => x && x.text);
+
+  if(!list.length) return "";
+
+  return list.map(m => {
+    const who = [m.owner, m.responsible].filter(Boolean).join(" / ");
+    const when = m.due ? m.due : "";
+    const st = m.status ? m.status : "";
+    return [who || "—", when || "—", st || "—"].filter(Boolean).join(" · ");
+  }).join(" • ");
+}
+
+  function riskClassFromRpz(rpz, hasAvoid, hasDetect){
+  const n = Number(rpz);
+  if(!Number.isFinite(n) || n<=0) return "";
+  // Wichtig: "Ist" gilt nur als grün, wenn Vermeidung+Entdeckung vorhanden sind
+  if(!(hasAvoid && hasDetect)) return "risk-h";
+  // Schwellen (pragmatisch): <100 grün, <200 gelb, sonst rot
+  if(n < 100) return "risk-l";
+  if(n < 200) return "risk-m";
+  return "risk-h";
+}
+  function apLabelFromRisk(cls){
+    if(cls==="risk-h") return "HOCH";
+    if(cls==="risk-m") return "MITTEL";
+    if(cls==="risk-l") return "NIEDRIG";
+    return "—";
+  }
+
+  function renderFinalSheet(){
+    const tbody = document.getElementById("ffTbody");
+    if(!tbody) return;
+
+    ensureFinalSheetMeta();
+    const fs = state.meta.finalSheet;
+
+    // Meta view (keine Inputs im Formblatt)
+    const elNoV = document.getElementById("ffNoV");
+    const elPartV = document.getElementById("ffPartV");
+    const elProcV = document.getElementById("ffProcessV");
+    const elDateV = document.getElementById("ffDateV");
+
+    if(elNoV) elNoV.textContent = (fs.no || "—");
+    if(elPartV) elPartV.textContent = (fs.part || "—");
+    if(elProcV) elProcV.textContent = (fs.process || "—");
+    if(elDateV) elDateV.textContent = (fs.date || "—");
+
+    const causes = Object.entries(state.originsDB.cause || {});
+    if(!causes.length){
+      tbody.innerHTML = `<tr><td colspan="15" class="ff-cell-muted">— Noch keine Ursachen vorhanden —</td></tr>`;
+      return;
+    }
+
+    causes.sort((a,b) => (a[1]?.text||"").localeCompare(b[1]?.text||"", undefined, {sensitivity:"base"}));
+
+    tbody.innerHTML = causes.map(([cid, crec]) => {
+      const ev = state.eval?.[cid] || (state.eval[cid] = {});
+
+      const refs = getCauseRefs(cid);
+      const causeText = (crec?.text || "").trim();
+
+      // Ratings aus Blöcken (bestehend aus V21-Logik / LocalStorage)
+      // Lastenheft-Verknüpfung: Anforderung / Fehlerfolge / B kommen aus dem verknüpften Lastenheft-Eintrag
+      let anforderung = "";
+      let fehlerfolge = (ev.FE || "").toString().trim();
+      let BIst = Number(ev.B || ev.BIst || 0) || "";
+
+      const srcRow = state.rows.find(r => Array.isArray(r.causeIds) && r.causeIds.includes(cid));
+
+      // Lastenheft-Verknüpfung (bis zu 2 Fehlerfolgen pro Fehler)
+      const lhIds = srcRow
+        ? (Array.isArray(srcRow.lhRefIds) ? srcRow.lhRefIds : (srcRow.lhRefId ? [srcRow.lhRefId] : []))
+        : [];
+      const uniqIds = Array.from(new Set(lhIds.map(x=>String(x||"").trim()).filter(Boolean)));
+
+      const lhRecs = uniqIds.map(id => (state.lastenheft?.byId?.[id] || null)).filter(Boolean);
+
+      if(lhRecs.length){
+        const reqs = lhRecs.map(r => (r.anforderung || "").toString().trim()).filter(Boolean);
+        const effs = lhRecs.map(r => (r.fehlerfolge || "").toString().trim()).filter(Boolean);
+
+        // Anzeige: mehrere Werte zusammenführen
+        anforderung = reqs.length ? reqs.join(" • ") : anforderung;
+        fehlerfolge = effs.length ? effs.join(" • ") : fehlerfolge;
+
+        // B: worst case (max)
+        const bvals = lhRecs.map(r => Number(r.B)).filter(v => Number.isFinite(v) && v>0);
+        if(bvals.length) BIst = Math.max(...bvals);
+      }
+
+      const AIst = ev.avoidAIst || "";
+      const EIst = ev.detectEIst || "";
+
+      // Soll: wenn nicht vorhanden, fallback auf Ist
+      const BSollRaw = Number(ev.BSoll || 0) || "";
+      const BSoll = BSollRaw || BIst || "";
+      const ASoll = (ev.avoidASoll || "") || AIst || "";
+      const ESoll = (ev.detectESoll || "") || EIst || "";
+
+
+      // Maßnahmen (Text aus Block 3 / Maßnahmen-DB)
+      const avoidIstPack = joinMeasuresHTML(ev.avoidIstIds);
+      const detectIstPack = joinMeasuresHTML(ev.detectIstIds);
+      const avoidSollPack = joinMeasuresHTML(ev.avoidSollIds);
+      const detectSollPack = joinMeasuresHTML(ev.detectSollIds);
+
+      const avoidIstCell = avoidIstPack.html
+        ? `<div class="ff-text action-text">${avoidIstPack.html}</div>`
+        : `<span class="ff-text ff-cell-muted">—</span>`;
+      const detectIstCell = detectIstPack.html
+        ? `<div class="ff-text action-text">${detectIstPack.html}</div>`
+        : `<span class="ff-text ff-cell-muted">—</span>`;
+      const avoidSollCell = avoidSollPack.html
+        ? `<div class="ff-text action-text">${avoidSollPack.html}</div>`
+        : `<span class="ff-text ff-cell-muted">—</span>`;
+      const detectSollCell = detectSollPack.html
+        ? `<div class="ff-text action-text">${detectSollPack.html}</div>`
+        : `<span class="ff-text ff-cell-muted">—</span>`;
+
+      const rpzIst = (Number(BIst) && Number(AIst) && Number(EIst)) ? (Number(BIst)*Number(AIst)*Number(EIst)) : "";
+      const rpzSoll = (Number(BSoll) && Number(ASoll) && Number(ESoll)) ? (Number(BSoll)*Number(ASoll)*Number(ESoll)) : "";
+
+      const isHigh = (Number(rpzIst) > 100) || (Number(rpzSoll) > 100);
+      const trClass = isHigh ? "rpz-high" : "rpz-low";
+
+      const fmt = (v) => (v === "" || v == null) ? "—" : String(v);
+
+      return `
+        <tr class="${trClass}" data-ff-cause="${esc(cid)}">
+          <td><span class="ff-text">${esc(anforderung || "—")}</span></td>
+          <td><span class="ff-text">${esc(fehlerfolge || "—")}</span></td>
+          <td class="ff-col-risk"><span class="ff-r">${esc(fmt(BIst))}</span></td>
+          <td><span class="ff-text">${esc(refs.func || "—")}</span></td>
+          <td><span class="ff-text"><strong>${esc(refs.err || "—")}</strong></span></td>
+          <td><span class="ff-text cause-text">${esc(causeText || "—")}</span></td>
+          <td class="ff-col-risk"><span class="ff-r">${esc(fmt(AIst))}</span></td>
+          <td>${avoidIstCell}</td>
+          <td>${detectIstCell}</td>
+          <td class="ff-col-risk"><span class="ff-r">${esc(fmt(EIst))}</span></td>
+          <td class="ff-col-risk"><span class="ff-r">${esc(fmt(rpzIst))}</span></td>
+          <td>${avoidSollCell}</td>
+          <td>${detectSollCell}</td>
+          <td class="ff-col-risk"><span class="ff-r">${esc(fmt(ESoll))}</span></td>
+          <td class="ff-col-risk"><span class="ff-r">${esc(fmt(rpzSoll))}</span></td>
+        </tr>
+      `;
+    }).join("");
+  }
+
+  function renderAll(){
+    renderSystemChip();
+    renderLastenheft();
+    renderTable();
+    renderEval();
+    renderMeasures();
+    renderFinalSheet();
+    // set link select values + sub text
+    tbody.querySelectorAll("tr").forEach(tr => {
+      const rowId = tr.dataset.rowId;
+      const r = state.rows.find(x => x.id === rowId);
+            const sels = tr.querySelectorAll("select.lh-sel");
+      const subs = tr.querySelectorAll(".lh-sub[data-lh-sub]");
+      if(!r || !sels.length) return;
+      if(!Array.isArray(r.lhRefIds)) r.lhRefIds = ["",""];
+      sels.forEach((sel,i) => {
+        sel.value = r.lhRefIds[i] || "";
+        const sub = tr.querySelector(`[data-lh-sub="${i}"]`);
+        const rec = (r.lhRefIds[i] && state.lastenheft.byId?.[r.lhRefIds[i]]) ? state.lastenheft.byId[r.lhRefIds[i]] : null;
+        if(sub){
+          if(rec){
+            sub.textContent = `${rec.anforderung || "—"}  |  ${rec.fehlerfolge || "—"}  |  B:${rec.B ?? "—"}`;
+          }else{
+            sub.textContent = "—";
+          }
+        }
+      });
+    });
+
+    saveLocal();
+  }
+
+  function addRow(){ state.rows.push(makeRow()); renderAll(); }
+function addRowAfter(rowId){
+  const idx = state.rows.findIndex(r => r.id === rowId);
+  const n = makeRow();
+  if(idx >= 0) state.rows.splice(idx+1, 0, n);
+  else state.rows.push(n);
+  renderAll();
+}
+  function delRow(rowId){
+    state.rows = state.rows.filter(r => r.id !== rowId);
+    if(!state.rows.length) state.rows = [ makeRow() ];
+    renderAll();
+  }
+  function dupRow(rowId){
+    const r = state.rows.find(x => x.id === rowId);
+    if(!r) return;
+    state.rows.push({ id: uid("r"), funcId: r.funcId, errId: r.errId, causeIds: [...r.causeIds] });
+    renderAll();
+  }
+
+  $("#fmeaType").addEventListener("change", updateSystemHints);
+  $("#systemAdd").addEventListener("click", () => { createOrReplaceSystem($("#systemInput").value); $("#systemInput").value=""; $("#systemInput").focus(); });
+  $("#systemInput").addEventListener("keydown", (ev) => { if(ev.key==="Enter"){ createOrReplaceSystem(ev.target.value); ev.target.value=""; ev.preventDefault(); }});
+  $("#systemChip").addEventListener("click", (ev) => { if(ev.target.closest("[data-system-clear='1']")){ state.meta.systemElementId=null; renderAll(); }});
+  $("#systemChip").addEventListener("dblclick", (ev) => { const chip=ev.target.closest(".chip"); if(chip) editDB("system", chip.dataset.id); });
+
+  $("#addRow").addEventListener("click", addRow);
+
+  // Lastenheft-Import (delegated handlers, damit es auch nach Re-Renders funktioniert)
+  document.addEventListener("change", async (ev) => {
+    const t = ev.target;
+    if(!t || t.id !== "lhFile") return;
+    const f = t.files && t.files[0];
+    if(!f) return;
+    try{
+      await loadLastenheftFromFile(f);
+    }catch(err){
+      alert("Lastenheft-JSON konnte nicht geladen werden. Bitte gültige JSON-Datei auswählen.");
+      console.error(err);
+    }finally{
+      // erlaubt erneutes Laden derselben Datei
+      t.value = "";
+    }
+  });
+
+  document.addEventListener("click", (ev) => {
+    const btn = ev.target && ev.target.closest ? ev.target.closest("#lhClear") : null;
+    if(!btn) return;
+    state.lastenheft = { meta:{}, rows:[], byId:{} };
+    // bestehende Verknüpfungen behalten wir bewusst NICHT, sonst hängen sie ins Leere
+    state.rows = (state.rows||[]).map(r => ({...r, lhRefId:""}));
+    renderAll();
+  });
+
+const tbody = $("#tbody");
+  tbody.addEventListener("change", (ev) => {
+    // Lastenheft-Auswahl wird erst mit „+ Hinzufügen“ als Chip gespeichert.
+    const sel = ev.target && ev.target.closest && ev.target.closest("select.lh-sel");
+    if(!sel) return;
+  });
+  tbody.addEventListener("click", (ev) => {
+    const tr = ev.target.closest("tr");
+    if(!tr) return;
+    const rowId = tr.dataset.rowId;
+
+    const act = ev.target.closest("[data-act]")?.dataset.act;
+    if(act==="del"){ delRow(rowId); return; }
+    if(act==="dup"){ dupRow(rowId); return; }
+    if(act==="add"){ addRowAfter(rowId); return; }
+
+
+    // Lastenheft: Chip hinzufügen
+    const lhAdd = ev.target.closest("[data-lh-add='1']");
+    if(lhAdd){
+      const sel = tr.querySelector("select.lh-sel");
+      const val = (sel && sel.value) ? String(sel.value).trim() : "";
+      if(!val){ if(sel) sel.focus(); return; }
+      const r = state.rows.find(x => x.id === rowId);
+      if(!r) return;
+      if(!Array.isArray(r.lhRefIds)) r.lhRefIds = [];
+      if(!r.lhRefIds.includes(val)) r.lhRefIds.push(val);
+      if(sel) sel.value = "";
+      saveLocal();
+      renderAll();
+      return;
+    }
+
+    // Lastenheft: Chip entfernen (nur Verknüpfung, keine Datensätze löschen)
+    if(ev.target.closest("[data-lh-x='1']")){
+      const chip = ev.target.closest(".chip");
+      const lhId = chip?.getAttribute("data-lh-id");
+      const r = state.rows.find(x => x.id === rowId);
+      if(r && lhId){
+        r.lhRefIds = Array.isArray(r.lhRefIds) ? r.lhRefIds.filter(x => String(x) !== String(lhId)) : [];
+        saveLocal();
+        renderAll();
+      }
+      return;
+    }
+
+    const addKindBtn = ev.target.closest("[data-add-kind]");
+    if(addKindBtn){
+      const kind = addKindBtn.dataset.addKind;
+      const input = tr.querySelector(`[data-input-kind="${kind}"]`);
+      createAndLinkRow(rowId, kind, input?.value || "");
+      if(input){ input.value=""; input.focus(); }
+      return;
+    }
+
+    if(ev.target.closest("[data-add-cause='1']")){
+      const input = tr.querySelector("[data-causeinput='1']");
+      createAndLinkRow(rowId, "cause", input?.value || "");
+      if(input){ input.value=""; input.focus(); }
+      return;
+    }
+
+    if(ev.target.closest("[data-x='1']")){
+      const chip = ev.target.closest(".chip");
+      if(!chip) return;
+      removeLinkRow(rowId, chip.dataset.kind, chip.dataset.id);
+      return;
+    }
+
+    const chip = ev.target.closest(".chip");
+    if(chip && chip.dataset.kind==="cause"){ setDraftFromCause(rowId, chip.dataset.id); $("#draftMeasure").focus(); return; }
+  });
+
+  tbody.addEventListener("keydown", (ev) => {
+    if(ev.key!=="Enter") return;
+    const tr = ev.target.closest("tr");
+    if(!tr) return;
+    const rowId = tr.dataset.rowId;
+    if(ev.target.matches("[data-causeinput='1']")){
+      createAndLinkRow(rowId, "cause", ev.target.value);
+      ev.target.value="";
+      ev.preventDefault();
+      return;
+    }
+    const kind = ev.target.dataset.inputKind;
+    if(kind){
+      createAndLinkRow(rowId, kind, ev.target.value);
+      ev.target.value="";
+      ev.preventDefault();
+      return;
+    }
+  });
+
+  tbody.addEventListener("dblclick", (ev) => {
+    const chip = ev.target.closest(".chip");
+    if(chip) editDB(chip.dataset.kind, chip.dataset.id);
+  });
+
+  tbody.addEventListener("dragstart", (ev) => {
+    const chip = ev.target.closest(".chip");
+    if(!chip) return;
+    chip.classList.add("dragging");
+    drag.kind = chip.dataset.kind;
+    drag.originId = chip.dataset.id;
+    ev.dataTransfer.effectAllowed = "copy";
+    ev.dataTransfer.setData("text/plain", JSON.stringify({ kind: drag.kind, originId: drag.originId }));
+  });
+  tbody.addEventListener("dragend", (ev) => {
+    const chip = ev.target.closest(".chip");
+    if(chip) chip.classList.remove("dragging");
+    drag.kind=null; drag.originId=null;
+    $$(".cellbox[data-drop='1']").forEach(z=>z.classList.remove("drag-over"));
+  });
+  tbody.addEventListener("dragover", (ev) => {
+    const zone = ev.target.closest(".cellbox[data-drop='1']");
+    if(!zone) return;
+    ev.preventDefault();
+    zone.classList.add("drag-over");
+    ev.dataTransfer.dropEffect="copy";
+  });
+  tbody.addEventListener("dragleave", (ev) => {
+    const zone = ev.target.closest(".cellbox[data-drop='1']");
+    if(!zone) return;
+    if(!zone.contains(ev.relatedTarget)) zone.classList.remove("drag-over");
+  });
+  tbody.addEventListener("drop", (ev) => {
+    const zone = ev.target.closest(".cellbox[data-drop='1']");
+    if(!zone) return;
+    ev.preventDefault();
+    zone.classList.remove("drag-over");
+    const tr = ev.target.closest("tr");
+    if(!tr) return;
+    const rowId = tr.dataset.rowId;
+
+    let payload=null;
+    try{ payload = JSON.parse(ev.dataTransfer.getData("text/plain")); }catch(e){}
+    const kind = payload?.kind || drag.kind;
+    const originId = payload?.originId || drag.originId;
+    if(!kind || !originId) return;
+    const dropKind = zone.dataset.dropKind;
+    if(dropKind && dropKind !== kind) return;
+    linkExistingRow(rowId, kind, originId);
+  });
+
+  $$(".chipfilter").forEach(ch => ch.addEventListener("click", () => {
+    $$(".chipfilter").forEach(x=>x.classList.remove("active"));
+    ch.classList.add("active");
+    measuresFilter = ch.dataset.mfilter || "all";
+    renderMeasures();
+  }));
+
+  $("#btnSaveDraft").addEventListener("click", saveDraftToMeasures);
+  $("#btnClearDraft").addEventListener("click", clearDraft);
+  $("#btnSeedFromAllCauses").addEventListener("click", seedMeasuresFromAllCauses);
+
+  $("#measuresTbody").addEventListener("click", (ev) => {
+    const tr = ev.target.closest("tr");
+    if(!tr) return;
+    const mid = tr.dataset.mid;
+    const m = state.measures.find(x=>x.id===mid);
+    if(!m) return;
+
+    const act = ev.target.closest("[data-mact]")?.dataset.mact;
+    if(!act) return;
+
+    if(act==="edit"){ editMeasureId=mid; renderMeasures(); return; }
+    if(act==="cancel"){ editMeasureId=null; renderMeasures(); return; }
+    if(act==="save"){
+      const get = (k)=> tr.querySelector(`[data-me="${k}"]`);
+
+      m.kind = get("kind")?.value || m.kind || "avoid";
+      m.phase = get("phase")?.value || m.phase || "soll";
+      m.status = get("status")?.value || m.status || "open";
+
+      m.text = get("text")?.value || "";
+      m.evidence = get("evidence")?.value || "";
+      m.owner = get("owner")?.value || "";
+      m.responsible = get("responsible")?.value || "";
+      m.due = get("due")?.value || "";
+
+      // keep master record (chips/formblatt) in sync
+      syncMeasureMaster(m);
+// Promotion: Soll -> Ist, sobald abgeschlossen
+      maybePromoteSollToIst(m);
+
+      editMeasureId=null;
+      saveLocal();
+      renderAll();
+      return;
+    }
+    if(act==="open"){
+      m.status="open";
+      maybeDemoteIstToSoll(m);
+      syncMeasureMaster(m);
+      saveLocal(); renderAll(); return; 
+    }
+    if(act==="done"){
+      m.status="done";
+      maybePromoteSollToIst(m);
+      syncMeasureMaster(m);
+      saveLocal(); renderAll(); return;
+    }
+    if(act==="drop"){
+      m.status="drop";
+      // if it was auto-promoted from Soll, moving away from "done" demotes back
+      maybeDemoteIstToSoll(m);
+      syncMeasureMaster(m);
+      saveLocal(); renderAll(); return;
+    }
+    if(act==="del"){
+      if(!confirm("Maßnahme löschen?")) return;
+      state.measures = state.measures.filter(x=>x.id!==mid);
+      editMeasureId=null;
+      renderMeasures();
+    }
+  });
+
+  // Inline change save (auch ohne extra "Speichern" – wie bei den anderen Bereichen)
+  $("#measuresTbody").addEventListener("change", (ev) => {
+    const el = ev.target;
+    if(!(el && el.getAttribute)) return;
+    const key = el.getAttribute("data-me");
+    if(!key) return;
+
+    const tr = el.closest("tr");
+    if(!tr) return;
+    const mid = tr.dataset.mid;
+    const m = state.measures.find(x=>x.id===mid);
+    if(!m) return;
+
+    // update field
+    if(key==="kind") m.kind = el.value || "avoid";
+    else if(key==="phase") m.phase = el.value || "soll";
+    else if(key==="status") m.status = el.value || "open";
+    else if(key==="text") m.text = el.value || "";
+    else if(key==="evidence") m.evidence = el.value || "";
+    else if(key==="owner") m.owner = el.value || "";
+    else if(key==="responsible") m.responsible = el.value || "";
+    else if(key==="due") m.due = el.value || "";
+
+    // promote/demote depending on status change
+    if(key==="status"){
+      if(m.status==="done") maybePromoteSollToIst(m);
+      else maybeDemoteIstToSoll(m);
+    }
+
+    syncMeasureMaster(m);
+    saveLocal();
+    renderAll();
+  });
+
+
+
+
+  // Measures Drag & Drop (reorder)
+  const measuresBody = document.getElementById("measuresTbody");
+  if(measuresBody){
+    measuresBody.addEventListener("dragstart", (ev) => {
+      const tr = ev.target.closest("tr");
+      if(!tr) return;
+      const mid = tr.dataset.mid;
+      if(!mid || editMeasureId === mid) return;
+      mDragId = mid;
+      tr.classList.add("dragging");
+      try{
+        ev.dataTransfer.effectAllowed = "move";
+        ev.dataTransfer.setData("text/plain", mid);
+      }catch(e){}
+    });
+
+    measuresBody.addEventListener("dragend", (ev) => {
+      const tr = ev.target.closest("tr");
+      if(tr) tr.classList.remove("dragging");
+      mDragId = null;
+    });
+
+    measuresBody.addEventListener("dragover", (ev) => {
+      const tr = ev.target.closest("tr");
+      if(!tr) return;
+      ev.preventDefault();
+      ev.dataTransfer.dropEffect = "move";
+    });
+
+    measuresBody.addEventListener("drop", (ev) => {
+      ev.preventDefault();
+      const targetTr = ev.target.closest("tr");
+      if(!targetTr) return;
+      const targetId = targetTr.dataset.mid;
+      const sourceId = (ev.dataTransfer && ev.dataTransfer.getData("text/plain")) || mDragId;
+      if(!sourceId || !targetId || sourceId === targetId) return;
+
+      const si = state.measures.findIndex(x => x.id === sourceId);
+      const ti = state.measures.findIndex(x => x.id === targetId);
+      if(si < 0 || ti < 0) return;
+
+      const [m] = state.measures.splice(si, 1);
+      const newIndex = si < ti ? ti - 1 : ti;
+      state.measures.splice(newIndex, 0, m);
+      renderMeasures();
+    });
+  }
+
+
+  $("#saveJson").addEventListener("click", () => {
+    saveLocal();
+    const blob = new Blob([JSON.stringify(state, null, 2)], {type:"application/json"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "fmea-formblatt.json";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(()=>URL.revokeObjectURL(a.href), 500);
+  });
+
+  $("#loadJson").addEventListener("click", () => $("#file").click());
+  $("#file").addEventListener("change", async (e) => {
+    const f = e.target.files && e.target.files[0];
+    if(!f) return;
+    try{
+      const txt = await f.text();
+      const parsed = JSON.parse(txt);
+      if(!parsed?.originsDB || !parsed?.rows) throw new Error("invalid");
+      state.meta = parsed.meta || state.meta;
+      state.originsDB = parsed.originsDB || state.originsDB;
+      if(!state.originsDB.meas) state.originsDB.meas = {};
+      state.rows = parsed.rows || [];
+      state.measures = parsed.measures || [];
+      state.draft = parsed.draft || state.draft;
+      state.eval = parsed.eval || state.eval || {};
+      // Lastenheft kann entweder bereits normalisiert (state.lastenheft) oder als Original-Export (meta/rows mit reqText/failText) vorliegen
+      const lhIn = parsed.lastenheft || parsed.lastenheftData || null;
+      state.lastenheft = (lhIn && Array.isArray(lhIn.rows) && (lhIn.rows[0] && (lhIn.rows[0].anforderung !== undefined || lhIn.rows[0].fehlerfolge !== undefined)))
+        ? lhIn
+        : normalizeLastenheft(lhIn || {meta:{}, rows:[]});
+      indexLastenheft();
+      if(!state.rows.length) state.rows = [ makeRow() ];
+      sanitizeRefs();
+      $("#fmeaType").value = state.meta.fmeaType || "K-FMEA";
+      updateSystemHints();
+      renderAll();
+      aiClear();
+  aiClearAvoid();
+    }catch(err){
+      alert(t("loadError"));
+    }finally{
+      e.target.value="";
+    }
+  });
+
+  $("#reset").addEventListener("click", () => {
+    if(!confirm(t("confirmReset"))) return;
+    state.meta = { fmeaType: "K-FMEA", systemElementId: null };
+    state.originsDB = { func:{}, err:{}, cause:{}, system:{}, meas:{} };
+    state.rows = [ makeRow() ];
+    state.measures = [];
+    state.draft = { causeId:null, causeSnapshot:"", rowId:null, rowInfo:"", type:"avoid", text:"", evidence:"", owner:"", responsible:"", due:"" };
+    state.eval = {};
+    try{ localStorage.removeItem(STORAGE); }catch(e){}
+    $("#fmeaType").value="K-FMEA";
+    updateSystemHints();
+    renderAll();
+    aiClear();
+  aiClearAvoid();
+  });
+
+  
+  // AI (wie Ishikawa/Mindmap: Lizenz + API‑Key lokal, direkter Call)
+  const AI_MODEL = "gpt-5.2";
+  const LICENSE_HASH = "07aa2015d482734372d4a9a1c07c8290198526b9ce1fd2e2dcff4d05f6792a29";
+
+  function aiSelectedModel(){
+    const sel = document.querySelector("#aiModel");
+    const v = sel ? (sel.value || "").trim() : "";
+    return v || AI_MODEL;
+  }
+
+  function aiGenMode(){
+    const sel = document.querySelector("#aiGenMode");
+    const v = sel ? (sel.value || "").trim() : "";
+    return v || "overwrite";
+  }
+
+  let aiLastJson = null; // causes
+  let aiLastAvoidJson = null; // preventive recommendations
+
+  function aiSetStatus(msg){ $("#aiStatus").textContent = msg || ""; }
+  function aiSetMeta(text){ $("#aiPreviewMeta").textContent = text || "—"; }
+  function aiSetPreview(obj){
+    if(!obj){ $("#aiPreview").textContent = `{
+  "info": "Noch nichts generiert."
+}`; return; }
+    $("#aiPreview").textContent = JSON.stringify(obj, null, 2);
+  }
+
+  function aiSetStatusAvoid(msg){ $("#aiStatusAvoid").textContent = msg || ""; }
+  function aiSetMetaAvoid(text){ $("#aiPreviewAvoidMeta").textContent = text || "—"; }
+  function aiSetPreviewAvoid(obj){
+    if(!obj){ $("#aiPreviewAvoid").textContent = `{
+  "info": "Noch nichts generiert."
+}`; return; }
+    $("#aiPreviewAvoid").textContent = JSON.stringify(obj, null, 2);
+  }
+
+  function toast(msg){ aiSetStatus(msg); }
+
+  async function sha256Hex(str){
+    const enc = new TextEncoder();
+    const buf = await crypto.subtle.digest("SHA-256", enc.encode(str));
+    return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
+  }
+
+  async function validateLicense(){
+    const key = ($("#aiLicense").value || "").trim();
+    if(!key){ toast("Lizenzschlüssel fehlt."); return { ok:false, reason:"empty" }; }
+    const h = await sha256Hex(key);
+    if(h !== LICENSE_HASH){ toast("Lizenzschlüssel ungültig."); return { ok:false, reason:"bad" }; }
+    return { ok:true };
+  }
+
+  function aiGetOutputText(data){
+    if(!data) return "";
+    if(typeof data.output_text === "string") return data.output_text;
+    if(Array.isArray(data.output)){
+      const chunks = [];
+      for(const item of data.output){
+        if(item && Array.isArray(item.content)){
+          for(const c of item.content){
+            if(c && (c.type === "output_text" || c.type === "text") && typeof c.text === "string") chunks.push(c.text);
+          }
+        }
+      }
+      if(chunks.length) return chunks.join("\n");
+    }
+    return JSON.stringify(data, null, 2);
+  }
+
+  function aiExtractJsonObject(text){
+    try{ return JSON.parse(text); }catch(e){}
+    const s = String(text||"");
+    const start = s.indexOf("{");
+    const end = s.lastIndexOf("}");
+    if(start >= 0 && end > start) return JSON.parse(s.slice(start, end+2));
+    throw new Error("Antwort ist kein JSON.");
+  }
+
+  function aiBuildContextFromTool(){
+    const typ = $("#fmeaType").value || state.meta.fmeaType || "K-FMEA";
+    const se = state.meta.systemElementId ? (state.originsDB.system[state.meta.systemElementId]?.text || "") : "";
+    const lines = [];
+    lines.push(`FMEA-Typ: ${typ}`);
+    if(se) lines.push(`Systemelement: ${se}`);
+    lines.push("");
+    lines.push("FMEA-Zeilen (Funktion / Fehler / vorhandene Ursachen):");
+    state.rows.slice(0, 120).forEach((r, idx) => {
+      const f = r.funcId ? (state.originsDB.func[r.funcId]?.text || "") : "";
+      const e = r.errId ? (state.originsDB.err[r.errId]?.text || "") : "";
+      const causes = (r.causeIds||[]).map(id => (state.originsDB.cause[id]?.text || "")).filter(Boolean);
+      lines.push(`${idx+1}) Zeile-ID: ${r.id}`);
+      lines.push(`   Funktion: ${f || "-"}`);
+      lines.push(`   Fehler:   ${e || "-"}`);
+      if(causes.length){
+        lines.push(`   Ursachen (${causes.length}):`);
+        causes.slice(0, 12).forEach(c => lines.push(`   - ${c}`));
+        if(causes.length > 12) lines.push("   - …");
+      } else {
+        lines.push("   Ursachen: -");
+      }
+    });
+    return lines.join("\n").trim();
+  }
+
+  function aiBuildPrompt(problem, context){
+    const typ = $("#fmeaType").value || state.meta.fmeaType || "K-FMEA";
+    const se = state.meta.systemElementId ? (state.originsDB.system[state.meta.systemElementId]?.text || "") : "";
+
+    const rowsPayload = state.rows.map(r => ({
+      rowId: r.id,
+      funktion: r.funcId ? (state.originsDB.func[r.funcId]?.text || "") : "",
+      fehler: r.errId ? (state.originsDB.err[r.errId]?.text || "") : "",
+      vorhandeneUrsachen: (r.causeIds||[]).map(id => (state.originsDB.cause[id]?.text || "")).filter(Boolean)
+    }));
+
+    return `
+Du bist ein erfahrener FMEA-Moderator und Qualitätsingenieur.
+WICHTIG: Nutze das Systemelement, um Domäne/Technologie zu erkennen, und leite daraus realistische Ursachen ab.
+
+Eingaben:
+- FMEA-Typ: ${typ}
+- Systemelement: ${se || "(leer)"}
+- Kontext: ${context || "(leer)"}
+
+FMEA-Zeilen (JSON):
+${JSON.stringify(rowsPayload, null, 2)}
+
+AUFGABE:
+Für JEDE Zeile: finde passende FEHLERURSACHEN (Root Causes) für den Fehler in Bezug auf die Funktion.
+- 6 bis 10 Ursachen pro Zeile
+- kurz, konkret, prüf-/behebbar formuliert
+- keine Dopplungen innerhalb derselben Zeile
+- wenn Ursache für mehrere Zeilen passt, darf sie mehrfach vorkommen
+- Sprache: Deutsch
+
+ANTWORTFORMAT (NUR JSON, KEIN Markdown, KEINE Erklärungen):
+{
+  "problem": "${String(problem||"").replaceAll('"','\\\"')}",
+  "fmeaType": "${typ}",
+  "systemElement": "${String(se||"").replaceAll('"','\\\"')}",
+  "suggestions": [
+    { "rowId":"…", "funktion":"…", "fehler":"…", "causes":["…","…"] }
+  ],
+  "ts": "ISO-8601"
+}
+`.trim();
+  }
+
+  function aiBuildAvoidPrompt(context){
+    const typ = $("#fmeaType").value || state.meta.fmeaType || "K-FMEA";
+    const se = state.meta.systemElementId ? (state.originsDB.system[state.meta.systemElementId]?.text || "") : "";
+
+    const causesPayload = Object.entries(state.originsDB.cause || {}).map(([causeId, rec]) => ({
+      causeId,
+      fehlerursache: rec?.text || "",
+      verknuepfteFehler: (() => {
+        const errIds = new Set();
+        state.rows.forEach(r => { if((r.causeIds||[]).includes(causeId) && r.errId) errIds.add(r.errId); });
+        return Array.from(errIds).map(id => state.originsDB.err?.[id]?.text || "").filter(Boolean);
+      })()
+    })).filter(x => x.fehlerursache.trim());
+
+    return `
+Du bist ein erfahrener FMEA-Moderator und Qualitätsingenieur.
+
+Eingaben:
+- FMEA-Typ: ${typ}
+- Systemelement: ${se || "(leer)"}
+- Kontext: ${context || "(leer)"}
+
+Fehlerursachen (JSON):
+${JSON.stringify(causesPayload, null, 2)}
+
+AUFGABE:
+Untersuche JEDE Fehlerursache und gib GENAU 2 kurze, konkrete Handlungsempfehlungen als VERMEIDUNGSMAßNAHMEN (A) aus.
+- Sprache: Deutsch
+- Formuliere Maßnahmen als umsetzbare Aktionen (z. B. "Tägliche Kontrolle ...", "Sensor ...", "Arbeitsanweisung ...")
+- Keine Entdeckungsmaßnahmen ausgeben (nur Vermeidungsmaßnahmen!)
+- Keine langen Erklärungen
+- Keine Duplikate innerhalb der 2 Empfehlungen je Ursache
+
+ANTWORTFORMAT (NUR JSON, KEIN Markdown, KEINE Erklärungen):
+{
+  "problem": "2 Vermeidungsmaßnahmen je Fehlerursache",
+  "fmeaType": "${typ}",
+  "systemElement": "${String(se||"").replaceAll('"','\"')}",
+  "recommendations": [
+    { "causeId":"…", "cause":"…", "avoid":["…","…"] }
+  ],
+  "ts":"ISO-8601"
+}
+`.trim();
+  }
+
+  async function aiGenerate(){
+    const lic = ($("#aiLicense").value || "").trim();
+    const apiKey = ($("#aiApiKey").value || "").trim();
+    const problem = ($("#aiProblem").value || "").trim();
+    const context = ($("#aiContext").value || "").trim();
+
+    // speichern wie in den anderen Tools
+    try{ localStorage.setItem("fmea_ai_license", lic); localStorage.setItem("fmea_ai_apikey", apiKey); localStorage.setItem("fmea_ai_model", aiSelectedModel()); localStorage.setItem("fmea_ai_genmode", aiGenMode()); }catch(e){}
+
+    const se = state.meta.systemElementId ? (state.originsDB.system[state.meta.systemElementId]?.text || "") : "";
+    const hasAnyRowInfo = state.rows.some(r => (r.funcId || r.errId));
+    if(!se && !hasAnyRowInfo){ toast("Bitte Systemelement anlegen oder mindestens eine Zeile füllen."); return; }
+    if(!problem){ toast("Bitte Aufgabe/Problem eingeben."); return; }
+    if(!apiKey){ toast("API Key fehlt."); return; }
+
+    $("#btnAiGenerate").disabled = true;
+    $("#btnAiApply").disabled = true;
+    $("#btnAiDownload").disabled = true;
+    aiSetStatus("Prüfe Lizenz …");
+
+    const ok = await validateLicense();
+    if(!ok.ok){ $("#btnAiGenerate").disabled = false; return; }
+
+    aiSetStatus("Sende Anfrage an KI …");
+
+    try{
+      const prompt = aiBuildPrompt(problem, context);
+
+      const res = await fetch("https://api.openai.com/v1/responses", {
+        method:"POST",
+        headers: {
+          "Content-Type":"application/json",
+          "Authorization": "Bearer " + apiKey
+        },
+        body: JSON.stringify({
+          model: aiSelectedModel(),
+          input: prompt
+        })
+      });
+
+      const raw = await res.text();
+      if(!res.ok) throw new Error(`OpenAI Fehler ${res.status}:\n${raw}`);
+
+      const data = JSON.parse(raw);
+      const outText = aiGetOutputText(data);
+      const obj = aiExtractJsonObject(outText);
+      if(!obj || !Array.isArray(obj.suggestions)) throw new Error("KI-JSON ist nicht im erwarteten Schema (suggestions fehlt).");
+
+      if(aiGenMode() === "append" && aiLastJson && Array.isArray(aiLastJson.suggestions) && Array.isArray(obj.suggestions)){
+        // merge by rowId, de-duplicate causes per row
+        const merged = JSON.parse(JSON.stringify(aiLastJson));
+        const byRow = new Map();
+        merged.suggestions.forEach(s => { if(s && s.rowId) byRow.set(String(s.rowId), s); });
+        for(const s of obj.suggestions){
+          if(!s || !s.rowId) continue;
+          const rid = String(s.rowId);
+          const existing = byRow.get(rid);
+          if(!existing){ merged.suggestions.push(s); byRow.set(rid, s); continue; }
+          const exArr = Array.isArray(existing.causes) ? existing.causes.map(x=>String(x||"").trim()).filter(Boolean) : [];
+          const addArr = Array.isArray(s.causes) ? s.causes.map(x=>String(x||"").trim()).filter(Boolean) : [];
+          const seen = new Set(exArr.map(x=>x.toLowerCase()));
+          for(const c of addArr){ const k = c.toLowerCase(); if(!seen.has(k)){ exArr.push(c); seen.add(k);} }
+          existing.causes = exArr;
+        }
+        aiLastJson = merged;
+      } else {
+        aiLastJson = obj;
+      }
+      aiSetPreview(aiLastJson);
+      aiSetMeta(`${aiSelectedModel()} · ${new Date().toLocaleString()}`);
+      aiSetStatus("Fertig. Du kannst jetzt übernehmen.");
+      $("#btnAiApply").disabled = false;
+      $("#btnAiDownload").disabled = false;
+    }catch(err){
+      aiLastJson = null;
+      aiSetPreview(null);
+      aiSetMeta("—");
+      aiSetStatus("Fehler:\n" + (err?.message || String(err)));
+    }finally{
+      $("#btnAiGenerate").disabled = false;
+    }
+  }
+
+  
+
+  async function aiGenerateAvoid(){
+    const lic = ($("#aiLicense").value || "").trim();
+    const apiKey = ($("#aiApiKey").value || "").trim();
+    const context = ($("#aiContext").value || "").trim();
+
+    try{ localStorage.setItem("fmea_ai_license", lic); localStorage.setItem("fmea_ai_apikey", apiKey); localStorage.setItem("fmea_ai_model", aiSelectedModel()); localStorage.setItem("fmea_ai_genmode", aiGenMode()); }catch(e){}
+
+    const hasCauses = Object.keys(state.originsDB.cause || {}).length > 0;
+    if(!hasCauses){ aiSetStatusAvoid("Bitte zuerst mindestens eine Fehlerursache anlegen."); return; }
+    if(!apiKey){ aiSetStatusAvoid("API Key fehlt."); return; }
+
+    $("#btnAiGenerateAvoid").disabled = true;
+    $("#btnAiApplyAvoid").disabled = true;
+    $("#btnAiDownloadAvoid").disabled = true;
+    aiSetStatusAvoid("Prüfe Lizenz …");
+
+    const ok = await validateLicense();
+    if(!ok.ok){ $("#btnAiGenerateAvoid").disabled = false; return; }
+
+    aiSetStatusAvoid("Sende Anfrage an KI …");
+
+    try{
+      const prompt = aiBuildAvoidPrompt(context);
+
+      const res = await fetch("https://api.openai.com/v1/responses", {
+        method:"POST",
+        headers: {
+          "Content-Type":"application/json",
+          "Authorization": "Bearer " + apiKey
+        },
+        body: JSON.stringify({
+          model: aiSelectedModel(),
+          input: prompt
+        })
+      });
+
+      const raw = await res.text();
+      if(!res.ok) throw new Error(`OpenAI Fehler ${res.status}:\n${raw}`);
+
+      const data = JSON.parse(raw);
+      const outText = aiGetOutputText(data);
+      const obj = aiExtractJsonObject(outText);
+      if(!obj || !Array.isArray(obj.recommendations)) throw new Error("KI-JSON ist nicht im erwarteten Schema (recommendations fehlt).");
+
+      if(aiGenMode() === "append" && aiLastAvoidJson && Array.isArray(aiLastAvoidJson.recommendations) && Array.isArray(obj.recommendations)){
+        const merged = JSON.parse(JSON.stringify(aiLastAvoidJson));
+        merged.recommendations = merged.recommendations.concat(obj.recommendations);
+        aiLastAvoidJson = merged;
+      } else {
+        aiLastAvoidJson = obj;
+      }
+      aiSetPreviewAvoid(aiLastAvoidJson);
+      aiSetMetaAvoid(`${aiSelectedModel()} · ${new Date().toLocaleString()}`);
+      aiSetStatusAvoid("Fertig. Du kannst jetzt übernehmen (Vermeidung).");
+      $("#btnAiApplyAvoid").disabled = false;
+      $("#btnAiDownloadAvoid").disabled = false;
+    }catch(err){
+      aiLastAvoidJson = null;
+      aiSetPreviewAvoid(null);
+      aiSetMetaAvoid("—");
+      aiSetStatusAvoid("Fehler:\n" + (err?.message || String(err)));
+    }finally{
+      $("#btnAiGenerateAvoid").disabled = false;
+    }
+  }
+
+  function normalizeCauseText(t){ return String(t||"").trim().replace(/\s+/g," ").toLowerCase(); }
+
+  function aiApply(){
+    if(!aiLastJson || !Array.isArray(aiLastJson.suggestions)){ alert("Kein gültiger KI-Output vorhanden."); return; }
+
+    const textToCauseId = new Map();
+    for(const [cid, rec] of Object.entries(state.originsDB.cause)){
+      const key = normalizeCauseText(rec?.text || "");
+      if(key) textToCauseId.set(key, cid);
+    }
+
+    let created=0, linked=0;
+    for(const sug of aiLastJson.suggestions){
+      const row = state.rows.find(r => r.id === sug.rowId);
+      if(!row) continue;
+
+      const causes = Array.isArray(sug.causes) ? sug.causes : [];
+      for(const c of causes){
+        const text = String(c||"").trim();
+        if(!text) continue;
+
+        const key = normalizeCauseText(text);
+        let cid = textToCauseId.get(key);
+
+        if(!cid){
+          cid = uid("c");
+          state.originsDB.cause[cid] = { text };
+          textToCauseId.set(key, cid);
+          created++;
+        }
+
+        if(!row.causeIds.includes(cid)){
+          row.causeIds.push(cid);
+          linked++;
+        }
+      }
+    }
+
+    renderAll();
+    aiSetStatus(`Übernommen ✅  Neue Ursachen: ${created} · Neue Verknüpfungen: ${linked}`);
+  }
+
+  function aiApplyAvoid(){
+    if(!aiLastAvoidJson || !Array.isArray(aiLastAvoidJson.recommendations)){ alert("Kein gültiger KI-Output (Vermeidung) vorhanden."); return; }
+
+    // map by causeId first, fallback by text
+    const textToCauseId = new Map();
+    for(const [cid, rec] of Object.entries(state.originsDB.cause || {})){
+      const key = normalizeCauseText(rec?.text || "");
+      if(key) textToCauseId.set(key, cid);
+    }
+
+    let createdMeasures = 0;
+    let linkedMeasures = 0;
+
+    for(const rec of aiLastAvoidJson.recommendations){
+      const cid = rec.causeId && state.originsDB.cause?.[rec.causeId] ? String(rec.causeId) : (()=>{
+        const key = normalizeCauseText(rec.cause || "");
+        return textToCauseId.get(key) || null;
+      })();
+      if(!cid) continue;
+
+      const avoid = Array.isArray(rec.avoid) ? rec.avoid : [];
+      const clean = avoid.map(x=>String(x||"").trim()).filter(Boolean).slice(0,2);
+      if(!clean.length) continue;
+
+      state.eval[cid] = state.eval[cid] || {};
+      const ev = state.eval[cid];
+      ensureEvalLists(ev);
+
+      const applyMode = ($("#aiApplyModeAvoid").value || "append");
+      if(applyMode === "replace"){
+        // clear Ist-Vermeidungsmaßnahmen for this cause (keep measure records in DB to allow later edits)
+        ev.avoidIstIds = [];
+      }
+
+      for(const a of clean){
+        const mid = uid("m");
+        state.originsDB.meas[mid] = { text: a, kind: "avoid" };
+        ev.avoidIstIds.push(mid);
+        createdMeasures++;
+        linkedMeasures++;
+      }
+    }
+
+    renderEval();
+    renderMeasures();
+    saveLocal();
+    aiSetStatusAvoid(`Übernommen ✅  Neue Vermeidungsmaßnahmen (Ist): ${createdMeasures} · Verknüpfungen: ${linkedMeasures}`);
+    $("#btnAiApplyAvoid").disabled = true;
+    $("#btnAiDownloadAvoid").disabled = true;
+  }
+
+  function aiDownload(){
+    if(!aiLastJson){ alert("Kein KI-Output zum Download."); return; }
+    const blob = new Blob([JSON.stringify(aiLastJson, null, 2)], {type:"application/json"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "fmea-ai-output-causes.json";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(()=>URL.revokeObjectURL(a.href), 500);
+  }
+
+  function aiDownloadAvoid(){
+    if(!aiLastAvoidJson){ alert("Kein KI-Output (Vermeidung) zum Download."); return; }
+    const blob = new Blob([JSON.stringify(aiLastAvoidJson, null, 2)], {type:"application/json"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "fmea-ai-output-avoid.json";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(()=>URL.revokeObjectURL(a.href), 500);
+  }
+
+  function aiClear(){
+    aiLastJson = null;
+    aiSetPreview(null);
+    aiSetMeta("—");
+    aiSetStatus("");
+    $("#btnAiApply").disabled = true;
+    $("#btnAiDownload").disabled = true;
+  }
+
+  function aiClearAvoid(){
+    aiLastAvoidJson = null;
+    aiSetPreviewAvoid(null);
+    aiSetMetaAvoid("—");
+    aiSetStatusAvoid("");
+    $("#btnAiApplyAvoid").disabled = true;
+    $("#btnAiDownloadAvoid").disabled = true;
+  }
+
+  // restore license/key like other tools
+  try{
+    const lic = localStorage.getItem("fmea_ai_license");
+    const key = localStorage.getItem("fmea_ai_apikey");
+    if(lic) $("#aiLicense").value = lic;
+    if(key) $("#aiApiKey").value = key;
+    const mdl = localStorage.getItem("fmea_ai_model");
+    const mode = localStorage.getItem("fmea_ai_genmode");
+    if(mdl && $("#aiModel")) $("#aiModel").value = mdl;
+    if(mode && $("#aiGenMode")) $("#aiGenMode").value = mode;
+  }catch(e){}
+
+  $("#btnAiContextFromTool").addEventListener("click", () => { $("#aiContext").value = aiBuildContextFromTool(); });
+  $("#btnAiGenerate").addEventListener("click", aiGenerate);
+  $("#btnAiApply").addEventListener("click", aiApply);
+  $("#btnAiDownload").addEventListener("click", aiDownload);
+  $("#btnAiClear").addEventListener("click", aiClear);
+
+  $("#btnAiGenerateAvoid").addEventListener("click", aiGenerateAvoid);
+  $("#btnAiApplyAvoid").addEventListener("click", aiApplyAvoid);
+  $("#btnAiDownloadAvoid").addEventListener("click", aiDownloadAvoid);
+  $("#btnAiClearAvoid").addEventListener("click", aiClearAvoid);
+
+  // persist AI settings
+  if($("#aiModel")) $("#aiModel").addEventListener("change", () => { try{ localStorage.setItem("fmea_ai_model", $("#aiModel").value || ""); }catch(e){} });
+  if($("#aiGenMode")) $("#aiGenMode").addEventListener("change", () => { try{ localStorage.setItem("fmea_ai_genmode", $("#aiGenMode").value || ""); }catch(e){} });
+
+if(!loadLocal()){
+    state.rows = [ makeRow(), makeRow() ];
+  }
+  $("#fmeaType").value = state.meta.fmeaType || "K-FMEA";
+  updateSystemHints();
+
+  // Finale Formblatt Meta
+  ensureFinalSheetMeta();
+  const _ffBind = (id, key) => {
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.addEventListener("input", () => {
+      state.meta.finalSheet[key] = el.value || "";
+      saveLocal();
+    });
+  };
+  _ffBind("ffNo","no");
+  _ffBind("ffPart","part");
+  _ffBind("ffProcess","process");
+  _ffBind("ffDate","date");
+
+  // Print / Refresh
+  const ffPrint = document.getElementById("ffPrint");
+  if(ffPrint) ffPrint.addEventListener("click", () => window.print());
+  const ffRefresh = document.getElementById("ffRefresh");
+  if(ffRefresh) ffRefresh.addEventListener("click", () => { renderFinalSheet(); saveLocal(); });
+
+  // Inline edits within final formblatt (nur: Fehlerfolge + B)
+  const ffTbody = document.getElementById("ffTbody");
+  if(ffTbody){
+    ffTbody.addEventListener("change", (e) => {
+      const tr = e.target && e.target.closest ? e.target.closest("tr[data-ff-cause]") : null;
+      if(!tr) return;
+      const cid = tr.getAttribute("data-ff-cause");
+      const ev = state.eval?.[cid] || (state.eval[cid] = {});
+      const sel = e.target;
+      if(sel && sel.getAttribute){
+        const k = sel.getAttribute("data-ffk");
+        if(k==="BIst"){ ev.B = sel.value ? Number(sel.value) : ""; renderFinalSheet(); saveLocal(); return; }
+        if(k==="BSoll"){ ev.BSoll = sel.value ? Number(sel.value) : ""; renderFinalSheet(); saveLocal(); return; }
+      }
+    });
+
+    ffTbody.addEventListener("input", (e) => {
+      const ta = e.target;
+      if(!(ta && ta.getAttribute)) return;
+      const tr = ta.closest && ta.closest("tr[data-ff-cause]");
+      if(!tr) return;
+      const cid = tr.getAttribute("data-ff-cause");
+      const ev = state.eval?.[cid] || (state.eval[cid] = {});
+      const k = ta.getAttribute("data-ff");
+      if(k==="fe"){ ev.FE = ta.value || ""; saveLocal(); }
+    });
+  }
+
+
+
+  // ===== Maßnahmen: Soll -> Ist (bei Abgeschlossen) und zurück (wenn wieder Offen/Verworfen) =====
+  function syncMeasureMaster(m){
+    if(!m) return;
+    state.originsDB.meas = state.originsDB.meas || {};
+    const rec = state.originsDB.meas[m.id] || (state.originsDB.meas[m.id] = {});
+    rec.text = (m.text || rec.text || "").toString().trim();
+    rec.kind = (m.kind || rec.kind || m.type || "avoid");
+    rec.phase = (m.phase || rec.phase || "soll");
+    rec.evidence = (m.evidence || rec.evidence || "").toString().trim();
+    rec.owner = (m.owner || rec.owner || "").toString().trim();
+    rec.responsible = (m.responsible || rec.responsible || "").toString().trim();
+    rec.due = (m.due || rec.due || "").toString().trim();
+    rec.status = (m.status || rec.status || "open").toString().trim();
+    rec.promotedFromSoll = !!(m.promotedFromSoll || rec.promotedFromSoll);
+  }
+
+  function maybePromoteSollToIst(measure){
+    if(!measure) return;
+    if(measure.status !== "done") return;
+    if(measure.phase !== "soll") return;
+
+    measure.phase = "ist";
+    measure.promotedFromSoll = true;
+    if(state.originsDB.meas?.[measure.id]){
+      state.originsDB.meas[measure.id].phase = "ist";
+      state.originsDB.meas[measure.id].promotedFromSoll = true;
+    }
+
+    const cid = measure.causeId;
+    if(!cid) return;
+    state.eval[cid] = state.eval[cid] || {};
+    const ev = state.eval[cid];
+    ensureEvalLists(ev);
+
+    const from = getEvalList(ev, measure.kind, "soll");
+    const to   = getEvalList(ev, measure.kind, "ist");
+    const idx = from.indexOf(measure.id);
+    if(idx >= 0) from.splice(idx, 1);
+    if(!to.includes(measure.id)) to.push(measure.id);
+  }
+
+  function maybeDemoteIstToSoll(measure){
+    if(!measure) return;
+    if(measure.status === "done") return;
+    if(measure.phase !== "ist") return;
+    if(!measure.promotedFromSoll) return;
+
+    measure.phase = "soll";
+    if(state.originsDB.meas?.[measure.id]){
+      state.originsDB.meas[measure.id].phase = "soll";
+    }
+
+    const cid = measure.causeId;
+    if(!cid) return;
+    state.eval[cid] = state.eval[cid] || {};
+    const ev = state.eval[cid];
+    ensureEvalLists(ev);
+
+    const from = getEvalList(ev, measure.kind, "ist");
+    const to   = getEvalList(ev, measure.kind, "soll");
+    const idx = from.indexOf(measure.id);
+    if(idx >= 0) from.splice(idx, 1);
+    if(!to.includes(measure.id)) to.push(measure.id);
+  }
+
+
+  applyI18n();
+  renderAll();
+  aiClear();
+  aiClearAvoid();
+})();
+</script>
+</body>
+</html>
+
+  
