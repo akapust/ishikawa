@@ -1,0 +1,1928 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BowTie Risikoanalyse & Maßnahmenmanagement</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;700&family=Barlow:wght@300;400;500;600&display=swap');
+body{margin:0;background:#f4f8f8;}
+#kvpBt .tool-intro{padding:22px 25px;border-bottom:3px solid var(--c1);background:#f7fbfb;}
+#kvpBt .tool-intro-top{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;flex-wrap:wrap;}
+#kvpBt .tool-title{margin:0;color:var(--c2);font-size:20px;text-transform:uppercase;font-family:'Barlow Condensed',sans-serif;letter-spacing:.08em;}
+#kvpBt .tool-sub{margin:6px 0 0;font-size:13px;color:#5f7380;}
+#kvpBt .tool-grid{margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+#kvpBt .tool-box{background:#fff;border:1px solid #d6e1e4;border-radius:4px;padding:12px 14px;}
+#kvpBt .tool-box h3{margin:0 0 6px 0;font-size:13px;color:var(--c2);text-transform:uppercase;font-family:'Barlow Condensed',sans-serif;letter-spacing:.08em;}
+#kvpBt .tool-box p,#kvpBt .tool-box ol{margin:0;font-size:13px;color:#334155;}
+#kvpBt .tool-box ol{padding-left:18px;}
+#kvpBt .tool-privacy{border-left:3px solid var(--c1);}
+#kvpBt .tool-footer{padding:12px 25px;background:#f7fbfb;border-top:1px solid #d6e1e4;font-size:12px;color:#64748b;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+#kvpBt .tool-footer a{color:var(--c2);text-decoration:none;font-weight:600;}
+#kvpBt .tool-footer a:hover{text-decoration:underline;}
+
+#kvpBt .lang-switch{display:flex;gap:8px;align-items:center;}
+#kvpBt .i-btn{padding:10px 14px;font-size:12px;font-weight:700;border-radius:4px;cursor:pointer;border:1px solid #d1d9e6;background:#fff;text-transform:uppercase;text-decoration:none;display:inline-flex;align-items:center;color:#24404e;font-family:'Barlow',sans-serif;}
+#kvpBt .i-btn.primary{background:var(--c1);color:#fff;border-color:var(--c1);}
+@media (max-width: 900px){#kvpBt .tool-grid{grid-template-columns:1fr;}#kvpBt .tool-intro,#kvpBt .tool-footer{padding-left:16px;padding-right:16px;}}
+#kvpBt *{box-sizing:border-box;margin:0;padding:0;}
+#kvpBt{--c1:#11979d;--c2:#0a6a70;--c3:#7ad6d4;--bs:#c75b69;--bsb:#df7c88;--bsh:#8b3744;--bst:#ffd9de;--bsg:#fff3f5;--bm:#13979f;--bmb:#42c1c5;--bmh:#0b6b72;--bmt:#d9ffff;--bmg:#ecfbfb;--wy:#f3c94d;--cp:#126f75;--cpd:#0a4b4f;--cpl:#67c3c2;--gs:#77b8b0;--gsl:#bfe5de;--gsd:#4f827b;--gsh:#244b47;--gsg:#f4fbf9;--gm:#7fcfc8;--gmb:#c6ece8;--gmh:#2a5f5b;--gmg:#f5fcfb;--rm:#cd6672;--rmb:#e08a93;--rmh:#8b3744;--rmg:#fff4f5;--rs:#c65766;--rsb:#df7c88;--rsh:#7f2f3c;--rsg:#fff2f4;font-family:'Barlow',sans-serif;background:#fff;color:#1a2030;width:100%;display:block;}
+#kvpBt .bh{background:linear-gradient(135deg,var(--c2) 0%,var(--c1) 65%,var(--c3) 100%);padding:14px 20px 11px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 10px rgba(0,131,143,.22);gap:16px;flex-wrap:wrap;}
+#kvpBt .bh-brand{display:flex;align-items:center;gap:10px;}
+#kvpBt .bh-logo{width:36px;height:36px;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.9rem;color:#fff;}
+#kvpBt .bh h2{font-family:'Barlow Condensed',sans-serif;font-size:1.3rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#fff;line-height:1.1;}
+#kvpBt .bh p{font-size:.68rem;color:rgba(255,255,255,.68);letter-spacing:.07em;margin-top:2px;}
+#kvpBt .bh-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end;}
+#kvpBt .btn-pdf,#kvpBt .btn-json,#kvpBt .btn-ai{background:#fff;color:var(--c2);border:none;padding:8px 16px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;border-radius:3px;box-shadow:0 2px 8px rgba(0,0,0,.14);}
+#kvpBt .btn-rst{background:transparent;color:rgba(255,255,255,.80);border:1.5px solid rgba(255,255,255,.35);padding:7px 13px;font-family:'Barlow Condensed',sans-serif;font-weight:500;font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;border-radius:3px;}
+#kvpBt .bleg{background:#f6f8fa;border-bottom:1px solid #dde3e8;padding:5px 20px;display:flex;gap:14px;flex-wrap:wrap;align-items:center;}
+#kvpBt .bleg span{font-size:.62rem;font-family:'Barlow Condensed',sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#5a6a7a;display:flex;align-items:center;gap:4px;}
+#kvpBt .bld{width:10px;height:10px;border-radius:1px;display:inline-block;flex-shrink:0;}
+#kvpBt .bp{padding:16px 20px;background:#f7fafb;border-bottom:1px solid #e3eaee;display:grid;grid-template-columns:1.05fr .95fr;gap:16px;}
+#kvpBt .card{background:#fff;border:1px solid #dde6eb;border-radius:10px;box-shadow:0 3px 10px rgba(0,0,0,.05);padding:14px;}
+#kvpBt .card h3{font-family:'Barlow Condensed',sans-serif;font-size:.95rem;letter-spacing:.12em;text-transform:uppercase;color:#0b2d38;margin-bottom:10px;}
+#kvpBt .card p.meta,#kvpBt .meta{font-size:.75rem;color:#64727d;line-height:1.45;}
+#kvpBt .fg{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+#kvpBt .field{display:flex;flex-direction:column;gap:5px;}
+#kvpBt .field label{font-size:.67rem;font-family:'Barlow Condensed',sans-serif;letter-spacing:.11em;text-transform:uppercase;color:#47606b;}
+#kvpBt input[type="text"],#kvpBt input[type="password"],#kvpBt select,#kvpBt textarea{width:100%;border:1px solid #cfd9df;border-radius:8px;padding:10px 11px;font:inherit;color:#1a2030;background:#fff;outline:none;}
+#kvpBt textarea{min-height:88px;resize:vertical;}
+#kvpBt input[type="file"]{display:none;}
+#kvpBt .actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;margin-top:10px;}
+#kvpBt .mini{border:1px solid #cfd9df;background:#fff;color:#173643;padding:8px 10px;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;font-weight:700;}
+#kvpBt .mini.primary{background:var(--c2);border-color:var(--c2);color:#fff;}
+#kvpBt .mini.soft{background:#edf9f9;border-color:#bde6e4;color:var(--c2);}
+#kvpBt .ai-status,#kvpBt .ai-preview-meta{font-size:.75rem;color:#56656f;white-space:pre-wrap;}
+#kvpBt pre.ai-preview{margin-top:8px;border:1px solid #d8e2e7;background:#f8fbfd;border-radius:10px;padding:12px;font-size:.72rem;line-height:1.45;max-height:260px;overflow:auto;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;}
+#kvpBt .bcw{overflow-x:auto;overflow-y:auto;padding:20px 18px 50px;background:#fff;width:100%;min-height:760px;transition:min-height .18s ease;scroll-padding-top:16px;}
+#kvpBt-sizer{position:relative;margin:0 auto 0 0;}
+#kvpBt-canvas{position:relative;background:#fff;transform-origin:top left;}
+#kvpBt-svg{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;overflow:visible;}
+#kvpBt .bc{position:absolute;z-index:10;box-shadow:0 2px 8px rgba(0,0,0,.1);}
+#kvpBt .bc-in{border-radius:2px;overflow:hidden;position:relative;}
+#kvpBt .bc-hd{background:#0a0a14;padding:6px 8px 5px;text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:#fff;white-space:nowrap;}
+#kvpBt .bc-bd{background:#fff;padding:6px 8px 8px;border-left:1.5px solid transparent;border-right:1.5px solid transparent;border-bottom:1.5px solid transparent;position:relative;}
+#kvpBt .bc-ac{height:4px;}
+#kvpBt .bc-tx{width:100%;min-height:56px;border:none;outline:none;background:transparent;font-family:'Barlow',sans-serif;font-size:.74rem;color:#1a2030;resize:vertical;line-height:1.45;}
+#kvpBt .bc-tx::placeholder{color:#b8c4cc;font-style:italic;font-size:.62rem;}
+#kvpBt .bc-del{position:absolute;top:2px;right:2px;width:14px;height:14px;border-radius:50%;background:#c0152a;color:#fff;font-size:9px;line-height:14px;text-align:center;cursor:pointer;z-index:30;display:none;border:1px solid #ff3050;}
+#kvpBt .bc:hover .bc-del{display:block;}
+#kvpBt .bps{position:absolute;top:50%;transform:translateY(-50%);width:18px;height:18px;border-radius:50%;background:rgba(255,255,255,.95);border:1.5px solid currentColor;font-size:13px;text-align:center;cursor:pointer;z-index:20;display:flex;align-items:center;justify-content:center;line-height:1;}
+#kvpBt .bps.r{right:3px;}
+#kvpBt .bps.l{left:3px;}
+#kvpBt .bpb{position:absolute;bottom:2px;left:50%;transform:translateX(-50%);width:18px;height:18px;border-radius:50%;background:rgba(255,255,255,.95);border:1.5px solid currentColor;font-size:13px;text-align:center;cursor:pointer;z-index:20;display:flex;align-items:center;justify-content:center;line-height:1;}
+#kvpBt .bc-ursache .bps,#kvpBt .bc-ursache .bpb{color:#c75b69;}
+#kvpBt .bc-gefahrenbes .bps,#kvpBt .bc-gefahrenbes .bpb{color:#17949d;}
+#kvpBt .bc-vorbeugende .bps,#kvpBt .bc-vorbeugende .bpb{color:#17949d;}
+#kvpBt .bc-konsequenz .bps,#kvpBt .bc-konsequenz .bpb{color:#c65766;}
+#kvpBt .bc-funktional .bps,#kvpBt .bc-funktional .bpb{color:#de8a94;}
+#kvpBt .bc-schaden .bps,#kvpBt .bc-schaden .bpb{color:#de8a94;}
+#kvpBt .bc-beeintraecht .bps,#kvpBt .bc-beeintraecht .bpb{color:#4f827b;}
+#kvpBt .bc-sicherung .bps,#kvpBt .bc-sicherung .bpb{color:#4f827b;}
+#kvpBt .bsl{position:absolute;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.55rem;letter-spacing:.16em;text-transform:uppercase;color:#9aa8b8;z-index:5;white-space:nowrap;pointer-events:none;}
+#kvpBt .bgh{position:absolute;z-index:8;cursor:pointer;border-radius:2px;}
+#kvpBt .bc-gefahr .bc-in{outline:2px solid #d0ab36;outline-offset:1px;box-shadow:0 6px 18px rgba(18,111,117,.10);}
+#kvpBt .bc-gefahr .bc-ac{height:10px;background:repeating-linear-gradient(45deg,#15383b 0,#15383b 7px,var(--wy) 7px,var(--wy) 14px);}
+#kvpBt .bc-gefahr .bc-hd{background:linear-gradient(90deg,#17383a,#0d2426);color:#ffe8a6;letter-spacing:.22em;font-size:.62rem;}
+#kvpBt .bc-gefahr .bc-bd{background:#fffdf4;border-color:#d0ab36;}
+#kvpBt .bc-zentral .bc-in{border:2px solid var(--cp);box-shadow:0 0 0 4px rgba(18,111,117,.10),0 10px 28px rgba(10,106,112,.18);outline:1px solid var(--cpd);outline-offset:3px;}
+#kvpBt .bc-zentral .bc-ac{height:4px;background:linear-gradient(90deg,var(--cpd),var(--cpl),var(--cpd));}
+#kvpBt .bc-zentral .bc-hd{background:linear-gradient(90deg,var(--cpd),var(--cp),var(--cpd));font-size:.6rem;color:#dcffff;}
+#kvpBt .bc-zentral .bc-bd{background:#f1fbfb;border-color:var(--cp);}
+#kvpBt .bc-ursache .bc-in{border:1.5px solid var(--bs);}
+#kvpBt .bc-ursache .bc-ac{background:linear-gradient(90deg,var(--bsh),var(--bsb),var(--bsh));}
+#kvpBt .bc-ursache .bc-hd{background:linear-gradient(90deg,var(--bsh),#1a3a9f);color:var(--bst);}
+#kvpBt .bc-ursache .bc-bd{background:var(--bsg);border-color:var(--bs);}
+#kvpBt .bc-gefahrenbes .bc-in{border:1.5px solid var(--bm);}
+#kvpBt .bc-gefahrenbes .bc-hd{background:linear-gradient(90deg,var(--bmh),#0e2060);color:var(--bmt);}
+#kvpBt .bc-gefahrenbes .bc-bd{background:var(--bmg);border-color:var(--bm);}
+#kvpBt .bc-gefahrenbes .bc-ac-top{height:2px;background:transparent;}
+#kvpBt .bc-gefahrenbes .bc-ac-bot{height:4px;background:var(--bmb);}
+#kvpBt .bc-vorbeugende .bc-in{border:1.5px solid var(--bm);}
+#kvpBt .bc-vorbeugende .bc-hd{background:linear-gradient(90deg,var(--bmh),#0e2060);color:var(--bmt);}
+#kvpBt .bc-vorbeugende .bc-bd{background:var(--bmg);border-color:var(--bm);}
+#kvpBt .bc-vorbeugende .bc-ac-top{height:2px;background:transparent;}
+#kvpBt .bc-vorbeugende .bc-ac-bot{height:4px;background:var(--bmb);}
+#kvpBt .bc-konsequenz .bc-in{border:1.5px solid var(--rs);}
+#kvpBt .bc-konsequenz .bc-ac{background:linear-gradient(90deg,var(--rsh),var(--rsb),var(--rsh));}
+#kvpBt .bc-konsequenz .bc-hd{background:linear-gradient(90deg,var(--rsh),#800018);color:#ffaaaa;}
+#kvpBt .bc-konsequenz .bc-bd{background:var(--rsg);border-color:var(--rs);}
+#kvpBt .bc-funktional .bc-in{border:1.5px solid var(--rm);}
+#kvpBt .bc-funktional .bc-hd{background:linear-gradient(90deg,var(--rmh),#700018);color:#ffbbbb;}
+#kvpBt .bc-funktional .bc-bd{background:var(--rmg);border-color:var(--rm);}
+#kvpBt .bc-funktional .bc-ac-top{height:2px;background:transparent;}
+#kvpBt .bc-funktional .bc-ac-bot{height:4px;background:var(--rmb);}
+#kvpBt .bc-schaden .bc-in{border:1.5px solid var(--rm);}
+#kvpBt .bc-schaden .bc-hd{background:linear-gradient(90deg,var(--rmh),#700018);color:#ffbbbb;}
+#kvpBt .bc-schaden .bc-bd{background:var(--rmg);border-color:var(--rm);}
+#kvpBt .bc-schaden .bc-ac-top{height:2px;background:transparent;}
+#kvpBt .bc-schaden .bc-ac-bot{height:4px;background:var(--rmb);}
+#kvpBt .bc-beeintraecht .bc-in{border:1.5px solid var(--gs);}
+#kvpBt .bc-beeintraecht .bc-ac{background:linear-gradient(90deg,var(--gsd),var(--gsl),var(--gsd));}
+#kvpBt .bc-beeintraecht .bc-hd{background:linear-gradient(90deg,var(--gsh),#6a4800);color:#f0c060;}
+#kvpBt .bc-beeintraecht .bc-bd{background:var(--gsg);border-color:var(--gs);}
+#kvpBt .bc-sicherung .bc-in{border:1.5px solid var(--gm);}
+#kvpBt .bc-sicherung .bc-hd{background:linear-gradient(90deg,var(--gmh),#5a3a00);color:#ffe090;}
+#kvpBt .bc-sicherung .bc-bd{background:var(--gmg);border-color:var(--gm);}
+#kvpBt .bc-sicherung .bc-ac-top{height:2px;background:transparent;}
+#kvpBt .bc-sicherung .bc-ac-bot{height:4px;background:linear-gradient(90deg,var(--gm),var(--gmb),var(--gm));}
+#kvpBt .bl{stroke-width:1.8;fill:none;stroke-linecap:round;}
+#kvpBt .lb{stroke:#17949d;}
+#kvpBt .lr{stroke:#c75b69;}
+#kvpBt .lc{stroke:#126f75;stroke-width:2.4;}
+#kvpBt .lg{stroke:#77b8b0;stroke-width:1.7;}
+#kvpBt .ld{stroke:#77b8b0;stroke-dasharray:5 3;stroke-width:1.4;}
+#kvpBt .bcw::-webkit-scrollbar{height:6px;width:6px;}
+#kvpBt .bcw::-webkit-scrollbar-track{background:#f0f2f4;}
+#kvpBt .bcw::-webkit-scrollbar-thumb{background:#53bdbb;border-radius:4px;}
+
+#kvpBt .jsonbar{padding:12px 20px;background:#f7fafb;border-bottom:1px solid #e3eaee;display:flex;gap:12px;justify-content:space-between;align-items:center;flex-wrap:wrap;}
+#kvpBt .jsonbar .left{display:flex;flex-direction:column;gap:4px;}
+#kvpBt .jsonbar .left strong{font-family:'Barlow Condensed',sans-serif;font-size:.92rem;letter-spacing:.11em;text-transform:uppercase;color:#0b2d38;}
+#kvpBt .jsonbar .left span{font-size:.75rem;color:#64727d;line-height:1.4;}
+#kvpBt .jsonbar .right{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+#kvpBt .section-wrap{padding:18px 20px;background:#f7fafb;border-top:1px solid #e3eaee;}
+#kvpBt .section-stack{display:grid;grid-template-columns:1fr;gap:16px;}
+#kvpBt .manager-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:14px;align-items:start;}
+#kvpBt .manager-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;margin-top:12px;}
+#kvpBt .measure-editor-grid{display:grid;grid-template-columns:1.2fr .8fr .8fr .8fr;gap:10px;margin-top:12px;}
+#kvpBt .measure-overview-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap;}
+#kvpBt .measure-overview-list{margin-top:14px;display:flex;flex-direction:column;gap:10px;}
+#kvpBt .measure-overview-item{border:1px solid #dbe5ea;border-radius:10px;background:#fff;padding:12px;box-shadow:0 3px 10px rgba(0,0,0,.04);}
+#kvpBt .measure-overview-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;}
+#kvpBt .measure-title{font-weight:600;font-size:.94rem;color:#152733;line-height:1.35;}
+#kvpBt .measure-sub{margin-top:4px;font-size:.73rem;color:#667680;line-height:1.45;}
+#kvpBt .measure-meta-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+#kvpBt .measure-badge{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;font-size:.64rem;font-family:'Barlow Condensed',sans-serif;letter-spacing:.08em;text-transform:uppercase;font-weight:700;border:1px solid #d7e3ea;background:#f4f8fb;color:#24404e;}
+#kvpBt .measure-badge.status-open{background:#eef5ff;border-color:#cfe0ff;color:#11438f;}
+#kvpBt .measure-badge.status-done{background:#eefaf0;border-color:#cde7d2;color:#21663a;}
+#kvpBt .measure-badge.status-drop{background:#fff3f4;border-color:#f0c7cd;color:#9e1d31;}
+#kvpBt .measure-empty{border:1.5px dashed #c8d5dc;border-radius:10px;background:#fbfdfe;padding:20px;text-align:center;color:#6a7984;font-size:.82rem;}
+#kvpBt .measure-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px;}
+#kvpBt .statbox{background:#fff;border:1px solid #dbe5ea;border-radius:10px;padding:12px;box-shadow:0 3px 10px rgba(0,0,0,.04);}
+#kvpBt .statbox strong{display:block;font-family:'Barlow Condensed',sans-serif;letter-spacing:.1em;text-transform:uppercase;font-size:.72rem;color:#54707d;}
+#kvpBt .statbox span{display:block;margin-top:5px;font-size:1.15rem;font-weight:700;color:#132533;}
+#kvpBt .danger{background:#fff3f4;border-color:#f0c7cd;color:#9e1d31;}
+#kvpBt .success{background:#eefaf0;border-color:#cde7d2;color:#21663a;}
+#kvpBt .manager-note{margin-top:10px;padding:10px 12px;border:1px solid #dce8ee;background:#fafdff;border-radius:10px;font-size:.76rem;color:#56656f;line-height:1.45;}
+@media(max-width:980px){#kvpBt .bp{grid-template-columns:1fr;}#kvpBt .fg{grid-template-columns:1fr;}#kvpBt .manager-grid{grid-template-columns:1fr;}#kvpBt .measure-editor-grid{grid-template-columns:1fr 1fr;}#kvpBt .measure-stats{grid-template-columns:1fr 1fr;}#kvpBt .jsonbar{align-items:flex-start;}}
+</style>
+</head>
+<body>
+<div id="kvpBt">
+  
+  <section class="tool-intro">
+    <div class="tool-intro-top">
+      <div>
+        <h1 class="tool-title" id="i18nTitle">BowTie Risikoanalyse &amp; Maßnahmenmanagement</h1>
+        <p class="tool-sub" id="i18nSubtitle">Strukturierte Gefährdungsanalyse mit verknüpfter Maßnahmenübersicht, Maßnahmenmanager, JSON-Import/Export und KI-Unterstützung.</p>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end;">
+        <div class="lang-switch" aria-label="Language switch">
+          <button type="button" class="i-btn" id="btnLangDE">DE</button>
+          <button type="button" class="i-btn" id="btnLangEN">EN</button>
+        </div>
+        <a class="i-btn" href="https://tools.quality.de/" id="i18nBackHome">Zurück zur Startseite</a>
+      </div>
+    </div>
+    <div class="tool-grid">
+      <div class="tool-box">
+        <h3 id="i18nBoxToolNameTitle">Name Tool</h3>
+        <p id="i18nBoxToolNameText">BowTie Risikoanalyse – Visualisierung &amp; Maßnahmenmanagement</p>
+      </div>
+      <div class="tool-box">
+        <h3 id="i18nBoxGoalTitle">Ziel</h3>
+        <p id="i18nBoxGoalText">Eine kompakte und strukturierte Risikoübersicht erstellen: Gefährdungen, Ursachen, präventive und mitigative Barrieren sowie Konsequenzen erfassen und daraus konkrete Maßnahmen ableiten.</p>
+      </div>
+      <div class="tool-box">
+        <h3 id="i18nBoxHowTitle">So benutzt du das Tool</h3>
+        <ol>
+          <li id="i18nStep1">BowTie-Analyse eingeben oder laden.</li>
+          <li id="i18nStep2">Ursachen, präventive Barrieren, mitigative Barrieren und Konsequenzen ergänzen.</li>
+          <li id="i18nStep3">Die abgeleitete Maßnahmenübersicht prüfen und unten Verantwortliche, Termin und Status verwalten.</li>
+          <li id="i18nStep4">Als PDF oder JSON exportieren oder eine gespeicherte Datei erneut laden.</li>
+        </ol>
+      </div>
+      <div class="tool-box tool-privacy">
+        <h3 id="i18nBoxPrivacyTitle">Datenschutz</h3>
+        <p id="i18nBoxPrivacyText">Dieses Tool arbeitet vollständig im Browser. Es werden keine Daten auf einem Server gespeichert. Zugriff hat nur die Person, die die Datei lokal speichert bzw. lädt.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="bh">
+    <div class="bh-brand">
+      <div class="bh-logo">KVP</div>
+      <div>
+        <h2 id="i18nBhTitle">BowTie Risikoanalyse</h2>
+        <p id="i18nBhSub">Strukturierte Gefährdungsanalyse · JSON · API · kvp.de</p>
+      </div>
+    </div>
+    <div class="bh-tools">
+      <button class="btn-rst" id="kvpBtRst">↻ Reset</button>
+      <button class="btn-json" id="kvpBtSave">JSON speichern</button>
+      <button class="btn-json" id="kvpBtLoadBtn">JSON laden</button>
+      <button class="btn-pdf" id="kvpBtPdf">⇩ PDF exportieren (A4 quer)</button>
+      <input type="file" id="kvpBtLoadFile" accept="application/json">
+    </div>
+  </div>
+
+  <div class="bleg">
+    <span><i class="bld" style="background:#c75b69"></i><span id="leg_cause_hazard_elimination">Ursache / Gefahrenbeseitigung</span></span>
+    <span><i class="bld" style="background:#42c1c5;opacity:.9"></i><span id="leg_preventive_barrier">Vorbeugende Maßnahme</span></span>
+    <span><i class="bld" style="background:repeating-linear-gradient(45deg,#17383a 0,#17383a 3px,#f3c94d 3px,#f3c94d 6px)"></i><span id="leg_hazard">Gefahr</span></span>
+    <span><i class="bld" style="background:#126f75"></i><span id="leg_top_event">Zentrales Ereignis</span></span>
+    <span><i class="bld" style="background:#de8a94;opacity:.9"></i><span id="leg_functional_separation_damage_limitation">Funktionale Trennung / Schadensbegrenzung</span></span>
+    <span><i class="bld" style="background:#c65766"></i><span id="leg_consequence">Konsequenz</span></span>
+    <span><i class="bld" style="background:#77b8b0"></i><span id="leg_impact">Beeinträchtigung</span></span>
+    <span><i class="bld" style="background:#c6ece8;border:1px solid #77b8b0"></i><span id="leg_safeguard">Sicherungsmaßnahme</span></span>
+  </div>
+
+  
+  <div class="jsonbar">
+    <div class="left">
+      <strong id="i18nJsonTitle1">Datei / JSON / Autosave</strong>
+      <span id="i18nJsonSub1">Autosave ist aktiv. JSON speichern und laden synchronisiert BowTie Analyse, Maßnahmenmanager und KI-Einstellungen gemeinsam.</span>
+    </div>
+    <div class="right">
+      <button class="mini primary" id="kvpBtSave2">JSON herunterladen</button>
+      <button class="mini" id="kvpBtLoad2">JSON importieren</button>
+      <button class="mini soft" id="kvpBtExportExample">Beispiel-JSON</button>
+      <span class="meta" id="kvpBtStorageInfo">Autosave active.</span>
+    </div>
+  </div>
+
+  <div class="bcw">
+    <div id="kvpBt-sizer">
+      <div id="kvpBt-canvas">
+        <svg id="kvpBt-svg"></svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-wrap">
+    <div class="section-stack">
+      <div class="card">
+        <h3 id="i18nManagerTitle">Maßnahmenmanager</h3>
+        <p class="meta" id="i18nManagerSub">Maßnahmen werden aus der BowTie abgeleitet. Sie erscheinen in der Übersicht darunter. Bearbeite ausgewählte Maßnahmen hier oder lege neue an.</p>
+        <div class="manager-grid">
+          <div>
+            <div class="field"><label for="mmSelect" id="i18nLblSelectAction">Maßnahme auswählen</label><select id="mmSelect"><option value="">— Neue Maßnahme anlegen —</option></select></div>
+            <div class="field" style="margin-top:10px;"><label for="mmText" id="i18nLblMeasure">Maßnahme</label><input type="text" id="mmText" placeholder="Maßnahme beschreiben..."></div>
+            <div class="measure-editor-grid">
+              <div class="field"><label for="mmCategory" id="i18nLblCategory">Kategorie</label><select id="mmCategory"><option value="vorbeugende">Vorbeugende Maßnahme</option><option value="schaden">Schadensbegrenzung</option><option value="sicherung">Sicherungsmaßnahme</option></select></div>
+              <div class="field"><label for="mmOwner" id="i18nLblOwner">Verantwortlich</label><input type="text" id="mmOwner" placeholder="Name / Rolle"></div>
+              <div class="field"><label for="mmDue" id="i18nLblDue">Termin</label><input type="text" id="mmDue" placeholder="z. B. 2026-03-31"></div>
+              <div class="field"><label for="mmStatus" id="i18nLblStatus">Status</label><select id="mmStatus"><option value="in_bearbeitung">In Bearbeitung</option><option value="erledigt">Erledigt</option><option value="verworfen">Verworfen</option></select></div>
+            </div>
+            <div class="manager-actions">
+              <button class="mini primary" id="mmSave">Speichern / anlegen</button>
+              <button class="mini" id="mmNew">Neu</button>
+              <button class="mini danger" id="mmDelete">Aus Analyse löschen</button>
+            </div>
+          </div>
+          <div>
+            <div class="measure-stats">
+              <div class="statbox"><strong id="i18nStatTotal">Gesamt</strong><span id="statTotal">0</span></div>
+              <div class="statbox"><strong id="i18nStatOpen">In Bearbeitung</strong><span id="statOpen">0</span></div>
+              <div class="statbox"><strong id="i18nStatDone">Erledigt</strong><span id="statDone">0</span></div>
+              <div class="statbox"><strong id="i18nStatRejected">Verworfen</strong><span id="statRejected">0</span></div>
+            </div>
+            <div class="manager-note" id="mmInfo">Wähle eine Maßnahme aus der Übersicht unten, um sie zu bearbeiten, oder lege hier eine neue an.</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="measure-overview-head">
+          <div>
+            <h3 id="i18nOverviewTitle">Maßnahmenübersicht</h3>
+            <p class="meta" id="i18nOverviewSub">Hier erscheinen alle Maßnahmen, die direkt aus deiner BowTie-Analyse entstehen: <strong>Vorbeugende Maßnahme</strong>, <strong>Schadensbegrenzung</strong> und <strong>Sicherungsmaßnahme</strong>.</p>
+          </div>
+          <div class="manager-actions" style="margin-top:0;">
+            <button class="mini" id="mmRefresh">Übersicht aktualisieren</button>
+          </div>
+        </div>
+        <div class="measure-overview-list" id="measureOverviewList"></div>
+      </div>
+      <div class="card">
+        <h3 id="i18nAiCardTitle">KI / API für Maßnahmen</h3>
+        <p class="meta" id="i18nAiCardSub1">Die KI liest den aktuellen Tool-Inhalt und kann ein erweitertes BowTie-JSON erzeugen. Maßnahmenübersicht und Maßnahmenmanager werden danach automatisch neu aus der Analyse abgeleitet.</p>
+        <p class="meta" id="i18nAiCardSub2">Der API-Bereich ist bewusst ganz unten platziert, damit du zuerst die Analyse und die Maßnahmen prüfen kannst.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="jsonbar" style="border-top:1px solid #e3eaee;">
+    <div class="left">
+      <strong id="i18nJsonTitle1">Datei / JSON / Autosave</strong>
+      <span id="i18nJsonSub2">Auch hier verfügbar: JSON laden und speichern synchronisiert immer den kompletten Stand.</span>
+    </div>
+    <div class="right">
+      <button class="mini primary" id="kvpBtSave3">JSON herunterladen</button>
+      <button class="mini" id="kvpBtLoad3">JSON importieren</button>
+      <span class="meta" id="i18nJsonMeta2">Gleicher Datenstand wie oben.</span>
+    </div>
+  </div>
+
+  <div class="bp">
+    <div class="card" style="grid-column:1/-1;">
+      <h3 id="i18nAiTitle">KI / API Schnittstelle</h3>
+      <div class="fg">
+        <div class="field">
+          <label for="aiLicense" id="i18nAiLicense">Lizenzschlüssel</label>
+          <input type="password" id="aiLicense" placeholder="••••">
+        </div>
+        <div class="field">
+          <label for="aiApiKey">OpenAI API Key</label>
+          <input type="password" id="aiApiKey" placeholder="sk-...">
+        </div>
+        <div class="field">
+          <label for="aiModel" id="i18nAiModel">KI-Modell</label>
+          <select id="aiModel">
+            <option value="gpt-5.2">gpt-5.2</option>
+            <option value="gpt-5.1">gpt-5.1</option>
+            <option value="gpt-5">gpt-5</option>
+            <option value="gpt-4.1">gpt-4.1</option>
+            <option value="gpt-4o">gpt-4o</option>
+            <option value="gpt-4o-mini">gpt-4o-mini</option>
+            <option value="o4-mini">o4-mini</option>
+            <option value="o3-mini">o3-mini</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="aiApplyMode" id="i18nAiApplyMode">Übernahmemodus</label>
+          <select id="aiApplyMode">
+            <option value="merge">Mit bestehendem Inhalt zusammenführen</option>
+            <option value="replace">BowTie komplett ersetzen</option>
+          </select>
+        </div>
+      </div>
+      <div class="field" style="margin-top:10px;">
+        <label for="aiProblem" id="i18nAiTask">Aufgabe / Ziel</label>
+        <input type="text" id="aiProblem" value="Erstelle eine vollständige BowTie-Risikoanalyse mit Ursachen, Maßnahmen und Konsequenzen.">
+      </div>
+      <div class="field" style="margin-top:10px;">
+        <label for="aiContext" id="i18nAiContext">Kontext</label>
+        <textarea id="aiContext" placeholder="Produkt, Prozess, Tätigkeit, Maschine, Gefahr, Randbedingungen, bekannte Störungen, Ziel der Analyse..."></textarea>
+      </div>
+      <div class="actions">
+        <button class="mini" id="btnAiContextFromTool">Kontext aus Tool</button>
+        <button class="mini primary" id="btnAiGenerate">BowTie mit KI erzeugen</button>
+        <button class="mini" id="btnAiApply" disabled>KI-Ergebnis übernehmen</button>
+        <button class="mini" id="btnAiDownload" disabled>KI-JSON speichern</button>
+        <button class="mini" id="btnAiClear">Zurücksetzen</button>
+      </div>
+      <div class="ai-status" id="aiStatus" style="margin-top:10px;">Noch keine KI-Anfrage gesendet.</div>
+      <pre class="ai-preview" id="aiPreview">{ "info": "Noch nichts erzeugt." }</pre>
+      <div class="ai-preview-meta" id="aiPreviewMeta">—</div>
+    </div>
+  </div>
+
+
+  <footer class="tool-footer">
+    <div id="i18nFooterCopy">Copyright KVP Institut GmbH</div>
+    <div><a href="https://www.kvp.de" target="_blank" rel="noopener">www.kvp.de</a></div>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+var A4W=1860,A4H=920;
+var SC=1.8;
+var CW,CH,CWZ,CWG,GAP,VGAP,SG;
+var CU,CGB,CV,CZ,CF,CS,CK;
+var GY=46,LY=4,ZY=218;
+var _n=100;
+var STORAGE_KEY='kvp_bowtie_autosave_v3';
+var AI_CFG_KEY='kvp_bowtie_ai_config_v1';
+var MM_META_KEY='kvp_bowtie_measure_meta_v1';
+var aiLastJson=null;
+var MM={};
+var selectedMeasureId='';
+var LANG_KEY='kvp_bowtie_lang_v1';
+var currentLang=(localStorage.getItem(LANG_KEY)||'de');
+var I18N={de:{title:'BowTie Risikoanalyse & Maßnahmenmanagement',subtitle:'Strukturierte Gefährdungsanalyse mit verknüpfter Maßnahmenübersicht, Maßnahmenmanager, JSON-Import/Export und KI-Unterstützung.',backHome:'Zurück zur Startseite',boxToolNameTitle:'Name Tool',boxToolNameText:'BowTie Risikoanalyse – Visualisierung & Maßnahmenmanagement',boxGoalTitle:'Ziel',boxGoalText:'Eine kompakte und strukturierte Risikoübersicht erstellen: Gefährdungen, Ursachen, präventive und mitigative Barrieren sowie Konsequenzen erfassen und daraus konkrete Maßnahmen ableiten.',boxHowTitle:'So benutzt du das Tool',step1:'BowTie-Analyse eingeben oder laden.',step2:'Ursachen, präventive Barrieren, mitigative Barrieren und Konsequenzen ergänzen.',step3:'Die abgeleitete Maßnahmenübersicht prüfen und unten Verantwortliche, Termin und Status verwalten.',step4:'Als PDF oder JSON exportieren oder eine gespeicherte Datei erneut laden.',boxPrivacyTitle:'Datenschutz',boxPrivacyText:'Dieses Tool arbeitet vollständig im Browser. Es werden keine Daten auf einem Server gespeichert. Zugriff hat nur die Person, die die Datei lokal speichert bzw. lädt.',bhTitle:'BowTie Risikoanalyse',bhSub:'Strukturierte Gefährdungsanalyse · JSON · API · kvp.de',btnReset:'↻ Reset',btnSaveJson:'JSON speichern',btnLoadJson:'JSON laden',btnPdf:'⇩ PDF exportieren (A4 quer)',legCause:'Ursache / Gefahrenbeseitigung',legPrev:'Vorbeugende Maßnahme',legHazard:'Gefahr',legTop:'Zentrales Ereignis',legFunc:'Funktionale Trennung / Schadensbegrenzung',legCons:'Konsequenz',legImpact:'Beeinträchtigung',legSafe:'Sicherungsmaßnahme',jsonTitle:'Datei / JSON / Autosave',jsonSub1:'Autosave ist aktiv. JSON speichern und laden synchronisiert BowTie Analyse, Maßnahmenmanager und KI-Einstellungen gemeinsam.',jsonSub2:'Auch hier verfügbar: JSON laden und speichern synchronisiert immer den kompletten Stand.',jsonDown:'JSON herunterladen',jsonImport:'JSON importieren',jsonExample:'Beispiel-JSON',jsonMeta2:'Gleicher Datenstand wie oben.',managerTitle:'Maßnahmenmanager',managerSub:'Maßnahmen werden aus der BowTie abgeleitet. Sie erscheinen in der Übersicht darunter. Bearbeite ausgewählte Maßnahmen hier oder lege neue an.',selectAction:'Maßnahme auswählen',createNew:'— Neue Maßnahme anlegen —',measure:'Maßnahme',measurePlaceholder:'Maßnahme beschreiben...',category:'Kategorie',owner:'Verantwortlich',ownerPlaceholder:'Name / Rolle',due:'Termin',duePlaceholder:'z. B. 2026-03-31',status:'Status',statusInProgress:'In Bearbeitung',statusDone:'Erledigt',statusRejected:'Verworfen',saveCreate:'Speichern / anlegen',new:'Neu',deleteFromAnalysis:'Aus Analyse löschen',total:'Gesamt',managerInfo:'Wähle eine Maßnahme aus der Übersicht unten, um sie zu bearbeiten, oder lege hier eine neue an.',activeSelected:'Aktiv ausgewählt:',overviewTitle:'Maßnahmenübersicht',overviewSub:'Hier erscheinen alle Maßnahmen, die direkt aus deiner BowTie-Analyse entstehen: Vorbeugende Maßnahme, Schadensbegrenzung und Sicherungsmaßnahme.',refreshOverview:'Übersicht aktualisieren',overviewEmpty:'Noch keine Maßnahmen vorhanden. Lege Maßnahmen in der BowTie Analyse an oder erfasse sie oben im Maßnahmenmanager.',source:'Quelle',sourceBowtie:'BowTie Analyse',edit:'Bearbeiten',delete:'Löschen',unnamed:'Ohne Bezeichnung',catPreventive:'Vorbeugende Maßnahme',catDamage:'Schadensbegrenzung',catSafeguard:'Sicherungsmaßnahme',ownerShort:'Verantwortlich',dueShort:'Termin',aiCardTitle:'KI / API für Maßnahmen',aiCardSub1:'Die KI liest den aktuellen Tool-Inhalt und kann ein erweitertes BowTie-JSON erzeugen. Maßnahmenübersicht und Maßnahmenmanager werden danach automatisch neu aus der Analyse abgeleitet.',aiCardSub2:'Der API-Bereich ist bewusst ganz unten platziert, damit du zuerst die Analyse und die Maßnahmen prüfen kannst.',aiTitle:'KI / API Schnittstelle',license:'Lizenzschlüssel',aiModel:'KI-Modell',applyMode:'Übernahmemodus',merge:'Mit bestehendem Inhalt zusammenführen',replace:'BowTie komplett ersetzen',task:'Aufgabe / Ziel',taskDefault:'Erstelle eine vollständige BowTie-Risikoanalyse mit Ursachen, Maßnahmen und Konsequenzen.',context:'Kontext',contextPlaceholder:'Produkt, Prozess, Tätigkeit, Maschine, Gefahr, Randbedingungen, bekannte Störungen, Ziel der Analyse...',contextFromTool:'Kontext aus Tool',generateAi:'BowTie mit KI erzeugen',applyAi:'KI-Ergebnis übernehmen',saveAi:'KI-JSON speichern',clear:'Zurücksetzen',aiNone:'Noch keine KI-Anfrage gesendet.',aiPreviewEmpty:'{ "info": "Noch nichts erzeugt." }',autosaveActive:'Autosave aktiv · lokal gespeichert:',autosaveFailed:'Autosave konnte nicht gespeichert werden.',autosaveLoaded:'Autosave geladen ·',autosaveLoadFailed:'Autosave konnte nicht geladen werden.',invalidJson:'Ungültiges JSON-Format.',invalidStructure:'JSON enthält keine gültige BowTie-Struktur.',pleaseEnterAction:'Bitte zuerst eine Maßnahme eingeben.',pleaseSelectAction:'Bitte zuerst eine Maßnahme auswählen.',confirmDeleteAction:'Diese Maßnahme wirklich löschen?',saveJsonFilename:'bowtie-risikoanalyse.json',exampleFilename:'bowtie-beispiel.json',poweredBy:'KVP Institut GmbH',exampleLoadError:'Beispiel konnte nicht geladen werden.',resetConfirm:'Alle Inhalte wirklich zurücksetzen?',toolReset:'Tool wurde zurückgesetzt.',jsonLoaded:'JSON wurde geladen.',jsonLoadError:'JSON konnte nicht geladen werden.'},en:{title:'BowTie Risk Analysis & Action Management',subtitle:'Structured hazard analysis with linked action overview, action manager, JSON import/export and AI support.',backHome:'Back to home',boxToolNameTitle:'Tool name',boxToolNameText:'BowTie Risk Analysis – Visualization & Action Management',boxGoalTitle:'Goal',boxGoalText:'Create a compact and structured risk overview: capture hazards, causes, preventive and mitigative barriers as well as consequences and derive actionable measures.',boxHowTitle:'How to use this tool',step1:'Enter or load your BowTie analysis.',step2:'Add causes, preventive barriers, mitigative barriers and consequences.',step3:'Review the derived action overview and manage owner, due date and status below.',step4:'Export as PDF or JSON, or load a saved file again.',boxPrivacyTitle:'Privacy',boxPrivacyText:'This tool runs entirely in the browser. No data is stored on a server. Only the person saving or loading the local file has access.',bhTitle:'BowTie Risk Analysis',bhSub:'Structured hazard analysis · JSON · API · kvp.de',btnReset:'↻ Reset',btnSaveJson:'Save JSON',btnLoadJson:'Load JSON',btnPdf:'⇩ Export PDF (A4 landscape)',legCause:'Cause / Hazard Elimination',legPrev:'Preventive Barrier',legHazard:'Hazard',legTop:'Top Event',legFunc:'Functional Separation / Damage Limitation',legCons:'Consequence',legImpact:'Impact',legSafe:'Safeguard',jsonTitle:'File / JSON / Autosave',jsonSub1:'Autosave is active. Saving and loading JSON keeps BowTie analysis, action manager and AI settings in sync.',jsonSub2:'Also available here: loading and saving JSON always synchronizes the complete state.',jsonDown:'Download JSON',jsonImport:'Import JSON',jsonExample:'Example JSON',jsonMeta2:'Same data state as above.',managerTitle:'Action Manager',managerSub:'Actions are derived from the BowTie. They appear in the overview below. Edit selected actions here or create new ones.',selectAction:'Select action',createNew:'— Create new action —',measure:'Action',measurePlaceholder:'Describe action...',category:'Category',owner:'Owner',ownerPlaceholder:'Name / role',due:'Due date',duePlaceholder:'e.g. 2026-03-31',status:'Status',statusInProgress:'In Progress',statusDone:'Done',statusRejected:'Rejected',saveCreate:'Save / create',new:'New',deleteFromAnalysis:'Delete from analysis',total:'Total',managerInfo:'Select an action from the overview below to edit it, or create a new one here.',activeSelected:'Active selection:',overviewTitle:'Action Overview',overviewSub:'All measures that originate directly from your BowTie analysis appear here: Preventive Barrier, Damage Limitation and Safeguard.',refreshOverview:'Refresh overview',overviewEmpty:'No actions available yet. Create actions in the BowTie analysis or add them above in the action manager.',source:'Source',sourceBowtie:'BowTie Analysis',edit:'Edit',delete:'Delete',unnamed:'Unnamed',catPreventive:'Preventive Barrier',catDamage:'Damage Limitation',catSafeguard:'Safeguard',ownerShort:'Owner',dueShort:'Due date',aiCardTitle:'AI / API for Actions',aiCardSub1:'The AI reads the current tool content and can generate an extended BowTie JSON. The action overview and action manager are then derived again automatically from the analysis.',aiCardSub2:'The API section is intentionally placed at the bottom so you can review the analysis and actions first.',aiTitle:'AI / API Interface',license:'License key',aiModel:'AI Model',applyMode:'Apply mode',merge:'Merge with existing content',replace:'Replace BowTie completely',task:'Task / goal',taskDefault:'Create a complete BowTie risk analysis with causes, measures and consequences.',context:'Context',contextPlaceholder:'Product, process, activity, machine, hazard, boundary conditions, known disturbances, goal of the analysis...',contextFromTool:'Context from tool',generateAi:'Generate BowTie with AI',applyAi:'Apply AI result',saveAi:'Save AI JSON',clear:'Reset',aiNone:'No AI request sent yet.',aiPreviewEmpty:'{ "info": "Nothing generated yet." }',autosaveActive:'Autosave active · stored locally:',autosaveFailed:'Autosave could not be saved.',autosaveLoaded:'Autosave loaded ·',autosaveLoadFailed:'Autosave could not be loaded.',invalidJson:'Invalid JSON format.',invalidStructure:'JSON does not contain a valid BowTie structure.',pleaseEnterAction:'Please enter an action first.',pleaseSelectAction:'Please select an action first.',confirmDeleteAction:'Delete this action?',saveJsonFilename:'bowtie-risk-analysis.json',exampleFilename:'bowtie-example.json',poweredBy:'KVP Institut GmbH',exampleLoadError:'Example could not be loaded.',resetConfirm:'Reset all content?',toolReset:'Tool was reset.',jsonLoaded:'JSON loaded.',jsonLoadError:'JSON could not be loaded.'}};
+function t(key){return (I18N[currentLang]&&I18N[currentLang][key])?I18N[currentLang][key]:key;}
+function getLblMap(lang){return lang==='de'?{gefahr:'G E F A H R',zentral:'ZENTRALES EREIGNIS',ursache:'U R S A C H E',konsequenz:'K O N S E Q U E N Z',vorbeugende:'VORBEUGENDE MASSNAHME',sicherung:'SICHERUNGSMASSNAHME',gefahrenbes:'GEFAHRENBeseitigung'.toUpperCase(),beeintraecht:'BEEINTRÄCHTIGUNG',schaden:'SCHADENSBEGRENZUNG',funktional:'FUNKTIONALE TRENNUNG'}:{gefahr:'H A Z A R D',zentral:'TOP EVENT',ursache:'C A U S E',konsequenz:'C O N S E Q U E N C E',vorbeugende:'PREVENTIVE BARRIER',sicherung:'SAFEGUARD',gefahrenbes:'HAZARD ELIMINATION',beeintraecht:'IMPACT',schaden:'DAMAGE LIMITATION',funktional:'FUNCTIONAL SEPARATION'};}
+function getPlcMap(lang){return lang==='de'?{gefahr:'Gefahr beschreiben...',zentral:'Zentrales Ereignis...',ursache:'Ursache...',konsequenz:'Konsequenz...',vorbeugende:'Vorbeugende Maßnahme...',sicherung:'Sicherungsmaßnahme...',gefahrenbes:'Gefahrenbeseitigung...',beeintraecht:'Beeinträchtigung...',schaden:'Schadensbegrenzung...',funktional:'Funktionale Trennung...'}:{gefahr:'Describe hazard...',zentral:'Top event...',ursache:'Cause...',konsequenz:'Consequence...',vorbeugende:'Preventive barrier...',sicherung:'Safeguard...',gefahrenbes:'Hazard elimination...',beeintraecht:'Impact...',schaden:'Damage limitation...',funktional:'Functional separation...'};}
+function updateLangButtons(){var de=document.getElementById('btnLangDE'),en=document.getElementById('btnLangEN');if(de&&en){de.classList.toggle('primary',currentLang==='de');en.classList.toggle('primary',currentLang==='en');}}
+function applyI18n(){document.documentElement.lang=currentLang;document.title=t('title');LBL=getLblMap(currentLang);PLC=getPlcMap(currentLang);var map={'i18nTitle':'title','i18nSubtitle':'subtitle','i18nBackHome':'backHome','i18nBoxToolNameTitle':'boxToolNameTitle','i18nBoxToolNameText':'boxToolNameText','i18nBoxGoalTitle':'boxGoalTitle','i18nBoxGoalText':'boxGoalText','i18nBoxHowTitle':'boxHowTitle','i18nStep1':'step1','i18nStep2':'step2','i18nStep3':'step3','i18nStep4':'step4','i18nBoxPrivacyTitle':'boxPrivacyTitle','i18nBoxPrivacyText':'boxPrivacyText','i18nBhTitle':'bhTitle','i18nBhSub':'bhSub','i18nJsonTitle1':'jsonTitle','i18nJsonSub1':'jsonSub1','i18nJsonTitle2':'jsonTitle','i18nJsonSub2':'jsonSub2','i18nManagerTitle':'managerTitle','i18nManagerSub':'managerSub','i18nLblSelectAction':'selectAction','i18nLblMeasure':'measure','i18nLblCategory':'category','i18nLblOwner':'owner','i18nLblDue':'due','i18nLblStatus':'status','i18nStatTotal':'total','i18nStatOpen':'statusInProgress','i18nStatDone':'statusDone','i18nStatRejected':'statusRejected','i18nOverviewTitle':'overviewTitle','i18nAiCardTitle':'aiCardTitle','i18nAiCardSub1':'aiCardSub1','i18nAiCardSub2':'aiCardSub2','i18nAiTitle':'aiTitle','i18nAiLicense':'license','i18nAiModel':'aiModel','i18nAiApplyMode':'applyMode','i18nAiTask':'task','i18nAiContext':'context','i18nFooterCopy':'poweredBy','i18nJsonMeta2':'jsonMeta2'};Object.keys(map).forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=t(map[id]);});var oh=document.getElementById('i18nOverviewSub');if(oh)oh.innerHTML=t('overviewSub');var btnMap={'kvpBtRst':'btnReset','kvpBtSave':'btnSaveJson','kvpBtLoadBtn':'btnLoadJson','kvpBtPdf':'btnPdf','kvpBtSave2':'jsonDown','kvpBtLoad2':'jsonImport','kvpBtExportExample':'jsonExample','kvpBtSave3':'jsonDown','kvpBtLoad3':'jsonImport','mmSave':'saveCreate','mmNew':'new','mmDelete':'deleteFromAnalysis','mmRefresh':'refreshOverview','btnAiContextFromTool':'contextFromTool','btnAiGenerate':'generateAi','btnAiClear':'clear'};Object.keys(btnMap).forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=t(btnMap[id]);});var el=document.getElementById('btnAiApply');if(el)el.textContent=t('applyAi');el=document.getElementById('btnAiDownload');if(el)el.textContent=t('saveAi');el=document.getElementById('aiStatus');if(el&&(!el.dataset.userchanged||el.dataset.userchanged==='0'))el.textContent=t('aiNone');el=document.getElementById('aiPreview');if(el&&el.textContent.indexOf('Nothing generated yet.')!==-1||el&&el.textContent.indexOf('Noch nichts erzeugt.')!==-1)el.textContent=t('aiPreviewEmpty');var aiP=document.getElementById('aiProblem');if(aiP&&!aiP.value)aiP.value=t('taskDefault');var aiC=document.getElementById('aiContext');if(aiC)aiC.placeholder=t('contextPlaceholder');var mmText=document.getElementById('mmText');if(mmText)mmText.placeholder=t('measurePlaceholder');var mmOwner=document.getElementById('mmOwner');if(mmOwner)mmOwner.placeholder=t('ownerPlaceholder');var mmDue=document.getElementById('mmDue');if(mmDue)mmDue.placeholder=t('duePlaceholder');var mmSelect=document.getElementById('mmSelect');if(mmSelect&&mmSelect.options.length)mmSelect.options[0].textContent=t('createNew');var mmCat=document.getElementById('mmCategory');if(mmCat){mmCat.options[0].textContent=t('catPreventive');mmCat.options[1].textContent=t('catDamage');mmCat.options[2].textContent=t('catSafeguard');}var mmStatus=document.getElementById('mmStatus');if(mmStatus){mmStatus.options[0].textContent=t('statusInProgress');mmStatus.options[1].textContent=t('statusDone');mmStatus.options[2].textContent=t('statusRejected');}var aiApply=document.getElementById('aiApplyMode');if(aiApply){aiApply.options[0].textContent=t('merge');aiApply.options[1].textContent=t('replace');}var ids={'leg_cause_hazard_elimination':'legCause','leg_preventive_barrier':'legPrev','leg_hazard':'legHazard','leg_top_event':'legTop','leg_functional_separation_damage_limitation':'legFunc','leg_consequence':'legCons','leg_impact':'legImpact','leg_safeguard':'legSafe'};Object.keys(ids).forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=t(ids[id]);});updateLangButtons();if(typeof renderMeasures==='function')renderMeasures();if(typeof render==='function'&&canv)render();}
+function setLanguage(lang){currentLang=(lang==='de'||lang==='en')?lang:'de';localStorage.setItem(LANG_KEY,currentLang);applyI18n();autosave();}
+
+function uid(){return 'n'+(++_n);}
+
+var LBL={gefahr:'H A Z A R D',zentral:'TOP EVENT',ursache:'C A U S E',konsequenz:'C O N S E Q U E N C E',vorbeugende:'PREVENTIVE BARRIER',sicherung:'SAFEGUARD',gefahrenbes:'HAZARD ELIMINATION',beeintraecht:'IMPACT',schaden:'DAMAGE LIMITATION',funktional:'FUNCTIONAL SEPARATION'};
+var PLC={gefahr:'Hazard beschreiben...',zentral:'Top Event...',ursache:'Ursache...',konsequenz:'Consequence...',vorbeugende:'Vorbeugende Massnahme...',sicherung:'Sicherungsmassnahme...',gefahrenbes:'Hazardenbeseitigung...',beeintraecht:'Beeintraechtigung...',schaden:'Damage Limitation...',funktional:'Funktionale Trennung...'};
+
+function mkU(){return {id:uid(),text:'',gefahrenbes:[],vorbeugende:[]};}
+function mkK(){return {id:uid(),text:'',funktional:[],schaden:[]};}
+function mkGb(){return {id:uid(),text:'',sicherung:[],beeintraecht:[]};}
+function mkV(){return {id:uid(),text:'',sicherung:[],beeintraecht:[]};}
+function mkF(){return {id:uid(),text:'',sicherung:[],beeintraecht:[]};}
+function mkS(){return {id:uid(),text:'',sicherung:[],beeintraecht:[]};}
+function mkBei(){return {id:uid(),text:''};}
+function mkSic(){return {id:uid(),text:''};}
+
+function freshSt(){
+  var u=mkU();u.id='u0';
+  var k=mkK();k.id='k0';
+  return {gefahr:{text:''},zentral:{text:''},ursachen:[u],konsequenzen:[k]};
+}
+
+var ST,canv,svgEl,sizerEl,analysisWrap;
+var PR={};
+
+function deepClone(v){return JSON.parse(JSON.stringify(v));}
+function safeText(v){return (v==null?'':String(v)).trim();}
+function escHtml(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c];});}
+function setStorageInfo(msg){var el=document.getElementById('kvpBtStorageInfo');if(el)el.textContent=msg;}
+function cxOf(id){var p=PR[id];return p?p.x+p.w/2:0;}
+function cyOf(id){var p=PR[id];return p?p.y+p.h/2:0;}
+function rxOf(id){var p=PR[id];return p?p.x+p.w:0;}
+function lxOf(id){var p=PR[id];return p?p.x:0;}
+function tyOf(id){var p=PR[id];return p?p.y:0;}
+function byOf(id){var p=PR[id];return p?p.y+p.h:0;}
+
+function walkNodes(cb){
+  function walk(arr,type){
+    if(!arr)return;
+    for(var i=0;i<arr.length;i++){
+      var it=arr[i];
+      cb(it,type,arr,i);
+      walk(it.gefahrenbes,'gefahrenbes');
+      walk(it.vorbeugende,'vorbeugende');
+      walk(it.funktional,'funktional');
+      walk(it.schaden,'schaden');
+      walk(it.sicherung,'sicherung');
+      walk(it.beeintraecht,'beeintraecht');
+    }
+  }
+  walk(ST.ursachen,'ursache');
+  walk(ST.konsequenzen,'konsequenz');
+}
+
+function findNode(id){
+  if(id==='gefahr')return ST.gefahr;
+  if(id==='zentral')return ST.zentral;
+  var found=null;
+  walkNodes(function(it){if(it.id===id)found=it;});
+  return found;
+}
+
+function saveTx(id,v){
+  if(id==='gefahr'){ST.gefahr.text=v;autosave();return;}
+  if(id==='zentral'){ST.zentral.text=v;autosave();return;}
+  walkNodes(function(it){if(it.id===id)it.text=v;});
+  autosave();
+}
+
+function getAvailW(){var wrap=document.querySelector('#kvpBt .bcw');return wrap?wrap.clientWidth:window.innerWidth;}
+function syncAnalysisViewport(lay,opts){
+  if(!analysisWrap||!lay)return;
+  var targetH=Math.max(780,Math.round(lay.th)+80);
+  var targetW=Math.max(getAvailW()-6,Math.round(lay.tw)+36);
+  analysisWrap.style.minHeight=targetH+'px';
+  analysisWrap.style.height=targetH+'px';
+  analysisWrap.style.minWidth='100%';
+  if(sizerEl){sizerEl.style.minWidth=targetW+'px';}
+  if(opts&&opts.resetScroll){analysisWrap.scrollTop=0;analysisWrap.scrollLeft=0;var root=document.getElementById('kvpBt');if(root&&root.scrollIntoView)root.scrollIntoView({block:'start'});}
+}
+
+function doLayout(){
+  GAP=14;VGAP=14;SG=12;
+  CW=Math.max(230,Math.min(270,Math.floor((A4W-6*GAP-120)/7)));
+  CWZ=Math.round(CW*1.2);CWG=Math.round(CW*1.15);CH=Math.round(CW*0.68);
+  var st=CW+GAP;
+  CU=24;CGB=CU+st;CV=CGB+st;
+  CZ=CV+st+Math.round((CWZ-CW)/2);
+  CF=CZ+CWZ+GAP;CS=CF+st;CK=CS+st;
+  var tw=CK+CW+24;
+  function ssh(it){var h=0;if(it.sicherung&&it.sicherung.length)h+=SG+CH;if(it.beeintraecht&&it.beeintraecht.length)h+=SG+CH;return h;}
+  function csh(arr){var m=0,i;for(i=0;i<arr.length;i++)m=Math.max(m,ssh(arr[i]));return m;}
+  var nu=ST.ursachen.length,nk=ST.konsequenzen.length,nr=Math.max(nu,nk),RM=24,rows=[],i,u,k,mc,mh,sh;
+  for(i=0;i<nr;i++){
+    u=ST.ursachen[i];k=ST.konsequenzen[i];mc=1;
+    if(u)mc=Math.max(mc,u.gefahrenbes.length||1,u.vorbeugende.length||1);
+    if(k)mc=Math.max(mc,k.funktional.length||1,k.schaden.length||1);
+    mh=mc*(CH+VGAP)-VGAP;sh=0;
+    if(u)sh=Math.max(sh,csh(u.gefahrenbes),csh(u.vorbeugende));
+    if(k)sh=Math.max(sh,csh(k.funktional),csh(k.schaden));
+    rows.push({mh:mh,sh:sh,my:0});
+  }
+  var trh=0,ri;for(ri=0;ri<rows.length;ri++)trh+=rows[ri].mh+rows[ri].sh+RM;if(rows.length)trh-=RM;
+  var minTop=ZY+CH/2;
+  var preferredTop=minTop-trh/2;
+  var ry=Math.max(110,preferredTop);
+  for(ri=0;ri<rows.length;ri++){rows[ri].my=ry;ry+=rows[ri].mh+rows[ri].sh+RM;}
+  var lastBottom=rows.length?(rows[rows.length-1].my+rows[rows.length-1].mh+rows[rows.length-1].sh):A4H;
+  var th=Math.max(A4H,lastBottom+80);
+  var centralMid=ZY+CH/2;
+  if(rows.length){
+    var topMid=rows[0].my+rows[0].mh/2;
+    var bottomMid=rows[rows.length-1].my+rows[rows.length-1].mh/2;
+    centralMid=Math.max(ZY+CH/2,Math.round((topMid+bottomMid)/2));
+  }
+  GY=Math.max(42,Math.round(centralMid-CH-86));
+  ZY=Math.max(180,Math.round(centralMid-CH/2));
+  if(GY<36)GY=36;
+  if(ZY<170){ZY=170;GY=Math.max(36,ZY-CH-84);}
+  if(rows.length){
+    minTop=ZY+CH/2;
+    preferredTop=minTop-trh/2;
+    ry=Math.max(110,preferredTop);
+    for(ri=0;ri<rows.length;ri++){rows[ri].my=ry;ry+=rows[ri].mh+rows[ri].sh+RM;}
+    lastBottom=rows[rows.length-1].my+rows[rows.length-1].mh+rows[rows.length-1].sh;
+    th=Math.max(A4H,lastBottom+80);
+  }
+  return {rows:rows,tw:tw,th:th};
+}
+function stY(idx,cnt,ctr){var t=cnt*(CH+VGAP)-VGAP;return ctr-t/2+idx*(CH+VGAP);}
+function acHtml(type){var split=(type==='vorbeugende'||type==='funktional'||type==='schaden'||type==='sicherung'||type==='gefahrenbes');if(split)return '<div class="bc-ac-top"></div>';return '<div class="bc-ac"></div>';}
+function acBotHtml(type){var split=(type==='vorbeugende'||type==='funktional'||type==='schaden'||type==='sicherung'||type==='gefahrenbes');if(split)return '<div class="bc-ac-bot"></div>';return '<div class="bc-ac"></div>';}
+
+function mkCard(type,id,x,y,text,onDel,side,bot){
+  var w=type==='zentral'?CWZ:(type==='gefahr'?CWG:CW);
+  PR[id]={x:x,y:y,w:w,h:CH};
+  var d=document.createElement('div');
+  d.className='bc bc-'+type;
+  d.style.cssText='left:'+x+'px;top:'+y+'px;width:'+w+'px;';
+  var delH=onDel?'<span class="bc-del">x</span>':'';
+  var sH=side?'<div class="bps '+side.dir+'">+</div>':'';
+  var bH=bot?'<div class="bpb">+</div>':'';
+  d.innerHTML=delH+'<div class="bc-in">'+acHtml(type)+'<div class="bc-hd">'+(LBL[type]||type)+'</div><div class="bc-bd"><textarea class="bc-tx" rows="3"></textarea>'+bH+'</div>'+acBotHtml(type)+'</div>'+sH;
+  var ta=d.querySelector('.bc-tx');
+  ta.value=text||'';
+  ta.placeholder=PLC[type]||'';
+  ta.addEventListener('input',function(){saveTx(id,ta.value);});
+  if(onDel)d.querySelector('.bc-del').addEventListener('click',function(e){e.stopPropagation();onDel();});
+  if(side)d.querySelector('.bps').addEventListener('click',function(e){e.stopPropagation();side.fn();});
+  if(bot)d.querySelector('.bpb').addEventListener('click',function(e){e.stopPropagation();bot.fn();});
+  canv.appendChild(d);
+}
+function rmFrom(arr,id){for(var i=0;i<arr.length;i++){if(arr[i].id===id){arr.splice(i,1);return;}}}
+function mkGhost(col,y,line1,line2,color,bg,fn){
+  var d=document.createElement('div');
+  d.className='bgh';
+  d.style.cssText='left:'+col+'px;top:'+y+'px;width:'+CW+'px;height:'+CH+'px;border:1.5px dashed '+color+';background:'+bg+';display:flex;align-items:center;justify-content:center;text-align:center;';
+  var inner=document.createElement('div');
+  inner.style.cssText='color:'+color+';font-family:sans-serif;font-size:.58rem;letter-spacing:.1em;line-height:1.5;';
+  inner.innerHTML='<div style="font-size:1.1rem;line-height:1;">+</div><div>'+escHtml(line1)+'</div><div>'+escHtml(line2)+'</div>';
+  d.appendChild(inner);d.addEventListener('click',fn);canv.appendChild(d);
+}
+function mkLbl(t,x,y){var el=document.createElement('div');el.className='bsl';el.style.cssText='left:'+x+'px;top:'+y+'px;';el.textContent=t;canv.appendChild(el);}
+
+function drawProt(type,item,col,my,side,onDel){
+  mkCard(type,item.id,col,my,item.text,onDel,side,{fn:function(){item.beeintraecht.push(mkBei());autosave();render();}});
+  var curY=my+CH;var hasSic=item.sicherung&&item.sicherung.length>0;var hasBei=item.beeintraecht&&item.beeintraecht.length>0;var i;
+  if(hasSic){curY+=SG;for(i=0;i<item.sicherung.length;i++)(function(s,si,arr){mkCard('sicherung',s.id,col,curY,s.text,function(){rmFrom(arr,s.id);autosave();render();},null,si===arr.length-1?{fn:function(){arr.push(mkSic());autosave();render();}}:null);})(item.sicherung[i],i,item.sicherung),curY+=CH+SG;}
+  if(hasBei){if(!hasSic)curY+=SG;for(i=0;i<item.beeintraecht.length;i++)(function(b,arr){mkCard('beeintraecht',b.id,col,curY,b.text,function(){rmFrom(arr,b.id);autosave();render();},null,{fn:function(){item.sicherung.push(mkSic());autosave();render();}});})(item.beeintraecht[i],item.beeintraecht),curY+=CH+SG;}
+}
+
+function drawCards(rows){
+  mkLbl('(1) Ursache',CU,LY);mkLbl('(2) Hazardenbeseitigung',CGB,LY);mkLbl('(3) Vorbeugende Massn.',CV,LY);mkLbl('(4) Top Event',CZ,LY);mkLbl('(5) Funkt. Trennung',CF,LY);mkLbl('(6) Schadensbegr.',CS,LY);mkLbl('(7) Consequence',CK,LY);
+  mkCard('gefahr','gefahr',CZ+(CWZ-CWG)/2,GY,ST.gefahr.text,null,null,null);
+  mkCard('zentral','zentral',CZ,ZY,ST.zentral.text,null,null,null);
+  var nu=ST.ursachen.length,nk=ST.konsequenzen.length,ri,gi,vi,fi,si;
+  for(ri=0;ri<nu;ri++)(function(u,ri){
+    var row=rows[ri];if(!row)return;var rcy=row.my+row.mh/2;
+    mkCard('ursache',u.id,CU,stY(0,1,rcy),u.text,nu>1?function(){rmFrom(ST.ursachen,u.id);autosave();render();}:null,{dir:'r',fn:function(){u.gefahrenbes.push(mkGb());autosave();render();}},ri===nu-1?{fn:function(){ST.ursachen.push(mkU());autosave();render();}}:null);
+    var ngb=u.gefahrenbes.length;
+    if(ngb===0)mkGhost(CGB,stY(0,1,rcy),'GEFAHREN-','BESEITIGUNG','#1040e0','#f0f4ff',function(){u.gefahrenbes.push(mkGb());autosave();render();});
+    else for(gi=0;gi<ngb;gi++)(function(gb,gi){drawProt('gefahrenbes',gb,CGB,stY(gi,ngb,rcy),{dir:'r',fn:function(){u.vorbeugende.push(mkV());autosave();render();}},function(){rmFrom(u.gefahrenbes,gb.id);autosave();render();});})(u.gefahrenbes[gi],gi);
+    var nv=u.vorbeugende.length;
+    if(nv===0)mkGhost(CV,stY(0,1,rcy),'VORBEUGENDE','MASSNAHME','#0050ff','#f0f3ff',function(){u.vorbeugende.push(mkV());autosave();render();});
+    else for(vi=0;vi<nv;vi++)(function(v,vi){drawProt('vorbeugende',v,CV,stY(vi,nv,rcy),null,function(){rmFrom(u.vorbeugende,v.id);autosave();render();});})(u.vorbeugende[vi],vi);
+  })(ST.ursachen[ri],ri);
+  for(ri=0;ri<nk;ri++)(function(k,ri){
+    var row=rows[ri];if(!row)return;var rcy=row.my+row.mh/2;
+    mkCard('konsequenz',k.id,CK,stY(0,1,rcy),k.text,nk>1?function(){rmFrom(ST.konsequenzen,k.id);autosave();render();}:null,{dir:'l',fn:function(){k.schaden.push(mkS());autosave();render();}},ri===nk-1?{fn:function(){ST.konsequenzen.push(mkK());autosave();render();}}:null);
+    var nf=k.funktional.length;
+    if(nf===0)mkGhost(CF,stY(0,1,rcy),'FUNKTIONALE','TRENNUNG','#e02040','#fff8f8',function(){k.funktional.push(mkF());autosave();render();});
+    else for(fi=0;fi<nf;fi++)(function(f,fi){drawProt('funktional',f,CF,stY(fi,nf,rcy),null,function(){rmFrom(k.funktional,f.id);autosave();render();});})(k.funktional[fi],fi);
+    var ns=k.schaden.length;
+    if(ns===0)mkGhost(CS,stY(0,1,rcy),'SCHADENS-','BEGRENZUNG','#e02040','#fff8f8',function(){k.schaden.push(mkS());autosave();render();});
+    else for(si=0;si<ns;si++)(function(s,si){drawProt('schaden',s,CS,stY(si,ns,rcy),{dir:'l',fn:function(){k.funktional.push(mkF());autosave();render();}},function(){rmFrom(k.schaden,s.id);autosave();render();});})(k.schaden[si],si);
+  })(ST.konsequenzen[ri],ri);
+}
+
+function mkPath(x1,y1,x2,y2,cls){var mx=(x1+x2)/2;var el=document.createElementNS('http://www.w3.org/2000/svg','path');el.setAttribute('d','M'+x1+','+y1+' C'+mx+','+y1+' '+mx+','+y2+' '+x2+','+y2);el.setAttribute('class','bl '+cls);svgEl.appendChild(el);}
+function mkLine(x1,y1,x2,y2,cls){var el=document.createElementNS('http://www.w3.org/2000/svg','line');el.setAttribute('x1',x1);el.setAttribute('y1',y1);el.setAttribute('x2',x2);el.setAttribute('y2',y2);el.setAttribute('class','bl '+cls);svgEl.appendChild(el);}
+function subLines(item){
+  if(!PR[item.id])return;var mcx=cxOf(item.id),mby=byOf(item.id),i;var hs=item.sicherung&&item.sicherung.length>0;var hb=item.beeintraecht&&item.beeintraecht.length>0;
+  if(hs){var s0=item.sicherung[0];if(PR[s0.id])mkLine(mcx,mby,cxOf(s0.id),tyOf(s0.id),'lg');for(i=1;i<item.sicherung.length;i++){var sp=item.sicherung[i-1],sc=item.sicherung[i];if(PR[sp.id]&&PR[sc.id])mkLine(cxOf(sp.id),byOf(sp.id),cxOf(sc.id),tyOf(sc.id),'lg');}}
+  if(hb){var b0=item.beeintraecht[0];if(PR[b0.id]){if(hs){var ls=item.sicherung[item.sicherung.length-1];if(PR[ls.id])mkLine(cxOf(ls.id),byOf(ls.id),cxOf(b0.id),tyOf(b0.id),'ld');}else mkLine(mcx,mby,cxOf(b0.id),tyOf(b0.id),'ld');}for(i=1;i<item.beeintraecht.length;i++){var bp=item.beeintraecht[i-1],bc=item.beeintraecht[i];if(PR[bp.id]&&PR[bc.id])mkLine(cxOf(bp.id),byOf(bp.id),cxOf(bc.id),tyOf(bc.id),'ld');}}
+}
+function drawLines(){
+  if(!PR['gefahr']||!PR['zentral'])return;
+  var gcx=cxOf('gefahr'),zty=tyOf('zentral'),zcx=cxOf('zentral');mkLine(gcx,byOf('gefahr'),gcx,zty+CH/2,'lc');mkLine(gcx,zty+CH/2,zcx,zty+CH/2,'lc');
+  var zrx=rxOf('zentral'),zcy=cyOf('zentral'),zlx=lxOf('zentral');
+  var ui,gi,vi,ki,fi,si;
+  for(ui=0;ui<ST.ursachen.length;ui++){
+    var u=ST.ursachen[ui];if(!PR[u.id])continue;var ucy=cyOf(u.id),urx=rxOf(u.id);
+    if(u.gefahrenbes.length>0){for(gi=0;gi<u.gefahrenbes.length;gi++){var gb=u.gefahrenbes[gi];if(!PR[gb.id])continue;mkPath(urx,ucy,lxOf(gb.id),cyOf(gb.id),'lb');subLines(gb);if(u.vorbeugende.length>0){for(vi=0;vi<u.vorbeugende.length;vi++){var v=u.vorbeugende[vi];if(PR[v.id])mkPath(rxOf(gb.id),cyOf(gb.id),lxOf(v.id),cyOf(v.id),'lb');}}else mkPath(rxOf(gb.id),cyOf(gb.id),zlx,zcy,'lb');}}
+    else {if(u.vorbeugende.length>0){for(vi=0;vi<u.vorbeugende.length;vi++){var v2=u.vorbeugende[vi];if(PR[v2.id])mkPath(urx,ucy,lxOf(v2.id),cyOf(v2.id),'lb');}}else mkPath(urx,ucy,zlx,zcy,'lb');}
+    for(vi=0;vi<u.vorbeugende.length;vi++){var v3=u.vorbeugende[vi];if(!PR[v3.id])continue;mkPath(rxOf(v3.id),cyOf(v3.id),zlx,zcy,'lb');subLines(v3);}
+  }
+  for(ki=0;ki<ST.konsequenzen.length;ki++){
+    var k=ST.konsequenzen[ki];if(!PR[k.id])continue;var kcy=cyOf(k.id),klx=lxOf(k.id);var hf=k.funktional.length>0,hs2=k.schaden.length>0;
+    if(hf){for(fi=0;fi<k.funktional.length;fi++){var f=k.funktional[fi];if(!PR[f.id])continue;mkPath(zrx,zcy,lxOf(f.id),cyOf(f.id),'lr');subLines(f);if(hs2){for(si=0;si<k.schaden.length;si++){var s=k.schaden[si];if(PR[s.id])mkPath(rxOf(f.id),cyOf(f.id),lxOf(s.id),cyOf(s.id),'lr');}}else mkPath(rxOf(f.id),cyOf(f.id),klx,kcy,'lr');}}
+    else if(hs2){for(si=0;si<k.schaden.length;si++){var s2=k.schaden[si];if(PR[s2.id])mkPath(zrx,zcy,lxOf(s2.id),cyOf(s2.id),'lr');}}
+    else mkPath(zrx,zcy,klx,kcy,'lr');
+    if(hs2){for(si=0;si<k.schaden.length;si++){var s3=k.schaden[si];if(!PR[s3.id])continue;mkPath(rxOf(s3.id),cyOf(s3.id),klx,kcy,'lr');subLines(s3);}}
+  }
+}
+
+function render(opts){
+  var lay=doLayout();SC=1;
+  var old=canv.querySelectorAll('.bc,.bgh,.bsl'),i;for(i=0;i<old.length;i++)old[i].parentNode.removeChild(old[i]);svgEl.innerHTML='';for(var k in PR)if(PR.hasOwnProperty(k))delete PR[k];
+  canv.style.width=lay.tw+'px';canv.style.height=lay.th+'px';canv.style.transform='scale(1)';canv.style.transformOrigin='top left';svgEl.setAttribute('viewBox','0 0 '+lay.tw+' '+lay.th);sizerEl.style.width=lay.tw+'px';sizerEl.style.height=lay.th+'px';syncAnalysisViewport(lay,opts);drawCards(lay.rows);drawLines();
+  if(opts&&opts.resetScroll&&analysisWrap){analysisWrap.scrollTop=0;analysisWrap.scrollLeft=0;}
+}
+
+var _resizeTimer=null;function onResize(){clearTimeout(_resizeTimer);_resizeTimer=setTimeout(render,80);}
+
+function doPDF(){
+  var btn=document.getElementById('kvpBtPdf');btn.textContent='Bitte warten...';btn.disabled=true;
+  var i,hid=canv.querySelectorAll('.bps,.bpb,.bc-del');for(i=0;i<hid.length;i++)hid[i].style.visibility='hidden';
+  var ghosts=canv.querySelectorAll('.bgh');for(i=0;i<ghosts.length;i++)ghosts[i].style.display='none';canv.style.transform='scale(1)';
+  setTimeout(function(){
+    var cw=parseInt(canv.style.width)||A4W;var ch=parseInt(canv.style.height)||A4H;
+    html2canvas(canv,{backgroundColor:'#ffffff',scale:2,useCORS:true,logging:false,width:cw,height:ch}).then(function(cvs){
+      var jsPDF=window.jspdf&&window.jspdf.jsPDF?window.jspdf.jsPDF:null;var i;
+      if(!jsPDF){restore();return;}
+      var pdf=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});var pw=pdf.internal.pageSize.getWidth(),ph=pdf.internal.pageSize.getHeight();var r=Math.min(pw/cvs.width,ph/cvs.height);
+      pdf.addImage(cvs.toDataURL('image/png'),'PNG',(pw-cvs.width*r)/2,(ph-cvs.height*r)/2,cvs.width*r,cvs.height*r);pdf.save('bowtie-analyse.pdf');restore();
+      function restore(){canv.style.transform='scale('+SC+')';for(i=0;i<hid.length;i++)hid[i].style.visibility='visible';for(i=0;i<ghosts.length;i++)ghosts[i].style.display='';btn.textContent='⇩ PDF exportieren (A4 quer)';btn.disabled=false;}
+    },function(){canv.style.transform='scale('+SC+')';for(i=0;i<hid.length;i++)hid[i].style.visibility='visible';for(i=0;i<ghosts.length;i++)ghosts[i].style.display='';btn.textContent='⇩ PDF exportieren (A4 quer)';btn.disabled=false;});
+  },200);
+}
+
+function loadJs(src,cb){var ex=document.querySelector('script[data-kvp="'+src+'"]');if(ex){cb();return;}var s=document.createElement('script');s.setAttribute('data-kvp',src);s.src=src;s.onload=cb;document.head.appendChild(s);}
+
+function getSnapshot(){return {version:'3.0',savedAt:new Date().toISOString(),counter:_n,data:deepClone(ST),measureMeta:deepClone(MM)};}
+function validateNodeShape(item,kind){
+  if(!item||typeof item!=='object')return false;
+  if(typeof item.id!=='string')return false;
+  if(typeof item.text!=='string')item.text=safeText(item.text);
+  function ensureArr(name){if(!Array.isArray(item[name]))item[name]=[];}
+  if(kind==='ursache'){ensureArr('gefahrenbes');ensureArr('vorbeugende');}
+  else if(kind==='konsequenz'){ensureArr('funktional');ensureArr('schaden');}
+  else if(kind==='gefahrenbes'||kind==='vorbeugende'||kind==='funktional'||kind==='schaden'){ensureArr('sicherung');ensureArr('beeintraecht');}
+  return true;
+}
+function sanitizeImportedState(raw){
+  if(!raw||!raw.data)throw new Error(t('invalidJson'));
+  var data=raw.data;
+  if(!data.gefahr||!data.zentral||!Array.isArray(data.ursachen)||!Array.isArray(data.konsequenzen))throw new Error(t('invalidStructure'));
+  function walk(arr,kind){
+    for(var i=0;i<arr.length;i++){
+      if(!validateNodeShape(arr[i],kind))throw new Error('Ungültige Struktur in '+kind+'.');
+      if(kind==='ursache'){walk(arr[i].gefahrenbes,'gefahrenbes');walk(arr[i].vorbeugende,'vorbeugende');}
+      else if(kind==='konsequenz'){walk(arr[i].funktional,'funktional');walk(arr[i].schaden,'schaden');}
+      else if(kind==='gefahrenbes'||kind==='vorbeugende'||kind==='funktional'||kind==='schaden'){walk(arr[i].sicherung,'sicherung');walk(arr[i].beeintraecht,'beeintraecht');}
+      else if(kind==='sicherung'||kind==='beeintraecht'){if(typeof arr[i].text!=='string')arr[i].text=safeText(arr[i].text);}
+    }
+  }
+  walk(data.ursachen,'ursache');walk(data.konsequenzen,'konsequenz');
+  if(typeof data.gefahr.text!=='string')data.gefahr.text=safeText(data.gefahr.text);
+  if(typeof data.zentral.text!=='string')data.zentral.text=safeText(data.zentral.text);
+  return {counter:Number(raw.counter)||100,data:data,measureMeta:(raw.measureMeta&&typeof raw.measureMeta==='object')?raw.measureMeta:{}};
+}
+function saveMeasureMeta(){try{localStorage.setItem(MM_META_KEY,JSON.stringify(MM||{}));}catch(e){}}
+function loadMeasureMeta(){try{var raw=localStorage.getItem(MM_META_KEY);MM=raw?JSON.parse(raw)||{}:{};}catch(e){MM={};}}
+function getCategoryLabel(type){return type==='vorbeugende'?t('catPreventive'):type==='schaden'?t('catDamage'):type==='sicherung'?t('catSafeguard'):type;}
+function getMeasureStatusLabel(v){return v==='erledigt'?t('statusDone'):v==='verworfen'?t('statusRejected'):t('statusInProgress');}
+function getStatusBadgeClass(v){return v==='erledigt'?'status-done':v==='verworfen'?'status-drop':'status-open';}
+function ensureMeasureMeta(id,type){if(!MM[id]||typeof MM[id]!=='object')MM[id]={owner:'',due:'',status:'in_bearbeitung',category:type||''};if(type)MM[id].category=type;return MM[id];}
+function collectMeasures(){var list=[];walkNodes(function(it,type,arr,idx){if(type==='vorbeugende'||type==='schaden'||type==='sicherung'){list.push({id:it.id,type:type,text:safeText(it.text),node:it,parentArray:arr,index:idx});ensureMeasureMeta(it.id,type);}});return list;}
+function getMeasureById(id){var list=collectMeasures();for(var i=0;i<list.length;i++)if(list[i].id===id)return list[i];return null;}
+function cleanupMeasureMeta(){var valid={};collectMeasures().forEach(function(m){valid[m.id]=true;});Object.keys(MM).forEach(function(id){if(!valid[id])delete MM[id];});if(selectedMeasureId && !valid[selectedMeasureId])selectedMeasureId='';saveMeasureMeta();}
+function removeNodeById(id){function walk(arr,kind){if(!Array.isArray(arr))return false;for(var i=0;i<arr.length;i++){var it=arr[i];if(it.id===id){arr.splice(i,1);return true;}if(kind==='ursache'){if(walk(it.gefahrenbes,'gefahrenbes'))return true;if(walk(it.vorbeugende,'vorbeugende'))return true;}else if(kind==='konsequenz'){if(walk(it.funktional,'funktional'))return true;if(walk(it.schaden,'schaden'))return true;}else if(kind==='gefahrenbes'||kind==='vorbeugende'||kind==='funktional'||kind==='schaden'){if(walk(it.sicherung,'sicherung'))return true;if(walk(it.beeintraecht,'beeintraecht'))return true;}}return false;}return walk(ST.ursachen,'ursache')||walk(ST.konsequenzen,'konsequenz');}
+function addMeasureFromManager(text,category,owner,due,status){var node; if(category==='vorbeugende'){if(!ST.ursachen.length)ST.ursachen=[mkU()];node=mkV();node.text=text;ST.ursachen[0].vorbeugende.push(node);}else if(category==='schaden'){if(!ST.konsequenzen.length)ST.konsequenzen=[mkK()];node=mkS();node.text=text;ST.konsequenzen[0].schaden.push(node);}else{if(!ST.ursachen.length)ST.ursachen=[mkU()];var carrier=null;if(ST.ursachen[0].vorbeugende.length)carrier=ST.ursachen[0].vorbeugende[0];else if(ST.ursachen[0].gefahrenbes.length)carrier=ST.ursachen[0].gefahrenbes[0];else{carrier=mkV();ST.ursachen[0].vorbeugende.push(carrier);}node=mkSic();node.text=text;carrier.sicherung.push(node);}MM[node.id]={owner:owner||'',due:due||'',status:status||'in_bearbeitung',category:category};selectedMeasureId=node.id;saveMeasureMeta();autosave();renderMeasures();render();}
+function clearManagerForm(){selectedMeasureId='';var ids=['mmText','mmOwner','mmDue'];ids.forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});var cat=document.getElementById('mmCategory');if(cat)cat.value='vorbeugende';var st=document.getElementById('mmStatus');if(st)st.value='in_bearbeitung';var sel=document.getElementById('mmSelect');if(sel)sel.value='';var info=document.getElementById('mmInfo');if(info)info.textContent=t('managerInfo');}
+function fillManagerForm(id){if(!id){clearManagerForm();return;}var m=getMeasureById(id);if(!m){clearManagerForm();return;}selectedMeasureId=id;var meta=ensureMeasureMeta(id,m.type);document.getElementById('mmSelect').value=id;document.getElementById('mmText').value=m.text||'';document.getElementById('mmCategory').value=m.type||'vorbeugende';document.getElementById('mmOwner').value=meta.owner||'';document.getElementById('mmDue').value=meta.due||'';document.getElementById('mmStatus').value=meta.status||'in_bearbeitung';document.getElementById('mmInfo').textContent=t('activeSelected')+' '+(m.text||t('unnamed'))+' · '+getCategoryLabel(m.type);}
+function renderMeasureSelect(list){var sel=document.getElementById('mmSelect');if(!sel)return;var current=selectedMeasureId||'';var html=['<option value="">— Neue Maßnahme anlegen —</option>'];list.forEach(function(m){html.push('<option value="'+escHtml(m.id)+'">'+escHtml((m.text||'Ohne Bezeichnung').slice(0,90))+' · '+escHtml(getCategoryLabel(m.type))+'</option>');});sel.innerHTML=html.join('');sel.value=current&&list.some(function(m){return m.id===current;})?current:'';}
+function renderMeasureOverview(list){var host=document.getElementById('measureOverviewList');if(!host)return;host.innerHTML='';if(!list.length){host.innerHTML='<div class="measure-empty">'+escHtml(t('overviewEmpty'))+'</div>';return;}list.forEach(function(m){var meta=ensureMeasureMeta(m.id,m.type);var item=document.createElement('div');item.className='measure-overview-item';item.innerHTML='<div class="measure-overview-top"><div><div class="measure-title">'+escHtml(m.text||t('unnamed'))+'</div><div class="measure-sub">'+escHtml(t('source'))+': '+escHtml(t('sourceBowtie'))+' · '+escHtml(t('category'))+': <span class="measure-badge">'+escHtml(getCategoryLabel(m.type))+'</span></div></div><div class="manager-actions" style="margin-top:0;"><button class="mini" data-action="edit" data-id="'+escHtml(m.id)+'">'+escHtml(t('edit'))+'</button><button class="mini danger" data-action="delete" data-id="'+escHtml(m.id)+'">'+escHtml(t('delete'))+'</button></div></div><div class="measure-meta-row"><span class="measure-badge '+getStatusBadgeClass(meta.status)+'">'+escHtml(getMeasureStatusLabel(meta.status))+'</span><span class="measure-badge">'+escHtml(t('ownerShort'))+': '+escHtml(meta.owner||'—')+'</span><span class="measure-badge">'+escHtml(t('dueShort'))+': '+escHtml(meta.due||'—')+'</span></div>';host.appendChild(item);});host.querySelectorAll('[data-action="edit"]').forEach(function(btn){btn.addEventListener('click',function(){fillManagerForm(btn.getAttribute('data-id'));window.scrollTo({top:document.querySelector('.section-wrap').offsetTop-20,behavior:'smooth'});});});host.querySelectorAll('[data-action="delete"]').forEach(function(btn){btn.addEventListener('click',function(){var id=btn.getAttribute('data-id');if(!window.confirm(t('confirmDeleteAction')))return;removeNodeById(id);delete MM[id];if(selectedMeasureId===id)selectedMeasureId='';saveMeasureMeta();autosave();renderMeasures();render();});});}
+function renderMeasures(){cleanupMeasureMeta();var list=collectMeasures();var total=list.length,open=0,done=0,rejected=0;list.forEach(function(m){var meta=ensureMeasureMeta(m.id,m.type);if(meta.status==='erledigt')done++;else if(meta.status==='verworfen')rejected++;else open++;});document.getElementById('statTotal').textContent=String(total);document.getElementById('statOpen').textContent=String(open);document.getElementById('statDone').textContent=String(done);document.getElementById('statRejected').textContent=String(rejected);renderMeasureSelect(list);renderMeasureOverview(list);if(selectedMeasureId){fillManagerForm(selectedMeasureId);}else{clearManagerForm();}}
+function saveManagerForm(){var text=safeText(document.getElementById('mmText').value);if(!text){alert(t('pleaseEnterAction'));return;}var category=document.getElementById('mmCategory').value;var owner=document.getElementById('mmOwner').value||'';var due=document.getElementById('mmDue').value||'';var status=document.getElementById('mmStatus').value||'in_bearbeitung';if(!selectedMeasureId){addMeasureFromManager(text,category,owner,due,status);return;}var current=getMeasureById(selectedMeasureId);if(!current){selectedMeasureId='';addMeasureFromManager(text,category,owner,due,status);return;}var node=findNode(selectedMeasureId);if(category!==current.type){removeNodeById(selectedMeasureId);delete MM[selectedMeasureId];selectedMeasureId='';addMeasureFromManager(text,category,owner,due,status);return;}if(node)node.text=text;var meta=ensureMeasureMeta(current.id,current.type);meta.owner=owner;meta.due=due;meta.status=status;saveMeasureMeta();autosave();renderMeasures();render();}
+function deleteSelectedMeasure(){if(!selectedMeasureId){alert(t('pleaseSelectAction'));return;}if(!window.confirm(t('confirmDeleteAction')))return;removeNodeById(selectedMeasureId);delete MM[selectedMeasureId];selectedMeasureId='';saveMeasureMeta();autosave();renderMeasures();render();}
+function wireMeasures(){var save=document.getElementById('mmSave');if(save)save.addEventListener('click',saveManagerForm);var del=document.getElementById('mmDelete');if(del)del.addEventListener('click',deleteSelectedMeasure);var neu=document.getElementById('mmNew');if(neu)neu.addEventListener('click',function(){clearManagerForm();});var sel=document.getElementById('mmSelect');if(sel)sel.addEventListener('change',function(){fillManagerForm(sel.value||'');});var ref=document.getElementById('mmRefresh');if(ref)ref.addEventListener('click',function(){renderMeasures();});}
+
+function autosave(){
+  try{localStorage.setItem(STORAGE_KEY,JSON.stringify(getSnapshot()));saveMeasureMeta();setStorageInfo(t('autosaveActive')+' '+new Date().toLocaleString(currentLang==='de'?'de-DE':'en-GB'));}catch(e){setStorageInfo(t('autosaveFailed'));}
+}
+function loadAutosave(){
+  try{var raw=localStorage.getItem(STORAGE_KEY);if(!raw)return false;var parsed=sanitizeImportedState(JSON.parse(raw));ST=parsed.data;_n=parsed.counter;MM=parsed.measureMeta||MM||{};setStorageInfo(t('autosaveLoaded')+' '+new Date().toLocaleString(currentLang==='de'?'de-DE':'en-GB'));return true;}catch(e){console.warn(e);setStorageInfo(t('autosaveLoadFailed'));return false;}
+}
+function downloadJson(obj,filename){var blob=new Blob([JSON.stringify(obj,null,2)],{type:'application/json'});var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(url);a.remove();},0);}
+function saveJsonFile(){downloadJson(getSnapshot(),t('saveJsonFilename'));}
+function loadJsonText(txt){var parsed=sanitizeImportedState(JSON.parse(txt));ST=parsed.data;_n=parsed.counter;MM=parsed.measureMeta||{};autosave();renderMeasures();render({resetScroll:true});}
+function exampleJson(){downloadJson({version:'2.0',savedAt:new Date().toISOString(),counter:130,data:{gefahr:{text:'Heisser Dampf tritt beim Öffnen aus'},zentral:{text:'Druckbehälter wird unkontrolliert geöffnet'},ursachen:[{id:'u1',text:'Deckelverriegelung verschlissen',gefahrenbes:[{id:'gb1',text:'Verriegelung konstruktiv verstärken',sicherung:[{id:'sic1',text:'Prüfintervall definieren'}],beeintraecht:[{id:'bei1',text:'Restverschleiss möglich'}]}],vorbeugende:[{id:'v1',text:'Wartungsplan für Verriegelung',sicherung:[],beeintraecht:[]}]},{id:'u2',text:'Bediener öffnet zu früh',gefahrenbes:[],vorbeugende:[{id:'v2',text:'Freigabe nur nach Druckanzeige 0 bar',sicherung:[{id:'sic2',text:'Sensor plausibilisieren'}],beeintraecht:[]}]}],konsequenzen:[{id:'k1',text:'Verbrühung von Mitarbeitenden',funktional:[{id:'f1',text:'Schutzhaube trennt Hazardenbereich',sicherung:[],beeintraecht:[]}],schaden:[{id:'s1',text:'Not-Aus und Verriegelung stoppen Prozess',sicherung:[{id:'sic3',text:'Funktionsprüfung monatlich'}],beeintraecht:[{id:'bei2',text:'Stillstand der Anlage'}]}]}] }},'bowtie-beispiel.json');}
+
+
+var EXAMPLE_DATASETS={
+  labor:{"version": "3.0", "savedAt": "2026-03-19T10:10:00.000Z", "counter": 400, "data": {"gefahr": {"text": "Ätzende und giftige Chemikalien im Laborbereich (Säuren, Laugen, Lösemittel)"}, "zentral": {"text": "Unkontrollierter Austritt von Chemikalien (Leckage oder Verschütten)"}, "ursachen": [{"id": "u1", "text": "Undichte oder beschädigte Behälter und Verbindungsleitungen", "gefahrenbes": [{"id": "gb1", "text": "Defekte Behälter sofort in Sicherheitswanne stellen und kennzeichnen", "sicherung": [{"id": "sic1", "text": "Tausch-/Entsorgungsprotokoll führen"}], "beeintraecht": []}], "vorbeugende": [{"id": "v1", "text": "Sichtprüfung aller Behälter bei Lieferung und vor Gebrauch", "sicherung": [{"id": "sic2", "text": "Prüfung im Laborjournal dokumentieren"}], "beeintraecht": []}]}, {"id": "u2", "text": "Bedienfehler beim Umfüllen oder Pipettieren", "gefahrenbes": [], "vorbeugende": [{"id": "v2", "text": "Laborunterweisung vor Erstarbeit, jährliche Wiederholung (GefStoffV)", "sicherung": [{"id": "sic3", "text": "Unterschriebene Unterweisungsnachweise in Personalakte"}], "beeintraecht": []}, {"id": "v3", "text": "Arbeit mit ätzenden Stoffen ausschließlich unter dem Abzug", "sicherung": [{"id": "sic4", "text": "Abzugsklappe auf Funktionsfähigkeit halbjährlich prüfen (Strömungswächter)"}], "beeintraecht": [{"id": "bei1", "text": "Kapazitätsengpass bei nur einem Abzug je Labor"}]}]}, {"id": "u3", "text": "Falsche Lagerung (unverträgliche Stoffe zu nah beieinander)", "gefahrenbes": [{"id": "gb2", "text": "Sofortige Trennung unverträglicher Stoffe in separate Schränke", "sicherung": [{"id": "sic5", "text": "Lagerplan im Hazardstoffkataster aktuell halten"}], "beeintraecht": []}], "vorbeugende": [{"id": "v4", "text": "Hazardstoffkataster mit Lagermatrix (Verträglichkeiten) führen und aushängen", "sicherung": [], "beeintraecht": []}]}, {"id": "u4", "text": "Sturz oder Stoß gegen Gefäß durch unaufgeräumten Arbeitsplatz", "gefahrenbes": [], "vorbeugende": [{"id": "v5", "text": "5S-Standard im Labor: Arbeitsplatz nach jedem Versuch aufräumen", "sicherung": [{"id": "sic6", "text": "Wöchentliche 5S-Begehung durch Laborleitung"}], "beeintraecht": []}]}, {"id": "u5", "text": "Materialermüdung oder Korrosion an Rohrverbindungen", "gefahrenbes": [{"id": "gb3", "text": "Korrodierte Leitungsabschnitte unverzüglich austauschen", "sicherung": [], "beeintraecht": []}], "vorbeugende": [{"id": "v6", "text": "Jährliche Rohrleitungsinspektion durch befähigte Person", "sicherung": [{"id": "sic7", "text": "Inspektionsprotokoll 10 Jahre aufbewahren"}], "beeintraecht": []}]}], "konsequenzen": [{"id": "k1", "text": "Verätzung von Haut oder Augen bei Labormitarbeitenden", "funktional": [{"id": "f1", "text": "PSA: Schutzbrille, Säureschutzhandschuhe und Labormantel sind Pflicht", "sicherung": [{"id": "sic8", "text": "PSA-Bestand monatlich prüfen, ablaufende Handschuhe ersetzen"}], "beeintraecht": []}], "schaden": [{"id": "s1", "text": "Notdusche und Augenspülung direkt im Labor (max. 10 s Erreichbarkeit)", "sicherung": [{"id": "sic9", "text": "Notdusche wöchentlich auf Funktion prüfen, Wasserfluss dokumentieren"}], "beeintraecht": []}]}, {"id": "k2", "text": "Einatmen von Dämpfen (Vergiftung, Reizung der Atemwege)", "funktional": [{"id": "f2", "text": "Raumluftüberwachung mit festem Gassensor und akustischem Alarm", "sicherung": [{"id": "sic10", "text": "Sensor jährlich durch Hersteller kalibrieren lassen"}], "beeintraecht": []}], "schaden": [{"id": "s2", "text": "Evakuierung des Labors und Benachrichtigung des Betriebsarztes", "sicherung": [{"id": "sic11", "text": "Evakuierungsplan vierteljährlich üben (Alarmübung)"}], "beeintraecht": [{"id": "bei2", "text": "Betriebsunterbrechung bei Fehlalarmen möglich"}]}]}, {"id": "k3", "text": "Kontamination der Kanalisation und Umweltschaden", "funktional": [{"id": "f3", "text": "Auffangwannen unter allen Chemikalienständen (100 % Behältervolumen)", "sicherung": [{"id": "sic12", "text": "Wannen bei jedem Befüllen auf Dichtheit und Befüllstand kontrollieren"}], "beeintraecht": []}], "schaden": [{"id": "s3", "text": "Chemikalienspill-Kit (Bindemittel, Neutralisationsmittel) griffbereit im Labor", "sicherung": [{"id": "sic13", "text": "Spill-Kit halbjährlich auf Vollständigkeit prüfen und auffüllen"}], "beeintraecht": []}]}, {"id": "k4", "text": "Brand oder Explosion durch entzündliche Lösemittel", "funktional": [{"id": "f4", "text": "Lösemittel ausschließlich in Ex-geschützten Sicherheitsschränken lagern", "sicherung": [{"id": "sic14", "text": "Schrankkapazität nicht überschreiten – Eintrag im Hazardstoffkataster"}], "beeintraecht": []}], "schaden": [{"id": "s4", "text": "CO2-Feuerlöscher im Labor, kein Wasser auf Lösemittelbrände", "sicherung": [{"id": "sic15", "text": "Feuerlöscher jährlich durch Fachbetrieb prüfen lassen"}], "beeintraecht": []}]}, {"id": "k5", "text": "Meldepflichtige Störung gemäß Störfallverordnung (12. BImSchV)", "funktional": [{"id": "f5", "text": "Ereignis sofort intern melden (Laborleiter → Umweltbeauftragter)", "sicherung": [], "beeintraecht": []}], "schaden": [{"id": "s5", "text": "Behördenmeldung innerhalb vorgeschriebener Frist, Ursachenanalyse einleiten", "sicherung": [{"id": "sic16", "text": "Meldeformulare und Behördenkontakte im Notfallordner aktuell halten"}], "beeintraecht": []}]}]}, "measureMeta": {"v1": {"owner": "Labormitarbeitende", "due": "laufend", "status": "erledigt", "category": "vorbeugende"}, "v2": {"owner": "Laborleitung", "due": "31.03.2026", "status": "in_bearbeitung", "category": "vorbeugende"}, "v3": {"owner": "Laborleitung", "due": "sofort gültig", "status": "erledigt", "category": "vorbeugende"}, "v4": {"owner": "Hazardstoffbeauftragter", "due": "30.04.2026", "status": "in_bearbeitung", "category": "vorbeugende"}, "v5": {"owner": "Laborleitung", "due": "laufend", "status": "in_bearbeitung", "category": "vorbeugende"}, "v6": {"owner": "Sicherheitsbeauftragter", "due": "31.12.2026", "status": "in_bearbeitung", "category": "vorbeugende"}, "s1": {"owner": "Facility Management", "due": "01.04.2026", "status": "erledigt", "category": "schaden"}, "s2": {"owner": "Laborleitung", "due": "30.06.2026", "status": "in_bearbeitung", "category": "schaden"}, "s3": {"owner": "Laborleitung", "due": "15.04.2026", "status": "in_bearbeitung", "category": "schaden"}, "s4": {"owner": "Sicherheitsbeauftragter", "due": "31.12.2026", "status": "erledigt", "category": "schaden"}, "s5": {"owner": "Umweltbeauftragter", "due": "laufend", "status": "in_bearbeitung", "category": "schaden"}}},
+  schaltschrank:{"version": "3.0", "savedAt": "2026-03-19T10:00:00.000Z", "counter": 200, "data": {"gefahr": {"text": "Elektrische Energie in Schaltschrank (Überhitzung, Lichtbogen)"}, "zentral": {"text": "Brand im Schaltschrank der Fertigungsanlage"}, "ursachen": [{"id": "u1", "text": "Überlastung durch zu hohe Stromaufnahme", "gefahrenbes": [{"id": "gb1", "text": "Überlastschutz (Leitungsschutzschalter) nachrüsten", "sicherung": [{"id": "sic1", "text": "Jährliche Überprüfung der Schutzschalter-Auslösewerte"}], "beeintraecht": [{"id": "bei1", "text": "Kurzfristige Produktionsunterbrechung bei Auslösung"}]}], "vorbeugende": [{"id": "v1", "text": "Lastprofil der Anlage regelmäßig messen und dokumentieren", "sicherung": [{"id": "sic2", "text": "Messung halbjährlich durch Elektrofachkraft"}], "beeintraecht": []}]}, {"id": "u2", "text": "Defekte oder alterungsbedingt spröde Kabelisolierungen", "gefahrenbes": [{"id": "gb2", "text": "Kabel mit Isolationsschaden sofort austauschen", "sicherung": [{"id": "sic3", "text": "Prüfprotokoll nach DGUV V3 archivieren"}], "beeintraecht": []}], "vorbeugende": [{"id": "v2", "text": "Wiederkehrende elektr. Prüfung nach DGUV V3 (alle 4 Jahre)", "sicherung": [], "beeintraecht": [{"id": "bei2", "text": "Prüfaufwand erfordert geplante Stillstandszeiten"}]}]}, {"id": "u3", "text": "Verschmutzung/Verstopfung der Schaltschrank-Lüftung", "gefahrenbes": [{"id": "gb3", "text": "Lüftungsfilter reinigen oder ersetzen", "sicherung": [{"id": "sic4", "text": "Filterwechsel im Wartungsplan verankern (quartalsweise)"}], "beeintraecht": []}], "vorbeugende": [{"id": "v3", "text": "Temperatursensor im Schaltschrank mit Alarmierung installieren", "sicherung": [{"id": "sic5", "text": "Alarmierungsfunktion monatlich testen"}], "beeintraecht": []}]}, {"id": "u4", "text": "Unsachgemäße Verdrahtung nach Umbau oder Reparatur", "gefahrenbes": [], "vorbeugende": [{"id": "v4", "text": "4-Augen-Prinzip nach jeder Verdrahtungsarbeit (Abnahmeprüfung)", "sicherung": [{"id": "sic6", "text": "Abnahme durch unabhängige Elektrofachkraft dokumentieren"}], "beeintraecht": []}]}], "konsequenzen": [{"id": "k1", "text": "Personenschaden durch Rauch und Flammen (Mitarbeitende)", "funktional": [{"id": "f1", "text": "Schaltschrank feuerhemmend gekapselt (IP54, Brandschutzgehäuse)", "sicherung": [{"id": "sic7", "text": "Zustand der Kapselung bei jeder Wartung prüfen"}], "beeintraecht": []}], "schaden": [{"id": "s1", "text": "Automatische Brandmeldeanlage alarmiert Werksschutz und Feuerwehr", "sicherung": [{"id": "sic8", "text": "Jahresinspektion der Brandmeldeanlage durch Fachbetrieb"}], "beeintraecht": [{"id": "bei3", "text": "Evakuierung unterbricht gesamte Fertigung"}]}]}, {"id": "k2", "text": "Maschinenausfall und Produktionsstillstand (mehrere Stunden)", "funktional": [{"id": "f2", "text": "Hauptschalter mit Fernauslösung trennt Schaltschrank spannungsfrei", "sicherung": [], "beeintraecht": []}], "schaden": [{"id": "s2", "text": "Ersatzteillager für kritische Schaltschrankkomponenten vorhalten", "sicherung": [{"id": "sic9", "text": "Mindestbestand quartalsweise prüfen"}], "beeintraecht": [{"id": "bei4", "text": "Lagerkosten und Kapitalbindung für Ersatzteile"}]}]}, {"id": "k3", "text": "Brandausbreitung auf angrenzende Maschinenteile und Gebäude", "funktional": [{"id": "f3", "text": "Wandmontierter CO2-Löscher (5 kg) direkt am Schaltschrank", "sicherung": [{"id": "sic10", "text": "Prüfplakette jährlich erneuern lassen"}], "beeintraecht": []}], "schaden": [{"id": "s3", "text": "Brandabschnitte gemäß Bauordnung begrenzen Ausbreitung", "sicherung": [], "beeintraecht": [{"id": "bei5", "text": "Brandabschnittswände beschränken Hallenflexibilität"}]}]}]}, "measureMeta": {"v1": {"owner": "Instandhaltung", "due": "30.06.2026", "status": "in_bearbeitung", "category": "vorbeugende"}, "v2": {"owner": "Elektrofachkraft", "due": "31.12.2026", "status": "in_bearbeitung", "category": "vorbeugende"}, "v3": {"owner": "Instandhaltung", "due": "30.04.2026", "status": "in_bearbeitung", "category": "vorbeugende"}, "v4": {"owner": "Teamleiter Elektro", "due": "01.04.2026", "status": "erledigt", "category": "vorbeugende"}, "s1": {"owner": "Sicherheitsbeauftragter", "due": "31.03.2026", "status": "erledigt", "category": "schaden"}, "s2": {"owner": "Instandhaltungsleiter", "due": "30.06.2026", "status": "in_bearbeitung", "category": "schaden"}, "s3": {"owner": "Facility Management", "due": "31.12.2026", "status": "in_bearbeitung", "category": "schaden"}}},
+  stapler:{"version": "3.0", "savedAt": "2026-03-19T10:05:00.000Z", "counter": 300, "data": {"gefahr": {"text": "Gabelstapler im Mischbetrieb mit Fußgängern im Lager"}, "zentral": {"text": "Kollision zwischen Gabelstapler und Fußgänger"}, "ursachen": [{"id": "u1", "text": "Unzureichende Trennung von Fahrzeug- und Personenwegen", "gefahrenbes": [{"id": "gb1", "text": "Physische Abgrenzung durch Schutzplanken und Poller einrichten", "sicherung": [{"id": "sic1", "text": "Zustand der Abgrenzungen bei Schichtbeginn prüfen"}], "beeintraecht": [{"id": "bei1", "text": "Lagerflächenverlust durch Abgrenzungselemente"}]}], "vorbeugende": [{"id": "v1", "text": "Wegeplan erstellen und Bodenmarkierungen aufbringen (gelbe Streifen)", "sicherung": [{"id": "sic2", "text": "Markierungen halbjährlich auf Sichtbarkeit prüfen und erneuern"}], "beeintraecht": []}]}, {"id": "u2", "text": "Eingeschränkte Sicht durch Hochregale und Ecken (toter Winkel)", "gefahrenbes": [{"id": "gb2", "text": "Konvexspiegel an unübersichtlichen Kreuzungen und Einmündungen", "sicherung": [{"id": "sic3", "text": "Spiegel monatlich auf Sauberkeit und Ausrichtung prüfen"}], "beeintraecht": []}], "vorbeugende": [{"id": "v2", "text": "Rückwärtsfahrt ohne Einweiser verboten – Betriebsanweisung", "sicherung": [{"id": "sic4", "text": "Einhaltung durch Vorgesetzte stichprobenartig kontrollieren"}], "beeintraecht": []}]}, {"id": "u3", "text": "Staplerfahrer nicht ausreichend qualifiziert oder eingewiesen", "gefahrenbes": [], "vorbeugende": [{"id": "v3", "text": "Staplerschein und jährliche Fahrerkurzunterweisung verpflichtend", "sicherung": [{"id": "sic5", "text": "Schulungsnachweise in Personalakte dokumentieren"}], "beeintraecht": []}]}, {"id": "u4", "text": "Ablenkung oder Eile durch Due date- und Lieferdruck", "gefahrenbes": [], "vorbeugende": [{"id": "v4", "text": "Schrittgeschwindigkeit (6 km/h) im Lagerebereich als Regel", "sicherung": [{"id": "sic6", "text": "Tempobegrenzer am Stapler hardwareseitig einstellen"}], "beeintraecht": [{"id": "bei2", "text": "Geringere Umschlagsleistung bei reduziertem Tempo"}]}]}, {"id": "u5", "text": "Technischer Defekt (Bremse, Lenkung, Warnsignal)", "gefahrenbes": [{"id": "gb3", "text": "Defekten Stapler sofort sperren und Reparatur einleiten", "sicherung": [{"id": "sic7", "text": "Tagescheck-Liste vor jeder Schicht, Fahrer unterschreibt"}], "beeintraecht": []}], "vorbeugende": [{"id": "v5", "text": "Regelmäßige UVV-Prüfung des Staplers (jährlich durch Sachkundigen)", "sicherung": [], "beeintraecht": []}]}], "konsequenzen": [{"id": "k1", "text": "Leichtverletzung (Quetschung, Sturz) des Fußgängers", "funktional": [{"id": "f1", "text": "Personendetektor am Stapler (Radar/Ultraschall) mit automatischem Bremseingriff", "sicherung": [{"id": "sic8", "text": "Sensor-Selbsttest bei jedem Systemstart prüfen"}], "beeintraecht": []}], "schaden": [{"id": "s1", "text": "Ersthelfer im Schichtteam ausgebildet, Verbandskasten griffbereit", "sicherung": [{"id": "sic9", "text": "Ersthelferausbildung alle 2 Jahre auffrischen"}], "beeintraecht": []}]}, {"id": "k2", "text": "Schwerverletzung oder Todesfall", "funktional": [{"id": "f2", "text": "Fußgänger tragen Warnweste – sofortige Sichtbarkeit für Staplerfahrer", "sicherung": [], "beeintraecht": []}], "schaden": [{"id": "s2", "text": "Notrufnummer und Erstmaßnahmen als Aushang an jedem Ausgang", "sicherung": [{"id": "sic10", "text": "Aushänge jährlich auf Aktualität prüfen"}], "beeintraecht": []}]}, {"id": "k3", "text": "Sachschaden an Regalen oder gelagerter Ware", "funktional": [{"id": "f3", "text": "Regalschutzecken aus Stahl an allen Regalfüßen", "sicherung": [], "beeintraecht": []}], "schaden": [{"id": "s3", "text": "Beschädigte Regale sofort sperren und Tragfähigkeit prüfen lassen", "sicherung": [{"id": "sic11", "text": "Regalinspektion nach jedem Anprall protokollieren"}], "beeintraecht": [{"id": "bei3", "text": "Sperrbereich reduziert temporär verfügbare Lagerfläche"}]}]}, {"id": "k4", "text": "Behördliche Untersuchung und Betriebsstilllegung", "funktional": [{"id": "f4", "text": "Unfallmeldung an BG (Berufsgenossenschaft) fristgerecht", "sicherung": [], "beeintraecht": []}], "schaden": [{"id": "s4", "text": "Unfallursache intern analysieren (5-Why) und Maßnahmen ableiten", "sicherung": [{"id": "sic12", "text": "Analyseergebnis im Sicherheitsausschuss besprechen"}], "beeintraecht": []}]}]}, "measureMeta": {"v1": {"owner": "Lagerleiter", "due": "15.04.2026", "status": "in_bearbeitung", "category": "vorbeugende"}, "v2": {"owner": "Sicherheitsbeauftragter", "due": "01.04.2026", "status": "erledigt", "category": "vorbeugende"}, "v3": {"owner": "HR / Schichtleiter", "due": "30.06.2026", "status": "in_bearbeitung", "category": "vorbeugende"}, "v4": {"owner": "Fuhrparkverantwortlicher", "due": "30.04.2026", "status": "in_bearbeitung", "category": "vorbeugende"}, "v5": {"owner": "Fuhrparkverantwortlicher", "due": "31.12.2026", "status": "in_bearbeitung", "category": "vorbeugende"}, "s1": {"owner": "Schichtleiter", "due": "01.04.2026", "status": "erledigt", "category": "schaden"}, "s2": {"owner": "Sicherheitsbeauftragter", "due": "01.04.2026", "status": "erledigt", "category": "schaden"}, "s3": {"owner": "Lagerleiter", "due": "sofort bei Bedarf", "status": "in_bearbeitung", "category": "schaden"}, "s4": {"owner": "Sicherheitsbeauftragter", "due": "nach jedem Unfall", "status": "in_bearbeitung", "category": "schaden"}}}
+};
+function loadEmbeddedExample(key){
+  var sample=EXAMPLE_DATASETS[key];
+  if(!sample){alert(t('exampleLoadError'));return;}
+  try{
+    var parsed=sanitizeImportedState(deepClone(sample));
+    ST=parsed.data;_n=parsed.counter;MM=parsed.measureMeta||{};
+    autosave();renderMeasures();render({resetScroll:true});
+    setAiStatus('Example "'+key+'" was loaded.');
+  }catch(err){
+    alert(t('exampleLoadError')+'\n'+(err&&err.message?err.message:String(err)));
+  }
+}
+
+var AI_TRAINING_EXAMPLES=[
+  {
+    "name": "Chemikalienaustritt im Labor",
+    "content": {
+      "version": "3.0",
+      "savedAt": "2026-03-19T10:10:00.000Z",
+      "counter": 400,
+      "data": {
+        "gefahr": {
+          "text": "Ätzende und giftige Chemikalien im Laborbereich (Säuren, Laugen, Lösemittel)"
+        },
+        "zentral": {
+          "text": "Unkontrollierter Austritt von Chemikalien (Leckage oder Verschütten)"
+        },
+        "ursachen": [
+          {
+            "id": "u1",
+            "text": "Undichte oder beschädigte Behälter und Verbindungsleitungen",
+            "gefahrenbes": [
+              {
+                "id": "gb1",
+                "text": "Defekte Behälter sofort in Sicherheitswanne stellen und kennzeichnen",
+                "sicherung": [
+                  {
+                    "id": "sic1",
+                    "text": "Tausch-/Entsorgungsprotokoll führen"
+                  }
+                ],
+                "beeintraecht": []
+              }
+            ],
+            "vorbeugende": [
+              {
+                "id": "v1",
+                "text": "Sichtprüfung aller Behälter bei Lieferung und vor Gebrauch",
+                "sicherung": [
+                  {
+                    "id": "sic2",
+                    "text": "Prüfung im Laborjournal dokumentieren"
+                  }
+                ],
+                "beeintraecht": []
+              }
+            ]
+          },
+          {
+            "id": "u2",
+            "text": "Bedienfehler beim Umfüllen oder Pipettieren",
+            "gefahrenbes": [],
+            "vorbeugende": [
+              {
+                "id": "v2",
+                "text": "Laborunterweisung vor Erstarbeit, jährliche Wiederholung (GefStoffV)",
+                "sicherung": [
+                  {
+                    "id": "sic3",
+                    "text": "Unterschriebene Unterweisungsnachweise in Personalakte"
+                  }
+                ],
+                "beeintraecht": []
+              },
+              {
+                "id": "v3",
+                "text": "Arbeit mit ätzenden Stoffen ausschließlich unter dem Abzug",
+                "sicherung": [
+                  {
+                    "id": "sic4",
+                    "text": "Abzugsklappe auf Funktionsfähigkeit halbjährlich prüfen (Strömungswächter)"
+                  }
+                ],
+                "beeintraecht": [
+                  {
+                    "id": "bei1",
+                    "text": "Kapazitätsengpass bei nur einem Abzug je Labor"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "u3",
+            "text": "Falsche Lagerung (unverträgliche Stoffe zu nah beieinander)",
+            "gefahrenbes": [
+              {
+                "id": "gb2",
+                "text": "Sofortige Trennung unverträglicher Stoffe in separate Schränke",
+                "sicherung": [
+                  {
+                    "id": "sic5",
+                    "text": "Lagerplan im Hazardstoffkataster aktuell halten"
+                  }
+                ],
+                "beeintraecht": []
+              }
+            ],
+            "vorbeugende": [
+              {
+                "id": "v4",
+                "text": "Hazardstoffkataster mit Lagermatrix (Verträglichkeiten) führen und aushängen",
+                "sicherung": [],
+                "beeintraecht": []
+              }
+            ]
+          },
+          {
+            "id": "u4",
+            "text": "Sturz oder Stoß gegen Gefäß durch unaufgeräumten Arbeitsplatz",
+            "gefahrenbes": [],
+            "vorbeugende": [
+              {
+                "id": "v5",
+                "text": "5S-Standard im Labor: Arbeitsplatz nach jedem Versuch aufräumen",
+                "sicherung": [
+                  {
+                    "id": "sic6",
+                    "text": "Wöchentliche 5S-Begehung durch Laborleitung"
+                  }
+                ],
+                "beeintraecht": []
+              }
+            ]
+          },
+          {
+            "id": "u5",
+            "text": "Materialermüdung oder Korrosion an Rohrverbindungen",
+            "gefahrenbes": [
+              {
+                "id": "gb3",
+                "text": "Korrodierte Leitungsabschnitte unverzüglich austauschen",
+                "sicherung": [],
+                "beeintraecht": []
+              }
+            ],
+            "vorbeugende": [
+              {
+                "id": "v6",
+                "text": "Jährliche Rohrleitungsinspektion durch befähigte Person",
+                "sicherung": [
+                  {
+                    "id": "sic7",
+                    "text": "Inspektionsprotokoll 10 Jahre aufbewahren"
+                  }
+                ],
+                "beeintraecht": []
+              }
+            ]
+          }
+        ],
+        "konsequenzen": [
+          {
+            "id": "k1",
+            "text": "Verätzung von Haut oder Augen bei Labormitarbeitenden",
+            "funktional": [
+              {
+                "id": "f1",
+                "text": "PSA: Schutzbrille, Säureschutzhandschuhe und Labormantel sind Pflicht",
+                "sicherung": [
+                  {
+                    "id": "sic8",
+                    "text": "PSA-Bestand monatlich prüfen, ablaufende Handschuhe ersetzen"
+                  }
+                ],
+                "beeintraecht": []
+              }
+            ],
+            "schaden": [
+              {
+                "id": "s1",
+                "text": "Notdusche und Augenspülung direkt im Labor (max. 10 s Erreichbarkeit)",
+                "sicherung": [
+                  {
+                    "id": "sic9",
+                    "text": "Notdusche wöchentlich auf Funktion prüfen, Wasserfluss dokumentieren"
+                  }
+                ],
+                "beeintraecht": []
+              }
+            ]
+          },
+          {
+            "id": "k2",
+            "text": "Einatmen von Dämpfen (Vergiftung, Reizung der Atemwege)",
+            "funktional": [
+              {
+                "id": "f2",
+                "text": "Raumluftüberwachung mit festem Gassensor und akustischem Alarm",
+                "sicherung": [
+                  {
+                    "id": "sic10",
+                    "text": "Sensor jährlich durch Hersteller kalibrieren lassen"
+                  }
+                ],
+                "beeintraecht": []
+              }
+            ],
+            "schaden": [
+              {
+                "id": "s2",
+                "text": "Evakuierung des Labors und Benachrichtigung des Betriebsarztes",
+                "sicherung": [
+                  {
+                    "id": "sic11",
+                    "text": "Evakuierungsplan vierteljährlich üben (Alarmübung)"
+                  }
+                ],
+                "beeintraecht": [
+                  {
+                    "id": "bei2",
+                    "text": "Betriebsunterbrechung bei Fehlalarmen möglich"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "k3",
+            "text": "Kontamination der Kanalisation und Umweltschaden",
+            "funktional": [
+              {
+                "id": "f3",
+                "text": "Auffangwannen unter allen Chemikalienständen (100 % Behältervolumen)",
+                "sicherung": [
+                  {
+                    "id": "sic12",
+                    "text": "Wannen bei jedem Befüllen auf Dichtheit und Befüllstand kontrollieren"
+                  }
+                ],
+                "beeintraecht": []
+              }
+            ],
+            "schaden": [
+              {
+                "id": "s3",
+                "text": "Chemikalienspill-Kit (Bindemittel, Neutralisationsmittel) griffbereit im Labor",
+                "sicherung": [
+                  {
+                    "id": "sic13",
+                    "text": "Spill-Kit halbjährlich auf Vollständigkeit prüfen und auffüllen"
+                  }
+                ],
+                "beeintraecht": []
+              }
+            ]
+          },
+          {
+            "id": "k4",
+            "text": "Brand oder Explosion durch entzündliche Lösemittel",
+            "funktional": [
+              {
+                "id": "f4",
+                "text": "Lösemittel ausschließlich in Ex-geschützten Sicherheitsschränken lagern",
+                "sicherung": [
+                  {
+                    "id": "sic14",
+                    "text": "Schrankkapazität nicht überschreiten – Eintrag im Hazardstoffkataster"
+                  }
+                ],
+                "beeintraecht": []
+              }
+            ],
+            "schaden": [
+              {
+                "id": "s4",
+                "text": "CO2-Feuerlöscher im Labor, kein Wasser auf Lösemittelbrände",
+                "sicherung": [
+                  {
+                    "id": "sic15",
+                    "text": "Feuerlöscher jährlich durch Fachbetrieb prüfen lassen"
+                  }
+                ],
+                "beeintraecht": []
+              }
+            ]
+          },
+          {
+            "id": "k5",
+            "text": "Meldepflichtige Störung gemäß Störfallverordnung (12. BImSchV)",
+            "funktional": [
+              {
+                "id": "f5",
+                "text": "Ereignis sofort intern melden (Laborleiter → Umweltbeauftragter)",
+                "sicherung": [],
+                "beeintraecht": []
+              }
+            ],
+            "schaden": [
+              {
+                "id": "s5",
+                "text": "Behördenmeldung innerhalb vorgeschriebener Frist, Ursachenanalyse einleiten",
+                "sicherung": [
+                  {
+                    "id": "sic16",
+                    "text": "Meldeformulare und Behördenkontakte im Notfallordner aktuell halten"
+                  }
+                ],
+                "beeintraecht": []
+              }
+            ]
+          }
+        ]
+      },
+      "measureMeta": {
+        "v1": {
+          "owner": "Labormitarbeitende",
+          "due": "laufend",
+          "status": "erledigt",
+          "category": "vorbeugende"
+        },
+        "v2": {
+          "owner": "Laborleitung",
+          "due": "31.03.2026",
+          "status": "in_bearbeitung",
+          "category": "vorbeugende"
+        },
+        "v3": {
+          "owner": "Laborleitung",
+          "due": "sofort gültig",
+          "status": "erledigt",
+          "category": "vorbeugende"
+        },
+        "v4": {
+          "owner": "Hazardstoffbeauftragter",
+          "due": "30.04.2026",
+          "status": "in_bearbeitung",
+          "category": "vorbeugende"
+        },
+        "v5": {
+          "owner": "Laborleitung",
+          "due": "laufend",
+          "status": "in_bearbeitung",
+          "category": "vorbeugende"
+        },
+        "v6": {
+          "owner": "Sicherheitsbeauftragter",
+          "due": "31.12.2026",
+          "status": "in_bearbeitung",
+          "category": "vorbeugende"
+        },
+        "s1": {
+          "owner": "Facility Management",
+          "due": "01.04.2026",
+          "status": "erledigt",
+          "category": "schaden"
+        },
+        "s2": {
+          "owner": "Laborleitung",
+          "due": "30.06.2026",
+          "status": "in_bearbeitung",
+          "category": "schaden"
+        },
+        "s3": {
+          "owner": "Laborleitung",
+          "due": "15.04.2026",
+          "status": "in_bearbeitung",
+          "category": "schaden"
+        },
+        "s4": {
+          "owner": "Sicherheitsbeauftragter",
+          "due": "31.12.2026",
+          "status": "erledigt",
+          "category": "schaden"
+        },
+        "s5": {
+          "owner": "Umweltbeauftragter",
+          "due": "laufend",
+          "status": "in_bearbeitung",
+          "category": "schaden"
+        }
+      }
+    }
+  },
+  {
+    "name": "Schaltschrankbrand",
+    "content": {
+      "version": "3.0",
+      "savedAt": "2026-03-19T10:00:00.000Z",
+      "counter": 200,
+      "data": {
+        "gefahr": {
+          "text": "Elektrische Energie in Schaltschrank (Überhitzung, Lichtbogen)"
+        },
+        "zentral": {
+          "text": "Brand im Schaltschrank der Fertigungsanlage"
+        },
+        "ursachen": [
+          {
+            "id": "u1",
+            "text": "Überlastung durch zu hohe Stromaufnahme",
+            "gefahrenbes": [
+              {
+                "id": "gb1",
+                "text": "Überlastschutz (Leitungsschutzschalter) nachrüsten",
+                "sicherung": [
+                  {
+                    "id": "sic1",
+                    "text": "Jährliche Überprüfung der Schutzschalter-Auslösewerte"
+                  }
+                ],
+                "beeintraecht": [
+                  {
+                    "id": "bei1",
+                    "text": "Kurzfristige Produktionsunterbrechung bei Auslösung"
+                  }
+                ]
+              }
+            ],
+            "vorbeugende": [
+              {
+                "id": "v1",
+                "text": "Lastprofil der Anlage regelmäßig messen und dokumentieren",
+                "sicherung": [
+                  {
+                    "id": "sic2",
+                    "text": "Messung halbjährlich durch Elektrofachkraft"
+                  }
+                ],
+                "beeintraecht": []
+              }
+            ]
+          },
+          {
+            "id": "u2",
+            "text": "Defekte oder alterungsbedingt spröde Kabelisolierungen",
+            "gefahrenbes": [
+              {
+                "id": "gb2",
+                "text": "Kabel mit Isolationsschaden sofort austauschen",
+                "sicherung": [
+                  {
+                    "id": "sic3",
+                    "text": "Prüfprotokoll nach DGUV V3 archivieren"
+                  }
+                ],
+                "beeintraecht": []
+              }
+            ],
+            "vorbeugende": [
+              {
+                "id": "v2",
+                "text": "Wiederkehrende elektr. Prüfung nach DGUV V3 (alle 4 Jahre)",
+                "sicherung": [],
+                "beeintraecht": [
+                  {
+                    "id": "bei2",
+                    "text": "Prüfaufwand erfordert geplante Stillstandszeiten"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "u3",
+            "text": "Verschmutzung/Verstopfung der Schaltschrank-Lüftung",
+            "gefahrenbes": [
+              {
+                "id": "gb3",
+                "text": "Lüftungsfilter reinigen oder ersetzen",
+                "sicherung": [
+                  {
+                    "id": "sic4",
+                    "text": "Filterwechsel im Wartungsplan verankern (quartalsweise)"
+                  }
+                ],
+                "beeintraecht": []
+              }
+            ],
+            "vorbeugende": [
+              {
+                "id": "v3",
+                "text": "Temperatursensor im Schaltschrank mit Alarmierung installieren",
+                "sicherung": [
+                  {
+                    "id": "sic5",
+                    "text": "Alarmierungsfunktion monatlich testen"
+                  }
+                ],
+                "beeintraecht": []
+              }
+            ]
+          },
+          {
+            "id": "u4",
+            "text": "Unsachgemäße Verdrahtung nach Umbau oder Reparatur",
+            "gefahrenbes": [],
+            "vorbeugende": [
+              {
+                "id": "v4",
+                "text": "4-Augen-Prinzip nach jeder Verdrahtungsarbeit (Abnahmeprüfung)",
+                "sicherung": [
+                  {
+                    "id": "sic6",
+                    "text": "Abnahme durch unabhängige Elektrofachkraft dokumentieren"
+                  }
+                ],
+                "beeintraecht": []
+              }
+            ]
+          }
+        ],
+        "konsequenzen": [
+          {
+            "id": "k1",
+            "text": "Personenschaden durch Rauch und Flammen (Mitarbeitende)",
+            "funktional": [
+              {
+                "id": "f1",
+                "text": "Schaltschrank feuerhemmend gekapselt (IP54, Brandschutzgehäuse)",
+                "sicherung": [
+                  {
+                    "id": "sic7",
+                    "text": "Zustand der Kapselung bei jeder Wartung prüfen"
+                  }
+                ],
+                "beeintraecht": []
+              }
+            ],
+            "schaden": [
+              {
+                "id": "s1",
+                "text": "Automatische Brandmeldeanlage alarmiert Werksschutz und Feuerwehr",
+                "sicherung": [
+                  {
+                    "id": "sic8",
+                    "text": "Jahresinspektion der Brandmeldeanlage durch Fachbetrieb"
+                  }
+                ],
+                "beeintraecht": [
+                  {
+                    "id": "bei3",
+                    "text": "Evakuierung unterbricht gesamte Fertigung"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "k2",
+            "text": "Maschinenausfall und Produktionsstillstand (mehrere Stunden)",
+            "funktional": [
+              {
+                "id": "f2",
+                "text": "Hauptschalter mit Fernauslösung trennt Schaltschrank spannungsfrei",
+                "sicherung": [],
+                "beeintraecht": []
+              }
+            ],
+            "schaden": [
+              {
+                "id": "s2",
+                "text": "Ersatzteillager für kritische Schaltschrankkomponenten vorhalten",
+                "sicherung": [
+                  {
+                    "id": "sic9",
+                    "text": "Mindestbestand quartalsweise prüfen"
+                  }
+                ],
+                "beeintraecht": [
+                  {
+                    "id": "bei4",
+                    "text": "Lagerkosten und Kapitalbindung für Ersatzteile"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "k3",
+            "text": "Brandausbreitung auf angrenzende Maschinenteile und Gebäude",
+            "funktional": [
+              {
+                "id": "f3",
+                "text": "Wandmontierter CO2-Löscher (5 kg) direkt am Schaltschrank",
+                "sicherung": [
+                  {
+                    "id": "sic10",
+                    "text": "Prüfplakette jährlich erneuern lassen"
+                  }
+                ],
+                "beeintraecht": []
+              }
+            ],
+            "schaden": [
+              {
+                "id": "s3",
+                "text": "Brandabschnitte gemäß Bauordnung begrenzen Ausbreitung",
+                "sicherung": [],
+                "beeintraecht": [
+                  {
+                    "id": "bei5",
+                    "text": "Brandabschnittswände beschränken Hallenflexibilität"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "measureMeta": {
+        "v1": {
+          "owner": "Instandhaltung",
+          "due": "30.06.2026",
+          "status": "in_bearbeitung",
+          "category": "vorbeugende"
+        },
+        "v2": {
+          "owner": "Elektrofachkraft",
+          "due": "31.12.2026",
+          "status": "in_bearbeitung",
+          "category": "vorbeugende"
+        },
+        "v3": {
+          "owner": "Instandhaltung",
+          "due": "30.04.2026",
+          "status": "in_bearbeitung",
+          "category": "vorbeugende"
+        },
+        "v4": {
+          "owner": "Teamleiter Elektro",
+          "due": "01.04.2026",
+          "status": "erledigt",
+          "category": "vorbeugende"
+        },
+        "s1": {
+          "owner": "Sicherheitsbeauftragter",
+          "due": "31.03.2026",
+          "status": "erledigt",
+          "category": "schaden"
+        },
+        "s2": {
+          "owner": "Instandhaltungsleiter",
+          "due": "30.06.2026",
+          "status": "in_bearbeitung",
+          "category": "schaden"
+        },
+        "s3": {
+          "owner": "Facility Management",
+          "due": "31.12.2026",
+          "status": "in_bearbeitung",
+          "category": "schaden"
+        }
+      }
+    }
+  },
+  {
+    "name": "Gabelstapler-Kollision",
+    "content": {
+      "version": "3.0",
+      "savedAt": "2026-03-19T10:05:00.000Z",
+      "counter": 300,
+      "data": {
+        "gefahr": {
+          "text": "Gabelstapler im Mischbetrieb mit Fußgängern im Lager"
+        },
+        "zentral": {
+          "text": "Kollision zwischen Gabelstapler und Fußgänger"
+        },
+        "ursachen": [
+          {
+            "id": "u1",
+            "text": "Unzureichende Trennung von Fahrzeug- und Personenwegen",
+            "gefahrenbes": [
+              {
+                "id": "gb1",
+                "text": "Physische Abgrenzung durch Schutzplanken und Poller einrichten",
+                "sicherung": [
+                  {
+                    "id": "sic1",
+                    "text": "Zustand der Abgrenzungen bei Schichtbeginn prüfen"
+                  }
+                ],
+                "beeintraecht": [
+                  {
+                    "id": "bei1",
+                    "text": "Lagerflächenverlust durch Abgrenzungselemente"
+                  }
+                ]
+              }
+            ],
+            "vorbeugende": [
+              {
+                "id": "v1",
+                "text": "Wegeplan erstellen und Bodenmarkierungen aufbringen (gelbe Streifen)",
+                "sicherung": [
+                  {
+                    "id": "sic2",
+                    "text": "Markierungen halbjährlich auf Sichtbarkeit prüfen und erneuern"
+                  }
+                ],
+                "beeintraecht": []
+              }
+            ]
+          },
+          {
+            "id": "u2",
+            "text": "Eingeschränkte Sicht durch Hochregale und Ecken (toter Winkel)",
+            "gefahrenbes": [
+              {
+                "id": "gb2",
+                "text": "Konvexspiegel an unübersichtlichen Kreuzungen und Einmündungen",
+                "sicherung": [
+                  {
+                    "id": "sic3",
+                    "text": "Spiegel monatlich auf Sauberkeit und Ausrichtung prüfen"
+                  }
+                ],
+                "beeintraecht": []
+              }
+            ],
+            "vorbeugende": [
+              {
+                "id": "v2",
+                "text": "Rückwärtsfahrt ohne Einweiser verboten – Betriebsanweisung",
+                "sicherung": [
+                  {
+                    "id": "sic4",
+                    "text": "Einhaltung durch Vorgesetzte stichprobenartig kontrollieren"
+                  }
+                ],
+                "beeintraecht": []
+              }
+            ]
+          },
+          {
+            "id": "u3",
+            "text": "Staplerfahrer nicht ausreichend qualifiziert oder eingewiesen",
+            "gefahrenbes": [],
+            "vorbeugende": [
+              {
+                "id": "v3",
+                "text": "Staplerschein und jährliche Fahrerkurzunterweisung verpflichtend",
+                "sicherung": [
+                  {
+                    "id": "sic5",
+                    "text": "Schulungsnachweise in Personalakte dokumentieren"
+                  }
+                ],
+                "beeintraecht": []
+              }
+            ]
+          },
+          {
+            "id": "u4",
+            "text": "Ablenkung oder Eile durch Due date- und Lieferdruck",
+            "gefahrenbes": [],
+            "vorbeugende": [
+              {
+                "id": "v4",
+                "text": "Schrittgeschwindigkeit (6 km/h) im Lagerebereich als Regel",
+                "sicherung": [
+                  {
+                    "id": "sic6",
+                    "text": "Tempobegrenzer am Stapler hardwareseitig einstellen"
+                  }
+                ],
+                "beeintraecht": [
+                  {
+                    "id": "bei2",
+                    "text": "Geringere Umschlagsleistung bei reduziertem Tempo"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "u5",
+            "text": "Technischer Defekt (Bremse, Lenkung, Warnsignal)",
+            "gefahrenbes": [
+              {
+                "id": "gb3",
+                "text": "Defekten Stapler sofort sperren und Reparatur einleiten",
+                "sicherung": [
+                  {
+                    "id": "sic7",
+                    "text": "Tagescheck-Liste vor jeder Schicht, Fahrer unterschreibt"
+                  }
+                ],
+                "beeintraecht": []
+              }
+            ],
+            "vorbeugende": [
+              {
+                "id": "v5",
+                "text": "Regelmäßige UVV-Prüfung des Staplers (jährlich durch Sachkundigen)",
+                "sicherung": [],
+                "beeintraecht": []
+              }
+            ]
+          }
+        ],
+        "konsequenzen": [
+          {
+            "id": "k1",
+            "text": "Leichtverletzung (Quetschung, Sturz) des Fußgängers",
+            "funktional": [
+              {
+                "id": "f1",
+                "text": "Personendetektor am Stapler (Radar/Ultraschall) mit automatischem Bremseingriff",
+                "sicherung": [
+                  {
+                    "id": "sic8",
+                    "text": "Sensor-Selbsttest bei jedem Systemstart prüfen"
+                  }
+                ],
+                "beeintraecht": []
+              }
+            ],
+            "schaden": [
+              {
+                "id": "s1",
+                "text": "Ersthelfer im Schichtteam ausgebildet, Verbandskasten griffbereit",
+                "sicherung": [
+                  {
+                    "id": "sic9",
+                    "text": "Ersthelferausbildung alle 2 Jahre auffrischen"
+                  }
+                ],
+                "beeintraecht": []
+              }
+            ]
+          },
+          {
+            "id": "k2",
+            "text": "Schwerverletzung oder Todesfall",
+            "funktional": [
+              {
+                "id": "f2",
+                "text": "Fußgänger tragen Warnweste – sofortige Sichtbarkeit für Staplerfahrer",
+                "sicherung": [],
+                "beeintraecht": []
+              }
+            ],
+            "schaden": [
+              {
+                "id": "s2",
+                "text": "Notrufnummer und Erstmaßnahmen als Aushang an jedem Ausgang",
+                "sicherung": [
+                  {
+                    "id": "sic10",
+                    "text": "Aushänge jährlich auf Aktualität prüfen"
+                  }
+                ],
+                "beeintraecht": []
+              }
+            ]
+          },
+          {
+            "id": "k3",
+            "text": "Sachschaden an Regalen oder gelagerter Ware",
+            "funktional": [
+              {
+                "id": "f3",
+                "text": "Regalschutzecken aus Stahl an allen Regalfüßen",
+                "sicherung": [],
+                "beeintraecht": []
+              }
+            ],
+            "schaden": [
+              {
+                "id": "s3",
+                "text": "Beschädigte Regale sofort sperren und Tragfähigkeit prüfen lassen",
+                "sicherung": [
+                  {
+                    "id": "sic11",
+                    "text": "Regalinspektion nach jedem Anprall protokollieren"
+                  }
+                ],
+                "beeintraecht": [
+                  {
+                    "id": "bei3",
+                    "text": "Sperrbereich reduziert temporär verfügbare Lagerfläche"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "k4",
+            "text": "Behördliche Untersuchung und Betriebsstilllegung",
+            "funktional": [
+              {
+                "id": "f4",
+                "text": "Unfallmeldung an BG (Berufsgenossenschaft) fristgerecht",
+                "sicherung": [],
+                "beeintraecht": []
+              }
+            ],
+            "schaden": [
+              {
+                "id": "s4",
+                "text": "Unfallursache intern analysieren (5-Why) und Maßnahmen ableiten",
+                "sicherung": [
+                  {
+                    "id": "sic12",
+                    "text": "Analyseergebnis im Sicherheitsausschuss besprechen"
+                  }
+                ],
+                "beeintraecht": []
+              }
+            ]
+          }
+        ]
+      },
+      "measureMeta": {
+        "v1": {
+          "owner": "Lagerleiter",
+          "due": "15.04.2026",
+          "status": "in_bearbeitung",
+          "category": "vorbeugende"
+        },
+        "v2": {
+          "owner": "Sicherheitsbeauftragter",
+          "due": "01.04.2026",
+          "status": "erledigt",
+          "category": "vorbeugende"
+        },
+        "v3": {
+          "owner": "HR / Schichtleiter",
+          "due": "30.06.2026",
+          "status": "in_bearbeitung",
+          "category": "vorbeugende"
+        },
+        "v4": {
+          "owner": "Fuhrparkverantwortlicher",
+          "due": "30.04.2026",
+          "status": "in_bearbeitung",
+          "category": "vorbeugende"
+        },
+        "v5": {
+          "owner": "Fuhrparkverantwortlicher",
+          "due": "31.12.2026",
+          "status": "in_bearbeitung",
+          "category": "vorbeugende"
+        },
+        "s1": {
+          "owner": "Schichtleiter",
+          "due": "01.04.2026",
+          "status": "erledigt",
+          "category": "schaden"
+        },
+        "s2": {
+          "owner": "Sicherheitsbeauftragter",
+          "due": "01.04.2026",
+          "status": "erledigt",
+          "category": "schaden"
+        },
+        "s3": {
+          "owner": "Lagerleiter",
+          "due": "sofort bei Bedarf",
+          "status": "in_bearbeitung",
+          "category": "schaden"
+        },
+        "s4": {
+          "owner": "Sicherheitsbeauftragter",
+          "due": "nach jedem Unfall",
+          "status": "in_bearbeitung",
+          "category": "schaden"
+        }
+      }
+    }
+  }
+];
+
+function collectContextFromTool(){
+  var lines=[];
+  if(safeText(ST.gefahr.text))lines.push('Hazard: '+ST.gefahr.text);
+  if(safeText(ST.zentral.text))lines.push('Top Event: '+ST.zentral.text);
+  if(ST.ursachen.length){lines.push('Causes:');for(var i=0;i<ST.ursachen.length;i++){var u=ST.ursachen[i];if(safeText(u.text))lines.push('- '+u.text);}}
+  if(ST.konsequenzen.length){lines.push('Consequenceen:');for(var j=0;j<ST.konsequenzen.length;j++){var k=ST.konsequenzen[j];if(safeText(k.text))lines.push('- '+k.text);}}
+  var measures=collectMeasures();
+  if(measures.length){lines.push('Maßnahmenliste:');measures.forEach(function(m){var meta=ensureMeasureMeta(m.id,m.type);lines.push('- ['+getCategoryLabel(m.type)+'] '+(m.text||'')+' | Owner: '+(meta.owner||'-')+' | Due date: '+(meta.due||'-')+' | Status: '+getMeasureStatusLabel(meta.status));});}
+  return lines.join('\n');
+}
+function setAiStatus(msg){var el=document.getElementById('aiStatus');if(el)el.textContent=msg||'';}
+function setAiPreview(obj){var el=document.getElementById('aiPreview');if(el)el.textContent=obj?JSON.stringify(obj,null,2):'{ "info": "Nothing generated yet." }';}
+function setAiMeta(msg){var el=document.getElementById('aiPreviewMeta');if(el)el.textContent=msg||'—';}
+function saveAiConfig(){
+  try{localStorage.setItem(AI_CFG_KEY,JSON.stringify({license:document.getElementById('aiLicense').value||'',apiKey:document.getElementById('aiApiKey').value||'',model:document.getElementById('aiModel').value||'gpt-5.2',applyMode:document.getElementById('aiApplyMode').value||'merge',problem:document.getElementById('aiProblem').value||'',context:document.getElementById('aiContext').value||''}));}catch(e){}
+}
+function loadAiConfig(){
+  try{var raw=localStorage.getItem(AI_CFG_KEY);if(!raw)return;var cfg=JSON.parse(raw)||{};if(cfg.license!=null)document.getElementById('aiLicense').value=cfg.license;if(cfg.apiKey!=null)document.getElementById('aiApiKey').value=cfg.apiKey;if(cfg.model)document.getElementById('aiModel').value=cfg.model;if(cfg.applyMode)document.getElementById('aiApplyMode').value=cfg.applyMode;if(cfg.problem!=null)document.getElementById('aiProblem').value=cfg.problem;if(cfg.context!=null)document.getElementById('aiContext').value=cfg.context;}catch(e){}
+}
+function aiGetOutputText(data){
+  if(!data)return '';
+  if(typeof data.output_text==='string'&&data.output_text.trim())return data.output_text;
+  if(Array.isArray(data.output)){var out=[];for(var i=0;i<data.output.length;i++){var item=data.output[i];if(item&&Array.isArray(item.content)){for(var j=0;j<item.content.length;j++){var c=item.content[j];if(c&&typeof c.text==='string')out.push(c.text);}}}if(out.length)return out.join('\n');}
+  return '';
+}
+function aiExtractJsonObject(text){
+  if(!text)return null;
+  var start=text.indexOf('{');var end=text.lastIndexOf('}');
+  if(start===-1||end===-1||end<=start)return null;
+  var candidate=text.slice(start,end+1);
+  return JSON.parse(candidate);
+}
+function normalizeAiBowtie(obj){
+  function ensureId(node,prefix){if(!node.id)node.id=uid(prefix||'n');}
+  function arr(v){return Array.isArray(v)?v:[];}
+  var src=(obj&&obj.data&&typeof obj.data==='object')?obj.data:obj;
+  var out={gefahr:{text:safeText(src&&src.gefahr&&src.gefahr.text||src&&src.gefahr||'')},zentral:{text:safeText(src&&src.zentralesEreignis&&src.zentralesEreignis.text||src&&src.zentral&&src.zentral.text||src&&src.zentralesEreignis||'')},ursachen:[],konsequenzen:[]};
+  var urs=arr(src&&src.ursachen);
+  for(var i=0;i<urs.length;i++){
+    var u={id:uid('u'),text:safeText(urs[i].text||urs[i].ursache||''),gefahrenbes:[],vorbeugende:[]};
+    var gbs=arr(urs[i].gefahrenbes||urs[i].gefahrenbeseitigung);
+    for(var j=0;j<gbs.length;j++){
+      var gb={id:uid('gb'),text:safeText(gbs[j].text||gbs[j]),sicherung:[],beeintraecht:[]};
+      var sic=arr(gbs[j].sicherung);for(var a=0;a<sic.length;a++)gb.sicherung.push({id:uid('sic'),text:safeText(sic[a].text||sic[a])});
+      var bei=arr(gbs[j].beeintraecht||gbs[j].beeintraechtigung);for(var b=0;b<bei.length;b++)gb.beeintraecht.push({id:uid('bei'),text:safeText(bei[b].text||bei[b])});
+      u.gefahrenbes.push(gb);
+    }
+    var vors=arr(urs[i].vorbeugende||urs[i].vorbeugendeMassnahmen||urs[i].vorbeugendeMassnahme);
+    for(var k=0;k<vors.length;k++){
+      var v={id:uid('v'),text:safeText(vors[k].text||vors[k]),sicherung:[],beeintraecht:[]};
+      var vsic=arr(vors[k].sicherung);for(var c=0;c<vsic.length;c++)v.sicherung.push({id:uid('sic'),text:safeText(vsic[c].text||vsic[c])});
+      var vbei=arr(vors[k].beeintraecht||vors[k].beeintraechtigung);for(var d=0;d<vbei.length;d++)v.beeintraecht.push({id:uid('bei'),text:safeText(vbei[d].text||vbei[d])});
+      u.vorbeugende.push(v);
+    }
+    if(u.text||u.gefahrenbes.length||u.vorbeugende.length)out.ursachen.push(u);
+  }
+  var kons=arr(src&&src.konsequenzen);
+  for(var m=0;m<kons.length;m++){
+    var kk={id:uid('k'),text:safeText(kons[m].text||kons[m].konsequenz||''),funktional:[],schaden:[]};
+    var fun=arr(kons[m].funktional||kons[m].funktionaleTrennung);
+    for(var n=0;n<fun.length;n++){
+      var f={id:uid('f'),text:safeText(fun[n].text||fun[n]),sicherung:[],beeintraecht:[]};
+      var fs=arr(fun[n].sicherung);for(var e=0;e<fs.length;e++)f.sicherung.push({id:uid('sic'),text:safeText(fs[e].text||fs[e])});
+      var fb=arr(fun[n].beeintraecht||fun[n].beeintraechtigung);for(var g=0;g<fb.length;g++)f.beeintraecht.push({id:uid('bei'),text:safeText(fb[g].text||fb[g])});
+      kk.funktional.push(f);
+    }
+    var sch=arr(kons[m].schaden||kons[m].schadensbegrenzung);
+    for(var p=0;p<sch.length;p++){
+      var s={id:uid('s'),text:safeText(sch[p].text||sch[p]),sicherung:[],beeintraecht:[]};
+      var ss=arr(sch[p].sicherung);for(var h=0;h<ss.length;h++)s.sicherung.push({id:uid('sic'),text:safeText(ss[h].text||ss[h])});
+      var sb=arr(sch[p].beeintraecht||sch[p].beeintraechtigung);for(var q=0;q<sb.length;q++)s.beeintraecht.push({id:uid('bei'),text:safeText(sb[q].text||sb[q])});
+      kk.schaden.push(s);
+    }
+    if(kk.text||kk.funktional.length||kk.schaden.length)out.konsequenzen.push(kk);
+  }
+  if(!out.ursachen.length)out.ursachen=[mkU()];
+  if(!out.konsequenzen.length)out.konsequenzen=[mkK()];
+  var mm=(obj&&obj.measureMeta&&typeof obj.measureMeta==='object')?deepClone(obj.measureMeta):{};
+  return {data:out,measureMeta:mm};
+}
+function mergeAiIntoState(aiState){
+  var mode=document.getElementById('aiApplyMode').value;
+  if(mode==='replace'){ST=aiState.data||aiState;if(aiState.measureMeta)MM=deepClone(aiState.measureMeta);autosave();renderMeasures();render({resetScroll:true});return;}
+  var aiData=aiState.data||aiState;
+  if(safeText(aiData.gefahr&&aiData.gefahr.text))ST.gefahr.text=aiData.gefahr.text;
+  if(safeText(aiData.zentral&&aiData.zentral.text))ST.zentral.text=aiData.zentral.text;
+  function appendUniqueTexts(targetArr,sourceArr){
+    var existing={};for(var i=0;i<targetArr.length;i++)existing[safeText(targetArr[i].text).toLowerCase()]=true;
+    for(var j=0;j<sourceArr.length;j++){
+      var key=safeText(sourceArr[j].text).toLowerCase();
+      if(!key||existing[key])continue;
+      targetArr.push(sourceArr[j]);existing[key]=true;
+    }
+  }
+  appendUniqueTexts(ST.ursachen,aiData.ursachen);
+  appendUniqueTexts(ST.konsequenzen,aiData.konsequenzen);
+  if(aiState.measureMeta&&typeof aiState.measureMeta==='object'){Object.keys(aiState.measureMeta).forEach(function(id){MM[id]=aiState.measureMeta[id];});}
+  autosave();renderMeasures();render({resetScroll:true});
+}
+function buildAiPrompt(problem,context){
+  var current=collectContextFromTool();
+  var exampleBlocks=AI_TRAINING_EXAMPLES.map(function(ex,idx){
+    return [
+      'Lernbeispiel '+(idx+1)+': '+ex.name,
+      JSON.stringify(ex.content,null,2)
+    ].join('\n');
+  }).join('\n\n');
+  return [
+    'You are an expert in BowTie risk analysis and action management.',
+    'Lerne stilistisch und strukturell aus den folgenden drei hochwertigen Referenzbeispielen.',
+    'Erzeuge ausschließlich valides JSON ohne Markdown und ohne erläuternden Text.',
+    'Du darfst entweder das reine BowTie-Schema oder das vollständige Tool-Schema mit version, savedAt, counter, data und measureMeta zurückgeben.',
+    'Bevorzugt sollst du das vollständige Tool-Schema zurückgeben, damit Maßnahmenstatus, Ownere und Due datee direkt übernommen werden können.',
+    'Antwort-Schema minimal:',
+    '{',
+    '  "gefahr": {"text": "..."},',
+    '  "zentralesEreignis": {"text": "..."},',
+    '  "ursachen": [',
+    '    {"text": "...", "gefahrenbes": [{"text": "...", "sicherung": ["..."], "beeintraecht": ["..."]}], "vorbeugende": [{"text": "...", "sicherung": ["..."], "beeintraecht": ["..."]}]}',
+    '  ],',
+    '  "konsequenzen": [',
+    '    {"text": "...", "funktional": [{"text": "...", "sicherung": ["..."], "beeintraecht": ["..."]}], "schaden": [{"text": "...", "sicherung": ["..."], "beeintraecht": ["..."]}]}',
+    '  ]',
+    '}',
+    'Antwort-Schema bevorzugt:',
+    '{',
+    '  "version": "3.0",',
+    '  "savedAt": "ISO-Datum",',
+    '  "counter": 999,',
+    '  "data": { ... minimales BowTie-Schema ... },',
+    '  "measureMeta": {',
+    '    "idDerMassnahme": {"owner":"...","due":"...","status":"in_bearbeitung|erledigt|verworfen","category":"vorbeugende|schaden|sicherung"}',
+    '  }',
+    '}',
+    'Regeln:',
+    '- English.',
+    '- Konkret, technisch und praxisnah formulieren.',
+    '- Orientiere dich an Tiefe, Qualität und Detaillierung der Referenzbeispiele.',
+    '- 3 bis 6 Ursachen und 3 bis 6 Consequenceen, wenn Context genug hergibt.',
+    '- Je Ursache möglichst mindestens eine präventive Maßnahme oder Hazardenbeseitigung.',
+    '- Je Consequence möglichst mindestens eine funktionale Trennung oder Damage Limitation.',
+    '- Zu zentralen Maßnahmen nach Möglichkeit Owner, Due date und Status im measureMeta ergänzen.',
+    '- Keine Kommentare, keine ```json-Blöcke, nur JSON.',
+    '',
+    'Aufgabe: '+problem,
+    '',
+    'Zusätzlicher Context:',
+    context || '(kein zusätzlicher Context)',
+    '',
+    'Bereits vorhandener Tool-Inhalt:',
+    current || '(noch leer)',
+    '',
+    'Referenzbeispiele zum Lernen:',
+    exampleBlocks
+  ].join('\n');
+}
+async function validateLicense(){
+  var lic=safeText(document.getElementById('aiLicense').value);
+  if(!lic)return {ok:false,message:'License key fehlt.'};
+  return {ok:true};
+}
+async function aiGenerate(){
+  var apiKey=safeText(document.getElementById('aiApiKey').value);
+  var problem=safeText(document.getElementById('aiProblem').value);
+  var context=safeText(document.getElementById('aiContext').value);
+  saveAiConfig();
+  if(!problem){setAiStatus('Bitte Aufgabe eingeben.');return;}
+  if(!apiKey){setAiStatus('API Key fehlt.');return;}
+  document.getElementById('btnAiGenerate').disabled=true;document.getElementById('btnAiApply').disabled=true;document.getElementById('btnAiDownload').disabled=true;
+  setAiStatus('Prüfe Lizenz …');
+  var ok=await validateLicense();
+  if(!ok.ok){setAiStatus(ok.message||'Lizenz ungültig.');document.getElementById('btnAiGenerate').disabled=false;return;}
+  setAiStatus('Sende Anfrage an KI …');
+  try{
+    var res=await fetch('https://api.openai.com/v1/responses',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+apiKey},body:JSON.stringify({model:document.getElementById('aiModel').value,input:buildAiPrompt(problem,context)})});
+    var raw=await res.text();
+    if(!res.ok)throw new Error('OpenAI Fehler '+res.status+':\n'+raw);
+    var data=JSON.parse(raw);
+    var outText=aiGetOutputText(data);
+    var obj=aiExtractJsonObject(outText);
+    if(!obj)throw new Error('Die API-Antwort enthielt kein verwertbares JSON.');
+    aiLastJson=obj;setAiPreview(obj);setAiMeta((document.getElementById('aiModel').value||'')+' · '+new Date().toLocaleString('de-DE'));setAiStatus('Fertig. Du kannst das Ergebnis jetzt übernehmen.');document.getElementById('btnAiApply').disabled=false;document.getElementById('btnAiDownload').disabled=false;
+  }catch(err){aiLastJson=null;setAiPreview(null);setAiMeta('—');setAiStatus('Fehler:\n'+(err&&err.message?err.message:String(err)));}
+  finally{document.getElementById('btnAiGenerate').disabled=false;}
+}
+
+function wireAi(){
+  document.getElementById('btnAiContextFromTool').addEventListener('click',function(){var ctx=collectContextFromTool();document.getElementById('aiContext').value=ctx;saveAiConfig();});
+  document.getElementById('btnAiGenerate').addEventListener('click',aiGenerate);
+  document.getElementById('btnAiApply').addEventListener('click',function(){if(!aiLastJson)return;try{mergeAiIntoState(normalizeAiBowtie(aiLastJson));setAiStatus('KI-Ergebnis wurde übernommen.');}catch(err){setAiStatus('Übernahme fehlgeschlagen:\n'+(err&&err.message?err.message:String(err)));}});
+  document.getElementById('btnAiDownload').addEventListener('click',function(){if(aiLastJson)downloadJson(aiLastJson,'bowtie-ai-ergebnis.json');});
+  document.getElementById('btnAiClear').addEventListener('click',function(){aiLastJson=null;setAiPreview(null);setAiMeta('—');setAiStatus('KI-Vorschau wurde zurückgesetzt.');});
+  ['aiLicense','aiApiKey','aiModel','aiApplyMode','aiProblem','aiContext'].forEach(function(id){var el=document.getElementById(id);if(el)el.addEventListener('input',saveAiConfig);if(el)el.addEventListener('change',saveAiConfig);});
+}
+
+function boot(){
+  canv=document.getElementById('kvpBt-canvas');svgEl=document.getElementById('kvpBt-svg');sizerEl=document.getElementById('kvpBt-sizer');analysisWrap=document.querySelector('#kvpBt .bcw');
+  ST=freshSt();loadMeasureMeta();loadAutosave();loadAiConfig();
+  document.getElementById('kvpBtRst').addEventListener('click',function(){if(!window.confirm(t('resetConfirm')))return;ST=freshSt();_n=100;aiLastJson=null;localStorage.removeItem(STORAGE_KEY);localStorage.removeItem(MM_META_KEY);MM={};autosave();renderMeasures();render();setAiPreview(null);setAiMeta('—');setAiStatus(t('toolReset'));});
+  document.getElementById('kvpBtPdf').addEventListener('click',doPDF);
+  document.getElementById('kvpBtSave').addEventListener('click',saveJsonFile);
+  document.getElementById('kvpBtSave2').addEventListener('click',saveJsonFile);
+  document.getElementById('kvpBtSave3').addEventListener('click',saveJsonFile);
+  document.getElementById('kvpBtExportExample').addEventListener('click',exampleJson);
+  ;['kvpBtExample1','kvpBtExample1b'].forEach(function(id){var el=document.getElementById(id);if(el)el.addEventListener('click',function(){loadEmbeddedExample('labor');});});
+  ['kvpBtExample2','kvpBtExample2b'].forEach(function(id){var el=document.getElementById(id);if(el)el.addEventListener('click',function(){loadEmbeddedExample('schaltschrank');});});
+  ['kvpBtExample3','kvpBtExample3b'].forEach(function(id){var el=document.getElementById(id);if(el)el.addEventListener('click',function(){loadEmbeddedExample('stapler');});});
+  document.getElementById('kvpBtLoadBtn').addEventListener('click',function(){document.getElementById('kvpBtLoadFile').click();});
+  document.getElementById('kvpBtLoad2').addEventListener('click',function(){document.getElementById('kvpBtLoadFile').click();});
+  document.getElementById('kvpBtLoad3').addEventListener('click',function(){document.getElementById('kvpBtLoadFile').click();});
+  document.getElementById('kvpBtLoadFile').addEventListener('change',function(ev){var file=ev.target.files&&ev.target.files[0];if(!file)return;var reader=new FileReader();reader.onload=function(){try{loadJsonText(String(reader.result||''));setAiStatus(t('jsonLoaded'));}catch(err){alert(t('jsonLoadError')+'\n'+(err&&err.message?err.message:String(err)));}ev.target.value='';};reader.readAsText(file,'utf-8');});
+  var btnLangDE=document.getElementById('btnLangDE'),btnLangEN=document.getElementById('btnLangEN');
+  if(btnLangDE)btnLangDE.addEventListener('click',function(){setLanguage('de');});
+  if(btnLangEN)btnLangEN.addEventListener('click',function(){setLanguage('en');});
+  window.addEventListener('resize',onResize);
+  applyI18n();
+  wireMeasures();wireAi();autosave();renderMeasures();render();
+}
+
+function init(){loadJs('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js',function(){loadJs('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',function(){boot();});});}
+if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',init);}else{init();}
+})();
+</script>
+</body>
+</html>
