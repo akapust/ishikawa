@@ -40,6 +40,20 @@
     #qm-mindmap-app .tool-sub{ margin:6px 0 0; font-size:13px; color:var(--muted); }
 
     #qm-mindmap-app .tool-grid{ margin-top:16px; display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    #qm-mindmap-app .intro-3col{ grid-template-columns:1fr 1fr 1fr; }
+    #qm-mindmap-app .intro-3col-full{ grid-column: 1 / -1; }
+    #qm-mindmap-app .intro-box-free{
+      border-left:3px solid #93c5fd;
+      background:linear-gradient(135deg,#f0f7ff 0%,#eaf3ff 100%);
+    }
+    #qm-mindmap-app .intro-box-premium{
+      border-left:3px solid #16a34a;
+      background:linear-gradient(135deg,#f0faf4 0%,#e8f5ed 100%);
+    }
+    #qm-mindmap-app .intro-box-premium h3{ color:#14532d; }
+    @media(max-width:900px){
+      #qm-mindmap-app .intro-3col{ grid-template-columns:1fr; }
+    }
     #qm-mindmap-app .tool-box{ background:#fff; border:1px solid var(--border); border-radius:var(--radius); padding:12px 14px; }
     #qm-mindmap-app .tool-box h3{ margin:0 0 6px 0; font-size:13px; color:var(--dark); text-transform:uppercase; }
     #qm-mindmap-app .tool-box h4{ margin:10px 0 6px 0; font-size:12px; color:var(--dark); text-transform:uppercase; letter-spacing:.2px; }
@@ -304,6 +318,23 @@
       #qm-mindmap-app .measure-table td.col-actions{ border-bottom:0; }
     }
 
+    /* Premium AI Section – soft green highlight */
+    #qm-mindmap-app .section-premium-ai{
+      background: linear-gradient(135deg, #f0faf4 0%, #e8f5ed 100%);
+      border-color: #a8d5b5;
+      border-left: 4px solid #16a34a;
+    }
+    #qm-mindmap-app .section-premium-ai .sec-title{
+      color: #14532d;
+    }
+    #qm-mindmap-app .badge-quality{
+      border-color: rgba(22,163,74,.4);
+      background: rgba(22,163,74,.12);
+      color: #14532d;
+      font-size: 11px;
+      letter-spacing: .2px;
+    }
+
     /* AI Section */
     #qm-mindmap-app .ai-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
     #qm-mindmap-app .ai-grid .full{ grid-column:1 / -1; }
@@ -360,46 +391,46 @@
           </div>
         </div>
 
-        <div class="tool-grid">
-          <div class="tool-box">
-            <h3 data-i18n="boxToolNameTitle">Name Tool</h3>
-            <p data-i18n="boxToolNameText">Mindmap – Struktur & Maßnahmen</p>
-          </div>
-          <div class="tool-box">
-            <h3 data-i18n="boxGoalTitle">Ziel</h3>
-            <p data-i18n="boxGoalText">Ideen sichtbar machen, Beziehungen klären und relevante Punkte in umsetzbare Maßnahmen überführen.</p>
-          </div>
+        <div class="tool-grid intro-3col">
 
-          <!-- Steps -->
+          <!-- Schritt-für-Schritt -->
           <div class="tool-box">
             <h3 data-i18n="boxHowTitle">So benutzt du das Tool</h3>
-
-            <h4 data-i18n="stepsNoAiTitle">Ohne KI</h4>
             <ol>
-              <li data-i18n="step1">Meta speichern: Thema / Ziel / Scope / Notizen → setzt die Wurzel (Root) der Mindmap.</li>
-              <li data-i18n="step2">Mindmap bauen: Unterknoten / Nachbarknoten anlegen, verschieben (Drag) und zoomen (Scroll).</li>
-              <li data-i18n="step3">Aus Knoten Maßnahmen ableiten: Knoten auswählen → Maßnahme + Termin speichern.</li>
-              <li data-i18n="step4">Maßnahmen steuern: offen / abgeschlossen / verworfen, löschen, drucken, JSON exportieren/importieren.</li>
+              <li data-i18n="step1">Thema, Ziel &amp; Scope eingeben → speichern (setzt den Root-Knoten).</li>
+              <li data-i18n="step2">Mindmap aufbauen: Knoten anlegen, per Drag verschieben, per Scroll zoomen.</li>
+              <li data-i18n="step3">Knoten auswählen → Maßnahme mit Termin ableiten &amp; speichern.</li>
+              <li data-i18n="step4">Maßnahmenliste steuern: Status, drucken, JSON exportieren/importieren.</li>
             </ol>
+          </div>
 
-            <h4 data-i18n="stepsAiTitle">Mit KI Premium</h4>
+          <!-- KI Kostenlos -->
+          <div class="tool-box intro-box-free">
+            <h3 data-i18n="stepsAiFreeTitle">🆓 KI Assistent – Kostenlos</h3>
+            <p data-i18n="stepsAiFreeDesc">Starte sofort ohne Account. Wähle ein KI-Modell und gib deinen Prozessschritt ein – die KI erstellt automatisch eine erste Mindmap-Struktur mit Maßnahmen.</p>
+            <ol>
+              <li data-i18n="aiFreeStep1">Prozessschritt + Kontext eingeben.</li>
+              <li data-i18n="aiFreeStep2">Modell wählen &amp; generieren.</li>
+              <li data-i18n="aiFreeStep3">Ergebnis übernehmen &amp; weiterbearbeiten.</li>
+            </ol>
+          </div>
+
+          <!-- KI Premium -->
+          <div class="tool-box intro-box-premium">
+            <h3 data-i18n="stepsAiTitle">⭐ KI Assistent – Premium</h3>
+            <p data-i18n="stepsAiDesc">Für maximale Qualität: GPT-basierte Modelle liefern deutlich präzisere, tiefere und QM-gerechtere Ergebnisse. Empfohlen für produktiven Einsatz.</p>
             <ol>
               <li data-i18n="aiStep1">Prozessschritt + Kontext eingeben.</li>
               <li data-i18n="aiStep2">API-Key + Lizenzschlüssel eintragen.</li>
-              <li data-i18n="aiStep3">Mindmap & Maßnahmen automatisch generieren.</li>
-              <li data-i18n="aiStep4">Ergebnis übernehmen, anschließend wie gewohnt anpassen (ergänzen, bewerten, löschen).</li>
+              <li data-i18n="aiStep3">Mindmap &amp; Maßnahmen generieren.</li>
+              <li data-i18n="aiStep4">Ergebnis übernehmen &amp; anpassen.</li>
             </ol>
           </div>
 
-          <!-- Privacy -->
-          <div class="tool-box tool-privacy">
+          <!-- Datenschutz -->
+          <div class="tool-box tool-privacy intro-3col-full">
             <h3 data-i18n="boxPrivacyTitle">Datenschutz</h3>
-
-            <h4 data-i18n="privacyNoApiTitle">Datenschutz (ohne API)</h4>
-            <p data-i18n="privacyNoApiText">Dieses Tool arbeitet vollständig im Browser. Daten werden lokal (Browser-Speicher) gehalten und optional als JSON exportiert/importiert. Es werden keine Daten an Server übertragen.</p>
-
-            <h4 data-i18n="privacyApiTitle">Datenschutz (Premium mit API/KI)</h4>
-            <p data-i18n="privacyApiText">Wenn du die Premium-KI nutzt, werden ausschließlich die von dir eingegebenen Inhalte (Prozessschritt, Kontext) sowie die aktuelle Tool-Struktur aus deinem Browser an die konfigurierte OpenAI-API übertragen, um Vorschläge zu erzeugen. Der API-Key wird nicht serverseitig gespeichert.</p>
+            <p data-i18n="privacyNoApiText">Dieses Tool arbeitet vollständig im Browser. Daten werden lokal gespeichert und optional als JSON exportiert – keine Übertragung an Server, außer bei KI-Nutzung (dann nur Prozessschritt &amp; Kontext an den jeweiligen KI-Anbieter).</p>
           </div>
         </div>
       </section>
@@ -549,7 +580,7 @@
         <input type="file" id="jsonFile" accept="application/json,.json,.md,.markdown,.txt,text/plain,text/markdown" style="display:none;" />
 
         <!-- AI ASSISTANT -->
-        <section class="section" aria-labelledby="secAI">
+        <section class="section section-premium-ai" aria-labelledby="secAI">
           <div class="section-head">
             <div>
               <h3 class="sec-title" id="secAI" data-i18n="aiTitle">KI Assistent (Premium)</h3>
@@ -557,6 +588,7 @@
             </div>
             <div class="btn-row">
               <span class="badge premium" data-i18n="aiPremiumBadge">Premium</span>
+              <span class="badge badge-quality" data-i18n="aiQualityBadge">✦ Deutlich bessere Antwortqualität</span>
             </div>
           </div>
 
@@ -627,6 +659,57 @@
           </div>
         </section>
 
+        <!-- KI KOSTENLOS -->
+        <section class="section" aria-labelledby="secAIFree">
+          <div class="section-head">
+            <div>
+              <h3 class="sec-title" id="secAIFree" data-i18n="aiFreeTitle">KI Assistent (Kostenlos)</h3>
+              <p class="sec-sub" data-i18n="aiFreeSubtitle">Mindmap &amp; Maßnahmen generieren – ohne Lizenzschlüssel, powered by OpenRouter.</p>
+            </div>
+            <div class="btn-row">
+              <span class="badge lic" data-i18n="aiFreeBadge">Kostenlos</span>
+            </div>
+          </div>
+
+
+
+          <div class="ai-grid" style="margin-top:12px;">
+            <div>
+              <label for="aiFreeModel" data-i18n="aiFreeModelLabel">Modell</label>
+              <select id="aiFreeModel">
+                <option value="minimax/minimax-m2.5:free" selected>MiniMax M2.5 (kostenlos)</option>
+                <option value="stepfun/step-3.5-flash:free">Step 3.5 Flash (kostenlos)</option>
+                <option value="arcee-ai/trinity-large-preview:free">Trinity Large Preview (kostenlos)</option>
+                <option value="arcee-ai/trinity-mini:free">Trinity Mini (kostenlos)</option>
+                <option value="z-ai/glm-4.5-air:free">GLM 4.5 Air (kostenlos)</option>
+              </select>
+            </div>
+
+            <!-- API Key hidden – hardcoded in JS -->
+            <input id="aiFreeApiKey" type="hidden" value="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">
+
+            <div class="full">
+              <label for="aiFreeProcessStep" data-i18n="aiFreeProcessLabel">Zu welchem Prozessschritt erstellen wir ein Mindmap?</label>
+              <input id="aiFreeProcessStep" type="text" placeholder="z.B. Wareneingangsprüfung / Reklamationsbearbeitung / Produktion Linie A …" data-i18n-placeholder="aiProcessPh">
+            </div>
+
+            <div class="full">
+              <label for="aiFreeContext" data-i18n="aiFreeContextLabel">Kontext</label>
+              <textarea id="aiFreeContext" placeholder="Ziel, Probleme, Rahmenbedingungen, bekannte Ursachen/Ideen, Stakeholder …" data-i18n-placeholder="aiContextPh"></textarea>
+            </div>
+
+            <div class="full">
+              <div class="ai-actions">
+                <button type="button" class="btn primary" id="btnAiFreeGenerate" data-i18n="aiBtnGenerate">Mindmap &amp; Maßnahmen generieren</button>
+                <button type="button" class="btn" id="btnAiFreeApply" data-i18n="aiBtnApply" disabled>Ergebnis übernehmen</button>
+                <button type="button" class="btn" id="btnAiFreeDownload" data-i18n="aiBtnDownload" disabled>Ergebnis als JSON speichern</button>
+                <span class="pill warn" id="aiFreeStatePill">● <span id="aiFreeStateText" data-i18n="aiStateIdle">Bereit</span></span>
+              </div>
+              <div class="hint" data-i18n="aiHint">Tipp: Nach dem Übernehmen kannst du Knoten und Maßnahmen wie gewohnt bearbeiten, ergänzen oder löschen.</div>
+            </div>
+          </div>
+        </section>
+
         <!-- MORE INFO -->
         <section class="tool-more">
           <h3 class="more-title" data-i18n="moreTitle">Weiterführende Infos</h3>
@@ -682,7 +765,7 @@
       const I18N = {
         de: {
           title: "Mindmap Tool – Ideen → Maßnahmen",
-          subtitle: "Ideen strukturieren, verknüpfen und in konkrete Maßnahmen überführen – inklusive Maßnahmenliste und Druckansicht.",
+          subtitle: "Ideen strukturieren, verknüpfen und in konkrete Maßnahmen überführen – mit KI-Unterstützung, Maßnahmenliste und Druckansicht.",
           backHome: "Zurück zur Startseite",
 
           boxToolNameTitle: "Name Tool",
@@ -692,10 +775,16 @@
           boxHowTitle: "So benutzt du das Tool",
 
           stepsNoAiTitle: "Ohne KI",
-          step1: "Meta speichern: Thema / Ziel / Scope / Notizen → setzt die Wurzel (Root) der Mindmap.",
-          step2: "Mindmap bauen: Unterknoten / Nachbarknoten anlegen, verschieben (Drag) und zoomen (Scroll).",
-          step3: "Aus Knoten Maßnahmen ableiten: Knoten auswählen → Maßnahme + Termin speichern.",
-          step4: "Maßnahmen steuern: offen / abgeschlossen / verworfen, löschen, drucken, JSON exportieren/importieren.",
+          stepsAiFreeTitle: "🆓 KI Assistent – Kostenlos",
+          stepsAiFreeDesc: "Starte sofort ohne Account. Wähle ein KI-Modell und gib deinen Prozessschritt ein – die KI erstellt automatisch eine erste Mindmap-Struktur mit Maßnahmen.",
+          aiFreeStep1: "Prozessschritt + Kontext eingeben.",
+          aiFreeStep2: "Modell wählen & generieren.",
+          aiFreeStep3: "Ergebnis übernehmen & weiterbearbeiten.",
+          stepsAiDesc: "Für maximale Qualität: GPT-basierte Modelle liefern deutlich präzisere, tiefere und QM-gerechtere Ergebnisse. Empfohlen für produktiven Einsatz.",
+          step1: "Thema, Ziel & Scope eingeben → speichern (setzt den Root-Knoten).",
+          step2: "Mindmap aufbauen: Knoten anlegen, per Drag verschieben, per Scroll zoomen.",
+          step3: "Knoten auswählen → Maßnahme mit Termin ableiten & speichern.",
+          step4: "Maßnahmenliste steuern: Status, drucken, JSON exportieren/importieren.",
 
           stepsAiTitle: "Mit KI Premium",
           aiStep1: "Prozessschritt + Kontext eingeben.",
@@ -705,7 +794,7 @@
 
           boxPrivacyTitle: "Datenschutz",
           privacyNoApiTitle: "Datenschutz (ohne API)",
-          privacyNoApiText: "Dieses Tool arbeitet vollständig im Browser. Daten werden lokal (Browser-Speicher) gehalten und optional als JSON exportiert/importiert. Es werden keine Daten an Server übertragen.",
+          privacyNoApiText: "Dieses Tool arbeitet vollständig im Browser. Daten werden lokal gespeichert und optional als JSON exportiert – keine Übertragung an Server, außer bei KI-Nutzung (dann nur Prozessschritt & Kontext an den jeweiligen KI-Anbieter).",
           privacyApiTitle: "Datenschutz (Premium mit API/KI)",
           privacyApiText: "Wenn du die Premium-KI nutzt, werden ausschließlich die von dir eingegebenen Inhalte (Prozessschritt, Kontext) sowie die aktuelle Tool-Struktur aus deinem Browser an die konfigurierte OpenAI-API übertragen, um Vorschläge zu erzeugen. Der API-Key wird nicht serverseitig gespeichert.",
 
@@ -783,6 +872,8 @@
           aiTitle: "KI Assistent (Premium)",
           aiSub: "Erzeuge in Sekunden eine erste Mindmap-Struktur inkl. konkreter Maßnahmen – danach arbeitest du wie gewohnt weiter.",
           aiPremiumBadge: "Premium",
+          aiQualityBadge: "✦ Significantly better output quality",
+          aiQualityBadge: "✦ Deutlich bessere Antwortqualität",
           aiPitch: "Nutze die volle Power des Tools: Der KI-Assistent erstellt dir auf Basis von Prozessschritt & Kontext eine strukturierte Mindmap samt Maßnahmenliste – du bist damit <strong>bis zu 80% schneller</strong> und deutlich effizienter unterwegs. <strong>Kunden der Quality Services &amp; Wissen GmbH erhalten diese Funktion kostenlos.</strong>",
 
           aiLicenseLabel: "Lizenzschlüssel",
@@ -845,11 +936,29 @@
           aiConfirmApply: "Ergebnis übernehmen? Dabei wird Meta, Mindmap und Maßnahmenliste überschrieben.",
           aiDownloaded: "Ergebnis als JSON gespeichert.",
 
-          aiNoCrypto: "Lizenzprüfung nicht möglich (Browser/Seite blockiert Kryptografie). Bitte Seite über HTTPS laden."
+          aiNoCrypto: "Lizenzprüfung nicht möglich (Browser/Seite blockiert Kryptografie). Bitte Seite über HTTPS laden.",
+
+          aiFreeTitle: "KI Assistent (Kostenlos)",
+          aiFreeSubtitle: "Mindmap & Maßnahmen generieren – ohne Lizenzschlüssel, powered by OpenRouter.",
+          aiFreeBadge: "Kostenlos",
+
+          aiFreeModelLabel: "Modell",
+          aiFreeApiKeyLabel: "OpenRouter API Key",
+          aiFreeApiKeyHint: "Key bleibt im Browser. Eigenen Key eintragen unter openrouter.ai.",
+          aiFreeProcessLabel: "Zu welchem Prozessschritt erstellen wir ein Mindmap?",
+          aiFreeContextLabel: "Kontext",
+          aiFreeGenerating: "KI generiert…",
+          aiFreeGenerated: "Ergebnis bereit.",
+          aiFreeApplied: "Ergebnis übernommen.",
+          aiFreeApplyConfirm: "Ergebnis übernehmen? Dabei wird Meta, Mindmap und Maßnahmenliste überschrieben.",
+          aiFreeDownloaded: "Ergebnis als JSON gespeichert.",
+          aiFreeNeedProcess: "Bitte Prozessschritt angeben.",
+          aiFreeNeedApi: "Bitte OpenRouter API Key eintragen.",
+          aireeFailed: "KI konnte nicht erzeugen."
         },
         en: {
           title: "Mindmap Tool – Ideas → Actions",
-          subtitle: "Structure ideas, connect them, and turn the relevant ones into concrete actions – including action list and print view.",
+          subtitle: "Structure ideas, connect them, and turn them into concrete actions – with AI support, action list and print view.",
           backHome: "Back to home",
 
           boxToolNameTitle: "Tool name",
@@ -859,10 +968,16 @@
           boxHowTitle: "How to use this tool",
 
           stepsNoAiTitle: "Without AI",
-          step1: "Save meta: Topic / Goal / Scope / Notes → sets the mindmap root node.",
-          step2: "Build the mindmap: add child/sibling nodes, move (drag) and zoom (scroll).",
-          step3: "Derive actions from nodes: select a node → save action + due date.",
-          step4: "Manage actions: open / done / discarded, delete, print, export/import JSON.",
+          stepsAiFreeTitle: "🆓 AI Assistant – Free",
+          stepsAiFreeDesc: "Start immediately without an account. Choose an AI model and enter your process step – the AI automatically creates a first mindmap structure with actions.",
+          aiFreeStep1: "Enter process step + context.",
+          aiFreeStep2: "Select model & generate.",
+          aiFreeStep3: "Apply result & continue editing.",
+          stepsAiDesc: "For maximum quality: GPT-based models deliver significantly more precise, deeper, and QM-appropriate results. Recommended for productive use.",
+          step1: "Enter topic, goal & scope → save (sets the root node).",
+          step2: "Build the mindmap: add nodes, move via drag, zoom via scroll.",
+          step3: "Select a node → derive action with due date & save.",
+          step4: "Manage action list: status, print, export/import JSON.",
 
           stepsAiTitle: "With AI Premium",
           aiStep1: "Enter process step + context.",
@@ -872,7 +987,7 @@
 
           boxPrivacyTitle: "Privacy",
           privacyNoApiTitle: "Privacy (no API)",
-          privacyNoApiText: "This tool runs entirely in your browser. Data is stored locally (browser storage) and can optionally be exported/imported as JSON. No data is sent to any server.",
+          privacyNoApiText: "This tool runs entirely in your browser. Data is stored locally and can optionally be exported as JSON – no data sent to servers, except during AI use (only process step & context to the respective AI provider).",
           privacyApiTitle: "Privacy (Premium with API/AI)",
           privacyApiText: "If you use Premium AI, only the inputs you provide (process step, context) and the current tool structure from your browser are sent to the configured OpenAI API to generate suggestions. The API key is not stored server-side.",
 
@@ -1012,7 +1127,25 @@
           aiConfirmApply: "Apply the result? This will overwrite meta, mindmap and action list.",
           aiDownloaded: "Result saved as JSON.",
 
-          aiNoCrypto: "License validation not possible (crypto blocked). Please load the page over HTTPS."
+          aiNoCrypto: "License validation not possible (crypto blocked). Please load the page over HTTPS.",
+
+          aiFreeTitle: "AI Assistant (Free)",
+          aiFreeSubtitle: "Generate mindmap & actions – no license key needed, powered by OpenRouter.",
+          aiFreeBadge: "Free",
+
+          aiFreeModelLabel: "Model",
+          aiFreeApiKeyLabel: "OpenRouter API key",
+          aiFreeApiKeyHint: "Key stays in your browser. Enter your own key at openrouter.ai.",
+          aiFreeProcessLabel: "For which process step should we create a mindmap?",
+          aiFreeContextLabel: "Context",
+          aiFreeGenerating: "AI generating…",
+          aiFreeGenerated: "Result ready.",
+          aiFreeApplied: "Result applied.",
+          aiFreeApplyConfirm: "Apply the result? This will overwrite meta, mindmap and action list.",
+          aiFreeDownloaded: "Result saved as JSON.",
+          aiFreeNeedProcess: "Please provide a process step.",
+          aiFreeNeedApi: "Please enter an OpenRouter API key.",
+          aireeFailed: "AI generation failed."
         }
       };
 
@@ -1365,6 +1498,18 @@
         if(btnApply) btnApply.disabled = true;
         if(btnDl) btnDl.disabled = true;
 
+        // Free AI reset
+        aiFreeLastResult = null;
+        setAiFreeState("warn", "aiStateIdle");
+        const btnFreeApply = $("#btnAiFreeApply");
+        const btnFreeDl = $("#btnAiFreeDownload");
+        if(btnFreeApply) btnFreeApply.disabled = true;
+        if(btnFreeDl) btnFreeDl.disabled = true;
+        const freeProcess = $("#aiFreeProcessStep");
+        const freeCtx = $("#aiFreeContext");
+        if(freeProcess) freeProcess.value = "";
+        if(freeCtx) freeCtx.value = "";
+
         // Mindmap zurücksetzen + Fenster sofort auf Ausgangsgröße
         const container = $("#jsmind_container");
         if(container) container.style.height = "120px";
@@ -1404,6 +1549,18 @@
         const btnDl = $("#btnAiDownload");
         if(btnApply) btnApply.disabled = true;
         if(btnDl) btnDl.disabled = true;
+
+        // Free AI reset
+        aiFreeLastResult = null;
+        setAiFreeState("warn", "aiStateIdle");
+        const btnFreeApply = $("#btnAiFreeApply");
+        const btnFreeDl = $("#btnAiFreeDownload");
+        if(btnFreeApply) btnFreeApply.disabled = true;
+        if(btnFreeDl) btnFreeDl.disabled = true;
+        const freeProcess = $("#aiFreeProcessStep");
+        const freeCtx = $("#aiFreeContext");
+        if(freeProcess) freeProcess.value = "";
+        if(freeCtx) freeCtx.value = "";
 
         applyMindSnapshot(defaultMind());
         history = [];
@@ -2372,6 +2529,175 @@ ${schemaHint}`;
       }
 
       /* ==========================
+         FREE AI (OpenRouter)
+      ========================== */
+      let aiFreeLastResult = null;
+
+      function setAiFreeState(kind, textKey){
+        const pill = $("#aiFreeStatePill");
+        const label = $("#aiFreeStateText");
+        if(!pill || !label) return;
+        pill.classList.remove("ok","warn","bad");
+        pill.classList.add(kind === "ok" ? "ok" : kind === "bad" ? "bad" : "warn");
+        label.textContent = t(textKey);
+      }
+
+      async function callOpenRouter({ apiKey, processStep, contextText, model }){
+        const system = (currentLang==="de")
+          ? "Du bist ein Qualitäts- und Prozess-Experte. Gib ausschließlich gültiges JSON zurück – ohne Markdown, ohne Kommentar, ohne zusätzliche Texte."
+          : "You are a quality & process expert. Return ONLY valid JSON – no markdown, no comments, no extra text.";
+
+        const schemaHint = (currentLang==="de") ? `
+Erzeuge eine Mindmap und Maßnahmenliste für den angegebenen Prozessschritt.
+JSON-Schema (exakt einhalten):
+{
+  "lang": "de",
+  "meta": { "topic": string, "goal": string, "scope": string, "notes": string },
+  "mind": {
+    "meta": { "name":"qm_mindmap","author":"","version":"1.0" },
+    "format": "node_array",
+    "data": [
+      { "id":"root", "topic": string, "isroot": true },
+      { "id": string, "topic": string, "parentid": "root" | string }
+    ]
+  },
+  "measures": [
+    { "id": string, "nodeId": string, "nodeTopic": string, "nodePath": string,
+      "text": string, "proof": string, "due": "YYYY-MM-DD" | "", "owner": string,
+      "status": "open", "createdAt": string }
+  ],
+  "ts": string
+}
+Mindmap: 6–10 Hauptzweige, je 2–4 Unterpunkte. Maßnahmen: 10–18 Stück.`.trim()
+          : `
+Create a mindmap and action list. Strict JSON schema:
+{
+  "lang": "en",
+  "meta": { "topic": string, "goal": string, "scope": string, "notes": string },
+  "mind": {
+    "meta": { "name":"qm_mindmap","author":"","version":"1.0" },
+    "format": "node_array",
+    "data": [
+      { "id":"root", "topic": string, "isroot": true },
+      { "id": string, "topic": string, "parentid": "root" | string }
+    ]
+  },
+  "measures": [
+    { "id": string, "nodeId": string, "nodeTopic": string, "nodePath": string,
+      "text": string, "proof": string, "due": "YYYY-MM-DD" | "", "owner": string,
+      "status": "open", "createdAt": string }
+  ],
+  "ts": string
+}
+Mindmap: 6–10 main branches, 2–4 subpoints each. Actions: 10–18 items.`.trim();
+
+        const user = (currentLang==="de")
+          ? `Prozessschritt: ${processStep}\nKontext: ${contextText}\n\n${schemaHint}`
+          : `Process step: ${processStep}\nContext: ${contextText}\n\n${schemaHint}`;
+
+        const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + apiKey,
+            "HTTP-Referer": window.location.href,
+            "X-Title": "Mindmap Tool QM"
+          },
+          body: JSON.stringify({
+            model: model || "meta-llama/llama-4-maverick:free",
+            messages: [
+              { role: "system", content: system },
+              { role: "user", content: user }
+            ],
+            temperature: 0.4
+          })
+        });
+
+        if(!res.ok){
+          const txt = await res.text().catch(()=> "");
+          throw new Error("OpenRouter error: " + res.status + " " + txt);
+        }
+
+        const data = await res.json();
+        let text = "";
+        try{
+          text = data.choices[0].message.content.trim();
+        }catch(e){ throw new Error("No content in response"); }
+
+        // Strip markdown fences if present
+        text = text.replace(/^```json\s*/i, "").replace(/^```\s*/i, "").replace(/\s*```$/i, "").trim();
+
+        if(!text) throw new Error("Empty response");
+        return JSON.parse(text);
+      }
+
+      async function aiFreeGenerate(){
+        const apiKey = ($("#aiFreeApiKey").value || "").trim();
+        if(!apiKey){ toast(t("aiFreeNeedApi")); return; }
+
+        const processStep = ($("#aiFreeProcessStep").value || "").trim();
+        if(!processStep){ toast(t("aiFreeNeedProcess")); return; }
+
+        const contextText = ($("#aiFreeContext").value || "").trim();
+        const model = ($("#aiFreeModel").value || "meta-llama/llama-4-maverick:free").trim();
+
+        $("#btnAiFreeGenerate").disabled = true;
+        $("#btnAiFreeApply").disabled = true;
+        $("#btnAiFreeDownload").disabled = true;
+        setAiFreeState("warn", "aiFreeGenerating");
+
+        try{
+          const raw = await callOpenRouter({ apiKey, processStep, contextText, model });
+          aiFreeLastResult = normalizeGeneratedPayload(raw);
+          setAiFreeState("ok", "aiFreeGenerated");
+          $("#btnAiFreeApply").disabled = false;
+          $("#btnAiFreeDownload").disabled = false;
+          toast(t("aiFreeGenerated"));
+        }catch(e){
+          console.error(e);
+          setAiFreeState("bad", "aireeFailed");
+          toast(t("aireeFailed"));
+          aiFreeLastResult = null;
+        }finally{
+          $("#btnAiFreeGenerate").disabled = false;
+        }
+      }
+
+      async function aiFreeApply(){
+        if(!aiFreeLastResult) return;
+        if(!confirm(t("aiFreeApplyConfirm"))) return;
+
+        state.lang = aiFreeLastResult.lang;
+        if(aiFreeLastResult.lang === "de" || aiFreeLastResult.lang === "en"){
+          setLanguage(aiFreeLastResult.lang);
+        }
+
+        state.meta = { ...aiFreeLastResult.meta };
+        state.mind = aiFreeLastResult.mind;
+        state.measures = aiFreeLastResult.measures;
+        state.ts = aiFreeLastResult.ts;
+
+        syncMetaInputs();
+        applyMindSnapshot(state.mind);
+        renderMeasures();
+        setMetaSaved(true);
+
+        history = [];
+        future = [];
+        initHistory();
+
+        persistAll();
+        setAiFreeState("ok", "aiFreeApplied");
+        toast(t("aiFreeApplied"));
+      }
+
+      async function aiFreeDownload(){
+        if(!aiFreeLastResult) return;
+        downloadJson(aiFreeLastResult, "mindmap_tool_free_ai_export.json");
+        toast(t("aiFreeDownloaded"));
+      }
+
+      /* ==========================
          Init
       ========================== */
       restore();
@@ -2450,10 +2776,15 @@ ${schemaHint}`;
 
 
 
-      // AI
+      // AI Premium
       $("#btnAiGenerate").addEventListener("click", aiGenerate);
       $("#btnAiApply").addEventListener("click", aiApply);
       $("#btnAiDownload").addEventListener("click", aiDownload);
+
+      // AI Free (OpenRouter)
+      $("#btnAiFreeGenerate").addEventListener("click", aiFreeGenerate);
+      $("#btnAiFreeApply").addEventListener("click", aiFreeApply);
+      $("#btnAiFreeDownload").addEventListener("click", aiFreeDownload);
 
       persistAll();
 
