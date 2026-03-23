@@ -26,11 +26,11 @@
     }
 
     body{ margin:0; background:#ffffff; color:var(--text); font-family:'Segoe UI', Roboto, sans-serif; }
-    #qm-mindmap-app{ max-width:1100px; margin:20px auto; padding:0 12px; }
+    #qm-mindmap-app{ max-width:min(96vw, 1600px); margin:20px auto; padding:0 12px; }
 
     #qm-mindmap-app .card{
       background:#fff; border:1px solid var(--border); border-radius:var(--radius);
-      box-shadow:var(--shadow); overflow:hidden;
+      box-shadow:var(--shadow); overflow:visible;
     }
 
     /* Intro / Header */
@@ -129,7 +129,7 @@
     }
     #qm-mindmap-app #jsmind_container{
       width:100%;
-      height:520px;
+      height:120px;
       background:#ffffff;
       border:1px solid rgba(17,85,178,.15);
       border-radius:var(--radius);
@@ -218,11 +218,7 @@
     #qm-mindmap-app .st-done{ border-color:rgba(22,163,74,.35); background:rgba(22,163,74,.08); color:#14532d; }
     #qm-mindmap-app .st-drop{ border-color:rgba(229,62,62,.35); background:rgba(229,62,62,.08); color:#7f1d1d; }
 
-    /* Bottom actions + More info + Footer */
-    #qm-mindmap-app .actions-bottom{
-      margin-top:18px; padding-top:16px; border-top:2px solid var(--blue);
-      display:flex; gap:10px; flex-wrap:wrap;
-    }
+    /* Bottom actions removed – buttons moved into map-wrap */
 
     #qm-mindmap-app .tool-more{ margin-top:22px; padding-top:18px; border-top:2px solid var(--blue); }
     #qm-mindmap-app .more-title{ margin:0 0 6px 0; font-size:13px; color:var(--dark); text-transform:uppercase; }
@@ -251,7 +247,7 @@
       #qm-mindmap-app .body{ padding:16px; }
       #qm-mindmap-app .tool-intro{ padding-left:16px; padding-right:16px; }
       #qm-mindmap-app .form-grid{ grid-template-columns:1fr; }
-      #qm-mindmap-app #jsmind_container{ height:460px; }
+      #qm-mindmap-app #jsmind_container{ height:120px; }
     }
 
     /* Print */
@@ -425,19 +421,19 @@
           <div class="form-grid">
             <div class="full">
               <label for="metaTopic" data-i18n="metaTopicLabel">Thema (wird Root-Knoten)</label>
-              <input id="metaTopic" type="text" placeholder="z.B. Prozess X – Probleme & Verbesserungen">
+              <input id="metaTopic" type="text" placeholder="z.B. Prozess X – Probleme & Verbesserungen" data-i18n-placeholder="metaTopicPh">
             </div>
             <div>
               <label for="metaGoal" data-i18n="metaGoalLabel">Ziel / Outcome</label>
-              <input id="metaGoal" type="text" placeholder="z.B. Fehlerquote senken, Durchlaufzeit reduzieren ...">
+              <input id="metaGoal" type="text" placeholder="z.B. Fehlerquote senken, Durchlaufzeit reduzieren ..." data-i18n-placeholder="metaGoalPh">
             </div>
             <div>
               <label for="metaScope" data-i18n="metaScopeLabel">Scope</label>
-              <input id="metaScope" type="text" placeholder="z.B. Linie A, Schicht 2, Q1/2026">
+              <input id="metaScope" type="text" placeholder="z.B. Linie A, Schicht 2, Q1/2026" data-i18n-placeholder="metaScopePh">
             </div>
             <div class="full">
               <label for="metaNotes" data-i18n="metaNotesLabel">Notizen</label>
-              <textarea id="metaNotes" placeholder="Kontext, Annahmen, Randbedingungen ..."></textarea>
+              <textarea id="metaNotes" placeholder="Kontext, Annahmen, Randbedingungen ..." data-i18n-placeholder="metaNotesPh"></textarea>
             </div>
           </div>
 
@@ -455,7 +451,7 @@
           <div class="section-head">
             <div>
               <h3 class="sec-title" id="sec2" data-i18n="sec2Title">2. Mindmap (bauen & strukturieren)</h3>
-              <p class="sec-sub" data-i18n="sec2Sub">Scroll = Zoom · Drag = Pan · Doppelklick = Text bearbeiten · Knoten auswählen für Aktionen.</p>
+              <p class="sec-sub" data-i18n="sec2Sub">Scroll = Zoom · Drag = Pan · Doppelklick = Text bearbeiten · + (Tastatur) = Unterknoten · Knoten auswählen für Aktionen.</p>
             </div>
             <div class="btn-row">
               <span class="pill" id="selPill">● <span id="selText" data-i18n="selNone">Kein Knoten ausgewählt</span></span>
@@ -480,9 +476,11 @@
               <button class="btn small" type="button" id="btnResetMap" data-i18n="btnResetMap">Reset Mindmap</button>
             </div>
 
-            <p class="hint" data-i18n="mapHint">
-              Hinweis: „Unterknoten“ legt ein Kind unter dem ausgewählten Knoten an. „Nachbarknoten“ erzeugt ein Geschwister-Element (Root hat keine Geschwister).
-            </p>
+            <div class="map-tools">
+              <button type="button" class="btn small primary" id="btnExportJson2" data-i18n="btnExportJson">JSON speichern</button>
+              <button type="button" class="btn small" id="btnImportJson2" data-i18n="btnImportJson">JSON laden</button>
+              <button type="button" class="btn small" id="btnPrint2" data-i18n="btnPrint">Drucken</button>
+            </div>
           </div>
         </section>
 
@@ -503,7 +501,7 @@
             </div>
             <div class="full">
               <label for="actionText" data-i18n="actionLabel">Maßnahme</label>
-              <textarea id="actionText" placeholder="Was? Wer? Bis wann? Wirkung? ..."></textarea>
+              <textarea id="actionText" placeholder="Was? Wer? Bis wann? Wirkung? ..." data-i18n-placeholder="actionTextPh"></textarea>
             </div>
 
             <div>
@@ -512,12 +510,12 @@
             </div>
             <div>
               <label for="actionOwner" data-i18n="ownerLabel">Owner (optional)</label>
-              <input id="actionOwner" type="text" placeholder="z.B. Einkauf / QS / Produktion">
+              <input id="actionOwner" type="text" placeholder="z.B. Einkauf / QS / Produktion" data-i18n-placeholder="actionOwnerPh">
             </div>
 
             <div class="full">
               <label for="actionProof" data-i18n="proofLabel">Nachweis / Wirksamkeit (optional)</label>
-              <input id="actionProof" type="text" placeholder="z.B. Dummy-Prüfung, Audit, Kennzahl, Versuch, Kurzzeitfähigkeit ...">
+              <input id="actionProof" type="text" placeholder="z.B. Dummy-Prüfung, Audit, Kennzahl, Versuch, Kurzzeitfähigkeit ..." data-i18n-placeholder="actionProofPh">
             </div>
           </div>
 
@@ -547,14 +545,8 @@
           </div>
         </section>
 
-        <!-- BOTTOM ACTIONS -->
-        <div class="actions-bottom">
-          <button type="button" class="btn primary" id="btnExportJson" data-i18n="btnExportJson">JSON speichern</button>
-          <button type="button" class="btn" id="btnImportJson" data-i18n="btnImportJson">JSON laden</button>
-          <input type="file" id="jsonFile" accept="application/json" style="display:none;" />
-          <button type="button" class="btn" id="btnPrint" data-i18n="btnPrint">Drucken</button>
-          <button type="button" class="btn danger" id="btnResetAll" data-i18n="btnResetAll">Alles löschen</button>
-        </div>
+        <!-- file input (hidden, shared) -->
+        <input type="file" id="jsonFile" accept="application/json,.json,.md,.markdown,.txt,text/plain,text/markdown" style="display:none;" />
 
         <!-- AI ASSISTANT -->
         <section class="section" aria-labelledby="secAI">
@@ -591,14 +583,36 @@
               <div class="hint" data-i18n="aiApiHint">Der Key bleibt in deinem Browser und wird nicht serverseitig gespeichert.</div>
             </div>
 
+            <div>
+              <label for="aiModel" data-i18n="aiModelLabel">OpenAI Modell</label>
+              <select id="aiModel">
+                <option value="gpt-5.4">GPT-5.4</option>
+                <option value="gpt-5.4-mini">GPT-5.4 Mini</option>
+                <option value="gpt-5.4-nano">GPT-5.4 Nano</option>
+                <option value="gpt-5">GPT-5</option>
+                <option value="gpt-5-mini">GPT-5 Mini</option>
+                <option value="gpt-4.1">GPT-4.1</option>
+                <option value="gpt-4.1-mini" selected>GPT-4.1 Mini</option>
+                <option value="gpt-4.1-nano">GPT-4.1 Nano</option>
+                <option value="custom" data-i18n="aiModelCustomOption">Eigenes Modell …</option>
+              </select>
+              <div class="hint" data-i18n="aiModelHint">Aktuelle Modelle auswählbar. Für komplexe Strukturen ist GPT-5.4 empfehlenswert.</div>
+            </div>
+
+            <div>
+              <label for="aiModelCustom" data-i18n="aiModelCustomLabel">Eigenes Modell (optional)</label>
+              <input id="aiModelCustom" type="text" placeholder="z.B. gpt-5.4-mini" data-i18n-placeholder="aiModelCustomPh">
+              <div class="hint" data-i18n="aiModelCustomHint">Wird verwendet, wenn oben „Eigenes Modell …“ gewählt ist.</div>
+            </div>
+
             <div class="full">
               <label for="aiProcessStep" data-i18n="aiProcessLabel">Zu welchem Prozessschritt erstellen wir ein Mindmap?</label>
-              <input id="aiProcessStep" type="text" placeholder="z.B. Wareneingangsprüfung / Reklamationsbearbeitung / Produktion Linie A …">
+              <input id="aiProcessStep" type="text" placeholder="z.B. Wareneingangsprüfung / Reklamationsbearbeitung / Produktion Linie A …" data-i18n-placeholder="aiProcessPh">
             </div>
 
             <div class="full">
               <label for="aiContext" data-i18n="aiContextLabel">Kontext</label>
-              <textarea id="aiContext" placeholder="Ziel, Probleme, Rahmenbedingungen, bekannte Ursachen/Ideen, Stakeholder …"></textarea>
+              <textarea id="aiContext" placeholder="Ziel, Probleme, Rahmenbedingungen, bekannte Ursachen/Ideen, Stakeholder …" data-i18n-placeholder="aiContextPh"></textarea>
             </div>
 
             <div class="full">
@@ -660,6 +674,7 @@
 
       const STORAGE_KEY = "qm_mindmap_v2_state";
       const LANG_KEY = "qmLang";
+      const AI_MODEL_KEY = "qmMindmapAiModel";
 
       /* ==========================
          i18n
@@ -702,12 +717,16 @@
           metaGoalLabel: "Ziel / Outcome",
           metaScopeLabel: "Scope",
           metaNotesLabel: "Notizen",
+          metaTopicPh: "z.B. Prozess X – Probleme & Verbesserungen",
+          metaGoalPh: "z.B. Fehlerquote senken, Durchlaufzeit reduzieren ...",
+          metaScopePh: "z.B. Linie A, Schicht 2, Q1/2026",
+          metaNotesPh: "Kontext, Annahmen, Randbedingungen ...",
           btnSaveMeta: "Speichern",
           btnRecenter: "Recenter",
           metaHint: "Tipp: Root entspricht dem Thema. Leere Themen werden neutral dargestellt.",
 
           sec2Title: "2. Mindmap (bauen & strukturieren)",
-          sec2Sub: "Scroll = Zoom · Drag = Pan · Doppelklick = Text bearbeiten · Knoten auswählen für Aktionen.",
+          sec2Sub: "Scroll = Zoom · Drag = Pan · Doppelklick = Text bearbeiten · + (Tastatur) = Unterknoten · Knoten auswählen für Aktionen.",
           selNone: "Kein Knoten ausgewählt",
           btnChild: "Unterknoten",
           btnSibling: "Nachbarknoten",
@@ -718,7 +737,7 @@
           btnZoomIn: "Zoom +",
           btnZoomOut: "Zoom −",
           btnResetMap: "Reset Mindmap",
-          mapHint: "Hinweis: „Unterknoten“ legt ein Kind unter dem ausgewählten Knoten an. „Nachbarknoten“ erzeugt ein Geschwister-Element (Root hat keine Geschwister).",
+          mapHint: "Hinweis: 201eUnterknoten201c legt ein Kind unter dem ausgew00e4hlten Knoten an. 201eNachbarknoten201c erzeugt ein Geschwister-Element (Root hat keine Geschwister). + (Tastatur) = neuen Unterknoten hinzuf00fcgen.",
 
           sec3Title: "3. Ableitung von Maßnahmen",
           sec3Sub: "Knoten auswählen → Maßnahme formulieren → Termin setzen → Speichern (wandert in die Maßnahmenliste).",
@@ -728,6 +747,9 @@
           dueLabel: "Termin / Datum",
           ownerLabel: "Owner (optional)",
           proofLabel: "Nachweis / Wirksamkeit (optional)",
+          actionTextPh: "Was? Wer? Bis wann? Wirkung? ...",
+          actionOwnerPh: "z.B. Einkauf / QS / Produktion",
+          actionProofPh: "z.B. Audit, Kennzahl, Versuch, Kurzzeitfähigkeit ...",
           btnSaveAction: "Maßnahme speichern",
           btnClearAction: "Eingabe leeren",
           actionHint: "Nach dem Speichern kannst du direkt die nächste Maßnahme anlegen.",
@@ -769,8 +791,16 @@
           aiApiLabel: "OpenAI API Key",
           aiApiBadge: "API",
           aiApiHint: "Der Key bleibt in deinem Browser und wird nicht serverseitig gespeichert.",
+          aiModelLabel: "OpenAI Modell",
+          aiModelHint: "Aktuelle Modelle auswählbar. Für komplexe Strukturen ist GPT-5.4 empfehlenswert.",
+          aiModelCustomLabel: "Eigenes Modell (optional)",
+          aiModelCustomPh: "z.B. gpt-5.4-mini",
+          aiModelCustomHint: "Wird verwendet, wenn oben „Eigenes Modell …“ gewählt ist.",
+          aiModelCustomOption: "Eigenes Modell …",
           aiProcessLabel: "Zu welchem Prozessschritt erstellen wir ein Mindmap?",
+          aiProcessPh: "z.B. Wareneingangsprüfung / Reklamationsbearbeitung / Produktion Linie A …",
           aiContextLabel: "Kontext",
+          aiContextPh: "Ziel, Probleme, Rahmenbedingungen, bekannte Ursachen/Ideen, Stakeholder …",
           aiBtnGenerate: "Mindmap & Maßnahmen generieren",
           aiBtnApply: "Ergebnis übernehmen",
           aiBtnDownload: "Ergebnis als JSON speichern",
@@ -791,7 +821,7 @@
 
           poweredBy: "Powered by",
 
-          confirmResetMap: "Mindmap zurücksetzen (nur Root behalten)?",
+          confirmResetMap: "Alles zurücksetzen (Mindmap, Meta, Maßnahmen, KI-Felder)?",
           confirmResetAll: "Alles löschen (Meta, Mindmap, Maßnahmen)?",
           needSelection: "Bitte zuerst einen Knoten auswählen.",
           cannotSiblingRoot: "Root hat keinen Nachbarknoten.",
@@ -854,12 +884,16 @@
           metaGoalLabel: "Goal / Outcome",
           metaScopeLabel: "Scope",
           metaNotesLabel: "Notes",
+          metaTopicPh: "e.g. Process X – problems & improvements",
+          metaGoalPh: "e.g. reduce defect rate, shorten lead time ...",
+          metaScopePh: "e.g. Line A, shift 2, Q1/2026",
+          metaNotesPh: "Context, assumptions, boundary conditions ...",
           btnSaveMeta: "Save",
           btnRecenter: "Recenter",
           metaHint: "Tip: The root equals the topic. Empty topics stay neutral.",
 
           sec2Title: "2. Mindmap (build & structure)",
-          sec2Sub: "Scroll = Zoom · Drag = Pan · Double click = edit text · Select nodes for actions.",
+          sec2Sub: "Scroll = Zoom · Drag = Pan · Double click = edit text · + (keyboard) = child node · Select nodes for actions.",
           selNone: "No node selected",
           btnChild: "Child node",
           btnSibling: "Sibling node",
@@ -870,7 +904,7 @@
           btnZoomIn: "Zoom +",
           btnZoomOut: "Zoom −",
           btnResetMap: "Reset mindmap",
-          mapHint: "Note: “Child node” adds a child under the selected node. “Sibling node” adds a sibling (root has no siblings).",
+          mapHint: "Note: 201cChild node201d adds a child under the selected node. 201cSibling node201d adds a sibling (root has no siblings). + (keyboard) = add new child node.",
 
           sec3Title: "3. Derive actions",
           sec3Sub: "Select a node → write an action → set due date → Save (moves into the action list).",
@@ -880,6 +914,9 @@
           dueLabel: "Due date",
           ownerLabel: "Owner (optional)",
           proofLabel: "Proof / effectiveness (optional)",
+          actionTextPh: "What? Who? By when? Expected effect? ...",
+          actionOwnerPh: "e.g. Purchasing / QA / Production",
+          actionProofPh: "e.g. audit, KPI, test, trial, short-term capability ...",
           btnSaveAction: "Save action",
           btnClearAction: "Clear input",
           actionHint: "After saving you can immediately create the next action.",
@@ -921,8 +958,16 @@
           aiApiLabel: "OpenAI API key",
           aiApiBadge: "API",
           aiApiHint: "The key stays in your browser and is not stored server-side.",
+          aiModelLabel: "OpenAI model",
+          aiModelHint: "Current models are selectable. GPT-5.4 is recommended for more complex structures.",
+          aiModelCustomLabel: "Custom model (optional)",
+          aiModelCustomPh: "e.g. gpt-5.4-mini",
+          aiModelCustomHint: "Used when you select “Custom model …” above.",
+          aiModelCustomOption: "Custom model …",
           aiProcessLabel: "For which process step should we create a mindmap?",
+          aiProcessPh: "e.g. incoming inspection / complaint handling / production line A ...",
           aiContextLabel: "Context",
+          aiContextPh: "Goal, problems, boundary conditions, known causes/ideas, stakeholders ...",
           aiBtnGenerate: "Generate mindmap & actions",
           aiBtnApply: "Apply result",
           aiBtnDownload: "Download result as JSON",
@@ -943,7 +988,7 @@
 
           poweredBy: "Powered by",
 
-          confirmResetMap: "Reset mindmap (keep only root)?",
+          confirmResetMap: "Reset everything (mindmap, meta, actions, AI fields)?",
           confirmResetAll: "Clear everything (meta, mindmap, actions)?",
           needSelection: "Please select a node first.",
           cannotSiblingRoot: "Root has no sibling.",
@@ -985,6 +1030,15 @@
             el.textContent = t(el.dataset.i18n);
           }
         });
+        ROOT.querySelectorAll("[data-i18n-placeholder]").forEach(el=>{
+          el.setAttribute("placeholder", t(el.dataset.i18nPlaceholder));
+        });
+        const mapEl = $("#jsmind_container");
+        if(mapEl) mapEl.setAttribute("aria-label", currentLang === "de" ? "Mindmap Zeichenfläche" : "Mindmap canvas");
+        const langSwitch = ROOT.querySelector('.lang-switch');
+        if(langSwitch) langSwitch.setAttribute('aria-label', currentLang === 'de' ? 'Sprachauswahl' : 'Language switch');
+        const metaPill = $("#metaStatePill");
+        if(metaPill) metaPill.setAttribute('title', currentLang === 'de' ? 'Status' : 'Status');
         $("#btnLangDE").classList.toggle("primary", currentLang === "de");
         $("#btnLangEN").classList.toggle("primary", currentLang === "en");
       }
@@ -994,6 +1048,7 @@
         localStorage.setItem(LANG_KEY, currentLang);
         applyI18n();
         renderMeasures();
+        scheduleAutoResize(20);
       }
 
       /* ==========================
@@ -1129,7 +1184,10 @@
       function applyMindSnapshot(mind){
         if(!jm) return;
         jm.show(mind);
-        window.setTimeout(updateSelectionUI, 60);
+        window.setTimeout(()=>{
+          updateSelectionUI();
+          scheduleAutoResize(20);
+        }, 60);
         lastSig = sigOf(safeGetMind());
       }
 
@@ -1251,16 +1309,18 @@
 
       function zoomIn(){
         try{
-          if(jm && jm.view && typeof jm.view.zoomIn === "function") return jm.view.zoomIn();
-          if(jm && jm.view && typeof jm.view.zoom_in === "function") return jm.view.zoom_in();
+          if(jm && jm.view && typeof jm.view.zoomIn === "function") jm.view.zoomIn();
+          else if(jm && jm.view && typeof jm.view.zoom_in === "function") jm.view.zoom_in();
         }catch(e){}
+        scheduleAutoResize(20);
       }
 
       function zoomOut(){
         try{
-          if(jm && jm.view && typeof jm.view.zoomOut === "function") return jm.view.zoomOut();
-          if(jm && jm.view && typeof jm.view.zoom_out === "function") return jm.view.zoom_out();
+          if(jm && jm.view && typeof jm.view.zoomOut === "function") jm.view.zoomOut();
+          else if(jm && jm.view && typeof jm.view.zoom_out === "function") jm.view.zoom_out();
         }catch(e){}
+        scheduleAutoResize(20);
       }
 
       function recenter(){
@@ -1277,9 +1337,43 @@
 
       function resetMap(){
         if(!confirm(t("confirmResetMap"))) return;
+
+        // Meta-Felder leeren
+        state.meta = { topic:"", goal:"", scope:"", notes:"" };
+        syncMetaInputs();
+
+        // Maßnahmen-Felder leeren
+        $("#actionText").value = "";
+        $("#actionDue").value = "";
+        $("#actionOwner").value = "";
+        $("#actionProof").value = "";
+        $("#srcNode").value = "—";
+
+        // Maßnahmenliste leeren
+        state.measures = [];
+        renderMeasures();
+
+        // KI-Felder leeren (ohne API-Key & Lizenz)
+        const aiProcess = $("#aiProcessStep");
+        if(aiProcess) aiProcess.value = "";
+        const aiCtx = $("#aiContext");
+        if(aiCtx) aiCtx.value = "";
+        aiLastResult = null;
+        setAiState("warn", "aiStateIdle");
+        const btnApply = $("#btnAiApply");
+        const btnDl = $("#btnAiDownload");
+        if(btnApply) btnApply.disabled = true;
+        if(btnDl) btnDl.disabled = true;
+
+        // Mindmap zurücksetzen + Fenster sofort auf Ausgangsgröße
+        const container = $("#jsmind_container");
+        if(container) container.style.height = "120px";
         const mind = defaultMind();
         applyMindSnapshot(mind);
+        setMetaSaved(false);
         markDirty(true);
+        persistAll();
+        toast(currentLang === "de" ? "Alles wurde zurückgesetzt." : "Everything has been reset.");
       }
 
       function resetAll(){
@@ -1287,12 +1381,29 @@
         localStorage.removeItem(STORAGE_KEY);
         state = { lang: currentLang, meta:{topic:"",goal:"",scope:"",notes:""}, mind:null, measures:[], ts:new Date().toISOString() };
 
+        // Meta-Felder
         syncMetaInputs();
+
+        // Maßnahmen-Felder
         $("#actionText").value = "";
         $("#actionDue").value = "";
         $("#actionOwner").value = "";
         $("#actionProof").value = "";
         $("#srcNode").value = "—";
+
+        // KI-Felder (Prozessschritt & Kontext – ohne API-Key und Lizenz)
+        const aiProcess = $("#aiProcessStep");
+        if(aiProcess) aiProcess.value = "";
+        const aiContext = $("#aiContext");
+        if(aiContext) aiContext.value = "";
+
+        // KI-Status zurücksetzen
+        aiLastResult = null;
+        setAiState("warn", "aiStateIdle");
+        const btnApply = $("#btnAiApply");
+        const btnDl = $("#btnAiDownload");
+        if(btnApply) btnApply.disabled = true;
+        if(btnDl) btnDl.disabled = true;
 
         applyMindSnapshot(defaultMind());
         history = [];
@@ -1300,7 +1411,7 @@
         initHistory();
         renderMeasures();
         setMetaSaved(false);
-        toast("OK");
+        toast(currentLang === "de" ? "Alles wurde zurückgesetzt." : "Everything has been reset.");
       }
 
       /* ==========================
@@ -1514,26 +1625,116 @@
         URL.revokeObjectURL(url);
       }
 
+      function extractNodeText(raw){
+        return String(raw ?? "").replace(/^[-*+#\s>]+/, "").trim();
+      }
+
+      function buildMindFromOutlineText(txt){
+        const lines = String(txt || "").replace(/\t/g, "  ").split(/\r?\n/).filter(line => line.trim());
+        const bullets = lines.filter(line => /^\s*([*+-]|\d+[.)])\s+/.test(line));
+        if(!bullets.length) return null;
+
+        const rootLine = bullets[0];
+        const rootTopic = extractNodeText(rootLine) || defaultRootTopic();
+        const data = [{ id:"root", isroot:true, topic: rootTopic }];
+        const stack = [{ indent:-1, id:"root", topic: rootTopic }];
+        let seq = 1;
+
+        bullets.slice(1).forEach(line => {
+          const indent = (line.match(/^\s*/)||[""])[0].length;
+          const topic = extractNodeText(line);
+          if(!topic) return;
+          while(stack.length && indent <= stack[stack.length-1].indent){ stack.pop(); }
+          const parent = stack[stack.length-1] || stack[0];
+          const id = "imp_" + (seq++);
+          data.push({ id, parentid: parent.id, topic });
+          stack.push({ indent, id, topic });
+        });
+
+        return {
+          lang: currentLang,
+          meta: { topic: rootTopic, goal:"", scope:"", notes:"" },
+          mind: { meta:{ name:"qm_mindmap", author:"", version:"1.0" }, format:"node_array", data },
+          measures: [],
+          ts: new Date().toISOString()
+        };
+      }
+
+      function buildMindFromNestedJson(input){
+        if(!input || typeof input !== "object") return null;
+        const rootTopic = String(input.name || input.topic || input.title || input.label || "").trim();
+        const children = Array.isArray(input.children) ? input.children : null;
+        if(!rootTopic || !children) return null;
+
+        const data = [{ id:"root", isroot:true, topic: rootTopic }];
+        let seq = 1;
+        function walk(nodes, parentId){
+          (nodes || []).forEach(node => {
+            if(!node || typeof node !== "object") return;
+            const topic = String(node.name || node.topic || node.title || node.label || node.text || "").trim();
+            if(!topic) return;
+            const id = "imp_" + (seq++);
+            data.push({ id, parentid: parentId, topic });
+            if(Array.isArray(node.children) && node.children.length) walk(node.children, id);
+          });
+        }
+        walk(children, "root");
+        return {
+          lang: currentLang,
+          meta: { topic: rootTopic, goal:"", scope:"", notes:"" },
+          mind: { meta:{ name:"qm_mindmap", author:"", version:"1.0" }, format:"node_array", data },
+          measures: [],
+          ts: new Date().toISOString()
+        };
+      }
+
+      function normalizeImportedPayload(parsed, rawText=""){
+        if(parsed && typeof parsed === "object" && parsed.mind && parsed.meta){
+          return normalizeGeneratedPayload(parsed);
+        }
+
+        if(Array.isArray(parsed)){
+          const synthetic = { topic: defaultRootTopic(), children: parsed };
+          const nested = buildMindFromNestedJson(synthetic);
+          if(nested) return nested;
+        }
+
+        const nested = buildMindFromNestedJson(parsed);
+        if(nested) return nested;
+
+        const textSource = String(rawText || (typeof parsed === "string" ? parsed : ""));
+        const outline = buildMindFromOutlineText(textSource);
+        if(outline) return outline;
+
+        throw new Error("unsupported import format");
+      }
+
       function loadJsonFile(file){
         file.text().then(txt=>{
-          const parsed = JSON.parse(txt);
-          if(!parsed || typeof parsed !== "object") throw new Error("bad json");
-
-          if(parsed.lang === "de" || parsed.lang === "en"){
-            setLanguage(parsed.lang);
+          let parsed = null;
+          try{
+            parsed = JSON.parse(txt);
+          }catch(e){
+            parsed = txt;
           }
 
-          state.lang = (parsed.lang === "de" || parsed.lang === "en") ? parsed.lang : currentLang;
-          state.meta = parsed.meta && typeof parsed.meta==="object" ? {
-            topic: String(parsed.meta.topic ?? ""),
-            goal: String(parsed.meta.goal ?? ""),
-            scope: String(parsed.meta.scope ?? ""),
-            notes: String(parsed.meta.notes ?? "")
+          const imported = normalizeImportedPayload(parsed, txt);
+
+          if(imported.lang === "de" || imported.lang === "en"){
+            setLanguage(imported.lang);
+          }
+
+          state.lang = (imported.lang === "de" || imported.lang === "en") ? imported.lang : currentLang;
+          state.meta = imported.meta && typeof imported.meta==="object" ? {
+            topic: String(imported.meta.topic ?? ""),
+            goal: String(imported.meta.goal ?? ""),
+            scope: String(imported.meta.scope ?? ""),
+            notes: String(imported.meta.notes ?? "")
           } : { topic:"", goal:"", scope:"", notes:"" };
 
-          state.mind = parsed.mind && typeof parsed.mind==="object" ? parsed.mind : null;
+          state.mind = imported.mind && typeof imported.mind==="object" ? imported.mind : null;
 
-          state.measures = Array.isArray(parsed.measures) ? parsed.measures.map(m=>({
+          state.measures = Array.isArray(imported.measures) ? imported.measures.map(m=>({
             id: String(m.id ?? newId()),
             nodeId: String(m.nodeId ?? "root"),
             nodeTopic: String(m.nodeTopic ?? ""),
@@ -1546,7 +1747,7 @@
             createdAt: String(m.createdAt ?? new Date().toISOString())
           })) : [];
 
-          state.ts = String(parsed.ts ?? new Date().toISOString());
+          state.ts = String(imported.ts ?? new Date().toISOString());
 
           syncMetaInputs();
 
@@ -1585,6 +1786,7 @@
         lastChangeAt = Date.now();
         persistAll();
         updateSelectionUI();
+        scheduleAutoResize(20);
 
         if(forceCommit){
           commitHistorySnapshot();
@@ -1610,6 +1812,7 @@
           lastChangeAt = Date.now();
           persistAll();
           updateSelectionUI();
+          scheduleAutoResize(20);
         }else{
           if(lastChangeAt && (Date.now() - lastChangeAt) > 1200){
             commitHistorySnapshot();
@@ -1634,7 +1837,116 @@
           ev.preventDefault();
           if(ev.deltaY < 0) zoomIn();
           else zoomOut();
+          scheduleAutoResize(20);
         }, { passive:false });
+      }
+
+      function estimateMindDepth(data){
+        const byId = new Map((data || []).filter(Boolean).map(n => [n.id, n]));
+        function depthOf(node){
+          if(!node || node.isroot) return 1;
+          let d = 1;
+          let cur = node;
+          const guard = new Set();
+          while(cur && !cur.isroot && cur.parentid && byId.has(cur.parentid) && !guard.has(cur.parentid)){
+            guard.add(cur.parentid);
+            cur = byId.get(cur.parentid);
+            d += 1;
+          }
+          return d;
+        }
+        return Math.max(1, ...(data || []).map(depthOf));
+      }
+
+      function autoResizeMindViewport(){
+        const container = $("#jsmind_container");
+        if(!container) return;
+
+        const PADDING = 60; // equal space top + bottom around content
+        const MIN_HEIGHT = 120; // empty map: very compact
+
+        const nodes = Array.from(container.querySelectorAll('jmnode'));
+
+        if(!nodes.length){
+          // No rendered nodes yet – use minimal height
+          container.style.height = MIN_HEIGHT + 'px';
+          return;
+        }
+
+        // Measure actual rendered node bounding box RELATIVE to jsmind-inner
+        const inner = container.querySelector('.jsmind-inner');
+        if(inner){
+          // Use inner-relative positions so zoom/pan don't inflate the number
+          const innerRect = inner.getBoundingClientRect();
+          let minTop = Infinity, maxBottom = -Infinity;
+          nodes.forEach(node => {
+            const rect = node.getBoundingClientRect();
+            if(!rect.width && !rect.height) return;
+            minTop    = Math.min(minTop,    rect.top    - innerRect.top);
+            maxBottom = Math.max(maxBottom, rect.bottom - innerRect.top);
+          });
+
+          if(Number.isFinite(minTop) && Number.isFinite(maxBottom) && maxBottom > minTop){
+            // Content height + equal padding on both sides
+            const contentH = maxBottom - minTop;
+            // Offset of content top from inner top (can be negative if nodes above 0)
+            const topOffset = Math.max(0, minTop);
+            // We need: topOffset above content + contentH + same padding below
+            const target = Math.max(MIN_HEIGHT, Math.ceil(topOffset + contentH + PADDING * 2));
+            container.style.height = target + 'px';
+            return;
+          }
+        }
+
+        // Fallback: use scrollHeight of inner
+        if(inner){
+          const ih = inner.scrollHeight || inner.offsetHeight || 0;
+          if(ih){
+            container.style.height = Math.max(MIN_HEIGHT, ih + PADDING * 2) + 'px';
+            return;
+          }
+        }
+
+        container.style.height = MIN_HEIGHT + 'px';
+      }
+
+      function scheduleAutoResize(delay=40){
+        window.clearTimeout(scheduleAutoResize._tmr);
+        scheduleAutoResize._tmr = window.setTimeout(()=>{
+          autoResizeMindViewport();
+          updateZoomInfo();
+        }, delay);
+      }
+
+      function getCurrentScale(){
+        const inner = $("#jsmind_container") && $("#jsmind_container").querySelector('.jsmind-inner');
+        if(!inner) return 1;
+        const style = inner.style.transform || window.getComputedStyle(inner).transform || '';
+        if(!style || style === 'none') return 1;
+        const match = style.match(/matrix\(([^)]+)\)/);
+        if(match){
+          const parts = match[1].split(',').map(v => parseFloat(v.trim()));
+          if(parts.length >= 1 && !Number.isNaN(parts[0])) return parts[0];
+        }
+        const scaleMatch = style.match(/scale\(([^)]+)\)/);
+        if(scaleMatch){
+          const s = parseFloat(scaleMatch[1]);
+          if(!Number.isNaN(s)) return s;
+        }
+        return 1;
+      }
+
+      function updateZoomInfo(){
+        const pct = Math.round(getCurrentScale() * 100);
+        let badge = $("#zoomInfo");
+        if(!badge){
+          badge = document.createElement('span');
+          badge.id = 'zoomInfo';
+          badge.className = 'pill';
+          const tools = ROOT.querySelector('.map-tools');
+          tools && tools.insertBefore(badge, $("#btnResetMap"));
+        }
+        badge.textContent = 'Zoom ' + pct + '%';
       }
 
       /* ============================================================
@@ -1829,7 +2141,23 @@
         return { lang, meta: safeMeta, mind: safeMind, measures: safeMeasures, ts: String(obj.ts ?? nowIso) };
       }
 
-      async function callOpenAI({ apiKey, processStep, contextText }){
+      function getSelectedAiModel(){
+        const preset = (("#aiModel") && $("#aiModel").value) ? $("#aiModel").value.trim() : "gpt-4.1-mini";
+        const custom = (("#aiModelCustom") && $("#aiModelCustom").value) ? $("#aiModelCustom").value.trim() : "";
+        return preset === "custom" ? (custom || "gpt-5.4-mini") : preset;
+      }
+
+      function initAiModelSelection(){
+        const saved = localStorage.getItem(AI_MODEL_KEY) || "gpt-4.1-mini";
+        if($("#aiModel")) $("#aiModel").value = [ ...$("#aiModel").options ].some(o => o.value === saved) ? saved : "custom";
+        if($("#aiModelCustom") && $("#aiModel").value === "custom") $("#aiModelCustom").value = saved;
+      }
+
+      function persistAiModelSelection(){
+        try{ localStorage.setItem(AI_MODEL_KEY, getSelectedAiModel()); }catch(e){}
+      }
+
+      async function callOpenAI({ apiKey, processStep, contextText, model }){
         const system = (currentLang==="de")
           ? "Du bist ein Qualitäts- und Prozess-Experte. Gib ausschließlich gültiges JSON zurück – ohne Markdown, ohne Kommentar, ohne zusätzliche Texte."
           : "You are a quality & process expert. Return ONLY valid JSON – no markdown, no comments, no extra text.";
@@ -1935,7 +2263,7 @@ ${schemaHint}`;
             "Authorization": "Bearer " + apiKey
           },
           body: JSON.stringify({
-            model: "gpt-4.1-mini",
+            model: model || "gpt-4.1-mini",
             input: [
               { role: "system", content: system },
               { role: "user", content: user }
@@ -1986,7 +2314,8 @@ ${schemaHint}`;
         setAiState("warn", "aiGenerating");
 
         try{
-          const raw = await callOpenAI({ apiKey, processStep, contextText });
+          const raw = await callOpenAI({ apiKey, processStep, contextText, model: getSelectedAiModel() });
+          persistAiModelSelection();
           aiLastResult = normalizeGeneratedPayload(raw);
           setAiState("ok", "aiGenerated");
           $("#btnAiApply").disabled = false;
@@ -2065,9 +2394,12 @@ ${schemaHint}`;
       jm.show(mindToShow);
 
       bindScrollZoom();
+      initAiModelSelection();
+      autoResizeMindViewport();
       initHistory();
       renderMeasures();
       updateSelectionUI();
+      updateZoomInfo();
 
       // Set meta saved state based on existing topic (optional)
       setMetaSaved(!!(state.meta.topic && state.meta.topic.trim()));
@@ -2092,14 +2424,18 @@ ${schemaHint}`;
 
       $("#btnZoomIn").addEventListener("click", zoomIn);
       $("#btnZoomOut").addEventListener("click", zoomOut);
+      $("#aiModel").addEventListener("change", ()=>{ persistAiModelSelection(); });
+      $("#aiModelCustom").addEventListener("input", ()=>{ if($("#aiModel").value === "custom") persistAiModelSelection(); });
+      window.addEventListener("resize", ()=> window.setTimeout(autoResizeMindViewport, 80));
 
       $("#btnResetMap").addEventListener("click", ()=>{ resetMap(); setMetaSaved(false); });
 
       $("#btnSaveAction").addEventListener("click", saveAction);
       $("#btnClearAction").addEventListener("click", clearAction);
 
-      $("#btnExportJson").addEventListener("click", ()=>downloadJson());
-      $("#btnImportJson").addEventListener("click", ()=> $("#jsonFile").click());
+      // JSON/Print/Reset buttons (now inside map-wrap)
+      $("#btnExportJson2").addEventListener("click", ()=>downloadJson());
+      $("#btnImportJson2").addEventListener("click", ()=> $("#jsonFile").click());
       $("#jsonFile").addEventListener("change", (ev)=>{
         const f = ev.target.files && ev.target.files[0];
         if(!f) return;
@@ -2107,12 +2443,12 @@ ${schemaHint}`;
         ev.target.value = "";
       });
 
-      $("#btnPrint").addEventListener("click", ()=>{
+      $("#btnPrint2").addEventListener("click", ()=>{
         window.print();
         toast(t("printToast"));
       });
 
-      $("#btnResetAll").addEventListener("click", resetAll);
+
 
       // AI
       $("#btnAiGenerate").addEventListener("click", aiGenerate);
@@ -2120,6 +2456,37 @@ ${schemaHint}`;
       $("#btnAiDownload").addEventListener("click", aiDownload);
 
       persistAll();
+
+      // Keyboard shortcut: + key adds child node
+      document.addEventListener("keydown", function(ev){
+        // Ignore if user is typing in an input/textarea/select
+        const tag = (ev.target && ev.target.tagName) ? ev.target.tagName.toUpperCase() : "";
+        if(tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+        if(ev.key === "+" || ev.key === "=") {
+          ev.preventDefault();
+          addChild();
+          setMetaSaved(false);
+        }
+      });
+
+      // Plus-button inside jsMind nodes: delegate click
+      $("#jsmind_container").addEventListener("click", function(ev){
+        const plusBtn = ev.target.closest ? ev.target.closest('.jsmind-plus, [class*="jsmind-plus"]') : null;
+        if(plusBtn){
+          ev.stopPropagation();
+          const nodeEl = plusBtn.closest ? plusBtn.closest('jmnode, [nodeid]') : null;
+          if(nodeEl){
+            const nodeId = nodeEl.getAttribute('nodeid') || nodeEl.getAttribute('id');
+            if(nodeId && jm && typeof jm.select_node === "function"){
+              try{ jm.select_node(nodeId); }catch(e){}
+              window.setTimeout(()=>{ addChild(); setMetaSaved(false); }, 30);
+              return;
+            }
+          }
+          addChild();
+          setMetaSaved(false);
+        }
+      });
 
     })();
   </script>
