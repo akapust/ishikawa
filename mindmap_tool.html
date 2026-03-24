@@ -794,29 +794,26 @@
           <div class="section-head">
             <div>
               <h3 class="sec-title" id="secAIFree" data-i18n="aiFreeTitle">KI Assistent (Kostenlos)</h3>
-              <p class="sec-sub" data-i18n="aiFreeSubtitle">Mindmap &amp; Maßnahmen generieren – ohne Lizenzschlüssel, powered by OpenRouter.</p>
+              <p class="sec-sub" data-i18n="aiFreeSubtitle">Mindmap &amp; Maßnahmen generieren – kostenlos über Supabase im Gratis-Bereich, ohne lokales Browser-Modell.</p>
             </div>
             <div class="btn-row">
               <span class="badge api" data-i18n="aiFreeBadge">Kostenlos</span>
             </div>
           </div>
 
-
-
           <div class="ai-grid" style="margin-top:12px;">
             <div>
-              <label for="aiFreeModel" data-i18n="aiFreeModelLabel">Modell</label>
+              <label for="aiFreeModel" data-i18n="aiFreeModelLabel">Kostenlose KI-Quelle</label>
               <select id="aiFreeModel">
-                <option value="minimax/minimax-m2.5:free" selected>MiniMax M2.5 (kostenlos)</option>
-                <option value="stepfun/step-3.5-flash:free">Step 3.5 Flash (kostenlos)</option>
-                <option value="arcee-ai/trinity-large-preview:free">Trinity Large Preview (kostenlos)</option>
-                <option value="arcee-ai/trinity-mini:free">Trinity Mini (kostenlos)</option>
-                <option value="z-ai/glm-4.5-air:free">GLM 4.5 Air (kostenlos)</option>
+                <option value="supabase-free" selected>Supabase Cloud-KI (kostenlos)</option>
               </select>
+              <div class="hint" data-i18n="aiFreeModelHint">Die kostenlose KI läuft hier über deine Supabase Function. Es wird kein lokales Browser-Modell mehr geladen.</div>
             </div>
 
-            <!-- API Key hidden – hardcoded in JS -->
-            <input id="aiFreeApiKey" type="hidden" value="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">
+            <div>
+              <label data-i18n="aiFreeTechLabel">Technik</label>
+              <div class="hint" style="margin-top:10px;" data-i18n="aiFreeTechHint">Kostenloser Bereich via Supabase Function. Kein lokales Modell, kein WebGPU/WASM-Download im Browser.</div>
+            </div>
 
             <div class="full">
               <label for="aiFreeProcessStep" data-i18n="aiFreeProcessLabel">Zu welchem Prozessschritt erstellen wir ein Mindmap?</label>
@@ -835,7 +832,7 @@
                 <button type="button" class="btn" id="btnAiFreeDownload" data-i18n="aiBtnDownload" disabled>Ergebnis als JSON speichern</button>
                 <span class="pill warn" id="aiFreeStatePill">● <span id="aiFreeStateText" data-i18n="aiStateIdle">Bereit</span></span>
               </div>
-              <div class="hint" data-i18n="aiHint">Tipp: Nach dem Übernehmen kannst du Knoten und Maßnahmen wie gewohnt bearbeiten, ergänzen oder löschen.</div>
+              <div class="hint" data-i18n="aiFreeHint">Beim ersten Start werden Modell-Dateien geladen. Danach läuft die kostenlose KI lokal im Browser und funktioniert auf mehr Geräten als die alte WebGPU-only-Variante.</div>
             </div>
           </div>
         </section>
@@ -888,6 +885,7 @@
       const STORAGE_KEY = "qm_mindmap_v2_state";
       const LANG_KEY = "qmLang";
       const AI_MODEL_KEY = "qmMindmapAiModel";
+      const WEBLLM_MODEL_KEY = "qmMindmapWebLLMModel";
 
       /* ==========================
          i18n
@@ -908,10 +906,10 @@
           stepsNoAiTitle: "Ohne KI",
           stepsAiFreeBadge: "Kostenlos",
           stepsAiFreeTitle: "KI Assistent (Kostenlos)",
-          stepsAiFreeLead: "Sofort starten, ganz ohne Account.",
-          stepsAiFreeDesc: "Ideal für einen schnellen Einstieg. Du wählst ein KI-Modell, gibst dein Thema ein und erhältst automatisch eine erste Mindmap-Struktur mit passenden Maßnahmen.",
+          stepsAiFreeLead: "Sofort starten – ohne Account und ohne API-Key.",
+          stepsAiFreeDesc: "Ideal für einen schnellen Einstieg auf GitHub Pages. Die kostenlose KI läuft direkt im Browser und erzeugt automatisch eine erste Mindmap-Struktur mit passenden Maßnahmen.",
           aiFreeStep1: "Thema + Kontext eingeben.",
-          aiFreeStep2: "Modell wählen & generieren.",
+          aiFreeStep2: "Browser-Modell laden, lokal generieren.",
           aiFreeStep3: "Ergebnis übernehmen & weiterbearbeiten.",
           stepsHowWorks: "So funktioniert es:",
           stepsAiLead: "Mehr Tiefe, mehr Präzision, bessere Ergebnisse.",
@@ -930,7 +928,7 @@
 
           boxPrivacyTitle: "Datenschutz",
           privacyNoApiTitle: "Datenschutz (ohne API)",
-          privacyNoApiText: "Dieses Tool arbeitet vollständig im Browser. Daten werden lokal gespeichert und optional als JSON exportiert – keine Übertragung an Server, außer bei KI-Nutzung (dann nur Thema & Kontext an den jeweiligen KI-Anbieter).",
+          privacyNoApiText: "Dieses Tool arbeitet vollständig im Browser. Daten werden lokal gespeichert und optional als JSON exportiert. Die kostenlose KI läuft direkt im Browser; es werden dabei keine Inhalte an einen externen KI-Server übertragen.",
           privacyApiTitle: "Datenschutz (Premium mit API/KI)",
           privacyApiText: "Wenn du die Premium-KI nutzt, werden ausschließlich die von dir eingegebenen Inhalte (Thema, Kontext) sowie die aktuelle Tool-Struktur aus deinem Browser an die konfigurierte OpenAI-API übertragen, um Vorschläge zu erzeugen. Der API-Key wird nicht serverseitig gespeichert.",
 
@@ -1078,22 +1076,26 @@
           aiNoCrypto: "Lizenzprüfung nicht möglich (Browser/Seite blockiert Kryptografie). Bitte Seite über HTTPS laden.",
 
           aiFreeTitle: "KI Assistent (Kostenlos)",
-          aiFreeSubtitle: "Mindmap & Maßnahmen generieren – ohne Lizenzschlüssel, powered by OpenRouter.",
+          aiFreeSubtitle: "Mindmap & Maßnahmen generieren – kostenlos über Supabase im Gratis-Bereich, ohne lokales Browser-Modell.",
           aiFreeBadge: "Kostenlos",
 
-          aiFreeModelLabel: "Modell",
-          aiFreeApiKeyLabel: "OpenRouter API Key",
-          aiFreeApiKeyHint: "Key bleibt im Browser. Eigenen Key eintragen unter openrouter.ai.",
+          aiFreeModelLabel: "Kostenlose KI-Quelle",
+          aiFreeModelHint: "Die kostenlose KI läuft hier über deine Supabase Function. Es wird kein lokales Browser-Modell mehr geladen.",
+          aiFreeTechLabel: "Technik",
+          aiFreeTechHint: "Kostenloser Bereich via Supabase Function. Kein lokales Modell, kein WebGPU/WASM-Download im Browser.",
           aiFreeProcessLabel: "Zu welchem Thema erstellen wir eine Mindmap?",
           aiFreeContextLabel: "Kontext",
-          aiFreeGenerating: "KI generiert…",
+          aiFreeGenerating: "Kostenlose KI generiert über Supabase…",
           aiFreeGenerated: "Ergebnis bereit.",
           aiFreeApplied: "Ergebnis übernommen.",
           aiFreeApplyConfirm: "Ergebnis übernehmen? Dabei wird Meta, Mindmap und Maßnahmenliste überschrieben.",
           aiFreeDownloaded: "Ergebnis als JSON gespeichert.",
           aiFreeNeedProcess: "Bitte Thema angeben.",
-          aiFreeNeedApi: "Bitte OpenRouter API Key eintragen.",
-          aireeFailed: "KI konnte nicht erzeugen."
+          aiFreeNeedWebGPU: "Lokale Browser-KI konnte nicht initialisiert werden. Bitte Seite neu laden oder ein kleineres Modell wählen.",
+          aiFreeLoadStart: "Supabase-Verbindung wird aufgebaut…",
+          aiFreeLoaded: "Supabase bereit.",
+          aiFreeHint: "Der Gratis-Bereich nutzt jetzt deine Supabase Function. Dadurch wird kein lokales Modell mehr im Browser geladen.",
+          aiFreeFailed: "KI-Generierung fehlgeschlagen. Bitte Supabase Function oder Internetverbindung prüfen."
         },
         en: {
           title: "Mindmap Tool – Ideas → Actions",
@@ -1110,10 +1112,10 @@
           stepsNoAiTitle: "Without AI",
           stepsAiFreeBadge: "Free",
           stepsAiFreeTitle: "AI Assistant (Free)",
-          stepsAiFreeLead: "Start immediately, without an account.",
-          stepsAiFreeDesc: "Ideal for a quick start. Choose an AI model, enter your topic, and the AI creates an initial mindmap structure with matching actions.",
+          stepsAiFreeLead: "Start instantly – no account and no API key needed.",
+          stepsAiFreeDesc: "Ideal for a quick start on GitHub Pages. The free AI runs directly in the browser and creates an initial mindmap structure with matching actions.",
           aiFreeStep1: "Enter topic + context.",
-          aiFreeStep2: "Select model & generate.",
+          aiFreeStep2: "Load browser model and generate locally.",
           aiFreeStep3: "Apply result & continue editing.",
           stepsHowWorks: "How it works:",
           stepsAiLead: "More depth, more precision, better results.",
@@ -1132,7 +1134,7 @@
 
           boxPrivacyTitle: "Privacy",
           privacyNoApiTitle: "Privacy (no API)",
-          privacyNoApiText: "This tool runs entirely in your browser. Data is stored locally and can optionally be exported as JSON – no data sent to servers, except during AI use (only topic & context to the respective AI provider).",
+          privacyNoApiText: "This tool runs fully in the browser. Data is stored locally and can optionally be exported as JSON. The free AI runs directly in the browser, so no content is sent to an external AI server.",
           privacyApiTitle: "Privacy (Premium with API/AI)",
           privacyApiText: "If you use Premium AI, only the inputs you provide (topic, context) and the current tool structure from your browser are sent to the configured OpenAI API to generate suggestions. The API key is not stored server-side.",
 
@@ -1278,29 +1280,47 @@
           aiNoCrypto: "License validation not possible (crypto blocked). Please load the page over HTTPS.",
 
           aiFreeTitle: "AI Assistant (Free)",
-          aiFreeSubtitle: "Generate mindmap & actions – no license key needed, powered by OpenRouter.",
+          aiFreeSubtitle: "Generate mindmap & actions via Supabase in the free section – no local browser model.",
           aiFreeBadge: "Free",
 
-          aiFreeModelLabel: "Model",
-          aiFreeApiKeyLabel: "OpenRouter API key",
-          aiFreeApiKeyHint: "Key stays in your browser. Enter your own key at openrouter.ai.",
+          aiFreeModelLabel: "Free AI source",
+          aiFreeModelHint: "The free AI now runs through your Supabase Function. No local browser model is loaded anymore.",
+          aiFreeTechLabel: "Technology",
+          aiFreeTechHint: "Free section via Supabase Function. No local model and no WebGPU/WASM download in the browser.",
           aiFreeProcessLabel: "For which topic should we create a mindmap?",
           aiFreeContextLabel: "Context",
-          aiFreeGenerating: "AI generating…",
+          aiFreeGenerating: "Free AI generating via Supabase…",
           aiFreeGenerated: "Result ready.",
           aiFreeApplied: "Result applied.",
           aiFreeApplyConfirm: "Apply the result? This will overwrite meta, mindmap and action list.",
           aiFreeDownloaded: "Result saved as JSON.",
           aiFreeNeedProcess: "Please provide a topic.",
-          aiFreeNeedApi: "Please enter an OpenRouter API key.",
-          aireeFailed: "AI generation failed."
+          aiFreeNeedWebGPU: "Local browser AI could not be initialized. Please reload the page or choose a smaller model.",
+          aiFreeLoadStart: "Connecting to Supabase…",
+          aiFreeLoaded: "Supabase ready.",
+          aiFreeHint: "The free section now uses your Supabase Function. No local model is loaded in the browser anymore.",
+          aiFreeFailed: "AI generation failed. Please check the Supabase Function or your internet connection."
         }
       };
+      function getStoredWebLLMModel(){
+        try{ return localStorage.getItem(WEBLLM_MODEL_KEY) || ""; }catch(e){ return ""; }
+      }
+      function setStoredWebLLMModel(val){
+        try{
+          if(val) localStorage.setItem(WEBLLM_MODEL_KEY, val);
+          else localStorage.removeItem(WEBLLM_MODEL_KEY);
+        }catch(e){}
+        const el = $("#aiFreeModel");
+        if(el && val) el.value = val;
+      }
 
       let currentLang = localStorage.getItem(LANG_KEY)
         || (navigator.language && navigator.language.toLowerCase().startsWith("de") ? "de" : "en");
 
       function t(key){ return (I18N[currentLang] && I18N[currentLang][key]) ? I18N[currentLang][key] : key; }
+
+      const __storedWebLLMModel = getStoredWebLLMModel();
+      if(__storedWebLLMModel && $("#aiFreeModel")) $("#aiFreeModel").value = __storedWebLLMModel;
 
       function applyI18n(){
         document.documentElement.lang = currentLang;
@@ -3253,8 +3273,9 @@ ${schemaHint}`;
       }
 
       /* ==========================
-         FREE AI (OpenRouter)
+         FREE AI (Supabase cloud function)
       ========================== */
+      const SUPABASE_FREE_FUNCTION_URL = "https://eckyjtwxlyenaqhwwrea.supabase.co/functions/v1/https---YOUR_PROJECT_ID-supabase-co-functions-v1-mindmap-ai";
       let aiFreeLastResult = null;
 
       function setAiFreeState(kind, textKey){
@@ -3266,104 +3287,30 @@ ${schemaHint}`;
         label.textContent = t(textKey);
       }
 
-      async function callOpenRouter({ apiKey, processStep, contextText, model }){
-        const system = (currentLang==="de")
-          ? "Du bist ein Qualitäts- und Prozess-Experte. Gib ausschließlich gültiges JSON zurück – ohne Markdown, ohne Kommentar, ohne zusätzliche Texte."
-          : "You are a quality & process expert. Return ONLY valid JSON – no markdown, no comments, no extra text.";
-
-        const schemaHint = (currentLang==="de") ? `
-Erzeuge eine Mindmap und Maßnahmenliste für das angegebene Thema.
-JSON-Schema (exakt einhalten):
-{
-  "lang": "de",
-  "meta": { "topic": string, "goal": string, "scope": string, "notes": string },
-  "mind": {
-    "meta": { "name":"qm_mindmap","author":"","version":"1.0" },
-    "format": "node_array",
-    "data": [
-      { "id":"root", "topic": string, "isroot": true },
-      { "id": string, "topic": string, "parentid": "root" | string }
-    ]
-  },
-  "measures": [
-    { "id": string, "nodeId": string, "nodeTopic": string, "nodePath": string,
-      "text": string, "proof": string, "due": "YYYY-MM-DD" | "", "owner": string,
-      "status": "open", "createdAt": string }
-  ],
-  "ts": string
-}
-Mindmap: 6–10 Hauptzweige, je 2–4 Unterpunkte. Maßnahmen: 10–18 Stück.`.trim()
-          : `
-Create a mindmap and action list. Strict JSON schema:
-{
-  "lang": "en",
-  "meta": { "topic": string, "goal": string, "scope": string, "notes": string },
-  "mind": {
-    "meta": { "name":"qm_mindmap","author":"","version":"1.0" },
-    "format": "node_array",
-    "data": [
-      { "id":"root", "topic": string, "isroot": true },
-      { "id": string, "topic": string, "parentid": "root" | string }
-    ]
-  },
-  "measures": [
-    { "id": string, "nodeId": string, "nodeTopic": string, "nodePath": string,
-      "text": string, "proof": string, "due": "YYYY-MM-DD" | "", "owner": string,
-      "status": "open", "createdAt": string }
-  ],
-  "ts": string
-}
-Mindmap: 6–10 main branches, 2–4 subpoints each. Actions: 10–18 items.`.trim();
-
-        const user = (currentLang==="de")
-          ? `Thema: ${processStep}\nKontext: ${contextText}\n\n${schemaHint}`
-          : `Topic: ${processStep}\nContext: ${contextText}\n\n${schemaHint}`;
-
-        const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      async function callFreeSupabaseAI({ processStep, contextText }){
+        const res = await fetch(SUPABASE_FREE_FUNCTION_URL, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + apiKey,
-            "HTTP-Referer": window.location.href,
-            "X-Title": "Mindmap Tool QM"
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            model: model || "meta-llama/llama-4-maverick:free",
-            messages: [
-              { role: "system", content: system },
-              { role: "user", content: user }
-            ],
-            temperature: 0.4
+            prompt: `Thema: ${processStep}
+Kontext: ${contextText || "-"}`,
+            mode: "mindmap"
           })
         });
 
-        if(!res.ok){
-          const txt = await res.text().catch(()=> "");
-          throw new Error("OpenRouter error: " + res.status + " " + txt);
+        const data = await res.json().catch(() => ({}));
+        if(!res.ok || !data.ok){
+          throw new Error(data.error || `Supabase error ${res.status}`);
         }
 
-        const data = await res.json();
-        let text = "";
-        try{
-          text = data.choices[0].message.content.trim();
-        }catch(e){ throw new Error("No content in response"); }
-
-        // Strip markdown fences if present
-        text = text.replace(/^```json\s*/i, "").replace(/^```\s*/i, "").replace(/\s*```$/i, "").trim();
-
-        if(!text) throw new Error("Empty response");
-        return JSON.parse(text);
+        return data.result || (data.raw ? JSON.parse(data.raw) : null);
       }
 
       async function aiFreeGenerate(){
-        const apiKey = ($("#aiFreeApiKey").value || "").trim();
-        if(!apiKey){ toast(t("aiFreeNeedApi")); return; }
-
-        const processStep = ($("#aiFreeProcessStep").value || "").trim();
+        const processStep = (($("#aiFreeProcessStep").value) || "").trim();
         if(!processStep){ toast(t("aiFreeNeedProcess")); return; }
 
-        const contextText = ($("#aiFreeContext").value || "").trim();
-        const model = ($("#aiFreeModel").value || "meta-llama/llama-4-maverick:free").trim();
+        const contextText = (($("#aiFreeContext").value) || "").trim();
 
         $("#btnAiFreeGenerate").disabled = true;
         $("#btnAiFreeApply").disabled = true;
@@ -3371,7 +3318,7 @@ Mindmap: 6–10 main branches, 2–4 subpoints each. Actions: 10–18 items.`.tr
         setAiFreeState("warn", "aiFreeGenerating");
 
         try{
-          const raw = await callOpenRouter({ apiKey, processStep, contextText, model });
+          const raw = await callFreeSupabaseAI({ processStep, contextText });
           aiFreeLastResult = normalizeGeneratedPayload(raw);
           setAiFreeState("ok", "aiFreeGenerated");
           $("#btnAiFreeApply").disabled = false;
@@ -3379,8 +3326,8 @@ Mindmap: 6–10 main branches, 2–4 subpoints each. Actions: 10–18 items.`.tr
           toast(t("aiFreeGenerated"));
         }catch(e){
           console.error(e);
-          setAiFreeState("bad", "aireeFailed");
-          toast(t("aireeFailed"));
+          setAiFreeState("bad", "aiFreeFailed");
+          toast(t("aiFreeFailed"));
           aiFreeLastResult = null;
         }finally{
           $("#btnAiFreeGenerate").disabled = false;
@@ -3508,7 +3455,7 @@ Mindmap: 6–10 main branches, 2–4 subpoints each. Actions: 10–18 items.`.tr
       $("#btnAiApply").addEventListener("click", aiApply);
       $("#btnAiDownload").addEventListener("click", aiDownload);
 
-      // AI Free (OpenRouter)
+      // AI Free (WebLLM local)
       $("#btnAiFreeGenerate").addEventListener("click", aiFreeGenerate);
       $("#btnAiFreeApply").addEventListener("click", aiFreeApply);
       $("#btnAiFreeDownload").addEventListener("click", aiFreeDownload);
