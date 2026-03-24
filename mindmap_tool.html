@@ -3280,6 +3280,7 @@ ${schemaHint}`;
          FREE AI (Supabase cloud function)
       ========================== */
       const SUPABASE_FREE_FUNCTION_URL = "https://eckyjtwxlyenaqhwwrea.supabase.co/functions/v1/https---YOUR_PROJECT_ID-supabase-co-functions-v1-mindmap-ai";
+      const SUPABASE_ANON_KEY = "sb_publishable_Cs7LAezoAI8AmWLzs1diMA_dw3rKWpC";
       let aiFreeLastResult = null;
 
       function setAiFreeState(kind, textKey){
@@ -3294,7 +3295,11 @@ ${schemaHint}`;
       async function callFreeSupabaseAI({ processStep, contextText, selectedModel }){
         const res = await fetch(SUPABASE_FREE_FUNCTION_URL, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + SUPABASE_ANON_KEY,
+            "apikey": SUPABASE_ANON_KEY
+          },
           body: JSON.stringify({
             prompt: `Thema: ${processStep}
 Kontext: ${contextText || "-"}
