@@ -794,7 +794,7 @@
           <div class="section-head">
             <div>
               <h3 class="sec-title" id="secAIFree" data-i18n="aiFreeTitle">KI Assistent (Kostenlos)</h3>
-              <p class="sec-sub" data-i18n="aiFreeSubtitle">Mindmap &amp; Maßnahmen generieren – kostenlos über Supabase im Gratis-Bereich, ohne lokales Browser-Modell.</p>
+              <p class="sec-sub" data-i18n="aiFreeSubtitle">Mindmap &amp; Maßnahmen generieren – kostenlos über Supabase im Gratis-Bereich mit der V9-Modellauswahl.</p>
             </div>
             <div class="btn-row">
               <span class="badge api" data-i18n="aiFreeBadge">Kostenlos</span>
@@ -805,15 +805,18 @@
             <div>
               <label for="aiFreeModel" data-i18n="aiFreeModelLabel">Kostenloses Modell</label>
               <select id="aiFreeModel">
-                <option value="onnx-community/Qwen2.5-0.5B-Instruct" selected>Qwen 2.5 0.5B Instruct (empfohlen)</option>
-                <option value="onnx-community/SmolLM2-360M-Instruct">SmolLM2 360M Instruct (schneller)</option>
+                <option value="minimax/minimax-m2.5:free" selected>MiniMax M2.5 (kostenlos)</option>
+                <option value="stepfun/step-3.5-flash:free">Step 3.5 Flash (kostenlos)</option>
+                <option value="arcee-ai/trinity-large-preview:free">Trinity Large Preview (kostenlos)</option>
+                <option value="arcee-ai/trinity-mini:free">Trinity Mini (kostenlos)</option>
+                <option value="z-ai/glm-4.5-air:free">GLM 4.5 Air (kostenlos)</option>
               </select>
-              <div class="hint" data-i18n="aiFreeModelHint">Die Auswahl entspricht wieder V9. Die Generierung läuft hier trotzdem über deine Supabase Function.</div>
+              <div class="hint" data-i18n="aiFreeModelHint">Die Auswahl entspricht wieder der OpenRouter-Free-Modellliste aus V9. Die Generierung läuft hier trotzdem über deine Supabase Function.</div>
             </div>
 
             <div>
               <label data-i18n="aiFreeTechLabel">Technik</label>
-              <div class="hint" style="margin-top:10px;" data-i18n="aiFreeTechHint">Gratis-Bereich mit V9-Modellauswahl, aber Anbindung über Supabase. Kein lokaler Modell-Download im Browser.</div>
+              <div class="hint" style="margin-top:10px;" data-i18n="aiFreeTechHint">Gratis-Bereich mit der OpenRouter-Free-Modellliste aus V9, aber Anbindung über Supabase. Kein lokaler Modell-Download im Browser.</div>
             </div>
 
             <div class="full">
@@ -833,7 +836,7 @@
                 <button type="button" class="btn" id="btnAiFreeDownload" data-i18n="aiBtnDownload" disabled>Ergebnis als JSON speichern</button>
                 <span class="pill warn" id="aiFreeStatePill">● <span id="aiFreeStateText" data-i18n="aiStateIdle">Bereit</span></span>
               </div>
-              <div class="hint" data-i18n="aiFreeHint">Die Oberfläche zeigt wieder die Modellauswahl aus V9. Die eigentliche Generierung läuft im Gratis-Bereich über deine Supabase Function.</div>
+              <div class="hint" data-i18n="aiFreeHint">Die Oberfläche zeigt wieder die OpenRouter-Free-Modellliste aus V9. Die eigentliche Generierung läuft im Gratis-Bereich über deine Supabase Function.</div>
             </div>
           </div>
         </section>
@@ -1083,7 +1086,7 @@
           aiFreeModelLabel: "Kostenloses Modell",
           aiFreeModelHint: "Die Auswahl entspricht wieder V9. Die Generierung läuft hier trotzdem über deine Supabase Function.",
           aiFreeTechLabel: "Technik",
-          aiFreeTechHint: "Gratis-Bereich mit V9-Modellauswahl, aber Anbindung über Supabase. Kein lokaler Modell-Download im Browser.",
+          aiFreeTechHint: "Gratis-Bereich mit der OpenRouter-Free-Modellliste aus V9, aber Anbindung über Supabase. Kein lokaler Modell-Download im Browser.",
           aiFreeProcessLabel: "Zu welchem Thema erstellen wir eine Mindmap?",
           aiFreeContextLabel: "Kontext",
           aiFreeGenerating: "Kostenlose KI generiert über Supabase…",
@@ -1287,7 +1290,7 @@
           aiFreeModelLabel: "Free model",
           aiFreeModelHint: "The selector matches V9 again. Generation still runs through your Supabase Function.",
           aiFreeTechLabel: "Technology",
-          aiFreeTechHint: "Free section via Supabase Function. No local model and no WebGPU/WASM download in the browser.",
+          aiFreeTechHint: "Free section via Supabase Function with the V9 OpenRouter free model list. No local model and no WebGPU/WASM download in the browser.",
           aiFreeProcessLabel: "For which topic should we create a mindmap?",
           aiFreeContextLabel: "Context",
           aiFreeGenerating: "Free AI generating via Supabase…",
@@ -1299,7 +1302,7 @@
           aiFreeNeedWebGPU: "Local browser AI could not be initialized. Please reload the page or choose a smaller model.",
           aiFreeLoadStart: "Connecting to Supabase…",
           aiFreeLoaded: "Supabase ready.",
-          aiFreeHint: "The free section now uses your Supabase Function. No local model is loaded in the browser anymore.",
+          aiFreeHint: "The free section now uses your Supabase Function and shows the V9 OpenRouter free model list. No local model is loaded in the browser anymore.",
           aiFreeFailed: "AI generation failed. Please check the Supabase Function or your internet connection."
         }
       };
