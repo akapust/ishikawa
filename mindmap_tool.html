@@ -42,23 +42,124 @@
     #qm-mindmap-app .tool-grid{ margin-top:16px; display:grid; grid-template-columns:1fr 1fr; gap:12px; }
     #qm-mindmap-app .intro-3col{ grid-template-columns:1fr 1fr 1fr; }
     #qm-mindmap-app .intro-3col-full{ grid-column: 1 / -1; }
-    #qm-mindmap-app .intro-box-free{
-      border-left:3px solid #93c5fd;
-      background:linear-gradient(135deg,#f0f7ff 0%,#eaf3ff 100%);
+    #qm-mindmap-app .intro-wide{
+      grid-column:1 / -1;
+      padding:18px 20px;
+      border-radius:12px;
     }
+    #qm-mindmap-app .intro-wide-grid{
+      display:grid;
+      grid-template-columns:1.05fr .95fr;
+      gap:22px;
+      align-items:start;
+    }
+    #qm-mindmap-app .intro-wide-copy p{
+      margin:0 0 12px 0;
+      font-size:14px;
+      line-height:1.65;
+      color:#334155;
+    }
+    #qm-mindmap-app .intro-wide-copy p:last-child{ margin-bottom:0; }
+    #qm-mindmap-app .intro-wide-steps{
+      background:rgba(255,255,255,.72);
+      border:1px solid rgba(17,85,178,.12);
+      border-radius:12px;
+      padding:16px 18px;
+    }
+    #qm-mindmap-app .intro-wide-steps ol{
+      margin:8px 0 0 0;
+      padding-left:20px;
+    }
+    #qm-mindmap-app .intro-wide-steps li{
+      margin:0 0 10px 0;
+      line-height:1.55;
+    }
+    #qm-mindmap-app .intro-ai-row{
+      grid-column:1 / -1;
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      align-items:stretch;
+    }
+    #qm-mindmap-app .intro-box-free,
     #qm-mindmap-app .intro-box-premium{
-      border-left:3px solid #16a34a;
+      position:relative;
+      overflow:hidden;
+      border-left-width:4px;
+      padding:16px 18px;
+      border-radius:12px;
+      box-shadow:0 8px 20px rgba(15,23,42,.06);
+    }
+    #qm-mindmap-app .intro-box-free{
+      border-left:4px solid #3b82f6;
+      background:linear-gradient(135deg,#eff6ff 0%,#dbeafe 100%);
+      border-color:#93c5fd;
+    }
+    #qm-mindmap-app .intro-box-free h3{ color:#1e3a8a; }
+    #qm-mindmap-app .intro-box-premium{
+      border-left:4px solid #16a34a;
       background:linear-gradient(135deg,#f0faf4 0%,#e8f5ed 100%);
+      border-color:#a8d5b5;
     }
     #qm-mindmap-app .intro-box-premium h3{ color:#14532d; }
+    #qm-mindmap-app .intro-card-badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      margin:0 0 10px 0;
+      padding:6px 12px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:.2px;
+    }
+    #qm-mindmap-app .intro-box-free .intro-card-badge{
+      background:#3b82f6;
+      color:#fff;
+    }
+    #qm-mindmap-app .intro-box-premium .intro-card-badge{
+      background:#16a34a;
+      color:#fff;
+    }
+    #qm-mindmap-app .intro-card-lead{
+      margin:0 0 10px 0;
+      font-size:14px;
+      font-weight:800;
+      color:#0f172a;
+    }
+    #qm-mindmap-app .intro-card-steps-title{
+      margin:14px 0 8px 0;
+      font-size:12px;
+      font-weight:800;
+      text-transform:uppercase;
+      color:#334155;
+      letter-spacing:.2px;
+    }
+    #qm-mindmap-app .intro-box-free ol,
+    #qm-mindmap-app .intro-box-premium ol{
+      margin-top:0;
+    }
     @media(max-width:900px){
       #qm-mindmap-app .intro-3col{ grid-template-columns:1fr; }
+      #qm-mindmap-app .intro-wide-grid{ grid-template-columns:1fr; }
+      #qm-mindmap-app .intro-ai-row{ grid-template-columns:1fr; }
     }
     #qm-mindmap-app .tool-box{ background:#fff; border:1px solid var(--border); border-radius:var(--radius); padding:12px 14px; }
     #qm-mindmap-app .tool-box h3{ margin:0 0 6px 0; font-size:13px; color:var(--dark); text-transform:uppercase; }
     #qm-mindmap-app .tool-box h4{ margin:10px 0 6px 0; font-size:12px; color:var(--dark); text-transform:uppercase; letter-spacing:.2px; }
     #qm-mindmap-app .tool-box p, #qm-mindmap-app .tool-box ol{ margin:0; font-size:13px; color:#334155; }
     #qm-mindmap-app .tool-box ol{ padding-left:18px; }
+    #qm-mindmap-app .tool-box.intro-box-free{
+      background:linear-gradient(135deg,#eff6ff 0%,#dbeafe 100%);
+      border:1px solid #93c5fd;
+      border-left:4px solid #1d4ed8;
+    }
+    #qm-mindmap-app .tool-box.intro-box-premium{
+      background:linear-gradient(135deg,#f0faf4 0%,#e8f5ed 100%);
+      border:1px solid #a8d5b5;
+      border-left:4px solid #16a34a;
+    }
     #qm-mindmap-app .tool-privacy{ border-left:3px solid var(--blue); }
 
     #qm-mindmap-app a{ color:var(--blue); text-decoration:none; }
@@ -318,6 +419,16 @@
       #qm-mindmap-app .measure-table td.col-actions{ border-bottom:0; }
     }
 
+    /* Free AI Section – soft blue highlight */
+    #qm-mindmap-app .section-free-ai{
+      background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+      border-color: #93c5fd;
+      border-left: 4px solid #3b82f6;
+    }
+    #qm-mindmap-app .section-free-ai .sec-title{
+      color: #1e3a8a;
+    }
+
     /* Premium AI Section – soft green highlight */
     #qm-mindmap-app .section-premium-ai{
       background: linear-gradient(135deg, #f0faf4 0%, #e8f5ed 100%);
@@ -393,38 +504,54 @@
 
         <div class="tool-grid intro-3col">
 
-          <!-- Schritt-für-Schritt -->
-          <div class="tool-box">
-            <h3 data-i18n="boxHowTitle">So benutzt du das Tool</h3>
-            <ol>
-              <li data-i18n="step1">Thema, Ziel &amp; Scope eingeben → speichern (setzt den Root-Knoten).</li>
-              <li data-i18n="step2">Mindmap aufbauen: Knoten anlegen, per Drag verschieben, per Scroll zoomen.</li>
-              <li data-i18n="step3">Knoten auswählen → Maßnahme mit Termin ableiten &amp; speichern.</li>
-              <li data-i18n="step4">Maßnahmenliste steuern: Status, drucken, JSON exportieren/importieren.</li>
-            </ol>
+          <div class="tool-box intro-wide">
+            <div class="intro-wide-grid">
+              <div class="intro-wide-copy">
+                <h3 data-i18n="boxGoalTitle">Ziel</h3>
+                <p data-i18n="boxGoalText">Dieses Tool hilft dir dabei, komplexe Themen visuell zu strukturieren, Zusammenhänge schnell sichtbar zu machen und aus einzelnen Gedanken konkrete, umsetzbare Maßnahmen abzuleiten.</p>
+                <p data-i18n="boxGoalText2">Statt lose Ideen in Notizen oder Tabellen zu verlieren, entwickelst du hier Schritt für Schritt eine klar lesbare Mindmap mit Beziehungen, Prioritäten und Verantwortlichkeiten. Dadurch wird aus einem ersten Gedankengerüst ein belastbarer Arbeitsstand, der sich im Team besprechen, weiterentwickeln, dokumentieren und drucken lässt.</p>
+              </div>
+              <div class="intro-wide-steps">
+                <h3 data-i18n="boxHowTitle">So benutzt du das Tool</h3>
+                <ol>
+                  <li data-i18n="step1">Gib zuerst Thema, Ziel und Scope ein und speichere diese Angaben. Damit setzt du den Root-Knoten und definierst den Rahmen deiner Analyse.</li>
+                  <li data-i18n="step2">Baue anschließend deine Mindmap auf: Lege neue Knoten an, verschiebe sie per Drag &amp; Drop und nutze die Zoom-Funktion, um auch größere Strukturen sauber zu bearbeiten.</li>
+                  <li data-i18n="step3">Wähle relevante Knoten aus und leite daraus konkrete Maßnahmen mit Termin, Owner und optionalem Nachweis zur Wirksamkeit ab.</li>
+                  <li data-i18n="step4">Steuere deine Maßnahmenliste im nächsten Schritt zentral weiter: Status ändern, drucken sowie Daten per JSON exportieren oder wieder importieren.</li>
+                </ol>
+              </div>
+            </div>
           </div>
 
-          <!-- KI Kostenlos -->
-          <div class="tool-box intro-box-free">
-            <h3 data-i18n="stepsAiFreeTitle">🆓 KI Assistent – Kostenlos</h3>
-            <p data-i18n="stepsAiFreeDesc">Starte sofort ohne Account. Wähle ein KI-Modell und gib deinen Prozessschritt ein – die KI erstellt automatisch eine erste Mindmap-Struktur mit Maßnahmen.</p>
-            <ol>
-              <li data-i18n="aiFreeStep1">Prozessschritt + Kontext eingeben.</li>
-              <li data-i18n="aiFreeStep2">Modell wählen &amp; generieren.</li>
-              <li data-i18n="aiFreeStep3">Ergebnis übernehmen &amp; weiterbearbeiten.</li>
-            </ol>
-          </div>
+          <div class="intro-ai-row">
+            <!-- KI Kostenlos -->
+            <div class="tool-box intro-box-free">
+              <div class="intro-card-badge" data-i18n="stepsAiFreeBadge">🆓 Kostenlos</div>
+              <h3 data-i18n="stepsAiFreeTitle">KI Assistent</h3>
+              <p class="intro-card-lead" data-i18n="stepsAiFreeLead">Sofort starten, ganz ohne Account.</p>
+              <p data-i18n="stepsAiFreeDesc">Ideal für einen schnellen Einstieg. Du wählst ein KI-Modell, gibst dein Thema ein und erhältst automatisch eine erste Mindmap-Struktur mit passenden Maßnahmen.</p>
+              <div class="intro-card-steps-title" data-i18n="stepsHowWorks">So funktioniert es:</div>
+              <ol>
+                <li data-i18n="aiFreeStep1">Thema + Kontext eingeben.</li>
+                <li data-i18n="aiFreeStep2">Modell wählen &amp; generieren.</li>
+                <li data-i18n="aiFreeStep3">Ergebnis übernehmen &amp; weiterbearbeiten.</li>
+              </ol>
+            </div>
 
-          <!-- KI Premium -->
-          <div class="tool-box intro-box-premium">
-            <h3 data-i18n="stepsAiTitle">⭐ KI Assistent – Premium</h3>
-            <p data-i18n="stepsAiDesc">Für maximale Qualität: GPT-basierte Modelle liefern deutlich präzisere, tiefere und QM-gerechtere Ergebnisse. Empfohlen für produktiven Einsatz.</p>
-            <ol>
-              <li data-i18n="aiStep1">Prozessschritt + Kontext eingeben.</li>
-              <li data-i18n="aiStep2">API-Key + Lizenzschlüssel eintragen.</li>
-              <li data-i18n="aiStep3">Mindmap &amp; Maßnahmen generieren.</li>
-              <li data-i18n="aiStep4">Ergebnis übernehmen &amp; anpassen.</li>
-            </ol>
+            <!-- KI Premium -->
+            <div class="tool-box intro-box-premium">
+              <div class="intro-card-badge" data-i18n="stepsAiPremiumBadge">🔵 Premium</div>
+              <h3 data-i18n="stepsAiTitle">Mit KI Premium</h3>
+              <p class="intro-card-lead" data-i18n="stepsAiLead">Mehr Tiefe, mehr Präzision, bessere Ergebnisse.</p>
+              <p data-i18n="stepsAiDesc">Für maximale Qualität im produktiven Einsatz. GPT-basierte Modelle liefern deutlich präzisere, tiefere und QM-gerechtere Ergebnisse.</p>
+              <div class="intro-card-steps-title" data-i18n="stepsHowWorks">So funktioniert es:</div>
+              <ol>
+                <li data-i18n="aiStep1">Thema + Kontext eingeben.</li>
+                <li data-i18n="aiStep2">API-Key + Lizenzschlüssel eintragen.</li>
+                <li data-i18n="aiStep3">Mindmap &amp; Maßnahmen automatisch generieren.</li>
+                <li data-i18n="aiStep4">Ergebnis übernehmen, anschließend wie gewohnt anpassen (ergänzen, bewerten, löschen).</li>
+              </ol>
+            </div>
           </div>
 
           <!-- Datenschutz -->
@@ -509,6 +636,9 @@
 
             <div class="map-tools">
               <button type="button" class="btn small primary" id="btnExportJson2" data-i18n="btnExportJson">JSON speichern</button>
+              <button type="button" class="btn small primary" id="btnExportHtml" data-i18n="btnExportHtml">HTML Export</button>
+              <button type="button" class="btn small primary" id="btnExportSvg" data-i18n="btnExportSvg">SVG Export</button>
+              <button type="button" class="btn small primary" id="btnExportPdf" data-i18n="btnExportPdf">PDF Export</button>
               <button type="button" class="btn small" id="btnImportJson2" data-i18n="btnImportJson">JSON laden</button>
               <button type="button" class="btn small" id="btnPrint2" data-i18n="btnPrint">Drucken</button>
             </div>
@@ -660,14 +790,14 @@
         </section>
 
         <!-- KI KOSTENLOS -->
-        <section class="section" aria-labelledby="secAIFree">
+        <section class="section section-free-ai" aria-labelledby="secAIFree">
           <div class="section-head">
             <div>
               <h3 class="sec-title" id="secAIFree" data-i18n="aiFreeTitle">KI Assistent (Kostenlos)</h3>
               <p class="sec-sub" data-i18n="aiFreeSubtitle">Mindmap &amp; Maßnahmen generieren – ohne Lizenzschlüssel, powered by OpenRouter.</p>
             </div>
             <div class="btn-row">
-              <span class="badge lic" data-i18n="aiFreeBadge">Kostenlos</span>
+              <span class="badge api" data-i18n="aiFreeBadge">Kostenlos</span>
             </div>
           </div>
 
@@ -686,7 +816,7 @@
             </div>
 
             <!-- API Key hidden – hardcoded in JS -->
-            <input id="aiFreeApiKey" type="hidden" value="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">
+            <input id="aiFreeApiKey" type="hidden" value="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">
 
             <div class="full">
               <label for="aiFreeProcessStep" data-i18n="aiFreeProcessLabel">Zu welchem Prozessschritt erstellen wir ein Mindmap?</label>
@@ -771,32 +901,38 @@
           boxToolNameTitle: "Name Tool",
           boxToolNameText: "Mindmap – Struktur & Maßnahmen",
           boxGoalTitle: "Ziel",
-          boxGoalText: "Ideen sichtbar machen, Beziehungen klären und relevante Punkte in umsetzbare Maßnahmen überführen.",
+          boxGoalText: "Dieses Tool hilft dir dabei, komplexe Themen visuell zu strukturieren, Zusammenhänge schnell sichtbar zu machen und aus einzelnen Gedanken konkrete, umsetzbare Maßnahmen abzuleiten.",
+          boxGoalText2: "Statt lose Ideen in Notizen oder Tabellen zu verlieren, entwickelst du hier Schritt für Schritt eine klar lesbare Mindmap mit Beziehungen, Prioritäten und Verantwortlichkeiten. Dadurch wird aus einem ersten Gedankengerüst ein belastbarer Arbeitsstand, der sich im Team besprechen, weiterentwickeln, dokumentieren und drucken lässt.",
           boxHowTitle: "So benutzt du das Tool",
 
           stepsNoAiTitle: "Ohne KI",
-          stepsAiFreeTitle: "🆓 KI Assistent – Kostenlos",
-          stepsAiFreeDesc: "Starte sofort ohne Account. Wähle ein KI-Modell und gib deinen Prozessschritt ein – die KI erstellt automatisch eine erste Mindmap-Struktur mit Maßnahmen.",
-          aiFreeStep1: "Prozessschritt + Kontext eingeben.",
+          stepsAiFreeBadge: "Kostenlos",
+          stepsAiFreeTitle: "KI Assistent (Kostenlos)",
+          stepsAiFreeLead: "Sofort starten, ganz ohne Account.",
+          stepsAiFreeDesc: "Ideal für einen schnellen Einstieg. Du wählst ein KI-Modell, gibst dein Thema ein und erhältst automatisch eine erste Mindmap-Struktur mit passenden Maßnahmen.",
+          aiFreeStep1: "Thema + Kontext eingeben.",
           aiFreeStep2: "Modell wählen & generieren.",
           aiFreeStep3: "Ergebnis übernehmen & weiterbearbeiten.",
-          stepsAiDesc: "Für maximale Qualität: GPT-basierte Modelle liefern deutlich präzisere, tiefere und QM-gerechtere Ergebnisse. Empfohlen für produktiven Einsatz.",
-          step1: "Thema, Ziel & Scope eingeben → speichern (setzt den Root-Knoten).",
-          step2: "Mindmap aufbauen: Knoten anlegen, per Drag verschieben, per Scroll zoomen.",
-          step3: "Knoten auswählen → Maßnahme mit Termin ableiten & speichern.",
-          step4: "Maßnahmenliste steuern: Status, drucken, JSON exportieren/importieren.",
+          stepsHowWorks: "So funktioniert es:",
+          stepsAiLead: "Mehr Tiefe, mehr Präzision, bessere Ergebnisse.",
+          stepsAiDesc: "Für maximale Qualität im produktiven Einsatz. GPT-basierte Modelle liefern deutlich präzisere, tiefere und QM-gerechtere Ergebnisse.",
+          step1: "Gib zuerst Thema, Ziel und Scope ein und speichere diese Angaben. Damit setzt du den Root-Knoten und definierst den Rahmen deiner Analyse.",
+          step2: "Baue anschließend deine Mindmap auf: Lege neue Knoten an, verschiebe sie per Drag & Drop und nutze die Zoom-Funktion, um auch größere Strukturen sauber zu bearbeiten.",
+          step3: "Wähle relevante Knoten aus und leite daraus konkrete Maßnahmen mit Termin, Owner und optionalem Nachweis zur Wirksamkeit ab.",
+          step4: "Steuere deine Maßnahmenliste im nächsten Schritt zentral weiter: Status ändern, drucken sowie Daten per JSON exportieren oder wieder importieren.",
 
-          stepsAiTitle: "Mit KI Premium",
-          aiStep1: "Prozessschritt + Kontext eingeben.",
+          stepsAiPremiumBadge: "Premium",
+          stepsAiTitle: "KI Assistent (Premium)",
+          aiStep1: "Thema + Kontext eingeben.",
           aiStep2: "API-Key + Lizenzschlüssel eintragen.",
           aiStep3: "Mindmap & Maßnahmen automatisch generieren.",
           aiStep4: "Ergebnis übernehmen, anschließend wie gewohnt anpassen (ergänzen, bewerten, löschen).",
 
           boxPrivacyTitle: "Datenschutz",
           privacyNoApiTitle: "Datenschutz (ohne API)",
-          privacyNoApiText: "Dieses Tool arbeitet vollständig im Browser. Daten werden lokal gespeichert und optional als JSON exportiert – keine Übertragung an Server, außer bei KI-Nutzung (dann nur Prozessschritt & Kontext an den jeweiligen KI-Anbieter).",
+          privacyNoApiText: "Dieses Tool arbeitet vollständig im Browser. Daten werden lokal gespeichert und optional als JSON exportiert – keine Übertragung an Server, außer bei KI-Nutzung (dann nur Thema & Kontext an den jeweiligen KI-Anbieter).",
           privacyApiTitle: "Datenschutz (Premium mit API/KI)",
-          privacyApiText: "Wenn du die Premium-KI nutzt, werden ausschließlich die von dir eingegebenen Inhalte (Prozessschritt, Kontext) sowie die aktuelle Tool-Struktur aus deinem Browser an die konfigurierte OpenAI-API übertragen, um Vorschläge zu erzeugen. Der API-Key wird nicht serverseitig gespeichert.",
+          privacyApiText: "Wenn du die Premium-KI nutzt, werden ausschließlich die von dir eingegebenen Inhalte (Thema, Kontext) sowie die aktuelle Tool-Struktur aus deinem Browser an die konfigurierte OpenAI-API übertragen, um Vorschläge zu erzeugen. Der API-Key wird nicht serverseitig gespeichert.",
 
           sec1Title: "1. Meta (Thema / Ziel / Scope)",
           sec1Sub: "Wichtig: „Speichern“ aktualisiert die Wurzel (Root) der Mindmap und wird lokal gesichert.",
@@ -865,6 +1001,9 @@
           refShort: "Bezug:",
 
           btnExportJson: "JSON speichern",
+          btnExportHtml: "HTML Export",
+          btnExportSvg: "SVG Export",
+          btnExportPdf: "PDF Export",
           btnImportJson: "JSON laden",
           btnPrint: "Drucken",
           btnResetAll: "Alles löschen",
@@ -874,7 +1013,7 @@
           aiPremiumBadge: "Premium",
           aiQualityBadge: "✦ Significantly better output quality",
           aiQualityBadge: "✦ Deutlich bessere Antwortqualität",
-          aiPitch: "Nutze die volle Power des Tools: Der KI-Assistent erstellt dir auf Basis von Prozessschritt & Kontext eine strukturierte Mindmap samt Maßnahmenliste – du bist damit <strong>bis zu 80% schneller</strong> und deutlich effizienter unterwegs. <strong>Kunden der Quality Services &amp; Wissen GmbH erhalten diese Funktion kostenlos.</strong>",
+          aiPitch: "Nutze die volle Power des Tools: Der KI-Assistent erstellt dir auf Basis von Thema & Kontext eine strukturierte Mindmap samt Maßnahmenliste – du bist damit <strong>bis zu 80% schneller</strong> und deutlich effizienter unterwegs. <strong>Kunden der Quality Services &amp; Wissen GmbH erhalten diese Funktion kostenlos.</strong>",
 
           aiLicenseLabel: "Lizenzschlüssel",
           aiLicBadge: "Lizenz",
@@ -888,7 +1027,7 @@
           aiModelCustomPh: "z.B. gpt-5.4-mini",
           aiModelCustomHint: "Wird verwendet, wenn oben „Eigenes Modell …“ gewählt ist.",
           aiModelCustomOption: "Eigenes Modell …",
-          aiProcessLabel: "Zu welchem Prozessschritt erstellen wir ein Mindmap?",
+          aiProcessLabel: "Zu welchem Thema erstellen wir eine Mindmap?",
           aiProcessPh: "z.B. Wareneingangsprüfung / Reklamationsbearbeitung / Produktion Linie A …",
           aiContextLabel: "Kontext",
           aiContextPh: "Ziel, Probleme, Rahmenbedingungen, bekannte Ursachen/Ideen, Stakeholder …",
@@ -928,7 +1067,7 @@
           aiNeedLicense: "Lizenzschlüssel erforderlich.",
           aiBadLicense: "Lizenzschlüssel ungültig.",
           aiNeedApi: "Bitte OpenAI API Key eintragen.",
-          aiNeedProcess: "Bitte Prozessschritt angeben.",
+          aiNeedProcess: "Bitte Thema angeben.",
           aiGenerating: "KI generiert…",
           aiGenerated: "Ergebnis bereit.",
           aiApplied: "Ergebnis übernommen.",
@@ -945,14 +1084,14 @@
           aiFreeModelLabel: "Modell",
           aiFreeApiKeyLabel: "OpenRouter API Key",
           aiFreeApiKeyHint: "Key bleibt im Browser. Eigenen Key eintragen unter openrouter.ai.",
-          aiFreeProcessLabel: "Zu welchem Prozessschritt erstellen wir ein Mindmap?",
+          aiFreeProcessLabel: "Zu welchem Thema erstellen wir eine Mindmap?",
           aiFreeContextLabel: "Kontext",
           aiFreeGenerating: "KI generiert…",
           aiFreeGenerated: "Ergebnis bereit.",
           aiFreeApplied: "Ergebnis übernommen.",
           aiFreeApplyConfirm: "Ergebnis übernehmen? Dabei wird Meta, Mindmap und Maßnahmenliste überschrieben.",
           aiFreeDownloaded: "Ergebnis als JSON gespeichert.",
-          aiFreeNeedProcess: "Bitte Prozessschritt angeben.",
+          aiFreeNeedProcess: "Bitte Thema angeben.",
           aiFreeNeedApi: "Bitte OpenRouter API Key eintragen.",
           aireeFailed: "KI konnte nicht erzeugen."
         },
@@ -964,32 +1103,38 @@
           boxToolNameTitle: "Tool name",
           boxToolNameText: "Mindmap – Structure & Actions",
           boxGoalTitle: "Goal",
-          boxGoalText: "Make ideas visible, clarify relationships, and turn relevant points into executable actions.",
+          boxGoalText: "This tool helps you structure complex topics visually, make relationships visible quickly, and turn individual ideas into concrete, actionable measures.",
+          boxGoalText2: "Instead of losing ideas in notes or spreadsheets, you build a clear mindmap step by step with relationships, priorities, and responsibilities. This turns an initial draft of thoughts into a solid working structure that can be discussed, refined, documented, and printed.",
           boxHowTitle: "How to use this tool",
 
           stepsNoAiTitle: "Without AI",
-          stepsAiFreeTitle: "🆓 AI Assistant – Free",
-          stepsAiFreeDesc: "Start immediately without an account. Choose an AI model and enter your process step – the AI automatically creates a first mindmap structure with actions.",
-          aiFreeStep1: "Enter process step + context.",
+          stepsAiFreeBadge: "Free",
+          stepsAiFreeTitle: "AI Assistant (Free)",
+          stepsAiFreeLead: "Start immediately, without an account.",
+          stepsAiFreeDesc: "Ideal for a quick start. Choose an AI model, enter your topic, and the AI creates an initial mindmap structure with matching actions.",
+          aiFreeStep1: "Enter topic + context.",
           aiFreeStep2: "Select model & generate.",
           aiFreeStep3: "Apply result & continue editing.",
-          stepsAiDesc: "For maximum quality: GPT-based models deliver significantly more precise, deeper, and QM-appropriate results. Recommended for productive use.",
-          step1: "Enter topic, goal & scope → save (sets the root node).",
-          step2: "Build the mindmap: add nodes, move via drag, zoom via scroll.",
-          step3: "Select a node → derive action with due date & save.",
-          step4: "Manage action list: status, print, export/import JSON.",
+          stepsHowWorks: "How it works:",
+          stepsAiLead: "More depth, more precision, better results.",
+          stepsAiDesc: "For maximum quality in productive use. GPT-based models deliver significantly more precise, deeper, and QM-appropriate results.",
+          step1: "Start by entering topic, goal, and scope, then save them. This sets the root node and defines the frame of your analysis.",
+          step2: "Then build your mindmap: add new nodes, move them via drag and drop, and use zoom to work cleanly even with larger structures.",
+          step3: "Select relevant nodes and derive concrete actions with due date, owner, and optional proof of effectiveness.",
+          step4: "Manage your action list centrally in the next step: update status, print, and export or import data via JSON.",
 
-          stepsAiTitle: "With AI Premium",
-          aiStep1: "Enter process step + context.",
+          stepsAiPremiumBadge: "Premium",
+          stepsAiTitle: "AI Assistant (Premium)",
+          aiStep1: "Enter topic + context.",
           aiStep2: "Provide API key + license key.",
           aiStep3: "Generate mindmap & actions automatically.",
           aiStep4: "Apply the result, then work as usual (add, edit, delete).",
 
           boxPrivacyTitle: "Privacy",
           privacyNoApiTitle: "Privacy (no API)",
-          privacyNoApiText: "This tool runs entirely in your browser. Data is stored locally and can optionally be exported as JSON – no data sent to servers, except during AI use (only process step & context to the respective AI provider).",
+          privacyNoApiText: "This tool runs entirely in your browser. Data is stored locally and can optionally be exported as JSON – no data sent to servers, except during AI use (only topic & context to the respective AI provider).",
           privacyApiTitle: "Privacy (Premium with API/AI)",
-          privacyApiText: "If you use Premium AI, only the inputs you provide (process step, context) and the current tool structure from your browser are sent to the configured OpenAI API to generate suggestions. The API key is not stored server-side.",
+          privacyApiText: "If you use Premium AI, only the inputs you provide (topic, context) and the current tool structure from your browser are sent to the configured OpenAI API to generate suggestions. The API key is not stored server-side.",
 
           sec1Title: "1. Meta (Topic / Goal / Scope)",
           sec1Sub: "Important: “Save” updates the root node and stores everything locally.",
@@ -1058,6 +1203,9 @@
           refShort: "Ref:",
 
           btnExportJson: "Export JSON",
+          btnExportHtml: "HTML Export",
+          btnExportSvg: "SVG Export",
+          btnExportPdf: "PDF Export",
           btnImportJson: "Import JSON",
           btnPrint: "Print",
           btnResetAll: "Clear all",
@@ -1065,7 +1213,7 @@
           aiTitle: "AI Assistant (Premium)",
           aiSub: "Generate a first mindmap structure with concrete actions in seconds – then continue working as usual.",
           aiPremiumBadge: "Premium",
-          aiPitch: "Use the full power of the tool: the AI assistant creates a structured mindmap and an action list based on your process step & context – making you up to <strong>80% faster</strong> and more efficient. <strong>Customers of Quality Services &amp; Wissen GmbH get this feature for free.</strong>",
+          aiPitch: "Use the full power of the tool: the AI assistant creates a structured mindmap and an action list based on your topic & context – making you up to <strong>80% faster</strong> and more efficient. <strong>Customers of Quality Services &amp; Wissen GmbH get this feature for free.</strong>",
 
           aiLicenseLabel: "License key",
           aiLicBadge: "License",
@@ -1079,7 +1227,7 @@
           aiModelCustomPh: "e.g. gpt-5.4-mini",
           aiModelCustomHint: "Used when you select “Custom model …” above.",
           aiModelCustomOption: "Custom model …",
-          aiProcessLabel: "For which process step should we create a mindmap?",
+          aiProcessLabel: "For which topic should we create a mindmap?",
           aiProcessPh: "e.g. incoming inspection / complaint handling / production line A ...",
           aiContextLabel: "Context",
           aiContextPh: "Goal, problems, boundary conditions, known causes/ideas, stakeholders ...",
@@ -1119,7 +1267,7 @@
           aiNeedLicense: "License key required.",
           aiBadLicense: "Invalid license key.",
           aiNeedApi: "Please enter an OpenAI API key.",
-          aiNeedProcess: "Please provide a process step.",
+          aiNeedProcess: "Please provide a topic.",
           aiGenerating: "AI generating…",
           aiGenerated: "Result ready.",
           aiApplied: "Result applied.",
@@ -1136,14 +1284,14 @@
           aiFreeModelLabel: "Model",
           aiFreeApiKeyLabel: "OpenRouter API key",
           aiFreeApiKeyHint: "Key stays in your browser. Enter your own key at openrouter.ai.",
-          aiFreeProcessLabel: "For which process step should we create a mindmap?",
+          aiFreeProcessLabel: "For which topic should we create a mindmap?",
           aiFreeContextLabel: "Context",
           aiFreeGenerating: "AI generating…",
           aiFreeGenerated: "Result ready.",
           aiFreeApplied: "Result applied.",
           aiFreeApplyConfirm: "Apply the result? This will overwrite meta, mindmap and action list.",
           aiFreeDownloaded: "Result saved as JSON.",
-          aiFreeNeedProcess: "Please provide a process step.",
+          aiFreeNeedProcess: "Please provide a topic.",
           aiFreeNeedApi: "Please enter an OpenRouter API key.",
           aireeFailed: "AI generation failed."
         }
@@ -1536,7 +1684,7 @@
         $("#actionProof").value = "";
         $("#srcNode").value = "—";
 
-        // KI-Felder (Prozessschritt & Kontext – ohne API-Key und Lizenz)
+        // KI-Felder (Thema & Kontext – ohne API-Key und Lizenz)
         const aiProcess = $("#aiProcessStep");
         if(aiProcess) aiProcess.value = "";
         const aiContext = $("#aiContext");
@@ -1780,6 +1928,582 @@
         a.download = filename;
         a.click();
         URL.revokeObjectURL(url);
+      }
+
+      /* ============================================================
+         MINDMAP → PROPER SVG
+         Reads jsMind DOM nodes (jmnode) + existing path lines
+         and builds a complete standalone SVG with boxes + text.
+      ============================================================ */
+      function buildMindmapSvg(){
+        const container = document.getElementById("jsmind_container");
+        if(!container) return null;
+
+        // Collect all rendered node elements
+        const nodeEls = Array.from(container.querySelectorAll("jmnode, [nodeid]"));
+        if(!nodeEls.length) return null;
+
+        // Container bounding rect for offset calculation
+        const cRect = container.getBoundingClientRect();
+
+        // Build node data: position, size, label, depth
+        const nodes = nodeEls.map(el => {
+          const r = el.getBoundingClientRect();
+          return {
+            id: el.getAttribute("nodeid") || el.id,
+            label: el.textContent.trim(),
+            x: r.left - cRect.left + container.scrollLeft,
+            y: r.top - cRect.top + container.scrollTop,
+            w: r.width,
+            h: r.height,
+            isRoot: el.getAttribute("nodeid") === "root" || el.classList.contains("root")
+          };
+        });
+
+        if(!nodes.length) return null;
+
+        // Determine SVG canvas size with padding
+        const PAD = 40;
+        const minX = Math.min(...nodes.map(n => n.x)) - PAD;
+        const minY = Math.min(...nodes.map(n => n.y)) - PAD;
+        const maxX = Math.max(...nodes.map(n => n.x + n.w)) + PAD;
+        const maxY = Math.max(...nodes.map(n => n.y + n.h)) + PAD;
+        const svgW = Math.max(maxX - minX, 600);
+        const svgH = Math.max(maxY - minY, 400);
+
+        // Existing path/curve lines from jsMind SVG
+        const existingSvg = container.querySelector("svg");
+        let pathsHtml = "";
+        if(existingSvg){
+          const paths = Array.from(existingSvg.querySelectorAll("path"));
+          pathsHtml = paths.map(p => {
+            // Shift path coordinates by our offset
+            const d = p.getAttribute("d") || "";
+            // Transform coordinates: subtract (minX, minY) to fit our viewport
+            const shiftedD = d.replace(/(-?\d+\.?\d*)\s+(-?\d+\.?\d*)/g, (_, px, py) => {
+              return `${parseFloat(px) - minX} ${parseFloat(py) - minY}`;
+            });
+            return `<path stroke="#94a3b8" stroke-width="1.5" fill="none" d="${shiftedD}"/>`;
+          }).join("\n  ");
+        }
+
+        // Colour palette by depth (approximate via x-position relative to root)
+        const rootNode = nodes.find(n => n.isRoot) || nodes[0];
+        const colors = ["#1155b2","#2563eb","#3b82f6","#60a5fa","#93c5fd","#bfdbfe"];
+        function nodeColor(n){
+          if(n.isRoot) return "#09387a";
+          const dist = Math.abs(n.x - rootNode.x);
+          const idx = Math.min(Math.floor(dist / 120), colors.length - 1);
+          return colors[idx];
+        }
+        function nodeFill(n){
+          if(n.isRoot) return "#09387a";
+          const dist = Math.abs(n.x - rootNode.x);
+          if(dist < 50) return "#1e3a8a";
+          if(dist < 150) return "#dbeafe";
+          return "#f0f7ff";
+        }
+        function nodeTextColor(n){
+          if(n.isRoot) return "#ffffff";
+          const dist = Math.abs(n.x - rootNode.x);
+          if(dist < 50) return "#ffffff";
+          return "#1e3a8a";
+        }
+        function nodeFontSize(n){
+          if(n.isRoot) return 13;
+          const dist = Math.abs(n.x - rootNode.x);
+          return dist < 150 ? 12 : 11;
+        }
+
+        // Build node rectangles + text
+        const nodesHtml = nodes.map(n => {
+          const x = n.x - minX;
+          const y = n.y - minY;
+          const rx = n.isRoot ? 6 : 4;
+          const fill = nodeFill(n);
+          const stroke = nodeColor(n);
+          const txtColor = nodeTextColor(n);
+          const fs = nodeFontSize(n);
+          // Word-wrap label into tspan lines (max ~25 chars per line)
+          const words = n.label.split(/\s+/);
+          const maxChars = Math.floor(n.w / (fs * 0.6)) || 20;
+          const lines = [];
+          let cur = "";
+          words.forEach(w => {
+            if((cur + " " + w).trim().length > maxChars && cur){
+              lines.push(cur.trim());
+              cur = w;
+            } else {
+              cur = (cur + " " + w).trim();
+            }
+          });
+          if(cur) lines.push(cur);
+          const lineH = fs + 3;
+          const totalTH = lines.length * lineH;
+          const startY = y + n.h/2 - totalTH/2 + fs;
+          const tspans = lines.map((ln, i) =>
+            `<tspan x="${x + n.w/2}" dy="${i === 0 ? 0 : lineH}">${ln.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}</tspan>`
+          ).join("");
+          return `
+  <rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${n.w.toFixed(1)}" height="${n.h.toFixed(1)}"
+    rx="${rx}" fill="${fill}" stroke="${stroke}" stroke-width="${n.isRoot ? 2 : 1}"/>
+  <text x="${(x+n.w/2).toFixed(1)}" y="${startY.toFixed(1)}"
+    text-anchor="middle" font-family="Segoe UI,Roboto,Arial,sans-serif"
+    font-size="${fs}" font-weight="${n.isRoot ? 700 : 500}" fill="${txtColor}">
+    ${tspans}
+  </text>`;
+        }).join("\n");
+
+        return `<svg xmlns="http://www.w3.org/2000/svg" width="${svgW}" height="${svgH}" viewBox="0 0 ${svgW} ${svgH}">
+  <rect width="${svgW}" height="${svgH}" fill="#ffffff"/>
+  <!-- connection lines -->
+  ${pathsHtml}
+  <!-- nodes -->
+  ${nodesHtml}
+</svg>`;
+      }
+
+      /* ============================================================
+         SHARED: build measures HTML table
+      ============================================================ */
+      function buildMeasuresTableHtml(){
+        if(!state.measures.length){
+          return `<p style="color:#64748b; font-style:italic;">${currentLang==="de"?"Keine Maßnahmen vorhanden":"No measures available"}</p>`;
+        }
+        return `
+          <table style="width:100%; border-collapse:collapse; margin-top:20px; font-size:13px;">
+            <thead>
+              <tr style="background:#f1f5f9; border-bottom:2px solid #cbd5e1;">
+                <th style="padding:10px 12px; text-align:left; border:1px solid #e2e8f0; color:#09387a; text-transform:uppercase; font-size:11px;">${escapeHtml(t("colStatus"))}</th>
+                <th style="padding:10px 12px; text-align:left; border:1px solid #e2e8f0; color:#09387a; text-transform:uppercase; font-size:11px;">${escapeHtml(t("colAction"))}</th>
+                <th style="padding:10px 12px; text-align:left; border:1px solid #e2e8f0; color:#09387a; text-transform:uppercase; font-size:11px;">${escapeHtml(t("colProof"))}</th>
+                <th style="padding:10px 12px; text-align:left; border:1px solid #e2e8f0; color:#09387a; text-transform:uppercase; font-size:11px;">${escapeHtml(t("colDue"))}</th>
+                <th style="padding:10px 12px; text-align:left; border:1px solid #e2e8f0; color:#09387a; text-transform:uppercase; font-size:11px;">${escapeHtml(t("colOwner"))}</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${state.measures.map(m=>{
+                const stLabel = m.status==="done" ? t("statusDone") : m.status==="drop" ? t("statusDrop") : t("statusOpen");
+                const statusBg = m.status==="done" ? "#16a34a" : m.status==="drop" ? "#94a3b8" : "#f59e0b";
+                const rowBg = m.status==="done" ? "#f0faf4" : m.status==="drop" ? "#f8fafc" : "#fff";
+                return `<tr style="border-bottom:1px solid #e2e8f0; background:${rowBg};">
+                  <td style="padding:10px 12px; border:1px solid #e2e8f0; width:90px;">
+                    <span style="display:inline-block; padding:3px 8px; border-radius:3px; font-size:11px; font-weight:700; color:#fff; background:${statusBg};">${escapeHtml(stLabel)}</span>
+                  </td>
+                  <td style="padding:10px 12px; border:1px solid #e2e8f0;">
+                    <div style="font-weight:700; color:#0f172a;">${escapeHtml(m.text||"")}</div>
+                    <div style="font-size:11px; color:#64748b; margin-top:3px;">${escapeHtml(t("refShort"))} ${escapeHtml(m.nodePath||"—")}</div>
+                  </td>
+                  <td style="padding:10px 12px; border:1px solid #e2e8f0;">${escapeHtml(m.proof||"—")}</td>
+                  <td style="padding:10px 12px; border:1px solid #e2e8f0; white-space:nowrap;">${escapeHtml(m.due||"—")}</td>
+                  <td style="padding:10px 12px; border:1px solid #e2e8f0;">${escapeHtml(m.owner||"—")}</td>
+                </tr>`;
+              }).join("")}
+            </tbody>
+          </table>`;
+      }
+
+      /* ============================================================
+         SHARED: Header + Footer HTML snippets with branding
+      ============================================================ */
+      function buildExportHeaderHtml(title){
+        const isDE = currentLang === "de";
+        return `
+  <!-- HEADER -->
+  <header style="background:#09387a; color:#fff; padding:18px 30px; margin-bottom:0; display:flex; align-items:center; justify-content:space-between;">
+    <div>
+      <div style="font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:#93c5fd; margin-bottom:4px;">
+        Quality Services &amp; Wissen GmbH
+      </div>
+      <h1 style="margin:0; font-size:20px; font-weight:800; color:#fff; font-family:Segoe UI,Roboto,Arial,sans-serif;">
+        ${escapeHtml(title)}
+      </h1>
+      <div style="font-size:12px; color:#bfdbfe; margin-top:4px;">
+        ${isDE?"Mindmap-Tool – Erstellt mit Unterstützung der Quality Services &amp; Wissen GmbH":"Mindmap Tool – Created with support of Quality Services &amp; Wissen GmbH"}
+      </div>
+    </div>
+    <div style="text-align:right; font-size:11px; color:#bfdbfe; line-height:1.6;">
+      <div style="font-weight:700;">tools.quality.de</div>
+      <div>${isDE?"Exportiert":"Exported"}: ${new Date().toLocaleString(isDE?"de-DE":"en-US")}</div>
+    </div>
+  </header>
+  <!-- META BAR -->
+  <div style="background:#f0f7ff; border-left:4px solid #1155b2; padding:12px 30px; margin-bottom:24px; font-size:13px; font-family:Segoe UI,Roboto,Arial,sans-serif;">
+    <span style="margin-right:24px;"><strong style="color:#09387a;">${isDE?"Ziel:":"Goal:"}</strong> ${escapeHtml(state.meta.goal||"—")}</span>
+    <span style="margin-right:24px;"><strong style="color:#09387a;">${isDE?"Geltungsbereich:":"Scope:"}</strong> ${escapeHtml(state.meta.scope||"—")}</span>
+    ${state.meta.notes ? `<span><strong style="color:#09387a;">${isDE?"Notizen:":"Notes:"}</strong> ${escapeHtml(state.meta.notes)}</span>` : ""}
+  </div>`;
+      }
+
+      function buildExportFooterHtml(){
+        const isDE = currentLang === "de";
+        return `
+  <!-- FOOTER -->
+  <footer style="margin-top:40px; padding:14px 30px; background:#f8fafc; border-top:2px solid #1155b2; font-size:11px; color:#64748b; font-family:Segoe UI,Roboto,Arial,sans-serif; display:flex; justify-content:space-between; align-items:center;">
+    <div>
+      © ${new Date().getFullYear()} <strong>Quality Services &amp; Wissen GmbH</strong> · 
+      <a href="https://tools.quality.de/" style="color:#1155b2; text-decoration:none;">tools.quality.de</a>
+    </div>
+    <div style="text-align:right;">
+      ${isDE?"Erstellt mit dem Mindmap-Tool von Quality Services &amp; Wissen GmbH":"Created with the Mindmap Tool by Quality Services &amp; Wissen GmbH"}
+    </div>
+  </footer>`;
+      }
+
+      /* ============================================================
+         HTML EXPORT
+      ============================================================ */
+      function exportToHtml(){
+        const svgContent = buildMindmapSvg();
+        const mindmapBlock = svgContent
+          ? `<div style="width:100%; overflow-x:auto; background:#f8fafc; border:1px solid #d1d9e6; border-radius:4px; padding:16px;">${svgContent}</div>`
+          : `<p style="color:#64748b;">${currentLang==="de"?"Mindmap konnte nicht gerendert werden.":"Mindmap could not be rendered."}</p>`;
+
+        const title = state.meta.topic || "Mindmap Export";
+        const isDE = currentLang === "de";
+
+        const htmlContent = `<!DOCTYPE html>
+<html lang="${currentLang}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${escapeHtml(title)}</title>
+  <style>
+    *{box-sizing:border-box;}
+    body{margin:0;padding:0;font-family:'Segoe UI',Roboto,Arial,sans-serif;background:#fff;color:#27304d;}
+    .container{max-width:1400px;margin:0 auto;padding:0 0 30px;}
+    .section{margin:0 30px 30px;background:#fff;border:1px solid #d1d9e6;border-radius:4px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+    .section h2{margin-top:0;color:#09387a;font-size:16px;border-bottom:2px solid #e2e8f0;padding-bottom:8px;}
+    svg{max-width:100%;height:auto;display:block;}
+    table{width:100%;border-collapse:collapse;font-size:13px;}
+    th,td{padding:10px 12px;border:1px solid #e2e8f0;text-align:left;}
+    thead tr{background:#f1f5f9;}
+    th{color:#09387a;text-transform:uppercase;font-size:11px;font-weight:700;}
+    @media print{
+      .section{box-shadow:none;border-color:#ccc;page-break-inside:avoid;}
+      a{color:#000;}
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  ${buildExportHeaderHtml(title)}
+  <div class="section">
+    <h2>${isDE?"Mindmap":"Mindmap"}</h2>
+    ${mindmapBlock}
+  </div>
+  <div class="section">
+    <h2>${escapeHtml(t("sec4Title"))}</h2>
+    ${buildMeasuresTableHtml()}
+  </div>
+  ${buildExportFooterHtml()}
+</div>
+</body>
+</html>`;
+
+        const blob = new Blob([htmlContent], {type:"text/html;charset=utf-8"});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = (title).replace(/[^a-zA-Z0-9äöüÄÖÜß]/g,"_") + ".html";
+        a.click();
+        URL.revokeObjectURL(url);
+        toast(currentLang==="de" ? "HTML Export erfolgreich!" : "HTML export successful!");
+      }
+
+      /* ============================================================
+         SHARED: branded export SVG helpers
+      ============================================================ */
+      function wrapSvgText(text, maxCharsPerLine){
+        const clean = String(text || "—").replace(/\s+/g, " ").trim() || "—";
+        const words = clean.split(" ");
+        const lines = [];
+        let line = "";
+        words.forEach(word => {
+          const next = line ? line + " " + word : word;
+          if(next.length > maxCharsPerLine && line){
+            lines.push(line);
+            line = word;
+          } else {
+            line = next;
+          }
+        });
+        if(line) lines.push(line);
+        return lines.length ? lines : ["—"];
+      }
+
+      function buildMeasuresSvgBlock(startY, pageWidth){
+        const isDE = currentLang === "de";
+        const left = 28;
+        const width = pageWidth - left * 2;
+        const col = {
+          status: 120,
+          action: 640,
+          proof: 320,
+          due: 170,
+          owner: width - (120 + 640 + 320 + 170)
+        };
+        const rowPadY = 10;
+        const lineH = 16;
+        let y = startY;
+        let out = "";
+
+        out += `<text x="${left}" y="${y}" font-size="24" font-weight="800" fill="#09387a">${escapeHtml(t("sec4Title"))}</text>`;
+        y += 18;
+        out += `<line x1="${left}" y1="${y + 10}" x2="${left + width}" y2="${y + 10}" stroke="#dbe7f5" stroke-width="2"/>`;
+        y += 34;
+
+        const headers = [
+          { key:"status", label:t("colStatus") },
+          { key:"action", label:t("colAction") },
+          { key:"proof", label:t("colProof") },
+          { key:"due", label:t("colDue") },
+          { key:"owner", label:t("colOwner") }
+        ];
+        let x = left;
+        out += `<rect x="${left}" y="${y}" width="${width}" height="36" fill="#f1f5f9" stroke="#dbe7f5"/>`;
+        headers.forEach(h => {
+          out += `<text x="${x + 10}" y="${y + 23}" font-size="11" font-weight="700" fill="#09387a">${escapeHtml(h.label.toUpperCase())}</text>`;
+          x += col[h.key];
+          if(x < left + width){
+            out += `<line x1="${x}" y1="${y}" x2="${x}" y2="${y + 36}" stroke="#dbe7f5"/>`;
+          }
+        });
+        y += 36;
+
+        if(!state.measures.length){
+          out += `<rect x="${left}" y="${y}" width="${width}" height="48" fill="#ffffff" stroke="#dbe7f5"/>`;
+          out += `<text x="${left + 10}" y="${y + 29}" font-size="13" fill="#64748b">${escapeHtml(isDE ? "Keine Maßnahmen vorhanden." : "No measures available.")}</text>`;
+          return { svg: out, height: (y + 48) - startY };
+        }
+
+        state.measures.forEach((m, idx) => {
+          const statusLabel = m.status === "done" ? t("statusDone") : m.status === "drop" ? t("statusDrop") : t("statusOpen");
+          const statusFill = m.status === "done" ? "#16a34a" : m.status === "drop" ? "#94a3b8" : "#f59e0b";
+          const actionLines = [
+            ...wrapSvgText(m.text || "—", 54),
+            ...wrapSvgText(`${t("refShort")} ${m.nodePath || "—"}`, 58)
+          ];
+          const proofLines = wrapSvgText(m.proof || "—", 26);
+          const dueLines = wrapSvgText(m.due || "—", 14);
+          const ownerLines = wrapSvgText(m.owner || "—", 18);
+          const statusLines = wrapSvgText(statusLabel, 12);
+          const maxLines = Math.max(actionLines.length, proofLines.length, dueLines.length, ownerLines.length, statusLines.length, 1);
+          const rowH = Math.max(42, rowPadY * 2 + maxLines * lineH);
+          const bg = idx % 2 ? "#fbfcfe" : "#ffffff";
+
+          out += `<rect x="${left}" y="${y}" width="${width}" height="${rowH}" fill="${bg}" stroke="#e2e8f0"/>`;
+          const cuts = [left + col.status, left + col.status + col.action, left + col.status + col.action + col.proof, left + col.status + col.action + col.proof + col.due];
+          cuts.forEach(cx => {
+            out += `<line x1="${cx}" y1="${y}" x2="${cx}" y2="${y + rowH}" stroke="#e2e8f0"/>`;
+          });
+
+          const badgeW = Math.min(col.status - 20, Math.max(70, statusLabel.length * 8 + 16));
+          out += `<rect x="${left + 10}" y="${y + 10}" rx="4" ry="4" width="${badgeW}" height="22" fill="${statusFill}"/>`;
+          out += `<text x="${left + 10 + badgeW/2}" y="${y + 25}" font-size="11" font-weight="700" fill="#ffffff" text-anchor="middle">${escapeHtml(statusLabel)}</text>`;
+
+          function drawLines(lines, x, yTop, color, size, weight){
+            return lines.map((line, i) => `<text x="${x}" y="${yTop + i * lineH}" font-size="${size}"${weight ? ` font-weight="${weight}"` : ""} fill="${color}">${escapeHtml(line)}</text>`).join("");
+          }
+
+          out += drawLines(actionLines.slice(0,1), left + col.status + 10, y + 22, "#0f172a", 13, 700);
+          if(actionLines.length > 1){
+            out += drawLines(actionLines.slice(1), left + col.status + 10, y + 40, "#64748b", 11, 400);
+          }
+          out += drawLines(proofLines, left + col.status + col.action + 10, y + 22, "#27304d", 12, 400);
+          out += drawLines(dueLines, left + col.status + col.action + col.proof + 10, y + 22, "#27304d", 12, 400);
+          out += drawLines(ownerLines, left + col.status + col.action + col.proof + col.due + 10, y + 22, "#27304d", 12, 400);
+          y += rowH;
+        });
+
+        return { svg: out, height: y - startY };
+      }
+
+      function parseSvgSize(svgMarkup){
+        const tagMatch = svgMarkup && svgMarkup.match(/<svg[^>]*>/i);
+        const tag = tagMatch ? tagMatch[0] : "";
+        const vb = tag.match(/viewBox="[^"]*?([0-9.]+)\s+([0-9.]+)"/i);
+        if(vb){
+          return { width: parseFloat(vb[1]) || 1400, height: parseFloat(vb[2]) || 900 };
+        }
+        const wh = tag.match(/width="([0-9.]+)"[^>]*height="([0-9.]+)"/i) || tag.match(/height="([0-9.]+)"[^>]*width="([0-9.]+)"/i);
+        if(wh){
+          const width = parseFloat(wh[1]) || 1400;
+          const height = parseFloat(wh[2]) || 900;
+          return { width, height };
+        }
+        return { width: 1400, height: 900 };
+      }
+
+      function buildBrandedExportSvg(){
+        const title = state.meta.topic || "Mindmap Export";
+        const isDE = currentLang === "de";
+        const mindSvg = buildMindmapSvg();
+        if(!mindSvg) return null;
+
+        const size = parseSvgSize(mindSvg);
+        const mW = size.width;
+        const mH = size.height;
+
+        const PAGE_W = 1600;
+        const PAGE_H = 900;
+        const PAD_X = 28;
+        const HEADER_H = 70;
+        const CONTENT_TOP = HEADER_H + 12;
+        const CONTENT_W = PAGE_W - PAD_X * 2;
+        const CONTENT_H = PAGE_H - CONTENT_TOP - 12;
+        const scale = Math.min(CONTENT_W / mW, CONTENT_H / mH, 1);
+        const drawW = mW * scale;
+        const drawH = mH * scale;
+        const drawX = PAD_X;
+        const drawY = CONTENT_TOP + Math.max((CONTENT_H - drawH) / 2, 0);
+
+        const exportDate = new Date().toLocaleString(isDE ? "de-DE" : "en-US");
+        const innerContent = mindSvg.replace(/<svg[^>]*>/, "").replace(/<\/svg>$/, "");
+
+        return `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="${PAGE_W}" height="${PAGE_H}" viewBox="0 0 ${PAGE_W} ${PAGE_H}">
+  <defs>
+    <style>
+      text { font-family: Segoe UI, Roboto, Arial, sans-serif; }
+    </style>
+  </defs>
+
+  <rect width="${PAGE_W}" height="${PAGE_H}" fill="#ffffff"/>
+
+  <rect x="0" y="0" width="${PAGE_W}" height="${HEADER_H}" fill="#09387a"/>
+  <text x="${PAD_X}" y="20" font-size="9" font-weight="700" fill="#93c5fd" letter-spacing="1">QUALITY SERVICES &amp; WISSEN GMBH · TOOLS.QUALITY.DE</text>
+  <text x="${PAD_X}" y="44" font-size="28" font-weight="800" fill="#ffffff">${escapeHtml(title)}</text>
+  <text x="${PAGE_W - PAD_X}" y="22" font-size="9" fill="#bfdbfe" text-anchor="end">tools.quality.de</text>
+  <text x="${PAGE_W - PAD_X}" y="40" font-size="10" fill="#bfdbfe" text-anchor="end">${isDE ? "Exportiert" : "Exported"}: ${exportDate}</text>
+
+  <g transform="translate(${drawX}, ${drawY}) scale(${scale})">
+    ${innerContent}
+  </g>
+</svg>`;
+      }
+
+      function buildFullExportSvg(){
+        const title = state.meta.topic || "Mindmap Export";
+        const isDE = currentLang === "de";
+        const mindSvg = buildMindmapSvg();
+        if(!mindSvg) return null;
+
+        const size = parseSvgSize(mindSvg);
+        const mW = size.width;
+        const mH = size.height;
+
+        const PAGE_W = 1600;
+        const PAD_X = 28;
+        const HEADER_H = 70;
+        const GAP_AFTER_MAP = 28;
+        const BOTTOM_PAD = 28;
+        const CONTENT_TOP = HEADER_H + 12;
+        const CONTENT_W = PAGE_W - PAD_X * 2;
+        const scale = Math.min(CONTENT_W / mW, 1);
+        const drawW = mW * scale;
+        const drawH = mH * scale;
+        const drawX = PAD_X;
+        const drawY = CONTENT_TOP;
+        const tableStartY = drawY + drawH + GAP_AFTER_MAP;
+        const tableBlock = buildMeasuresSvgBlock(tableStartY, PAGE_W);
+        const PAGE_H = Math.ceil(tableStartY + tableBlock.height + BOTTOM_PAD);
+        const exportDate = new Date().toLocaleString(isDE ? "de-DE" : "en-US");
+        const innerContent = mindSvg.replace(/<svg[^>]*>/, "").replace(/<\/svg>$/, "");
+
+        return `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="${PAGE_W}" height="${PAGE_H}" viewBox="0 0 ${PAGE_W} ${PAGE_H}">
+  <defs>
+    <style>
+      text { font-family: Segoe UI, Roboto, Arial, sans-serif; }
+    </style>
+  </defs>
+
+  <rect width="${PAGE_W}" height="${PAGE_H}" fill="#ffffff"/>
+
+  <rect x="0" y="0" width="${PAGE_W}" height="${HEADER_H}" fill="#09387a"/>
+  <text x="${PAD_X}" y="20" font-size="9" font-weight="700" fill="#93c5fd" letter-spacing="1">QUALITY SERVICES &amp; WISSEN GMBH · TOOLS.QUALITY.DE</text>
+  <text x="${PAD_X}" y="44" font-size="28" font-weight="800" fill="#ffffff">${escapeHtml(title)}</text>
+  <text x="${PAGE_W - PAD_X}" y="22" font-size="9" fill="#bfdbfe" text-anchor="end">tools.quality.de</text>
+  <text x="${PAGE_W - PAD_X}" y="40" font-size="10" fill="#bfdbfe" text-anchor="end">${isDE ? "Exportiert" : "Exported"}: ${exportDate}</text>
+
+  <g transform="translate(${drawX}, ${drawY}) scale(${scale})">
+    ${innerContent}
+  </g>
+
+  ${tableBlock.svg}
+</svg>`;
+      }
+
+      /* ============================================================
+         SVG EXPORT
+      ============================================================ */
+      function exportToSvg(){
+        const title = state.meta.topic || "Mindmap Export";
+        const isDE = currentLang === "de";
+        const svgOut = buildFullExportSvg();
+        if(!svgOut){
+          toast(isDE ? "Mindmap konnte nicht exportiert werden." : "Mindmap could not be exported.");
+          return;
+        }
+
+        const blob = new Blob([svgOut], {type:"image/svg+xml;charset=utf-8"});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = title.replace(/[^a-zA-Z0-9äöüÄÖÜß]/g,"_") + ".svg";
+        a.click();
+        URL.revokeObjectURL(url);
+        toast(isDE ? "SVG Export erfolgreich!" : "SVG export successful!");
+      }
+
+      /* ============================================================
+         PDF EXPORT  (uses branded SVG inside print view)
+      ============================================================ */
+      function exportToPdf(){
+        const title = state.meta.topic || "Mindmap Export";
+        const isDE = currentLang === "de";
+        const fullSvg = buildFullExportSvg();
+        if(!fullSvg){
+          toast(isDE ? "Mindmap konnte nicht exportiert werden." : "Mindmap could not be exported.");
+          return;
+        }
+
+        const svgDataUri = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(fullSvg.replace(/^<\?xml[^>]*>\s*/,''));
+        const htmlContent = `<!DOCTYPE html>
+<html lang="${currentLang}">
+<head>
+  <meta charset="UTF-8">
+  <title>${escapeHtml(title)}</title>
+  <style>
+    @page { size: A4 landscape; margin: 8mm; }
+    *{box-sizing:border-box; -webkit-print-color-adjust:exact; print-color-adjust:exact;}
+    html,body{margin:0;padding:0;background:#fff;font-family:'Segoe UI',Roboto,Arial,sans-serif;color:#27304d;}
+    body{padding:0;}
+    .doc{width:100%;}
+    .doc img{display:block; width:100%; height:auto;}
+  </style>
+</head>
+<body>
+  <div class="doc">
+    <img src="${svgDataUri}" alt="${escapeHtml(title)}" />
+  </div>
+  <script>
+    window.addEventListener("load", function(){
+      setTimeout(function(){ window.print(); }, 300);
+    });
+  <\/script>
+</body>
+</html>`;
+
+        const win = window.open("", "_blank");
+        if(!win){
+          toast(isDE ? "Popup blockiert – bitte Popup-Blocker deaktivieren." : "Popup blocked – please allow popups.");
+          return;
+        }
+        win.document.write(htmlContent);
+        win.document.close();
+        toast(isDE ? "PDF-Druckfenster wird geöffnet …" : "PDF print window opening …");
       }
 
       function extractNodeText(raw){
@@ -2320,7 +3044,7 @@
           : "You are a quality & process expert. Return ONLY valid JSON – no markdown, no comments, no extra text.";
 
         const schemaHint = (currentLang==="de") ? `
-Erzeuge eine Mindmap und Maßnahmenliste für den angegebenen Prozessschritt.
+Erzeuge eine Mindmap und Maßnahmenliste für das angegebene Thema.
 JSON-Schema (exakt einhalten):
 {
   "lang": "de",
@@ -2352,7 +3076,7 @@ JSON-Schema (exakt einhalten):
 }
 
 Inhaltliche Anforderungen:
-- meta.topic = Prozessschritt (kurz, klar)
+- meta.topic = Thema (kurz, klar)
 - meta.goal, meta.scope, meta.notes sinnvoll ausfüllen (kurz, QM-tauglich)
 - Mindmap: 6–10 Hauptzweige unter Root, je 2–4 Unterpunkte (insgesamt 20–45 Knoten)
 - Maßnahmen: 10–18 Maßnahmen, jeweils einer passenden nodeId zugeordnet
@@ -2361,7 +3085,7 @@ Inhaltliche Anforderungen:
 - proof: Vorschlag für Wirksamkeitsnachweis (z.B. Audit, Kennzahl, Test, Versuch, Kurzzeitfähigkeit …)
 - Alle IDs eindeutig, kompakt (z.B. "a1","a1_1","m_01" …)
 `.trim() : `
-Create a mindmap and action list for the given process step.
+Create a mindmap and action list for the given topic.
 Strict JSON schema:
 {
   "lang": "en",
@@ -2393,7 +3117,7 @@ Strict JSON schema:
 }
 
 Content requirements:
-- meta.topic = process step (short, clear)
+- meta.topic = topic (short, clear)
 - Fill meta.goal, meta.scope, meta.notes (short, QM-appropriate)
 - Mindmap: 6–10 main branches under root, each 2–4 subpoints (20–45 nodes total)
 - Actions: 10–18 actions, each mapped to a nodeId
@@ -2404,11 +3128,11 @@ Content requirements:
 `.trim();
 
         const user = (currentLang==="de")
-          ? `Prozessschritt: ${processStep}
+          ? `Thema: ${processStep}
 Kontext: ${contextText}
 
 ${schemaHint}`
-          : `Process step: ${processStep}
+          : `Topic: ${processStep}
 Context: ${contextText}
 
 ${schemaHint}`;
@@ -2548,7 +3272,7 @@ ${schemaHint}`;
           : "You are a quality & process expert. Return ONLY valid JSON – no markdown, no comments, no extra text.";
 
         const schemaHint = (currentLang==="de") ? `
-Erzeuge eine Mindmap und Maßnahmenliste für den angegebenen Prozessschritt.
+Erzeuge eine Mindmap und Maßnahmenliste für das angegebene Thema.
 JSON-Schema (exakt einhalten):
 {
   "lang": "de",
@@ -2592,8 +3316,8 @@ Create a mindmap and action list. Strict JSON schema:
 Mindmap: 6–10 main branches, 2–4 subpoints each. Actions: 10–18 items.`.trim();
 
         const user = (currentLang==="de")
-          ? `Prozessschritt: ${processStep}\nKontext: ${contextText}\n\n${schemaHint}`
-          : `Process step: ${processStep}\nContext: ${contextText}\n\n${schemaHint}`;
+          ? `Thema: ${processStep}\nKontext: ${contextText}\n\n${schemaHint}`
+          : `Topic: ${processStep}\nContext: ${contextText}\n\n${schemaHint}`;
 
         const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
           method: "POST",
@@ -2761,6 +3485,9 @@ Mindmap: 6–10 main branches, 2–4 subpoints each. Actions: 10–18 items.`.tr
 
       // JSON/Print/Reset buttons (now inside map-wrap)
       $("#btnExportJson2").addEventListener("click", ()=>downloadJson());
+      $("#btnExportHtml").addEventListener("click", ()=>exportToHtml());
+      $("#btnExportSvg").addEventListener("click", ()=>exportToSvg());
+      $("#btnExportPdf").addEventListener("click", ()=>exportToPdf());
       $("#btnImportJson2").addEventListener("click", ()=> $("#jsonFile").click());
       $("#jsonFile").addEventListener("change", (ev)=>{
         const f = ev.target.files && ev.target.files[0];
