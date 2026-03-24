@@ -794,7 +794,7 @@
           <div class="section-head">
             <div>
               <h3 class="sec-title" id="secAIFree" data-i18n="aiFreeTitle">KI Assistent (Kostenlos)</h3>
-              <p class="sec-sub" data-i18n="aiFreeSubtitle">Mindmap &amp; Maßnahmen generieren – kostenlos über Supabase im Gratis-Bereich mit der V9-Modellauswahl.</p>
+              <p class="sec-sub" data-i18n="aiFreeSubtitle">Mindmap &amp; Maßnahmen generieren – lokal im Browser, ohne API-Key und ohne Registrierung.</p>
             </div>
             <div class="btn-row">
               <span class="badge api" data-i18n="aiFreeBadge">Kostenlos</span>
@@ -803,20 +803,19 @@
 
           <div class="ai-grid" style="margin-top:12px;">
             <div>
-              <label for="aiFreeModel" data-i18n="aiFreeModelLabel">Kostenloses Modell</label>
+              <label for="aiFreeModel">KI-Modell (OpenRouter)</label>
               <select id="aiFreeModel">
-                <option value="minimax/minimax-m2.5:free" selected>MiniMax M2.5 (kostenlos)</option>
-                <option value="stepfun/step-3.5-flash:free">Step 3.5 Flash (kostenlos)</option>
-                <option value="arcee-ai/trinity-large-preview:free">Trinity Large Preview (kostenlos)</option>
-                <option value="arcee-ai/trinity-mini:free">Trinity Mini (kostenlos)</option>
-                <option value="z-ai/glm-4.5-air:free">GLM 4.5 Air (kostenlos)</option>
+                <option value="zhipuai/glm-4.5-air" selected>GLM 4.5 Air</option>
+                <option value="stepfun/step-3.5-flash">Step 3.5 Flash</option>
+                <option value="minimax/minimax-m2.5">MiniMax M2.5</option>
+                <option value="trinity/trinity-mini">Trinity Mini</option>
               </select>
-              <div class="hint" data-i18n="aiFreeModelHint">Die Auswahl entspricht wieder der OpenRouter-Free-Modellliste aus V9. Die Generierung läuft hier trotzdem über deine Supabase Function.</div>
+              <div class="hint">Kostenlose Modelle via OpenRouter. Kein eigener API-Key nötig.</div>
             </div>
 
             <div>
-              <label data-i18n="aiFreeTechLabel">Technik</label>
-              <div class="hint" style="margin-top:10px;" data-i18n="aiFreeTechHint">Gratis-Bereich mit der OpenRouter-Free-Modellliste aus V9, aber Anbindung über Supabase. Kein lokaler Modell-Download im Browser.</div>
+              <label>Technik</label>
+              <div class="hint" style="margin-top:10px;">OpenRouter API – läuft direkt im Browser. Kein eigener Server, keine Registrierung erforderlich.</div>
             </div>
 
             <div class="full">
@@ -836,7 +835,7 @@
                 <button type="button" class="btn" id="btnAiFreeDownload" data-i18n="aiBtnDownload" disabled>Ergebnis als JSON speichern</button>
                 <span class="pill warn" id="aiFreeStatePill">● <span id="aiFreeStateText" data-i18n="aiStateIdle">Bereit</span></span>
               </div>
-              <div class="hint" data-i18n="aiFreeHint">Die Oberfläche zeigt wieder die OpenRouter-Free-Modellliste aus V9. Die eigentliche Generierung läuft im Gratis-Bereich über deine Supabase Function.</div>
+              <div class="hint" data-i18n="aiFreeHint">Kostenlose KI-Modelle über OpenRouter. Direkt im Browser, kein Download, kein Warten.</div>
             </div>
           </div>
         </section>
@@ -1080,26 +1079,26 @@
           aiNoCrypto: "Lizenzprüfung nicht möglich (Browser/Seite blockiert Kryptografie). Bitte Seite über HTTPS laden.",
 
           aiFreeTitle: "KI Assistent (Kostenlos)",
-          aiFreeSubtitle: "Mindmap & Maßnahmen generieren – kostenlos über Supabase im Gratis-Bereich, ohne lokales Browser-Modell.",
+          aiFreeSubtitle: "Mindmap & Maßnahmen generieren – lokal im Browser, ohne API-Key und ohne Registrierung.",
           aiFreeBadge: "Kostenlos",
 
-          aiFreeModelLabel: "Kostenloses Modell",
-          aiFreeModelHint: "Die Auswahl entspricht wieder V9. Die Generierung läuft hier trotzdem über deine Supabase Function.",
+          aiFreeModelLabel: "Lokales Browser-Modell",
+          aiFreeModelHint: "Beim ersten Start wird das Modell einmal geladen und anschließend im Browser-Cache wiederverwendet.",
           aiFreeTechLabel: "Technik",
-          aiFreeTechHint: "Gratis-Bereich mit der OpenRouter-Free-Modellliste aus V9, aber Anbindung über Supabase. Kein lokaler Modell-Download im Browser.",
+          aiFreeTechHint: "OpenRouter API direkt im Browser. Kein eigener Server, keine Registrierung erforderlich.",
           aiFreeProcessLabel: "Zu welchem Thema erstellen wir eine Mindmap?",
           aiFreeContextLabel: "Kontext",
-          aiFreeGenerating: "Kostenlose KI generiert über Supabase…",
+          aiFreeGenerating: "Lokale KI lädt / generiert…",
           aiFreeGenerated: "Ergebnis bereit.",
           aiFreeApplied: "Ergebnis übernommen.",
           aiFreeApplyConfirm: "Ergebnis übernehmen? Dabei wird Meta, Mindmap und Maßnahmenliste überschrieben.",
           aiFreeDownloaded: "Ergebnis als JSON gespeichert.",
           aiFreeNeedProcess: "Bitte Thema angeben.",
           aiFreeNeedWebGPU: "Lokale Browser-KI konnte nicht initialisiert werden. Bitte Seite neu laden oder ein kleineres Modell wählen.",
-          aiFreeLoadStart: "Supabase-Verbindung wird aufgebaut…",
-          aiFreeLoaded: "Supabase bereit.",
-          aiFreeHint: "Der Gratis-Bereich nutzt jetzt deine Supabase Function. Dadurch wird kein lokales Modell mehr im Browser geladen.",
-          aiFreeFailed: "KI-Generierung fehlgeschlagen. Bitte Supabase Function oder Internetverbindung prüfen."
+          aiFreeLoadStart: "Lokales Modell wird geladen…",
+          aiFreeLoaded: "Lokales Modell bereit.",
+          aiFreeHint: "Beim ersten Start werden Modell-Dateien geladen. Danach läuft die kostenlose KI lokal im Browser und funktioniert auf mehr Geräten als die alte WebGPU-only-Variante.",
+          aiFreeFailed: "KI-Generierung fehlgeschlagen. Bitte kleineres Modell wählen oder Seite neu laden."
         },
         en: {
           title: "Mindmap Tool – Ideas → Actions",
@@ -1284,26 +1283,26 @@
           aiNoCrypto: "License validation not possible (crypto blocked). Please load the page over HTTPS.",
 
           aiFreeTitle: "AI Assistant (Free)",
-          aiFreeSubtitle: "Generate mindmap & actions via Supabase in the free section – no local browser model.",
+          aiFreeSubtitle: "Generate mindmap & actions locally in the browser – no API key and no sign-up required.",
           aiFreeBadge: "Free",
 
-          aiFreeModelLabel: "Free model",
-          aiFreeModelHint: "The selector matches V9 again. Generation still runs through your Supabase Function.",
+          aiFreeModelLabel: "Local browser model",
+          aiFreeModelHint: "On first start, the model is loaded once and then reused from browser cache.",
           aiFreeTechLabel: "Technology",
-          aiFreeTechHint: "Free section via Supabase Function with the V9 OpenRouter free model list. No local model and no WebGPU/WASM download in the browser.",
+          aiFreeTechHint: "OpenRouter API directly in the browser. No own server, no registration required.",
           aiFreeProcessLabel: "For which topic should we create a mindmap?",
           aiFreeContextLabel: "Context",
-          aiFreeGenerating: "Free AI generating via Supabase…",
+          aiFreeGenerating: "Local AI loading / generating…",
           aiFreeGenerated: "Result ready.",
           aiFreeApplied: "Result applied.",
           aiFreeApplyConfirm: "Apply the result? This will overwrite meta, mindmap and action list.",
           aiFreeDownloaded: "Result saved as JSON.",
           aiFreeNeedProcess: "Please provide a topic.",
           aiFreeNeedWebGPU: "Local browser AI could not be initialized. Please reload the page or choose a smaller model.",
-          aiFreeLoadStart: "Connecting to Supabase…",
-          aiFreeLoaded: "Supabase ready.",
-          aiFreeHint: "The free section now uses your Supabase Function and shows the V9 OpenRouter free model list. No local model is loaded in the browser anymore.",
-          aiFreeFailed: "AI generation failed. Please check the Supabase Function or your internet connection."
+          aiFreeLoadStart: "Loading local model…",
+          aiFreeLoaded: "Local model ready.",
+          aiFreeHint: "On first start, model files are downloaded. After that, the free AI runs locally in the browser and works on more devices than the old WebGPU-only variant.",
+          aiFreeFailed: "AI generation failed. Please choose a smaller model or reload the page."
         }
       };
       function getStoredWebLLMModel(){
@@ -3277,11 +3276,11 @@ ${schemaHint}`;
       }
 
       /* ==========================
-         FREE AI (Supabase cloud function)
+         FREE AI (OpenRouter API)
       ========================== */
-      const SUPABASE_FREE_FUNCTION_URL = "https://eckyjtwxlyenaqhwwrea.supabase.co/functions/v1/https---YOUR_PROJECT_ID-supabase-co-functions-v1-mindmap-ai";
-      const SUPABASE_ANON_KEY = "sb_publishable_Cs7LAezoAI8AmWLzs1diMA_dw3rKWpC";
       let aiFreeLastResult = null;
+
+      const FREE_AI_API_KEY = "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";
 
       function setAiFreeState(kind, textKey){
         const pill = $("#aiFreeStatePill");
@@ -3292,46 +3291,70 @@ ${schemaHint}`;
         label.textContent = t(textKey);
       }
 
-      async function callFreeSupabaseAI({ processStep, contextText, selectedModel }){
-        let res;
-        try {
-          res = await fetch(SUPABASE_FREE_FUNCTION_URL, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": "Bearer " + SUPABASE_ANON_KEY,
-              "apikey": SUPABASE_ANON_KEY
-            },
-            body: JSON.stringify({
-              prompt: `Thema: ${processStep}
-Kontext: ${contextText || "-"}
-Ausgewähltes Modell (UI): ${selectedModel || "-"}`,
-              mode: "mindmap",
-              selectedModel: selectedModel || ""
-            })
-          });
-        } catch(err) {
-          throw new Error("Netzwerkfehler beim Aufruf der Supabase Function.");
-        }
-
-        const rawText = await res.text();
-        let data = {};
-        try { data = rawText ? JSON.parse(rawText) : {}; } catch(_) { data = { rawText }; }
-
-        if(!res.ok || !data.ok){
-          const detail = data?.error || data?.message || data?.code || rawText || `Supabase error ${res.status}`;
-          throw new Error(String(detail));
-        }
-
-        return data.result || (data.raw ? JSON.parse(data.raw) : null);
+      function extractJsonObject(text){
+        const cleaned = (text || "").trim().replace(/^```json\s*/i, "").replace(/^```\s*/i, "").replace(/\s*```$/i, "");
+        const first = cleaned.indexOf("{");
+        const last = cleaned.lastIndexOf("}");
+        if(first === -1 || last === -1 || last <= first) throw new Error("No JSON object found");
+        return cleaned.slice(first, last + 1);
       }
 
+      async function callFreeBrowserAI({ processStep, contextText, model }){
+        const lang = currentLang === "de" ? "de" : "en";
+        const today = new Date().toISOString().slice(0,10);
+
+        const system = (lang === "de")
+          ? `Du bist ein Qualitäts- und Prozess-Experte. Antworte ausschließlich mit gültigem JSON, ohne Markdown und ohne Einleitung.`
+          : `You are a quality and process expert. Respond with valid JSON only, no markdown, no introduction.`;
+
+        const user = (lang === "de")
+          ? `Erstelle für folgendes Thema eine strukturierte Mindmap mit Maßnahmen.\n\nThema: ${processStep}\nKontext: ${contextText || "-"}\n\nJSON-Schema:\n{\n  "lang": "de",\n  "meta": { "topic": string, "goal": string, "scope": string, "notes": string },\n  "mind": {\n    "meta": { "name":"qm_mindmap","author":"","version":"1.0" },\n    "format": "node_array",\n    "data": [\n      { "id":"root", "topic": string, "isroot": true },\n      { "id": string, "topic": string, "parentid": string }\n    ]\n  },\n  "measures": [\n    { "id": string, "nodeId": string, "nodeTopic": string, "nodePath": string, "text": string, "proof": string, "due": "${today}" | "", "owner": string, "status": "open", "createdAt": string }\n  ],\n  "ts": string\n}\n\nRegeln: 5–7 Hauptzweige, je 2–3 Unterpunkte, 8–12 Maßnahmen, nur gültiges JSON.`
+          : `Create a structured mindmap with actions for this topic.\n\nTopic: ${processStep}\nContext: ${contextText || "-"}\n\nJSON schema:\n{\n  "lang": "en",\n  "meta": { "topic": string, "goal": string, "scope": string, "notes": string },\n  "mind": {\n    "meta": { "name":"qm_mindmap","author":"","version":"1.0" },\n    "format": "node_array",\n    "data": [\n      { "id":"root", "topic": string, "isroot": true },\n      { "id": string, "topic": string, "parentid": string }\n    ]\n  },\n  "measures": [\n    { "id": string, "nodeId": string, "nodeTopic": string, "nodePath": string, "text": string, "proof": string, "due": "${today}" | "", "owner": string, "status": "open", "createdAt": string }\n  ],\n  "ts": string\n}\n\nRules: 5–7 main branches, 2–3 subpoints each, 8–12 actions, valid JSON only.`;
+
+        const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + FREE_AI_API_KEY,
+            "HTTP-Referer": window.location.href,
+            "X-Title": "Mindmap Tool Free"
+          },
+          body: JSON.stringify({
+            model: model || "zhipuai/glm-4.5-air",
+            messages: [
+              { role: "system", content: system },
+              { role: "user", content: user }
+            ],
+            temperature: 0.4
+          })
+        });
+
+        if(!res.ok){
+          const txt = await res.text().catch(()=> "");
+          throw new Error("OpenRouter error: " + res.status + " " + txt);
+        }
+
+        const data = await res.json();
+        const text = (()=>{
+          try{
+            if(data.choices && data.choices[0] && data.choices[0].message){
+              return (data.choices[0].message.content || "").trim();
+            }
+            return "";
+          }catch(e){ return ""; }
+        })();
+
+        if(!text) throw new Error("No response from model");
+        const jsonText = extractJsonObject(text);
+        return JSON.parse(jsonText);
+      }
+        const lang = currentLang === "de" ? "de" : "en";
       async function aiFreeGenerate(){
         const processStep = (($("#aiFreeProcessStep").value) || "").trim();
         if(!processStep){ toast(t("aiFreeNeedProcess")); return; }
 
         const contextText = (($("#aiFreeContext").value) || "").trim();
-        const selectedModel = (($("#aiFreeModel") && $("#aiFreeModel").value) || "").trim();
+        const model = (($("#aiFreeModel").value) || "zhipuai/glm-4.5-air").trim();
 
         $("#btnAiFreeGenerate").disabled = true;
         $("#btnAiFreeApply").disabled = true;
@@ -3339,7 +3362,7 @@ Ausgewähltes Modell (UI): ${selectedModel || "-"}`,
         setAiFreeState("warn", "aiFreeGenerating");
 
         try{
-          const raw = await callFreeSupabaseAI({ processStep, contextText, selectedModel });
+          const raw = await callFreeBrowserAI({ processStep, contextText, model });
           aiFreeLastResult = normalizeGeneratedPayload(raw);
           setAiFreeState("ok", "aiFreeGenerated");
           $("#btnAiFreeApply").disabled = false;
@@ -3348,7 +3371,7 @@ Ausgewähltes Modell (UI): ${selectedModel || "-"}`,
         }catch(e){
           console.error(e);
           setAiFreeState("bad", "aiFreeFailed");
-          toast((e && e.message) ? `KI-Generierung fehlgeschlagen: ${e.message}` : t("aiFreeFailed"));
+          toast(t("aiFreeFailed"));
           aiFreeLastResult = null;
         }finally{
           $("#btnAiFreeGenerate").disabled = false;
