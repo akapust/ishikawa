@@ -3293,25 +3293,34 @@ ${schemaHint}`;
       }
 
       async function callFreeSupabaseAI({ processStep, contextText, selectedModel }){
-        const res = await fetch(SUPABASE_FREE_FUNCTION_URL, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + SUPABASE_ANON_KEY,
-            "apikey": SUPABASE_ANON_KEY
-          },
-          body: JSON.stringify({
-            prompt: `Thema: ${processStep}
+        let res;
+        try {
+          res = await fetch(SUPABASE_FREE_FUNCTION_URL, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": "Bearer " + SUPABASE_ANON_KEY,
+              "apikey": SUPABASE_ANON_KEY
+            },
+            body: JSON.stringify({
+              prompt: `Thema: ${processStep}
 Kontext: ${contextText || "-"}
 Ausgewähltes Modell (UI): ${selectedModel || "-"}`,
-            mode: "mindmap",
-            selectedModel: selectedModel || ""
-          })
-        });
+              mode: "mindmap",
+              selectedModel: selectedModel || ""
+            })
+          });
+        } catch(err) {
+          throw new Error("Netzwerkfehler beim Aufruf der Supabase Function.");
+        }
 
-        const data = await res.json().catch(() => ({}));
+        const rawText = await res.text();
+        let data = {};
+        try { data = rawText ? JSON.parse(rawText) : {}; } catch(_) { data = { rawText }; }
+
         if(!res.ok || !data.ok){
-          throw new Error(data.error || `Supabase error ${res.status}`);
+          const detail = data?.error || data?.message || data?.code || rawText || `Supabase error ${res.status}`;
+          throw new Error(String(detail));
         }
 
         return data.result || (data.raw ? JSON.parse(data.raw) : null);
@@ -3339,7 +3348,7 @@ Ausgewähltes Modell (UI): ${selectedModel || "-"}`,
         }catch(e){
           console.error(e);
           setAiFreeState("bad", "aiFreeFailed");
-          toast(t("aiFreeFailed"));
+          toast((e && e.message) ? `KI-Generierung fehlgeschlagen: ${e.message}` : t("aiFreeFailed"));
           aiFreeLastResult = null;
         }finally{
           $("#btnAiFreeGenerate").disabled = false;
